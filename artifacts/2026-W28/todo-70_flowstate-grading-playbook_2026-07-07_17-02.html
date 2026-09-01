@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-70 · flowstate-grading · dial in, grade, progress</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --fit: 1000px; }
+    body { min-height:100vh; overflow-x:hidden; }
+    .wrap { max-width:var(--fit); margin:0 auto; padding:38px 24px 80px; }
+
+    .kicker { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      font-family:var(--font-mono); font-size:12px; font-weight:500; letter-spacing:.08em;
+      text-transform:uppercase; color:var(--forest); }
+    .kicker .dot { width:7px; height:7px; border-radius:2px; background:var(--lime); }
+    .kicker .sep { color:var(--faint); }
+
+    h1 { margin:16px 0 0; font-size:clamp(30px,4.4vw,44px); line-height:1.03;
+      letter-spacing:-.035em; font-weight:800; }
+    h1 .em { color:var(--forest); }
+    .sub { color:var(--body); max-width:62ch; margin:16px 0 0; font-size:15px; line-height:1.62; }
+    .sub b { color:var(--ink); }
+    .lede-links { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    .lede-links a { font-family:var(--font-mono); font-size:11.5px; letter-spacing:.01em;
+      color:var(--found-d); background:var(--found-bg); border:1px solid var(--found-bd);
+      padding:6px 12px; border-radius:var(--r-pill); display:inline-flex; align-items:center; gap:7px; }
+    .lede-links a .d { width:7px; height:7px; border-radius:50%; background:var(--found); }
+
+    /* section scaffolding */
+    .sx { margin-top:56px; }
+    .sx-head { display:flex; align-items:baseline; gap:12px; margin:0 0 16px; }
+    .sx-kick { font-family:var(--font-mono); font-size:11px; font-weight:500; letter-spacing:.09em;
+      text-transform:uppercase; color:var(--forest); }
+    .sx-n { margin-left:auto; font-family:var(--font-mono); font-size:10.5px; color:var(--faint); letter-spacing:.05em; }
+    .sx-head h2 { font-size:24px; line-height:1.12; font-weight:780; letter-spacing:-.03em; }
+    .sx-lede { font-size:14px; line-height:1.6; color:var(--body); max-width:70ch; margin:0 0 20px; }
+    .sx-lede b { color:var(--ink); }
+
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:760px){ .grid2{grid-template-columns:1fr;} }
+
+    .card h3 { font-size:13px; letter-spacing:.03em; text-transform:uppercase; color:var(--muted);
+      margin:0 0 12px; display:flex; align-items:center; gap:9px; }
+    .card h3 .tag { font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em;
+      padding:3px 8px; border-radius:6px; background:var(--g-lime); color:var(--forest-d); text-transform:uppercase; }
+    .card h3 .tag.reef { background:var(--found-bg); color:var(--found-d); }
+    .card p { font-size:13.5px; line-height:1.6; color:var(--body); }
+    .card p b { color:var(--ink); }
+    .card .meta { font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:14px;
+      padding-top:12px; border-top:1px solid var(--line); line-height:1.7; }
+    .card .meta b { color:var(--forest-d); }
+
+    ul.checks { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
+    ul.checks li { display:flex; gap:11px; align-items:baseline; font-size:13.5px; line-height:1.5; color:var(--body); }
+    ul.checks .mk { color:var(--forest); font-weight:800; flex:none; }
+    ul.checks b { color:var(--ink); }
+
+    .tiers { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+    .tierpill { font-size:11px; font-weight:720; padding:5px 11px; border-radius:var(--r-pill);
+      background:var(--bg); border:1px solid var(--line); color:var(--muted); font-variant-numeric:tabular-nums; }
+    .tierpill b { color:var(--ink); font-weight:800; }
+
+    /* rubric table */
+    table.rub { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+    table.rub th { font-family:var(--font-mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase;
+      color:var(--muted); text-align:left; padding:12px 12px 10px; border-bottom:1px solid var(--line); font-weight:500; }
+    table.rub th.r, table.rub td.r { text-align:right; }
+    table.rub td { font-size:13.5px; color:var(--ink); padding:13px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+    table.rub td .crit { font-weight:680; }
+    table.rub td .fs { display:block; font-family:var(--font-mono); font-size:10.5px; color:var(--muted); margin-top:4px; line-height:1.5; }
+    table.rub td.pts { font-family:var(--font-mono); color:var(--forest-d); font-weight:500; }
+    table.rub tr.ex td { background:var(--g-lime); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    table.rub tr.ex td .crit { color:var(--forest-d); }
+    .fs-badge { display:inline-block; font-family:var(--font-mono); font-size:9px; letter-spacing:.05em;
+      text-transform:uppercase; padding:2px 6px; border-radius:5px; margin-right:6px; }
+    .fs-badge.free { background:var(--g-lime); color:var(--forest-d); }
+    .fs-badge.pro { background:var(--amber-bg); color:var(--amber); }
+    .fs-badge.you { background:var(--found-bg); color:var(--found-d); }
+
+    .formula { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:15px 18px; font-family:var(--font-mono); font-size:12.5px; color:var(--body); line-height:1.65; margin-top:16px; }
+    .formula b { color:var(--ink); } .formula .k { color:var(--forest); }
+
+    code { font-family:var(--font-mono); font-size:.9em;
+      background:var(--g-lime); color:var(--forest-d); padding:1px 6px; border-radius:5px; }
+
+    .log { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); padding:6px 20px 12px; margin-top:16px; overflow-x:auto; }
+    table.dt2 { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    table.dt2 th { font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+      color:var(--muted); text-align:right; padding:13px 12px 9px; border-bottom:1px solid var(--line); font-weight:500; }
+    table.dt2 th.l, table.dt2 td.l { text-align:left; }
+    table.dt2 td { font-family:var(--font-mono); font-size:13px; color:var(--ink); text-align:right; padding:11px 12px; border-bottom:1px solid var(--line); }
+    table.dt2 td .g { color:var(--forest-d); font-weight:500; }
+
+    .foot { margin-top:60px; padding-top:20px; border-top:1px solid var(--line);
+      font-family:var(--font-mono); font-size:10.5px; color:var(--faint); letter-spacing:.02em; line-height:1.9; }
+    .foot b { color:var(--forest-d); }
+    .foot a { color:var(--found-d); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="kicker">
+      <span class="dot"></span> TODO-70 · flowstate-grading
+      <span class="sep">·</span> In&nbsp;Review
+      <span class="sep">·</span> 2026-07-07 17-02 Z
+    </div>
+
+    <h1>Grade your surf.<br><span class="em">Medewi + Yeh&nbsp;Sumbul.</span></h1>
+    <p class="sub">Flowstate is your <b>instant replay + AI tag engine</b> — it films every wave, fingerprints
+      you out of the pack, and tags your snaps, cutbacks and barrels before you're out of your wetsuit.
+      What it <b>doesn't</b> hand you is a <b>grade</b>. This is the rubric that turns its raw tags into a
+      score you can chase — session over session, spot over spot — so progress stops being a feeling and
+      becomes a number.</p>
+
+    <div class="lede-links">
+      <a href="https://flowstate.zone/en/watch?session=019e6ba0-571d-702a-88b4-f1d36abb86d9" target="_blank" rel="noopener"><span class="d"></span> your session ↗</a>
+      <a href="https://flowstate.zone/en/watch?session=019e6ba0-5548-7769-9854-355eafb42662" target="_blank" rel="noopener"><span class="d"></span> Tim's session ↗</a>
+    </div>
+
+    <!-- 1 · DIAL IT IN -->
+    <div class="sx">
+      <div class="sx-head">
+        <span class="sx-kick">01 · dial it in</span>
+        <h2>Mobile Capture — the ocean move</h2>
+        <span class="sx-n">no fixed cam · you film</span>
+      </div>
+      <p class="sx-lede">Flowstate's tower cameras live at surf parks and wave pools — <b>there are none at Medewi
+        or Yeh Sumbul</b>. At an outdoor break you run <b>Mobile Capture</b>: turn an iPhone (iOS 16.6+) into the
+        cam yourself. The AI does the rest — it tracks and follows you inside a static frame, so no wristband,
+        no board sticker, no panning.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>The set-up <span class="tag">2 min</span></h3>
+          <ul class="checks">
+            <li><span class="mk">1</span><span><b>Mount high &amp; still.</b> Tripod on the beach, a wall, or a
+              lifeguard/warung roof. The cam doesn't pan — give it the whole peak.</span></li>
+            <li><span class="mk">2</span><span><b>Frame takeoff → kickout.</b> Fit the full ride in shot; on a
+              point that means aiming <b>down the line</b>, not straight out.</span></li>
+            <li><span class="mk">3</span><span><b>Sun at its back.</b> Backlit water blows out the tags — keep
+              the sun behind the lens.</span></li>
+            <li><span class="mk">4</span><span><b>Roll before you paddle.</b> Start the session recording, then
+              go surf. Body-fingerprint AI finds you in the crowd after.</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What comes back</h3>
+          <ul class="checks">
+            <li><span class="mk">✓</span><span><b>Your waves, auto-clipped.</b> The model groups every wave that's
+              yours into one session — watchable by the time you're changed.</span></li>
+            <li><span class="mk">✓</span><span><b>Move tags.</b> Snaps, cutbacks, floaters, barrels — labelled on the
+              clip, so you see which moves you actually landed and when.</span></li>
+            <li><span class="mk">✓</span><span><b>Stats.</b> Wave count, ride length, frequency — and turn angles /
+              session overlays / side-by-side on <b>Pro</b>.</span></li>
+            <li><span class="mk">✓</span><span><b>An auto highlight reel</b> + a remote-coach marketplace if you want
+              a real read on a session.</span></li>
+          </ul>
+          <div class="meta"><b>Free</b> = capture · tags · basic stats &nbsp;·&nbsp; <b>Pro</b> = turn angles ·
+            overlays · adaptive goals · side-by-side</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 · TWO SPOTS -->
+    <div class="sx">
+      <div class="sx-head">
+        <span class="sx-kick">02 · your two spots</span>
+        <h2>Where to point the lens</h2>
+        <span class="sx-n">west bali base</span>
+      </div>
+      <p class="sx-lede">Two mellow West Bali waves, ten minutes apart — the perfect <b>progression lab</b>. Long,
+        soft and repeatable means high wave count and lots of reps, which is exactly what a grading baseline needs.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Medewi Point <span class="tag">the point</span></h3>
+          <p>Soft, boulder-bottom <b>left point</b> that rolls 800m+ on its day — one of Bali's longest, and mellow
+            enough to <b>drill turns instead of surviving the drop</b>. The ride length is the gift: you can stack
+            three, four cutbacks on a single wave.</p>
+          <div class="meta">Film from <b>the point / Bombora vantage</b>, looking down the line ·
+            Grade for: <b>turns-per-wave</b>, wave count, linking.</div>
+        </div>
+        <div class="card">
+          <h3>Yeh Sumbul <span class="tag">the beach</span></h3>
+          <p>The sand beside Medewi — your stay base. More forgiving peaks and shorter, punchier sections. Less about
+            the marathon ride, more about <b>reps</b>: clean takeoffs, first-turn commitment, wave after wave.</p>
+          <div class="meta">Film from <b>the beach, framing the peak</b> ·
+            Grade for: <b>takeoff make-rate</b>, first move, frequency.</div>
+        </div>
+      </div>
+      <p class="sx-lede" style="margin-top:16px; color:var(--muted); font-size:12.5px;">Same rig, same rubric travels
+        anywhere — point it at Lakey Peak or Scar Reef in Sumbawa and only the spot card changes.</p>
+    </div>
+
+    <!-- 3 · THE RUBRIC -->
+    <div class="sx">
+      <div class="sx-head">
+        <span class="sx-kick">03 · the rubric</span>
+        <h2>Score a wave 0–10</h2>
+        <span class="sx-n">6 lines · 10 pts</span>
+      </div>
+      <p class="sx-lede">Grade your <b>best waves</b>, not the paddle-arounds. Each line scores against what Flowstate
+        can already show you on the replay. Badges say where the number comes from:
+        <span class="fs-badge free">free</span> Flowstate stat/tag ·
+        <span class="fs-badge pro">pro</span> Pro analytics ·
+        <span class="fs-badge you">eye</span> your call from the clip.</p>
+
+      <div class="log">
+        <table class="rub">
+          <thead>
+            <tr><th>Line</th><th>Read it from</th><th class="r">Pts</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="crit">Takeoff &amp; drop</span><span class="fs">Clean to the bottom, the later/steeper the better.</span></td>
+              <td><span class="fs-badge free">free</span> wave auto-detected + takeoff clip</td>
+              <td class="pts r">1.5</td>
+            </tr>
+            <tr>
+              <td><span class="crit">Maneuvers landed</span><span class="fs">Count the tagged moves you actually completed.</span></td>
+              <td><span class="fs-badge free">free</span> AI move tags: snap · cutback · floater · barrel</td>
+              <td class="pts r">2.5</td>
+            </tr>
+            <tr>
+              <td><span class="crit">Commitment</span><span class="fs">Rail buried, spray thrown — not a safe drift.</span></td>
+              <td><span class="fs-badge pro">pro</span> turn angles &nbsp;<span class="fs-badge you">eye</span> replay</td>
+              <td class="pts r">2.0</td>
+            </tr>
+            <tr>
+              <td><span class="crit">Flow / linking</span><span class="fs">Did the moves connect, or sit isolated?</span></td>
+              <td><span class="fs-badge you">eye</span> watch the clip end-to-end</td>
+              <td class="pts r">1.5</td>
+            </tr>
+            <tr>
+              <td><span class="crit">Completion</span><span class="fs">Rode it out / clean kickout vs fell off.</span></td>
+              <td><span class="fs-badge free">free</span> ride length vs the wave</td>
+              <td class="pts r">1.5</td>
+            </tr>
+            <tr>
+              <td><span class="crit">Style &amp; projection</span><span class="fs">The look-doper line — posture, speed, intent.</span></td>
+              <td><span class="fs-badge you">eye</span> your read &nbsp;<span class="fs-badge pro">pro</span> coach</td>
+              <td class="pts r">1.0</td>
+            </tr>
+            <tr class="ex">
+              <td><span class="crit">▸ Worked example — one Medewi left</span><span class="fs">Late drop (1.3) · 3 cutbacks landed (2.1) · rail buried (1.6) · linked clean (1.3) · full ride (1.5) · relaxed &amp; driving (0.8)</span></td>
+              <td>Flowstate tagged 3 cutbacks + 42s ride</td>
+              <td class="pts r">8.6</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula">
+        <span class="k">SESSION GRADE</span> = mean of your <b>top 3 waves</b> &nbsp;→&nbsp; then read the tier.
+        <br>Wave count is the tie-breaker: <b>same grade, more waves = you're surfing more of the good ones.</b>
+      </div>
+
+      <div class="tiers">
+        <span class="tierpill"><b>9.0–10</b> · Firing</span>
+        <span class="tierpill"><b>7.0–8.9</b> · Dialed</span>
+        <span class="tierpill"><b>5.0–6.9</b> · Progressing</span>
+        <span class="tierpill"><b>3.0–4.9</b> · Building</span>
+        <span class="tierpill"><b>&lt;3.0</b> · Foundations</span>
+      </div>
+    </div>
+
+    <!-- 4 · MEASURE PROGRESS -->
+    <div class="sx">
+      <div class="sx-head">
+        <span class="sx-kick">04 · measure progress</span>
+        <h2>Turn sessions into a line</h2>
+        <span class="sx-n">plugs into dna/surf</span>
+      </div>
+      <p class="sx-lede">Log five numbers per session and progress draws itself. Slot them straight into your existing
+        <code>dna/surf</code> notation — <code>SXX</code> session index, <code>&lt;n&gt;W</code> swell, spot — so the
+        surf log and the grade live in one place.</p>
+
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-n">5</div><div class="kpi-l">numbers per session — log these every time</div></div>
+        <div class="kpi"><div class="kpi-n">3</div><div class="kpi-l">top waves that set the grade</div></div>
+        <div class="kpi"><div class="kpi-n">1</div><div class="kpi-l">adaptive goal for next session</div></div>
+        <div class="kpi"><div class="kpi-n">2×</div><div class="kpi-l">side-by-side = proof, not memory</div></div>
+      </div>
+
+      <div class="log">
+        <table class="dt2">
+          <thead>
+            <tr><th class="l">Session</th><th class="l">Spot</th><th>Swell</th><th>Waves</th><th>Long</th><th>Mv/wave</th><th>Made%</th><th>Grade</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="l">S41</td><td class="l">Yeh Sumbul</td><td>4W</td><td>14</td><td>18s</td><td>1.1</td><td>71%</td><td><span class="g">6.4 · Progressing</span></td></tr>
+            <tr><td class="l">S42</td><td class="l">Medewi Point</td><td>5W</td><td>11</td><td>42s</td><td>2.4</td><td>82%</td><td><span class="g">7.9 · Dialed</span></td></tr>
+            <tr><td class="l">S43 →</td><td class="l">goal</td><td>—</td><td>—</td><td>—</td><td><b>3.0</b></td><td><b>85%</b></td><td><span class="g">chase 8.5+</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sx-lede" style="margin-top:16px;">Every session ends with <b>one adaptive goal</b> for the next —
+        "<i>land 3 cutbacks on one wave</i>", "<i>make 85% of takeoffs</i>". Then use Flowstate's <b>side-by-side</b>
+        to run this wave against a month-ago wave: the improvement is on screen, not in your head.</p>
+    </div>
+
+    <!-- 5 · LOOK DOPER -->
+    <div class="sx">
+      <div class="sx-head">
+        <span class="sx-kick">05 · look doper</span>
+        <h2>The part you actually feel</h2>
+        <span class="sx-n">reel · comp · one move</span>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Style is a score, not a vibe</h3>
+          <p>The look-doper factor lives in <b>projection and completion</b> — driving through turns and riding them
+            out — far more than raw move count. Grade it (line 6), watch it back, and it stops being luck. Pull the
+            <b>auto highlight reel</b> each session; the reel is the receipt.</p>
+        </div>
+        <div class="card">
+          <h3>One move a trip · you vs Tim</h3>
+          <p>Pick <b>one signature move</b> per trip — say a Medewi drawn-out cutback — and drill only that until the
+            grade climbs. Then run a <b>private comp</b>: your session vs Tim's, same rubric. Two links, one scoreboard,
+            all the motivation you need.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div><b>the loop</b> — capture (Mobile Capture) → tag (Flowstate AI) → grade (this rubric, top-3 mean) → log
+        (<code>dna/surf</code>, SXX/&lt;n&gt;W) → one goal → repeat. Grades are yours; DONE is yours.</div>
+      <div><b>sources</b> — flowstate.zone · wavepoolmag · surfertoday · tracksmag · surf-atlas (Medewi / Sumbawa spot guides).
+        "Sumbul" read as Yeh Sumbul, West Bali — swap the spot card if you meant Sumbawa.</div>
+      <div>TODO-70 · surf-flowstate · 2026-07-07 17-02 Z</div>
+    </div>
+
+  </div>
+</body>
+</html>

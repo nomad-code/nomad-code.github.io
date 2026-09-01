@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-140 · clipse-jid-prep · Two Voices, One Rock</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 78px 24px 72px; }
+
+  /* hero right cell — ticket stub */
+  .stub { background: var(--ink); color: #e8ece9; border-radius: var(--r-card);
+          padding: 22px 24px; text-align: center; position: relative;
+          box-shadow: var(--shadow-lift); }
+  .stub .cd { font-size: 62px; font-weight: 860; line-height: 1;
+              letter-spacing: -.03em; font-variant-numeric: tabular-nums;
+              color: var(--lime-b); }
+  .stub .cd-l { font-size: 12px; font-weight: 700; letter-spacing: .08em;
+                text-transform: uppercase; color: #8fa39c; margin-top: 8px; }
+  .stub .cd-d { font-size: 13.5px; font-weight: 640; margin-top: 14px;
+                padding-top: 14px; border-top: 1px dashed rgba(232,236,233,.22);
+                color: #cdd6d1; }
+
+  /* generic section spacing */
+  section { margin-top: 34px; }
+  .sec-title { font-size: 21px; font-weight: 800; letter-spacing: -.02em;
+               margin: 8px 0 4px; font-family: var(--font-display); }
+  .lede { font-size: 14px; line-height: 1.6; color: var(--body);
+          margin: 0 0 16px; max-width: 62ch; }
+
+  /* set-time table */
+  .runsheet { width: 100%; border-collapse: collapse; }
+  .runsheet td { padding: 11px 12px; border-bottom: 1px solid var(--line);
+                 font-size: 14px; vertical-align: baseline; }
+  .runsheet tr:last-child td { border-bottom: 0; }
+  .runsheet .t { font-family: var(--font-mono); font-size: 13px;
+                 color: var(--forest-d); font-weight: 640; white-space: nowrap;
+                 width: 88px; }
+  .runsheet .who { font-weight: 740; color: var(--ink); }
+  .runsheet .who .tag { font-weight: 600; font-size: 11px; color: var(--muted);
+                        margin-left: 8px; text-transform: uppercase;
+                        letter-spacing: .04em; }
+  .runsheet .est { color: var(--faint); font-size: 12px; }
+
+  /* playlist columns */
+  .setgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px) { .setgrid { grid-template-columns: 1fr; }
+                              .hero { grid-template-columns: 1fr !important; } }
+  .setcard h3 { font-size: 15px; font-weight: 800; letter-spacing: -.01em;
+                margin: 2px 0 2px; display: flex; align-items: baseline; gap: 8px; }
+  .setcard h3 .yr { font-size: 11px; font-weight: 600; color: var(--muted); }
+  .setcard .src { font-size: 12px; color: var(--muted); margin: 0 0 12px;
+                  line-height: 1.5; }
+  .trk { display: flex; align-items: center; gap: 10px; padding: 7px 0;
+         border-bottom: 1px solid rgba(21,32,29,.06); font-size: 13.5px; }
+  .trk:last-child { border-bottom: 0; }
+  .trk .num { font-family: var(--font-mono); font-size: 11px; color: var(--faint);
+              width: 18px; flex: none; }
+  .trk a { color: var(--ink); font-weight: 600; text-decoration: none;
+           flex: 1; border-bottom: 1px solid transparent; }
+  .trk a:hover { color: var(--forest); border-bottom-color: var(--lime); }
+  .trk .yt { font-size: 11px; color: var(--faint); flex: none; }
+
+  .pl-cta { display: inline-flex; align-items: center; gap: 8px;
+            background: var(--g-lime); color: var(--forest-d);
+            border: 1px solid #bcd9bf; border-radius: var(--r-pill);
+            padding: 8px 16px; font-size: 13px; font-weight: 720;
+            text-decoration: none; margin-bottom: 16px; }
+  .pl-cta:hover { background: #cbe6d2; }
+
+  /* idea list */
+  .ideas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .ideas { grid-template-columns: 1fr; } }
+  .idea { background: var(--card); border: 1px solid var(--line);
+          border-radius: var(--r-tile); padding: 14px 16px; }
+  .idea .h { font-size: 13.5px; font-weight: 780; color: var(--ink);
+             display: flex; align-items: center; gap: 8px; }
+  .idea .h .ic { font-size: 15px; }
+  .idea p { font-size: 13px; line-height: 1.55; color: var(--body);
+            margin: 6px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span>
+    <span class="tb-sep">/</span>
+    <span class="tb-ctx">TODO-140 · clipse-jid-prep</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-06 · red rocks</span>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>nomad-code · morrison, co · thu nov 12 2026</div>
+      <h1><span class="em">Clipse</span> &amp; <span class="em">J.I.D</span> at Red Rocks.</h1>
+      <p class="hero-sub">Two generations of elite lyricism on the same stone stage —
+      the Thornton brothers' <b>Let God Sort Em Out</b> run meets J.I.D's
+      <b>God Does Like Paradise</b> tour, with <b>Samara Cyn</b> opening.
+      Doors and prep below, plus a probable-setlist playlist to run before the drive up.</p>
+      <div class="hero-chips">
+        <span class="hchip v"><span class="ic">◆</span>Clipse — headline</span>
+        <span class="hchip v"><span class="ic">◆</span>J.I.D — co-bill</span>
+        <span class="hchip q"><span class="ic">○</span>Samara Cyn — opener</span>
+      </div>
+    </div>
+    <div class="stub">
+      <div class="cd" id="cd">—</div>
+      <div class="cd-l" id="cd-l">days to doors</div>
+      <div class="cd-d">Thu · Nov 12 2026 · 6:00 PM<br>Red Rocks Amphitheatre</div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">6:00<span class="u"> PM</span></div><div class="kpi-l">doors — arrive well before</div></div>
+    <div class="kpi"><div class="kpi-n">3</div><div class="kpi-l">acts · Samara Cyn → J.I.D → Clipse</div></div>
+    <div class="kpi"><div class="kpi-n">6,450<span class="u"> ft</span></div><div class="kpi-l">elevation — pace the altitude</div></div>
+    <div class="kpi"><div class="kpi-n">~50°</div><div class="kpi-l">Nov night — layers, it drops fast</div></div>
+  </div>
+
+  <section>
+    <div class="sec-head"><span class="sec-n">01</span><span class="sec-kick">the night</span></div>
+    <h2 class="sec-title">Run of show</h2>
+    <p class="lede">Set times aren't published yet — these are estimates from a 6&nbsp;PM
+    door on a three-act bill. Confirm on the AXS/Ticketmaster listing closer to the date.
+    Sunset in Morrison that day is ~4:50&nbsp;PM, so it's dark and cold by the time Clipse hits.</p>
+    <div class="card">
+      <table class="runsheet">
+        <tr>
+          <td class="t">~6:00</td>
+          <td><span class="who">Doors</span></td>
+          <td class="est">gates open · budget 40+ min for the lot and the walk in</td>
+        </tr>
+        <tr>
+          <td class="t">~6:45</td>
+          <td><span class="who">Samara Cyn <span class="tag">opener</span></span></td>
+          <td class="est">rising LA rapper — worth being in your seat for</td>
+        </tr>
+        <tr>
+          <td class="t">~7:40</td>
+          <td><span class="who">J.I.D <span class="tag">co-bill</span></span></td>
+          <td class="est">full-band energy, Dreamville catalog + the 2025 record</td>
+        </tr>
+        <tr>
+          <td class="t">~9:00</td>
+          <td><span class="who">Clipse <span class="tag">headline</span></span></td>
+          <td class="est">Pusha T &amp; Malice — Neptunes-era coke rap through the new album</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-n">02</span><span class="sec-kick">the ask · setlist playlist</span></div>
+    <h2 class="sec-title">Probable-setlist playlist</h2>
+    <p class="lede">Built from what each act actually played on its 2025 tour (via setlist.fm
+    tour stats). Each track links to a YouTube search — tap <b>⊕ Save</b> on the top result
+    to stack them into one "Red Rocks prep" playlist, then run it on the drive up.</p>
+    <a class="pl-cta" href="https://music.youtube.com/search?q=Clipse+JID+red+rocks+setlist" target="_blank" rel="noopener">▶ Open a seed search in YouTube Music</a>
+    <div class="setgrid">
+
+      <div class="setcard card">
+        <h3>Clipse <span class="yr">Let God Sort Em Out · 2025 run</span></h3>
+        <p class="src">Most-played live: Grindin', What Happened to That Boy, Mr. Me Too,
+        Cot Damn, Keys Open Doors — plus the new record.</p>
+        <div class="trk"><span class="num">01</span><a href="https://www.youtube.com/results?search_query=Clipse+Ace+Trumpets" target="_blank" rel="noopener">Ace Trumpets</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">02</span><a href="https://www.youtube.com/results?search_query=Clipse+Chains+and+Whips+Kendrick" target="_blank" rel="noopener">Chains &amp; Whips</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">03</span><a href="https://www.youtube.com/results?search_query=Clipse+POV+Tyler+the+Creator" target="_blank" rel="noopener">P.O.V.</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">04</span><a href="https://www.youtube.com/results?search_query=Clipse+Grindin" target="_blank" rel="noopener">Grindin'</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">05</span><a href="https://www.youtube.com/results?search_query=Clipse+Mr+Me+Too" target="_blank" rel="noopener">Mr. Me Too</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">06</span><a href="https://www.youtube.com/results?search_query=Jay-Z+What+Happened+to+That+Boy+Clipse" target="_blank" rel="noopener">What Happened to That Boy</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">07</span><a href="https://www.youtube.com/results?search_query=Clipse+Keys+Open+Doors" target="_blank" rel="noopener">Keys Open Doors</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">08</span><a href="https://www.youtube.com/results?search_query=Clipse+Cot+Damn" target="_blank" rel="noopener">Cot Damn</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">09</span><a href="https://www.youtube.com/results?search_query=Clipse+Popular+Demand+Popeyes+Cam+ron" target="_blank" rel="noopener">Popular Demand (Popeyes)</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">10</span><a href="https://www.youtube.com/results?search_query=Clipse+Momma+I%27m+So+Sorry" target="_blank" rel="noopener">Momma I'm So Sorry</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">11</span><a href="https://www.youtube.com/results?search_query=Clipse+FICO" target="_blank" rel="noopener">F.I.C.O.</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">12</span><a href="https://www.youtube.com/results?search_query=Clipse+Inglorious+Bastards" target="_blank" rel="noopener">Inglorious Bastards</a><span class="yt">YT ↗</span></div>
+      </div>
+
+      <div class="setcard card">
+        <h3>J.I.D <span class="yr">God Does Like Paradise · 2025 run</span></h3>
+        <p class="src">Regulars: Surround Sound, NEVER, Raydar, Kody Blu 31,
+        Crack Sandwich — expect a live band and a fast, technical set.</p>
+        <div class="trk"><span class="num">01</span><a href="https://www.youtube.com/results?search_query=JID+Surround+Sound" target="_blank" rel="noopener">Surround Sound</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">02</span><a href="https://www.youtube.com/results?search_query=JID+NEVER" target="_blank" rel="noopener">NEVER</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">03</span><a href="https://www.youtube.com/results?search_query=JID+Raydar" target="_blank" rel="noopener">Raydar</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">04</span><a href="https://www.youtube.com/results?search_query=JID+Community" target="_blank" rel="noopener">Community</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">05</span><a href="https://www.youtube.com/results?search_query=JID+Kody+Blu+31" target="_blank" rel="noopener">Kody Blu 31</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">06</span><a href="https://www.youtube.com/results?search_query=JID+Crack+Sandwich" target="_blank" rel="noopener">Crack Sandwich</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">07</span><a href="https://www.youtube.com/results?search_query=JID+Workin+Out" target="_blank" rel="noopener">Workin Out</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">08</span><a href="https://www.youtube.com/results?search_query=JID+Stars+song" target="_blank" rel="noopener">Stars</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">09</span><a href="https://www.youtube.com/results?search_query=JID+151+Rum" target="_blank" rel="noopener">151 Rum</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">10</span><a href="https://www.youtube.com/results?search_query=JID+Glory+song" target="_blank" rel="noopener">Glory</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">11</span><a href="https://www.youtube.com/results?search_query=JID+VCRs" target="_blank" rel="noopener">VCRs</a><span class="yt">YT ↗</span></div>
+        <div class="trk"><span class="num">12</span><a href="https://www.youtube.com/results?search_query=JID+YouUgly" target="_blank" rel="noopener">YouUgly</a><span class="yt">YT ↗</span></div>
+      </div>
+
+    </div>
+    <p class="note" style="margin-top:14px">Opener homework: <a href="https://www.youtube.com/results?search_query=Samara+Cyn+latest" target="_blank" rel="noopener" style="color:var(--forest);font-weight:640">search Samara Cyn</a>
+    and skim her recent singles so the first 30 minutes land — she's the least-known name on the bill and the easiest to underrate.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-n">03</span><span class="sec-kick">the ask · other ideas</span></div>
+    <h2 class="sec-title">Prep &amp; day-of ideas</h2>
+    <p class="lede">Red Rocks is a mountain venue, not a downtown club. The night is
+    logistics as much as music — most of these are about the altitude, the cold, and the walk.</p>
+    <div class="ideas">
+      <div class="idea"><div class="h"><span class="ic">⛰</span>Respect the altitude</div>
+        <p>6,450 ft, and the venue is a stair climb from the lots. Hydrate hard the day before,
+        go easy on alcohol, and don't sprint the ramp. Ties into the existing altitude/hyrox notes.</p></div>
+      <div class="idea"><div class="h"><span class="ic">🧥</span>Layer for a 30° swing</div>
+        <p>November sun is warm at load-in and gone by headliner. Pack a real jacket, gloves, and
+        a beanie — the stone benches leach heat. A packable blanket is not overkill.</p></div>
+      <div class="idea"><div class="h"><span class="ic">🪑</span>GA is stone benches</div>
+        <p>Seating is numbered rows on backless rock. Bring a stadium cushion or a rentable
+        seat-back — three-plus hours on granite is the classic Red Rocks rookie mistake.</p></div>
+      <div class="idea"><div class="h"><span class="ic">👜</span>Clear-bag rules</div>
+        <p>Small clear bag / clutch policy. Check the current list, pack light, and you skip the
+        long security line — get in for the opener instead of missing it.</p></div>
+      <div class="idea"><div class="h"><span class="ic">🚗</span>Arrive early, plan the exit</div>
+        <p>Upper south lot fills first and the exit is a single-road crawl. Either get there ~5:30
+        or take a rideshare to the drop lot — decide before, not at 11&nbsp;PM in the cold.</p></div>
+      <div class="idea"><div class="h"><span class="ic">🎧</span>Album homework</div>
+        <p>Run Clipse's <b>Let God Sort Em Out</b> and J.I.D's <b>God Does Like Paradise</b> a few
+        times first, then the classics (Hell Hath No Fury, The Never Story) so every drop lands.</p></div>
+    </div>
+  </section>
+
+  <div class="foot">TODO-140 · clipse-jid-prep · built in the nomad-code world · setlists from each act's 2025 tour · journal on Linear</div>
+</div>
+
+<script>
+  // Live countdown to doors: Thu Nov 12 2026, 6:00 PM Mountain (UTC-07 in Nov, MST)
+  (function () {
+    var doors = new Date("2026-11-12T18:00:00-07:00").getTime();
+    var el = document.getElementById("cd");
+    var lab = document.getElementById("cd-l");
+    if (!el) return;
+    var days = Math.ceil((doors - Date.now()) / 86400000);
+    if (days > 1) { el.textContent = days; lab.textContent = "days to doors"; }
+    else if (days === 1) { el.textContent = "1"; lab.textContent = "day to doors"; }
+    else if (days === 0) { el.textContent = "★"; lab.textContent = "tonight"; }
+    else { el.textContent = "✓"; lab.textContent = "went down"; }
+  })();
+</script>
+</body>
+</html>

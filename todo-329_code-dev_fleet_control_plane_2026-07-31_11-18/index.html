@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-329 · The nukeable dev fleet</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <style>
+    :root {
+      --green:#0c8374; --green-soft:#dceee9;
+      --blue:#397f9f; --blue-soft:#deebf0;
+      --amber:#977019; --amber-soft:#f2ead2;
+      --red:#b84a27; --red-soft:#f5e1d8;
+    }
+    body { min-height:100vh; background:var(--paper); color:var(--body); }
+    main { width:min(1080px,calc(100% - 36px)); margin:auto; padding:46px 0 100px; }
+    .eyebrow { display:flex; align-items:center; gap:10px; color:var(--green);
+      font:600 12px/1 var(--font-mono); letter-spacing:.09em; text-transform:uppercase; }
+    h1 { max-width:900px; margin:18px 0 12px; color:var(--ink);
+      font:800 clamp(38px,6.5vw,72px)/.96 var(--font-display); letter-spacing:-.05em; }
+    h1 em { color:var(--green); font-style:normal; }
+    .lede { max-width:790px; font:450 clamp(16px,2vw,19px)/1.58 var(--font-ui); }
+    .contract { margin-top:25px; padding:18px 20px; border:1px solid var(--line);
+      border-left:5px solid var(--green); border-radius:var(--r-panel); background:var(--green-soft); }
+    .contract b { color:var(--ink); }
+    section { margin-top:58px; }
+    .head { display:flex; gap:12px; align-items:baseline; margin-bottom:17px; }
+    .head span { color:var(--faint); font:600 11px/1 var(--font-mono); }
+    .head h2 { color:var(--ink); font:750 clamp(22px,3vw,30px)/1.1 var(--font-display); letter-spacing:-.025em; }
+    .stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .stat { padding:18px; border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card); }
+    .stat b { display:block; color:var(--green); font:800 38px/1 var(--font-display); }
+    .stat span { display:block; margin-top:8px; color:var(--muted); font:500 12px/1.45 var(--font-ui); }
+    .model { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .node { padding:18px; border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card); }
+    .node .n { color:var(--faint); font:600 10px/1 var(--font-mono); }
+    .node h3 { margin:10px 0 6px; color:var(--ink); font:750 17px/1.15 var(--font-display); }
+    .node p { color:var(--body); font:430 13px/1.52 var(--font-ui); }
+    .node code { color:var(--green); font:550 11px/1.4 var(--font-mono); }
+    .host-tabs { display:flex; gap:8px; margin-bottom:12px; }
+    .host-tabs button { border:1px solid var(--line); border-radius:var(--r-pill); background:var(--card);
+      padding:9px 14px; color:var(--muted); cursor:pointer; font:650 11px/1 var(--font-mono); }
+    .host-tabs button.on { border-color:var(--green); color:white; background:var(--green); }
+    .host { display:none; grid-template-columns:1.08fr .92fr; gap:14px; }
+    .host.on { display:grid; }
+    .panel { padding:19px; border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card); }
+    .panel h3 { color:var(--ink); font:750 18px/1.2 var(--font-display); }
+    .rows { margin-top:11px; }
+    .row { display:grid; grid-template-columns:1fr auto; gap:18px; padding:9px 0; border-bottom:1px solid var(--line); }
+    .row:last-child { border:0; }
+    .row span { color:var(--muted); font:450 13px/1.3 var(--font-ui); }
+    .row b { color:var(--ink); font:700 13px/1.3 var(--font-mono); }
+    .callout { border-left:4px solid var(--amber); background:var(--amber-soft); }
+    .callout.red { border-left-color:var(--red); background:var(--red-soft); }
+    .callout p { margin-top:8px; font:450 13.5px/1.55 var(--font-ui); }
+    .flow { display:grid; grid-template-columns:repeat(5,1fr); align-items:stretch; gap:8px; }
+    .step { position:relative; padding:16px 13px; border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card); }
+    .step:not(:last-child)::after { content:"→"; position:absolute; right:-13px; top:50%; z-index:2;
+      width:18px; color:var(--faint); background:var(--paper); text-align:center; transform:translateY(-50%); }
+    .step b { color:var(--ink); font:700 13px/1.25 var(--font-display); }
+    .step p { margin-top:6px; color:var(--muted); font:430 11.5px/1.45 var(--font-ui); }
+    .tests { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .test { display:flex; gap:10px; align-items:flex-start; padding:13px 14px; border:1px solid var(--line);
+      border-radius:var(--r-tile); background:var(--card); font:450 13px/1.48 var(--font-ui); }
+    .test::before { content:"✓"; color:var(--green); font-weight:800; }
+    .test b { color:var(--ink); }
+    pre { margin:0; padding:17px; overflow:auto; border:1px solid var(--line);
+      border-radius:var(--r-panel); background:var(--ink); color:#e9eee9; font:500 12px/1.65 var(--font-mono); }
+    pre i { color:#8fd3c6; font-style:normal; }
+    .copy { margin-top:10px; border:0; border-radius:var(--r-pill); background:var(--green);
+      color:white; padding:9px 13px; cursor:pointer; font:650 11px/1 var(--font-ui); }
+    footer { margin-top:58px; padding-top:18px; border-top:1px solid var(--line);
+      color:var(--muted); font:500 11px/1.6 var(--font-mono); }
+    @media(max-width:800px){
+      .stats,.model{grid-template-columns:repeat(2,1fr)} .host{grid-template-columns:1fr}
+      .flow{grid-template-columns:1fr}.step:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-15px;transform:none}
+    }
+    @media(max-width:520px){ .stats,.model,.tests{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow"><span class="mo-dot"></span> TODO-329 · BPO dev fleet · 2026-07-31</p>
+  <h1>Equivalent by <em>contract</em>, not by copy.</h1>
+  <p class="lede">M3 and M5 no longer need identical disks or matching Codex databases.
+    They need the same ability to resolve a world, hydrate its source, claim one task,
+    checkpoint it, and recover it without guessing.</p>
+  <div class="contract"><b>The invariant:</b> M5 is the durable executor. M3 is a fast,
+    leased edge. Phones are disposable controllers. Git holds recoverable source;
+    Linear holds the semantic loop; machine identity stays machine-local.</div>
+
+  <section>
+    <div class="head"><span>01</span><h2>The catalog changed the answer</h2></div>
+    <div class="stats">
+      <div class="stat"><b>77</b><span>canonical repositories declared in the private workspace manifest</span></div>
+      <div class="stat"><b>65</b><span>M5 absences now correctly classified as on-demand, not parity failures</span></div>
+      <div class="stat"><b>6</b><span>required warm Platform paths genuinely missing on M5</span></div>
+      <div class="stat"><b>81</b><span>green tests: 26 control-plane + 55 BPO</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>02</span><h2>Four contracts, four recovery owners</h2></div>
+    <div class="model">
+      <div class="node"><span class="n">SOURCE</span><h3>World manifest</h3><p>Path, remote, branch,
+        world and <code>core · warm · on-demand</code> profile. Git recovers it.</p></div>
+      <div class="node"><span class="n">LOOP</span><h3>Task packet</h3><p>Issue URL, repo ref,
+        decision, next action and checksum. Linear journals it.</p></div>
+      <div class="node"><span class="n">OWNERSHIP</span><h3>Fenced lease</h3><p>One host/run,
+        one epoch. Private Git compare-and-swap prevents double ownership.</p></div>
+      <div class="node"><span class="n">HOME</span><h3>Recovery class</h3><p>Blueprint, durable,
+        credential or runtime. Nothing gets “solved” by moving all state into <code>~/dev</code>.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>03</span><h2>The live host picture</h2></div>
+    <div class="host-tabs">
+      <button class="on" data-host="m3">M3 · edge</button>
+      <button data-host="m5">M5 · durable</button>
+    </div>
+    <div class="host on" id="m3">
+      <div class="panel"><h3>M3 sees the whole historical world</h3><div class="rows">
+        <div class="row"><span>catalogued present</span><b>77 / 77</b></div>
+        <div class="row"><span>recovery blockers</span><b>31</b></div>
+        <div class="row"><span>unresolved local-only repositories</span><b>11</b></div>
+        <div class="row"><span>required-profile gaps</span><b>0</b></div>
+      </div></div>
+      <div class="panel callout red"><h3>Present is not recoverable</h3><p>The new gate refuses
+        to call a repository safe just because it exists. Dirty work, stashes, commits outside
+        remote refs, and eleven repositories with no declared recovery path remain explicit blockers.</p></div>
+    </div>
+    <div class="host" id="m5">
+      <div class="panel"><h3>M5 is intentionally sparse</h3><div class="rows">
+        <div class="row"><span>catalogued present</span><b>6</b></div>
+        <div class="row"><span>expected on-demand absence</span><b>65</b></div>
+        <div class="row"><span>required warm paths missing</span><b>6</b></div>
+        <div class="row"><span>unmanifested M5-only paths</span><b>9</b></div>
+      </div></div>
+      <div class="panel callout"><h3>“Almost identical” now has semantics</h3><p>M5 does not
+        need all 77 clones. It does need deterministic core/warm paths, no unexplained checkouts,
+        and the ability to hydrate anything on demand from a declared remote.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>04</span><h2>A task survives its thread</h2></div>
+    <div class="flow">
+      <div class="step"><b>URL</b><p>Resolve world and authoritative Linear issue.</p></div>
+      <div class="step"><b>Hydrate</b><p>Read the full journal and verify the default router.</p></div>
+      <div class="step"><b>Claim</b><p>Acquire a fenced host/run lease through private Git.</p></div>
+      <div class="step"><b>Checkpoint</b><p>Require clean, remotely reachable source; journal the checksum.</p></div>
+      <div class="step"><b>Park / recover</b><p>Release normally or take over only after expiry or proven loss.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>05</span><h2>Acceptance evidence</h2></div>
+    <div class="tests">
+      <div class="test"><span><b>M5 URL-only hydration:</b> pass. Streamed <code>worldctl</code>
+        reconstructed TODO-329, the current PLAN, and <code>/Users/bob/dev/bpo</code>.</span></div>
+      <div class="test"><span><b>Cross-host peer doctor:</b> pass. One command inspected both
+        hosts without installing or copying application state.</span></div>
+      <div class="test"><span><b>Logical parity policy:</b> pass. 65 optional absences stopped
+        blocking while 6 required gaps, 9 unlisted paths, and head/worktree drift stayed visible.</span></div>
+      <div class="test"><span><b>Lease concurrency:</b> pass in isolated Git integration tests.
+        A second fresh claimant is rejected; release advances the same fenced epoch.</span></div>
+      <div class="test"><span><b>Safety:</b> convergence is preview-first and clone-only; apply
+        is fenced to the machine actually running the command.</span></div>
+      <div class="test"><span><b>Compatibility:</b> all control-plane tests pass under macOS
+        system Python 3.9; the full BPO suite remains green.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span>06</span><h2>The operator surface</h2></div>
+    <pre id="commands"><i># read both hosts</i>
+worldctl doctor --host m3 --peer m5
+
+<i># materialize only declared required paths — preview first</i>
+worldctl converge --host m5
+
+<i># reconstruct one loop without a copied Codex catalog</i>
+worldctl hydrate https://linear.app/nomad-code/issue/TODO-329/... --host m5
+
+<i># before the edge sleeps</i>
+worldctl drain m3 --to m5</pre>
+    <button class="copy" data-copy="commands">Copy commands</button>
+  </section>
+
+  <section>
+    <div class="head"><span>07</span><h2>Built—not declared safe</h2></div>
+    <div class="panel callout red"><h3>Neither Mac is nukeable yet.</h3><p>The control plane now
+      tells the truth with much higher precision. Physical backup/restore, remaining dirty and
+      local-only Git state, unresolved repositories, the plaintext credential export, and the
+      required M5 path convergence still have to pass before any wipe. Human authority remains the gate.</p></div>
+  </section>
+
+  <footer>
+    etc <code>98e2d5d</code> · private BPO manifest <code>770afff</code> ·
+    no Found writes · no files copied between hosts · no Codex/Claude databases synchronized
+  </footer>
+</main>
+<script>
+  document.querySelectorAll('[data-host]').forEach(function(button){
+    button.addEventListener('click',function(){
+      document.querySelectorAll('[data-host]').forEach(function(b){b.classList.remove('on')});
+      document.querySelectorAll('.host').forEach(function(h){h.classList.remove('on')});
+      button.classList.add('on');
+      document.getElementById(button.dataset.host).classList.add('on');
+    });
+  });
+  document.querySelectorAll('[data-copy]').forEach(function(button){
+    button.addEventListener('click',function(){
+      navigator.clipboard.writeText(document.getElementById(button.dataset.copy).innerText).then(function(){
+        var old=button.textContent; button.textContent='Copied';
+        setTimeout(function(){button.textContent=old},1200);
+      });
+    });
+  });
+</script>
+</body>
+</html>

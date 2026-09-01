@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>Bringing the World to You · The Bowers Museum</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    /* Chart-scope palette — grove hues chroma-snapped to the essay's cast.
+       (validated against the exemplar's L-band / chroma / contrast checks) */
+    :root {
+      --c-world: #0d8f7f;  /* the global collection · world cultures   (forest) */
+      --c-world-bg: #d9ece7;
+      --c-you:   #c4501f;  /* the local audience · Southern California  (warn)   */
+      --c-you-bg: #f6e3da;
+      --c-exch:  #3a92ba;  /* international exchange · mediating referents (found)*/
+      --c-exch-bg: #e3eef2;
+      --c-era:   #a07c15;  /* time / era accents                        (amber)  */
+      --c-era-bg: #f3ead2;
+      --c-lime:  #84c241;  /* ONE moment: the offered immediacy — the closed distance */
+    }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    main { max-width: 1060px; margin: 0 auto; padding: 30px 24px 80px; }
+
+    /* ---------- header ---------- */
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--c-you); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-you); }
+    h1 { font:800 clamp(34px, 5.4vw, 54px)/1.02 var(--font-display); letter-spacing:-.025em;
+      color:var(--ink); margin:16px 0 6px; }
+    h1 em { font-style:normal; color:var(--c-you); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 14px; }
+    .sub a { color: var(--forest-d); text-decoration-color: var(--line); }
+    .lede { max-width:70ch; font:400 16.5px/1.6 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:640; }
+
+    .pullquote { margin:26px 0 6px; padding:18px 22px; border-left:3px solid var(--c-you);
+      background:var(--card); border-radius: 0 var(--r-panel) var(--r-panel) 0;
+      box-shadow: var(--shadow-card); }
+    .pullquote p { font:500 clamp(17px, 2.2vw, 21px)/1.45 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .pullquote cite { display:block; margin-top:8px; font:500 11.5px/1 var(--font-mono);
+      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 58px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(22px,3vw,28px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .k h2 em { font-style: normal; color: var(--forest-d); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:18px; }
+    .blurb b { color:var(--ink); font-weight:620; }
+
+    /* ---------- legend ---------- */
+    .lgd { display:flex; gap:16px 22px; flex-wrap:wrap; margin:14px 2px 0;
+      font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+    .lgd span { display:inline-flex; align-items:center; gap:8px; }
+    .lgd i { width:11px; height:11px; border-radius:50%; }
+
+    /* ---------- hero viz ---------- */
+    .hero-card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-hero); overflow:hidden; }
+    .mode-bar { display:flex; align-items:center; gap:10px; padding:14px 16px 0; flex-wrap:wrap; }
+    .mode-btn { font:600 12px/1 var(--font-mono); letter-spacing:.04em; padding:9px 14px;
+      border-radius:var(--r-pill); border:1px solid var(--line); background:var(--bg);
+      color:var(--muted); cursor:pointer; transition:all .35s var(--ease); }
+    .mode-btn:hover { border-color:var(--faint); color:var(--ink); }
+    .mode-btn[aria-pressed="true"] { color:#fff; }
+    #btn-world[aria-pressed="true"] { background:var(--c-world); border-color:var(--c-world); }
+    #btn-you[aria-pressed="true"]   { background:var(--c-you);   border-color:var(--c-you); }
+    .mode-note { flex:1 1 260px; min-width:220px; position:relative; height:34px; }
+    .mode-note p { position:absolute; inset:0; display:flex; align-items:center;
+      font:400 13px/1.35 var(--font-ui); color:var(--muted); opacity:0;
+      transition:opacity .7s var(--ease); }
+    .mode-note p b { color:var(--ink); font-weight:620; margin-right:5px; }
+    [data-mode="world"] .mode-note .n-world, [data-mode="you"] .mode-note .n-you { opacity:1; }
+
+    .axes svg { display:block; width:100%; height:auto; }
+    #inFlows, #layerYou { transition: opacity 1s var(--ease); }
+    [data-mode="you"]   #inFlows  { opacity:.15; }
+    [data-mode="world"] #layerYou { opacity:.28; }
+    [data-mode="you"]   #youLinkLive { opacity:1; }
+    #youLinkLive { opacity:0; transition:opacity 1s var(--ease); }
+    .hero-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:12px 18px 15px; border-top:1px solid var(--line); }
+    .hero-cap b { color:var(--forest-d); font-weight:600; }
+
+    .ax-label { font:500 10.5px var(--font-mono); letter-spacing:.06em; text-transform:uppercase; fill:var(--muted); }
+    .ax-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* ---------- stat tiles ---------- */
+    .tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:12px; margin-top:16px; }
+    .tile { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px 14px; box-shadow:var(--shadow-card); position:relative; overflow:hidden; }
+    .tile::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tc,var(--forest)); }
+    .tile .v { font:800 34px/1 var(--font-display); letter-spacing:-.03em; color:var(--ink);
+      font-variant-numeric:tabular-nums; }
+    .tile .v small { font:700 17px/1 var(--font-display); color:var(--tc,var(--forest)); margin-left:2px; }
+    .tile .l { margin-top:6px; font:500 11px/1.45 var(--font-mono); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- timeline ---------- */
+    .tl-wrap { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); padding:8px 8px 2px; overflow-x:auto; }
+    .tl-wrap svg { display:block; width:100%; min-width:760px; height:auto; }
+    .tl-era { opacity:0; transition:opacity .9s var(--ease); }
+    .shown .tl-era { opacity:1; }
+    .tl-era-label { font:600 10px var(--font-mono); letter-spacing:.09em; text-transform:uppercase; }
+    .tl-spine { stroke:var(--faint); stroke-width:1.5; stroke-linecap:round; }
+    .tl-ev { cursor:pointer; }
+    .tl-ev circle { transition: r .25s var(--spring); }
+    .tl-ev:hover circle.c, .tl-ev:focus-visible circle.c { r:7; }
+    .tl-ev .stem { stroke-width:1; opacity:.55; }
+    .tl-yr { font:600 10.5px var(--font-mono); fill:var(--ink); letter-spacing:.02em; }
+    .tl-tt { font:400 10.5px var(--font-ui); fill:var(--muted); }
+    .tl-pop { opacity:0; transform:translateY(8px); transition:opacity .5s var(--ease), transform .5s var(--spring); transition-delay:var(--d,0ms); }
+    .shown .tl-pop { opacity:1; transform:none; }
+
+    /* ---------- object / theme ledger ---------- */
+    .objs { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+    .obj { grid-column: span var(--sp,2); background:var(--card); border:1.5px solid var(--oc-bd);
+      border-radius:var(--r-tile); padding:13px 15px; cursor:default; position:relative;
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease); outline:none; }
+    .obj:hover, .obj:focus-visible { transform:translateY(-3px); box-shadow:var(--shadow-lift); z-index:3; }
+    .obj .nm { font:700 15px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--ink); }
+    .obj .vc { display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+      font:600 9.5px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--oc); background:var(--oc-bg); border:1px solid var(--oc-bd);
+      padding:5px 8px; border-radius:var(--r-chip); }
+    .obj .vc i { width:7px; height:7px; border-radius:50%; background:var(--oc); }
+    .obj.trad { --oc:var(--c-world); --oc-bg:var(--c-world-bg); --oc-bd:#b9d9d0; }
+    .obj.exch { --oc:var(--c-exch);  --oc-bg:var(--c-exch-bg);  --oc-bd:#cfe1e7; }
+    .obj q { display:block; margin-top:9px; font:400 12px/1.5 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .obj q::before { color:var(--oc); font-weight:700; }
+    .split { margin-top:16px; }
+    .split .bar { display:flex; gap:2px; height:30px; border-radius:8px; overflow:hidden; }
+    .split .seg { display:flex; align-items:center; padding:0 12px; font:700 12px var(--font-mono);
+      color:#fff; letter-spacing:.03em; min-width:0; white-space:nowrap; }
+    .split .seg.trad { background:var(--c-world); flex:1; }
+    .split .seg.exch { background:var(--c-exch);  flex:1; }
+    .split .cap { display:flex; justify-content:space-between; margin-top:8px;
+      font:500 11px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- svg figures ---------- */
+    .fig { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); overflow:hidden; }
+    .fig svg { display:block; width:100%; height:auto; }
+    .fig-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:11px 18px 14px; border-top:1px solid var(--line); }
+    .fig-cap b { color:var(--forest-d); font-weight:600; }
+    .stop { cursor:pointer; }
+    .stop circle.c { transition: r .25s var(--spring); }
+    .stop:hover circle.c, .stop:focus-visible circle.c { r:7.5; }
+    .rt-label { font:500 10.5px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; fill:var(--muted); }
+    .rt-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* draw-in for long paths */
+    .draw { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); }
+    .shown .draw { animation: drawin 2.2s var(--ease) forwards; animation-delay: var(--d,0ms); }
+    @keyframes drawin { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .draw { stroke-dasharray:none; stroke-dashoffset:0; } }
+
+    /* ---------- prescription cards ---------- */
+    .rx { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
+    .rx-card { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      padding:20px 22px; box-shadow:var(--shadow-card); border-top:3px solid var(--rxc,var(--c-lime)); }
+    .rx-card .tag { font:600 9.5px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase;
+      color:var(--rxc); }
+    .rx-card h3 { font:700 17px/1.2 var(--font-display); letter-spacing:-.01em; color:var(--ink); margin:8px 0 0; }
+    .rx-card p { font:400 13.5px/1.55 var(--font-ui); color:var(--body); margin:9px 0 0; }
+    .rx-card p b { color:var(--ink); font-weight:620; }
+
+    /* ---------- voices ---------- */
+    .chorus { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px; }
+    .voice { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:9px; }
+    .voice .who { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .voice .who b { font:700 14.5px/1.15 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .voice .role { font:600 9.5px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); color:var(--vr); background:var(--vr-bg); flex:none; }
+    .voice q { font:400 13.5px/1.55 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .voice q::before, .voice q::after { color:var(--vr); font-weight:700; }
+    .voice .note { font:400 11.5px/1.5 var(--font-ui); color:var(--muted); margin-top:auto; }
+    .voice.inst  { --vr:var(--c-world); --vr-bg:var(--c-world-bg); }
+    .voice.ref   { --vr:var(--c-exch);  --vr-bg:var(--c-exch-bg); }
+    .voice.acq   { --vr:var(--c-era);   --vr-bg:var(--c-era-bg); }
+    .voice.path  { --vr:#5a8a1e; --vr-bg:#e8f3d8; }
+
+    /* ---------- table view ---------- */
+    details.tbl { margin-top:18px; border:1px solid var(--line); border-radius:var(--r-panel);
+      background:var(--card); overflow:hidden; }
+    details.tbl summary { cursor:pointer; padding:13px 18px; font:600 12.5px var(--font-mono);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--forest-d); list-style:none; }
+    details.tbl summary::-webkit-details-marker { display:none; }
+    details.tbl summary::before { content:"▸ "; }
+    details.tbl[open] summary::before { content:"▾ "; }
+    details.tbl table { width:100%; border-collapse:collapse; font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    details.tbl th, details.tbl td { text-align:left; padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+    details.tbl th { font:600 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+    details.tbl td:first-child { font-family:var(--font-mono); font-weight:500; color:var(--ink); white-space:nowrap; }
+
+    /* ---------- closing ---------- */
+    .close-quote { margin:22px 0 0; padding:20px 24px; border-radius:var(--r-card);
+      background:linear-gradient(150deg,#15201d,#0c5a50 130%); color:#eef3ef;
+      box-shadow:var(--shadow-hero); }
+    .close-quote p { font:500 clamp(16px,2.1vw,20px)/1.5 var(--font-display); letter-spacing:-.01em; }
+    .close-quote p em { font-style:normal; color:var(--lime-b); }
+    .close-quote cite { display:block; margin-top:10px; font:500 11px var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:#9fb5ac; font-style:normal; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      font:400 11.5px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.02em; }
+    footer a { color:var(--muted); text-decoration-color:var(--line); }
+
+    /* ---------- tooltip ---------- */
+    .tip { position:fixed; z-index:60; max-width:290px; background:var(--ink); color:#f0f4f1;
+      font:400 12.5px/1.5 var(--font-ui); padding:10px 13px; border-radius:10px;
+      box-shadow:var(--shadow-lift); pointer-events:none; opacity:0;
+      transform:translateY(5px); transition:opacity .18s var(--ease), transform .18s var(--ease); }
+    .tip.on { opacity:1; transform:none; }
+    .tip b { color:#fff; font-weight:640; }
+
+    @media (max-width: 720px) {
+      .objs { grid-template-columns:repeat(2,1fr); }
+      .obj { grid-column: span 1 !important; }
+      .rx { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ================= header ================= -->
+  <header class="mo-reveal">
+    <div class="eyebrow"><span class="mo-dot"></span> essay reading · look sharp! · nolan patrick · 2026-02-26</div>
+    <h1>Bringing the world — <em>to whom?</em></h1>
+    <p class="sub">The Bowers Museum, “Bringing the World to You” — the essay's argument, drawn.
+      Source: <a href="https://nolanpatrick.substack.com/p/the-bowers-museum-bringing-the-world">nolanpatrick.substack.com</a></p>
+    <p class="lede">In 1936 a Santa Ana couple willed their house to the city and it became a museum of
+      <b>local history</b>. Half a century later — closed in 1986 “for a period of self-study,” reopened in 1992 after a
+      <b>$12 million</b> expansion as the “Museum of Cultural Art” — it turned outward and became a museum of
+      <b>world culture</b>. Its slogan, and its Instagram bio, say the same thing: <b>“bringing the world to you since
+      1936.”</b> Patrick's essay argues the Bowers has mastered the first half of that promise and neglected the second:
+      it narrates <b>the world</b> with great richness, but leaves <b>the “you”</b> — its Southern Californian audience —
+      standing outside the glass.</p>
+    <div class="pullquote">
+      <p>“The Bowers triangulates a relation between visitor and object” — routing both through a referent, heritage or
+        economy, “rather than connecting them directly.”</p>
+      <cite>Nolan Patrick · the essay's central claim</cite>
+    </div>
+    <div class="lgd" role="list">
+      <span role="listitem"><i style="background:var(--c-world)"></i> the world · global collection</span>
+      <span role="listitem"><i style="background:var(--c-you)"></i> the “you” · Southern California</span>
+      <span role="listitem"><i style="background:var(--c-exch)"></i> the referent · exchange, heritage, economy</span>
+      <span role="listitem"><i style="background:var(--c-lime)"></i> the offered immediacy <em style="font-style:normal;color:var(--faint)">(once)</em></span>
+    </div>
+  </header>
+
+  <!-- ================= 01 · the hero ================= -->
+  <section id="flow">
+    <div class="k mo-reveal"><span class="n">01</span><h2>The world arrives. The <em>“you”</em> waits.</h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Since the 1970s the Bowers has drawn objects in from China, India, the
+      Pacific Islands, Africa, Latin America and Native American groups — a whole world flowing into one building on
+      Santa Ana's edge. That inbound current is the museum's triumph. The essay's worry is the last, shortest link: the
+      one that runs from the museum <b>out to you</b>, the local visitor. Toggle the two halves of the slogan.</p>
+
+    <div class="hero-card mo-reveal" style="--d:140ms" data-mode="world" id="heroCard">
+      <div class="mode-bar">
+        <button class="mode-btn" id="btn-world" aria-pressed="true">“bringing the world…”</button>
+        <button class="mode-btn" id="btn-you"   aria-pressed="false">“…to you”</button>
+        <div class="mode-note" aria-live="polite">
+          <p class="n-world"><b>The world, brought.</b> Six continents of culture converge on one museum — richly told, expertly staged.</p>
+          <p class="n-you"><b>The “you,” faint.</b> The link out to the local visitor is thin, mediated, left undrawn.</p>
+        </div>
+      </div>
+      <figure class="axes" role="img"
+        aria-label="Diagram: culture routes from China, India, the Pacific Islands, Africa, Latin America and Native American groups all converge on the Bowers Museum in Santa Ana. A short further link runs from the museum out to 'you', the Southern Californian visitor. In world mode the inbound routes are bright; in you mode they dim and the faint museum-to-visitor link is highlighted as the weak connection the essay identifies.">
+        <svg viewBox="0 0 960 400">
+          <line class="vz-gridline" x1="30" y1="362" x2="930" y2="362"/>
+
+          <!-- ============ inbound world flows ============ -->
+          <g id="inFlows">
+            <path class="vz-path flow draw" style="--vz-c:var(--c-world); --vz-dash:14; --len:420" d="M150,70 C300,70 360,206 466,206"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-world); --vz-dash:14; --len:400; --d:120ms" d="M150,122 C300,122 360,206 466,206"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-world); --vz-dash:14; --len:380; --d:240ms" d="M150,174 C300,174 360,206 466,206"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-world); --vz-dash:14; --len:380; --d:360ms" d="M150,226 C300,226 360,206 466,206"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-world); --vz-dash:14; --len:400; --d:480ms" d="M150,278 C300,278 360,206 466,206"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-world); --vz-dash:14; --len:440; --d:600ms" d="M150,336 C300,336 360,206 466,206"/>
+
+            <g class="stop" tabindex="0" data-tip="&lt;b&gt;China.&lt;/b&gt; Permanent Chinese displays added in the 2007 expansion; the gallery frames its collection against China being 'poised to become the world's largest economy.'">
+              <circle class="c" cx="150" cy="70" r="5" fill="var(--c-world)"/><text class="rt-label strong" x="24" y="66">china</text></g>
+            <g class="stop" tabindex="0" data-tip="&lt;b&gt;India.&lt;/b&gt; 'Global Threads: India's Textile Revolution' — chintz that 'connected cultures and revolutionized fashion, industry, and global trade.'">
+              <circle class="c" cx="150" cy="122" r="5" fill="var(--c-world)"/><text class="rt-label strong" x="24" y="118">india</text></g>
+            <g class="stop" tabindex="0" data-tip="&lt;b&gt;The Pacific Islands.&lt;/b&gt; 'Art of the Pacific Islands' — an Asmat wood carving; a Wahgi Valley war shield repainted with 'the Phantom'; the Kula ceremonial exchange.">
+              <circle class="c" cx="150" cy="174" r="5" fill="var(--c-world)"/><text class="rt-label strong" x="24" y="170">pacific is.</text></g>
+            <g class="stop" tabindex="0" data-tip="&lt;b&gt;Africa.&lt;/b&gt; Among the non-Western regions the Bowers began acquiring in the 1970s, en route to becoming a museum of world culture.">
+              <circle class="c" cx="150" cy="226" r="5" fill="var(--c-world)"/><text class="rt-label strong" x="24" y="222">africa</text></g>
+            <g class="stop" tabindex="0" data-tip="&lt;b&gt;Latin America.&lt;/b&gt; The founders were first drawn to Orange County's Spanish and Mexican past; western Mexico is among the collection's roots.">
+              <circle class="c" cx="150" cy="278" r="5" fill="var(--c-world)"/><text class="rt-label strong" x="24" y="274">latin america</text></g>
+            <g class="stop" tabindex="0" data-tip="&lt;b&gt;Native American groups.&lt;/b&gt; Part of the 1970s turn from local history toward the cultures of the wider world.">
+              <circle class="c" cx="150" cy="336" r="5" fill="var(--c-world)"/><text class="rt-label strong" x="24" y="332">native american</text></g>
+
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-world); --mote-path:path('M150,70 C300,70 360,206 466,206'); --d:0s"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-world); --mote-path:path('M150,174 C300,174 360,206 466,206'); --d:-2.4s"/>
+            <circle class="vz-mote" r="2.6" style="--vz-c:var(--c-world); --mote-path:path('M150,278 C300,278 360,206 466,206'); --d:-5s"/>
+            <circle class="vz-mote" r="2.6" style="--vz-c:var(--c-world); --mote-path:path('M150,336 C300,336 360,206 466,206'); --d:-6.8s"/>
+          </g>
+
+          <!-- ============ the museum (constant) ============ -->
+          <g id="museum">
+            <path d="M462,182 L523,150 L584,182 Z" fill="var(--c-world-bg)" stroke="var(--forest-d)" stroke-width="1.85" stroke-linejoin="round"/>
+            <rect x="460" y="182" width="126" height="9" fill="var(--forest-d)" opacity=".85"/>
+            <line x1="478" y1="192" x2="478" y2="240" stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round"/>
+            <line x1="504" y1="192" x2="504" y2="240" stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round"/>
+            <line x1="542" y1="192" x2="542" y2="240" stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round"/>
+            <line x1="568" y1="192" x2="568" y2="240" stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round"/>
+            <rect x="454" y="240" width="138" height="10" rx="2" fill="var(--forest-d)"/>
+            <circle class="vz-dot breathe" cx="523" cy="166" r="4.5" style="--vz-c:var(--c-world); --d:-1s"/>
+            <text class="ax-label strong" x="523" y="272" text-anchor="middle">the bowers · santa ana</text>
+            <text class="ax-label" x="523" y="288" text-anchor="middle">world culture, since 1992</text>
+          </g>
+
+          <!-- ============ the link out to "you" ============ -->
+          <g id="layerYou">
+            <path id="youLinkBase" class="vz-path" style="--vz-c:var(--c-you); stroke-dasharray:3 9; opacity:.55"
+                  d="M592,214 C 680,208 760,220 848,214"/>
+            <circle cx="884" cy="214" r="13" fill="none" stroke="var(--c-you)" stroke-width="1.85"/>
+            <path d="M866,246 Q884,214 902,246" fill="none" stroke="var(--c-you)" stroke-width="1.85" stroke-linecap="round"/>
+            <text class="ax-label strong" x="884" y="284" text-anchor="middle">you</text>
+            <text class="ax-label" x="884" y="300" text-anchor="middle">southern california</text>
+          </g>
+          <!-- the offered immediacy: the same link, brightened, only in "you" mode (lime moment) -->
+          <path id="youLinkLive" class="vz-path flow" style="--vz-c:var(--c-lime); --vz-dash:14; stroke-width:3.2px; opacity:0"
+                d="M592,214 C 680,208 760,220 848,214"/>
+          <circle class="vz-mote" r="3" style="--vz-c:var(--c-lime); --mote-path:path('M592,214 C 680,208 760,220 848,214'); --d:-1s"/>
+        </svg>
+      </figure>
+      <div class="hero-cap"><b>The museum's own words:</b> its mission is “to reflect the demographics of Southern
+        California by celebrating its diverse cultural makeup,” and it promises to be “bringing the world to you.”
+        Patrick's objection is structural — the inbound world is vivid and complete; the outbound sentence, the part that
+        reaches <b>you</b>, is where the interpretation goes quiet.</div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · the transformation ================= -->
+  <section id="time">
+    <div class="k mo-reveal"><span class="n">02</span><h2>From local history to <em>world culture</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The Bowers spent nearly five decades as a house-museum of Orange County's
+      Spanish and Mexican past before it reinvented itself — deliberately, and under financial pressure — as a museum of
+      the whole world. Hover the dots.</p>
+
+    <div class="tl-wrap mo-reveal" style="--d:140ms" id="tlObserve">
+      <svg viewBox="0 0 960 268" role="img"
+        aria-label="Timeline 1936 to 2026: founding 1936, acquisitions begin 1970s, closed for self-study 1986, reopens as Museum of Cultural Art 1992 after a 12 million dollar expansion, blockbuster era, 2007 expansion adds Chinese and Oceanic galleries, December 2025 visit, 2026 essay. Eras shaded: local history 1936 to 1986, closed 1986 to 1992, world culture 1992 on.">
+        <!-- era bands -->
+        <g class="tl-era">
+          <rect x="78"  y="118" width="330" height="66" fill="var(--c-era)"  opacity=".14"/>
+          <rect x="408" y="118" width="88"  height="66" fill="var(--faint)"  opacity=".18"/>
+          <rect x="496" y="118" width="424" height="66" fill="var(--c-world)" opacity=".12"/>
+          <text class="tl-era-label" x="82"  y="112" fill="var(--c-era)">local history · nearly 50 yrs</text>
+          <text class="tl-era-label" x="412" y="112" fill="var(--muted)">self-study · 6</text>
+          <text class="tl-era-label" x="500" y="112" fill="var(--forest-d)">world culture · 34 yrs</text>
+        </g>
+        <!-- spine -->
+        <line class="tl-spine draw" style="--len:864" x1="66" y1="151" x2="930" y2="151"/>
+        <!-- events -->
+        <g class="tl-ev tl-pop" style="--d:100ms" tabindex="0" data-tip="&lt;b&gt;1936 — founded.&lt;/b&gt; Charles and Ada Bowers, Missouri natives drawn to Orange County's Spanish and Mexican periods, will their Santa Ana property to the city.">
+          <line class="stem" x1="98" y1="151" x2="98" y2="66" stroke="var(--c-era)"/>
+          <circle class="c" cx="98" cy="151" r="5" fill="var(--c-era)"/>
+          <text class="tl-yr" x="98" y="48" text-anchor="middle">1936</text>
+          <text class="tl-tt" x="98" y="61" text-anchor="middle">founded · local history</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:200ms" tabindex="0" data-tip="&lt;b&gt;1970s — the turn outward.&lt;/b&gt; Curators begin acquiring objects from Asia, Africa, Latin America, the Pacific Islands and Native American groups.">
+          <line class="stem" x1="300" y1="151" x2="300" y2="223" stroke="var(--c-world)"/>
+          <circle class="c" cx="300" cy="151" r="5" fill="var(--c-world)"/>
+          <text class="tl-yr" x="300" y="240" text-anchor="middle">1970s</text>
+          <text class="tl-tt" x="300" y="253" text-anchor="middle">acquisitions begin</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:300ms" tabindex="0" data-tip="&lt;b&gt;1986 — closed.&lt;/b&gt; Shut 'for a period of self-study, evaluation, and rebuilding for the 21st century.'">
+          <line class="stem" x1="408" y1="151" x2="408" y2="66" stroke="var(--ink)"/>
+          <circle class="c" cx="408" cy="151" r="5" fill="var(--ink)"/>
+          <text class="tl-yr" x="408" y="48" text-anchor="middle">1986</text>
+          <text class="tl-tt" x="408" y="61" text-anchor="middle">closed · self-study</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:400ms" tabindex="0" data-tip="&lt;b&gt;1992 — reopened.&lt;/b&gt; After a $12 million expansion, reopens as the 'Bowers Museum of Cultural Art' — 'a new museum ready for the next millennium.'">
+          <line class="stem" x1="496" y1="151" x2="496" y2="223" stroke="var(--c-world)"/>
+          <circle class="c" cx="496" cy="151" r="5.5" fill="var(--c-world)"/>
+          <text class="tl-yr" x="496" y="240" text-anchor="middle">1992</text>
+          <text class="tl-tt" x="496" y="253" text-anchor="middle">reopens · $12M · world culture</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:500ms" tabindex="0" data-tip="&lt;b&gt;Blockbuster era.&lt;/b&gt; Financial pressure pushes a 'blockbuster' exhibition strategy — big touring shows drawing broad crowds.">
+          <line class="stem" x1="616" y1="151" x2="616" y2="66" stroke="var(--c-you)"/>
+          <circle class="c" cx="616" cy="151" r="5" fill="var(--c-you)"/>
+          <text class="tl-yr" x="616" y="48" text-anchor="middle">1990s→</text>
+          <text class="tl-tt" x="616" y="61" text-anchor="middle">the blockbuster strategy</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:600ms" tabindex="0" data-tip="&lt;b&gt;2007 — expanded.&lt;/b&gt; A further expansion adds permanent Chinese and Oceanic galleries.">
+          <line class="stem" x1="736" y1="151" x2="736" y2="223" stroke="var(--c-world)"/>
+          <circle class="c" cx="736" cy="151" r="5" fill="var(--c-world)"/>
+          <text class="tl-yr" x="736" y="240" text-anchor="middle">2007</text>
+          <text class="tl-tt" x="736" y="253" text-anchor="middle">Chinese + Oceanic galleries</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:700ms" tabindex="0" data-tip="&lt;b&gt;Dec 2025 — the visit.&lt;/b&gt; Patrick walks the galleries for this essay.">
+          <line class="stem" x1="856" y1="151" x2="856" y2="66" stroke="var(--muted)"/>
+          <circle class="c" cx="856" cy="151" r="5" fill="var(--muted)"/>
+          <text class="tl-yr" x="856" y="48" text-anchor="middle">2025</text>
+          <text class="tl-tt" x="856" y="61" text-anchor="middle">the visit</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:800ms" tabindex="0" data-tip="&lt;b&gt;2026 — this essay.&lt;/b&gt; Patrick: bring 'the world' and its audience together — through immediacy and transparency.">
+          <line class="stem" x1="908" y1="151" x2="908" y2="223" stroke="var(--c-you)"/>
+          <circle class="c" cx="908" cy="151" r="5" fill="var(--c-you)"/>
+          <text class="tl-yr" x="908" y="240" text-anchor="middle">2026</text>
+          <text class="tl-tt" x="908" y="253" text-anchor="middle">the essay</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:60ms">
+        <div class="v"><span data-count="90">0</span><small>yrs</small></div>
+        <div class="l">“bringing the world to you” since 1936</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-world); --d:140ms">
+        <div class="v"><span data-count="12">0</span><small>$M</small></div>
+        <div class="l">the 1992 expansion that turned it outward</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-exch); --d:220ms">
+        <div class="v"><span data-count="34">0</span><small>yrs</small></div>
+        <div class="l">a museum of world culture · 1992–2026</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-you); --d:300ms">
+        <div class="v"><span data-count="2">0</span><small>themes</small></div>
+        <div class="l">tradition &amp; exchange organize the galleries</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · the two themes ================= -->
+  <section id="themes">
+    <div class="k mo-reveal"><span class="n">03</span><h2>Two lenses on <em>the world</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The galleries read the global collection through two recurring themes:
+      <b>the persistence of tradition</b> — old forms alive in the present — and <b>the impact of international exchange</b> —
+      objects as evidence of cultures meeting. Both are genuinely well told. Hover an object for its label.</p>
+
+    <div class="objs">
+      <div class="obj trad mo-reveal" tabindex="0" style="--sp:3; --d:60ms">
+        <div class="nm">Asmat wood carving</div>
+        <span class="vc"><i></i>persistence of tradition</span>
+        <q>Carvers recycle “the symbolism and traditions of their culture in contemporary ways”; the practice revitalized in the 1980s.</q>
+      </div>
+      <div class="obj trad mo-reveal" tabindex="0" style="--sp:3; --d:120ms">
+        <div class="nm">Wahgi Valley war shield</div>
+        <span class="vc"><i></i>persistence of tradition</span>
+        <q>An old Papua New Guinean shield repainted with “the Phantom,” the superhero comic popular there in the 1970s — tradition absorbing global pop.</q>
+      </div>
+      <div class="obj trad mo-reveal" tabindex="0" style="--sp:3; --d:180ms">
+        <div class="nm">Huang Fushou · <i>Untitled</i>, 2021</div>
+        <span class="vc"><i></i>persistence of tradition</span>
+        <q>A contemporary jade carving drawing on China's centuries-old artform history — the old form still worked today.</q>
+      </div>
+      <div class="obj exch mo-reveal" tabindex="0" style="--sp:3; --d:240ms">
+        <div class="nm">“Global Threads” · chintz</div>
+        <span class="vc"><i></i>impact of exchange</span>
+        <q>India's chintz “connected cultures and revolutionized fashion, industry, and global trade” — and contemporary artists still innovate the centuries-old form.</q>
+      </div>
+      <div class="obj exch mo-reveal" tabindex="0" style="--sp:3; --d:300ms">
+        <div class="nm">The Kula Exchange</div>
+        <span class="vc"><i></i>impact of exchange</span>
+        <q>The Melanesian ceremonial trade ring — a display built entirely around cultures in contact.</q>
+      </div>
+      <div class="obj exch mo-reveal" tabindex="0" style="--sp:3; --d:360ms">
+        <div class="nm">“Europe Becomes the World's Cotton Cloth Printer”</div>
+        <span class="vc"><i></i>impact of exchange</span>
+        <q>A label tracing industrial cotton printing — exchange written as a story of global trade and its legacy.</q>
+      </div>
+    </div>
+
+    <div class="split mo-reveal" style="--d:440ms" role="img"
+      aria-label="The two organizing themes, persistence of tradition and impact of international exchange, split the discussed objects roughly evenly — a qualitative grouping, not a measured count.">
+      <div class="bar">
+        <div class="seg trad">persistence of tradition</div>
+        <div class="seg exch">impact of international exchange</div>
+      </div>
+      <div class="cap"><span>the two lenses the galleries reach for</span><span>qualitative — the essay's grouping, not a count</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 04 · the triangulation ================= -->
+  <section id="triangle">
+    <div class="k mo-reveal"><span class="n">04</span><h2>The <em>missing</em> line</h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Here is the essay's core diagnosis. The Bowers rarely lets the visitor meet
+      the object directly. Instead it <b>triangulates</b> — routing the relationship through a mediating referent. In the
+      Chinese gallery that referent is <b>economy</b> (the collection framed against China “poised to become the world's
+      largest economy”); at the “First Look” donor wall it is <b>heritage</b> (Asian art standing in for “our family's
+      cultural heritage”). The direct line — object to visitor — is the one left undrawn.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="triObserve">
+      <svg viewBox="0 0 960 270" role="img"
+        aria-label="Triangulation diagram: the object at lower left and the visitor at lower right are not joined by a direct line. Instead two routes climb through mediating referents at the top — heritage and economy — connecting object to visitor only by way of them. A faint dashed line along the bottom marks the direct object-to-visitor immediacy the essay says is missing.">
+        <line class="vz-gridline" x1="30" y1="234" x2="930" y2="234"/>
+
+        <!-- referent routing (the actual relation) -->
+        <path class="vz-path flow draw" style="--vz-c:var(--c-exch); --vz-dash:14; --len:360; --d:200ms" d="M188,214 C 280,120 340,74 430,66"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-exch); --vz-dash:14; --len:360; --d:320ms" d="M456,66 C 560,74 640,120 772,210"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-exch); --vz-dash:14; --len:380; --d:440ms" d="M198,206 C 340,150 470,110 596,74"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-exch); --vz-dash:14; --len:380; --d:560ms" d="M624,76 C 700,120 740,168 774,204"/>
+
+        <!-- the direct line, left undrawn: the offered immediacy (lime moment) -->
+        <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 8; opacity:.85" d="M204,224 L764,224"/>
+        <text class="rt-label" x="360" y="248" fill="#5a8a1e">immediacy — the direct line, undrawn</text>
+
+        <!-- referent nodes -->
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Heritage.&lt;/b&gt; A 'First Look' donor quote: the Bowers 'has long engaged with Asian art and our family's cultural heritage' — as if Asian art's presence alone engages a heritage.">
+          <circle class="vz-ring halo" cx="443" cy="66" r="16" style="--vz-c:var(--c-exch)"/>
+          <circle class="c" cx="443" cy="66" r="6.5" fill="var(--c-exch)"/>
+          <text class="rt-label strong" x="443" y="40" text-anchor="middle" fill="var(--c-exch)">heritage</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Economy.&lt;/b&gt; The Chinese gallery ties interest to China being 'poised to become the world's largest economy' — implying the objects are context for the ascent, not worthy in themselves.">
+          <circle class="vz-ring halo" cx="610" cy="66" r="16" style="--vz-c:var(--c-exch)"/>
+          <circle class="c" cx="610" cy="66" r="6.5" fill="var(--c-exch)"/>
+          <text class="rt-label strong" x="610" y="40" text-anchor="middle" fill="var(--c-exch)">economy</text>
+        </g>
+
+        <!-- object & visitor -->
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;The object.&lt;/b&gt; Richly documented — but reached through a referent, not on its own terms.">
+          <rect x="150" y="196" width="46" height="34" rx="4" fill="var(--c-world-bg)" stroke="var(--forest-d)" stroke-width="1.85"/>
+          <circle class="vz-dot breathe" cx="173" cy="213" r="4" style="--vz-c:var(--c-world); --d:-1.2s"/>
+          <text class="rt-label strong" x="173" y="256" text-anchor="middle">the object</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;You.&lt;/b&gt; The Southern Californian visitor — left 'looking through the glass at worlds that are not their own.'">
+          <circle cx="786" cy="200" r="12" fill="none" stroke="var(--c-you)" stroke-width="1.85"/>
+          <path d="M770,230 Q786,202 802,230" fill="none" stroke="var(--c-you)" stroke-width="1.85" stroke-linecap="round"/>
+          <text class="rt-label strong" x="786" y="256" text-anchor="middle" fill="var(--c-you)">you</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>Read honestly:</b> the referents are not lies — heritage and economy are real. The essay's
+        point is that they <b>displace</b> the direct encounter, so the visitor relates to the object only at one remove.
+        The dashed line is the connection the Bowers could draw and mostly doesn't.</div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · the california blind spot ================= -->
+  <section id="california">
+    <div class="k mo-reveal"><span class="n">05</span><h2>California, kept <em>in the past</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The place where “the world” and “the you” should meet most naturally is the
+      Bowers' own California galleries — and it's here the gap is sharpest. “California Bounty: Image and Identity,
+      1850–1930” treats its history as <b>discrete from the present</b>. The living connections — turn-of-century ethnic
+      diversity, 1920s automobile campaigns, and the Chinese immigration that ties the China gallery to Santa Ana — are
+      left <b>implicit, unbuilt</b>.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="calObserve">
+      <svg viewBox="0 0 960 220" role="img"
+        aria-label="Diagram: a solid block covers 1850 to 1930, the span of the California Bounty exhibition. A gap of dots runs from 1930 to the present, 2026. Three dashed bridges arc across the gap toward a present-day node labeled California today, you: ethnic diversity, 1920s automobile campaigns, and Chinese immigration. The bridges are faint and unbuilt; one, Chinese immigration, is highlighted as the connection the essay proposes.">
+        <line class="vz-gridline" x1="40" y1="168" x2="920" y2="168"/>
+
+        <!-- the exhibition block: 1850-1930 -->
+        <rect x="70" y="128" width="300" height="40" rx="5" fill="var(--c-you-bg)" stroke="var(--c-you)" stroke-width="1.85"/>
+        <text class="rt-label strong" x="90" y="153" fill="var(--c-you)">california bounty · 1850–1930</text>
+        <text class="rt-label" x="70" y="192">history, told as finished</text>
+
+        <!-- the gap -->
+        <line x1="378" y1="168" x2="828" y2="168" stroke="var(--faint)" stroke-width="1.5" stroke-dasharray="2 9"/>
+        <text class="rt-label" x="470" y="192">— the present, left unconnected —</text>
+
+        <!-- present node -->
+        <circle class="vz-ring halo" cx="860" cy="148" r="15" style="--vz-c:var(--c-world)"/>
+        <circle class="vz-dot breathe" cx="860" cy="148" r="6" style="--vz-c:var(--c-world); --d:-1s"/>
+        <text class="rt-label strong" x="860" y="118" text-anchor="middle">california today · you</text>
+
+        <!-- unbuilt bridges -->
+        <path class="vz-path" style="--vz-c:var(--c-you); stroke-dasharray:3 8; opacity:.45" d="M300,128 C 460,60 700,70 848,138"/>
+        <text class="rt-label" x="430" y="66" fill="var(--c-you)">ethnic diversity</text>
+        <path class="vz-path" style="--vz-c:var(--c-you); stroke-dasharray:3 8; opacity:.45" d="M330,128 C 500,96 700,96 848,142"/>
+        <text class="rt-label" x="560" y="112" fill="var(--c-you)">1920s auto campaigns</text>
+        <!-- the one bridge the essay explicitly offers: lime moment -->
+        <path class="vz-path flow" style="--vz-c:var(--c-lime); --vz-dash:14; stroke-width:2.6px; opacity:.9" d="M355,132 C 540,150 700,150 848,148"/>
+        <text class="rt-label strong" x="600" y="176" fill="#5a8a1e">chinese immigration → the china gallery</text>
+        <circle class="vz-mote" r="2.8" style="--vz-c:var(--c-lime); --mote-path:path('M355,132 C 540,150 700,150 848,148'); --d:-1.4s"/>
+      </svg>
+      <div class="fig-cap"><b>The fix names itself here:</b> link the Chinese gallery to present-day California, and the
+        California galleries to Chinese immigration history — and the founder's own frame (“a new museum ready for the
+        next millennium”) finally reaches the millennium's actual residents.</div>
+    </div>
+  </section>
+
+  <!-- ================= 06 · the voices ================= -->
+  <section id="voices">
+    <div class="k mo-reveal"><span class="n">06</span><h2>Who does the museum <em>address?</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Wall text is where a museum speaks to its visitor — the frame Ingrid
+      Schaffner calls simply “Wall Text.” Read the Bowers' voices in order and the addressee keeps slipping away from the
+      person standing in the room.</p>
+    <div class="chorus">
+      <div class="voice inst mo-reveal" style="--d:60ms">
+        <div class="who"><b>The mission</b><span class="role">the promise</span></div>
+        <q>to reflect the demographics of Southern California by celebrating its diverse cultural makeup.</q>
+        <div class="note">The stated aim names the local audience directly — the “you” the rest of the museum struggles to reach.</div>
+      </div>
+      <div class="voice inst mo-reveal" style="--d:120ms">
+        <div class="who"><b>The bio</b><span class="role">the slogan</span></div>
+        <q>bringing the world to you since 1936.</q>
+        <div class="note">The Instagram line that gives the essay its title — the whole argument lives in the word <i>you</i>.</div>
+      </div>
+      <div class="voice ref mo-reveal" style="--d:180ms">
+        <div class="who"><b>The China label</b><span class="role">referent · economy</span></div>
+        <q>…poised to become the world's largest economy.</q>
+        <div class="note">Interest routed through economic ascent — as if the collection were context, not the point.</div>
+      </div>
+      <div class="voice ref mo-reveal" style="--d:240ms">
+        <div class="who"><b>The “First Look” donor</b><span class="role">referent · heritage</span></div>
+        <q>[the Bowers] has long engaged with Asian art and our family's cultural heritage.</q>
+        <div class="note">Heritage stands in for engagement — the object reached through the donor, not the visitor.</div>
+      </div>
+      <div class="voice acq mo-reveal" style="--d:300ms">
+        <div class="who"><b>The Pacific label</b><span class="role">acquisition</span></div>
+        <q>collected on behalf of the Bowers Museum by the Roski-Keller-Martin Expedition.</q>
+        <div class="note">How the object arrived — Ed Roski Jr., Peter Keller, Lesley Martin — the transparency the essay wants more of.</div>
+      </div>
+      <div class="voice path mo-reveal" style="--d:360ms">
+        <div class="who"><b>Nolan Patrick</b><span class="role">the way out</span></div>
+        <q>collapse the distance between object and visitor.</q>
+        <div class="note">Don't drop “the world” — finish the sentence: revise the interpretation until it reaches the “you.”</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 · the fix ================= -->
+  <section id="fix">
+    <div class="k mo-reveal"><span class="n">07</span><h2>Finishing the <em>sentence</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The essay's remedy isn't to narrow the collection — it's to complete the
+      promise. Two moves, both about closing the distance the triangulation opened.</p>
+
+    <div class="rx">
+      <div class="rx-card mo-reveal" style="--rxc:var(--c-lime); --d:80ms">
+        <div class="tag">move 01</div>
+        <h3>Immediacy</h3>
+        <p>Revise interpretation to <b>collapse the distance between object and visitor</b> — link the Chinese gallery to
+          present-day California; link the California galleries to Chinese immigration history. Let the object speak to
+          the person in front of it, not to a referent overhead.</p>
+      </div>
+      <div class="rx-card mo-reveal" style="--rxc:var(--c-era); --d:180ms">
+        <div class="tag">move 02</div>
+        <h3>Transparency</h3>
+        <p>Be clear about <b>how objects arrived</b> — the “Roski-Keller-Martin Expedition” label is a start — and about
+          how the people who made them regard their relocation. Provenance is part of what “bringing the world” actually
+          means.</p>
+      </div>
+    </div>
+
+    <div class="fig mo-reveal" style="--d:280ms" id="closeObserve">
+      <svg viewBox="0 0 960 150" role="img"
+        aria-label="The hero's museum-to-visitor link, redrawn: now a solid bright line with motes flowing from the museum out to the 'you' node — the distance collapsed, the sentence finished.">
+        <line class="vz-gridline" x1="30" y1="120" x2="930" y2="120"/>
+        <!-- museum -->
+        <path d="M92,64 L134,44 L176,64 Z" fill="var(--c-world-bg)" stroke="var(--forest-d)" stroke-width="1.85" stroke-linejoin="round"/>
+        <rect x="90" y="64" width="88" height="7" fill="var(--forest-d)" opacity=".85"/>
+        <rect x="86" y="96" width="96" height="8" rx="2" fill="var(--forest-d)"/>
+        <line x1="104" y1="71" x2="104" y2="96" stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round"/>
+        <line x1="134" y1="71" x2="134" y2="96" stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round"/>
+        <line x1="164" y1="71" x2="164" y2="96" stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round"/>
+        <text class="ax-label strong" x="134" y="122" text-anchor="middle">the bowers</text>
+        <!-- the completed link (lime moment) -->
+        <path id="closeLink" class="vz-path flow draw" style="--vz-c:var(--c-lime); --vz-dash:14; stroke-width:3.4px; opacity:.95; --len:660"
+              d="M190,84 C 380,84 620,84 812,84"/>
+        <circle class="vz-mote" r="3.4" style="--vz-c:var(--c-lime); --mote-path:path('M190,84 C 380,84 620,84 812,84'); --d:0s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-lime); --mote-path:path('M190,84 C 380,84 620,84 812,84'); --d:-3s"/>
+        <!-- you -->
+        <circle cx="852" cy="72" r="14" fill="none" stroke="var(--c-you)" stroke-width="1.85"/>
+        <path d="M832,108 Q852,74 872,108" fill="none" stroke="var(--c-you)" stroke-width="1.85" stroke-linecap="round"/>
+        <text class="rt-label strong" x="852" y="130" text-anchor="middle" fill="var(--c-you)">you · southern california</text>
+      </svg>
+      <div class="fig-cap"><b>The distance collapsed</b> — the same link the hero left faint, now drawn solid. Neither the
+        world narrowed nor the visitor left outside: the sentence finished.</div>
+    </div>
+
+    <div class="close-quote mo-reveal" style="--d:340ms">
+      <p>The Bowers has spent ninety years <em>bringing the world</em> to Santa Ana. What remains is the shorter journey —
+        to <em>collapse the distance between object and visitor</em>, and at last bring the world and its audience
+        together.</p>
+      <cite>after Nolan Patrick · Look Sharp! · conclusion</cite>
+    </div>
+
+    <details class="tbl mo-reveal" style="--d:400ms">
+      <summary>data table · the transformation &amp; the objects drawn above</summary>
+      <table>
+        <thead><tr><th>Year</th><th>Event</th><th>Era</th></tr></thead>
+        <tbody>
+          <tr><td>1936</td><td>Charles &amp; Ada Bowers will their Santa Ana property to the city; opens as a local-history museum</td><td>local history</td></tr>
+          <tr><td>1970s</td><td>Curators begin acquiring from Asia, Africa, Latin America, the Pacific Islands, Native American groups</td><td>the turn outward</td></tr>
+          <tr><td>1986</td><td>Closed “for a period of self-study, evaluation, and rebuilding for the 21st century”</td><td>closed</td></tr>
+          <tr><td>1992</td><td>Reopens as the “Bowers Museum of Cultural Art” after a $12M expansion — “ready for the next millennium”</td><td>world culture</td></tr>
+          <tr><td>1990s→</td><td>Financial pressure drives a “blockbuster” exhibition strategy</td><td>world culture</td></tr>
+          <tr><td>2007</td><td>Expansion adds permanent Chinese and Oceanic galleries</td><td>world culture</td></tr>
+          <tr><td>Dec 2025</td><td>Patrick visits the galleries for the essay</td><td>—</td></tr>
+          <tr><td>2026</td><td>Essay published: complete the promise through immediacy + transparency</td><td>the essay</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Object / display</th><th>Theme</th><th>What the label says (per the essay)</th></tr></thead>
+        <tbody>
+          <tr><td>Asmat wood carving</td><td>persistence of tradition</td><td>Carvers “recycle the symbolism and traditions of their culture in contemporary ways”</td></tr>
+          <tr><td>Wahgi Valley war shield</td><td>persistence of tradition</td><td>Repainted with “the Phantom,” a PNG superhero comic popular in the 1970s</td></tr>
+          <tr><td>Huang Fushou, <i>Untitled</i> (2021)</td><td>persistence of tradition</td><td>Contemporary jade drawing on China's centuries-old artform</td></tr>
+          <tr><td>“Global Threads” chintz</td><td>international exchange</td><td>Chintz “connected cultures and revolutionized fashion, industry, and global trade”</td></tr>
+          <tr><td>The Kula Exchange</td><td>international exchange</td><td>Melanesian ceremonial trade — a display of cultures in contact</td></tr>
+          <tr><td>Cotton-printing label</td><td>international exchange</td><td>“Europe Becomes the World's Cotton Cloth Printer”</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Referent</th><th>Where</th><th>The mediated relation (the essay's critique)</th></tr></thead>
+        <tbody>
+          <tr><td>Economy</td><td>Chinese gallery</td><td>Interest tied to China “poised to become the world's largest economy”</td></tr>
+          <tr><td>Heritage</td><td>“First Look” donor wall</td><td>Bowers “has long engaged with Asian art and our family's cultural heritage”</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    <span>bpo · essay reading · the bowers museum, “bringing the world to you”</span>
+    <span><a href="https://nolanpatrick.substack.com/p/the-bowers-museum-bringing-the-world">source essay</a> · built 2026-07-14 13-32 utc</span>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- staggered reveals ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.mo-reveal').forEach(function (el) { io.observe(el); });
+  if (reduce) document.querySelectorAll('.mo-reveal').forEach(function (el) { el.classList.add('shown'); });
+
+  /* ---- count-up tiles ---- */
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, target = +el.getAttribute('data-count');
+      if (reduce) { el.textContent = target; return; }
+      var t0 = null, dur = 1300;
+      function step(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * ease);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+
+  /* ---- mode toggle: auto-alternate until the reader takes over ---- */
+  var card = document.getElementById('heroCard');
+  var bWorld = document.getElementById('btn-world');
+  var bYou = document.getElementById('btn-you');
+  var userDrove = false, timer = null;
+  function setMode(mode) {
+    card.setAttribute('data-mode', mode);
+    bWorld.setAttribute('aria-pressed', mode === 'world');
+    bYou.setAttribute('aria-pressed', mode === 'you');
+  }
+  bWorld.addEventListener('click', function () { userDrove = true; clearInterval(timer); setMode('world'); });
+  bYou.addEventListener('click', function () { userDrove = true; clearInterval(timer); setMode('you'); });
+  if (!reduce) {
+    timer = setInterval(function () {
+      if (userDrove) return clearInterval(timer);
+      setMode(card.getAttribute('data-mode') === 'world' ? 'you' : 'world');
+    }, 5500);
+  }
+
+  /* ---- one tooltip for all [data-tip] ---- */
+  var tip = document.getElementById('tip');
+  function showTip(el) {
+    tip.innerHTML = el.getAttribute('data-tip');
+    tip.classList.add('on');
+    tip.setAttribute('aria-hidden', 'false');
+    var r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+    var x = r.left + r.width / 2 - tr.width / 2;
+    x = Math.max(10, Math.min(x, window.innerWidth - tr.width - 10));
+    var y = r.top - tr.height - 12;
+    if (y < 8) y = r.bottom + 12;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.classList.remove('on'); tip.setAttribute('aria-hidden', 'true'); }
+  document.querySelectorAll('[data-tip]').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { showTip(el); });
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('focus', function () { showTip(el); });
+    el.addEventListener('blur', hideTip);
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

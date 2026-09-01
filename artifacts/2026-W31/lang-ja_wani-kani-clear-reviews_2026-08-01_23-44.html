@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WaniKani review clear · 2026-08-01</title>
+  <style>
+    :root{--paper:#f7f1e6;--ink:#20201d;--muted:#6d6a62;--line:#d9d0c1;--pink:#ef3f70;--pink-soft:#fde4eb;--green:#16856d;--green-soft:#dbf1e9;--yellow:#d6a918;--white:#fffdf8;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+    *{box-sizing:border-box}html{background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{margin:0;background:radial-gradient(circle at 9% 4%,rgba(239,63,112,.13),transparent 25rem),radial-gradient(circle at 90% 94%,rgba(22,133,109,.13),transparent 28rem)}
+    main{width:min(1080px,calc(100% - 32px));margin:auto;padding:28px 0 42px}.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:26px;font:800 10px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase}.top .ok{display:flex;align-items:center;gap:8px;color:var(--green)}.top .ok:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px var(--green-soft)}
+    .hero{display:grid;grid-template-columns:1.12fr .88fr;gap:14px}.card{border:1px solid var(--line);border-radius:25px;background:rgba(255,253,248,.9);box-shadow:0 22px 60px rgba(69,53,28,.08)}.intro{min-height:470px;padding:44px;display:flex;flex-direction:column;justify-content:space-between}.eyebrow,.label{font:900 10px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--pink)}h1{font-size:clamp(52px,7.2vw,88px);line-height:.92;letter-spacing:-.065em;margin:14px 0 22px;max-width:7ch}h1 em{color:var(--pink);font-style:normal}.intro p{max-width:51ch;font-size:16px;line-height:1.65;color:var(--muted)}.boundary{border-left:4px solid var(--yellow);padding:12px 16px;background:#f8eed0;border-radius:5px 14px 14px 5px;font-size:12px;line-height:1.55;color:#6a5620}
+    .receipt{min-height:470px;padding:38px;background:var(--ink);color:var(--white);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative}.receipt:after{content:"済";position:absolute;right:-12px;bottom:-57px;font:900 190px/1 serif;color:rgba(255,255,255,.045);transform:rotate(-8deg)}.receipt .label{color:#f7a6bc}.equation{display:flex;align-items:center;gap:18px;margin:23px 0 12px}.equation strong{font-size:clamp(66px,8vw,102px);line-height:1;letter-spacing:-.07em}.equation .from{text-decoration:line-through;text-decoration-color:var(--pink);text-decoration-thickness:7px;color:#a7a49c}.arrow{font-size:28px;color:#77736b}.receipt p{margin:0;color:#bcb8af;font-size:13px;line-height:1.55}.meter{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-bottom:18px}.meter i{height:8px;border-radius:10px;background:var(--green);transition:background .2s,transform .2s}.meter i.off{background:#494843;transform:scaleY(.58)}button{position:relative;z-index:1;border:0;border-radius:999px;background:var(--pink);color:white;font:900 11px/1 var(--mono);letter-spacing:.04em;padding:13px 18px;cursor:pointer}button:disabled{opacity:.6}.stamp{margin-top:15px;font:700 9px/1.6 var(--mono);color:#8f8c85}
+    .section{margin-top:42px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:14px}.section-head h2{margin:5px 0 0;font-size:28px;letter-spacing:-.035em}.section-head p{max-width:52ch;margin:0;color:var(--muted);font-size:12px;text-align:right}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.panel{padding:22px}.num{display:inline-grid;place-items:center;min-width:42px;height:42px;padding:0 10px;border-radius:12px;background:var(--pink-soft);color:#a41742;font-weight:900}.panel:nth-child(2) .num{background:#f7edcc;color:#745c0d}.panel:nth-child(3) .num{background:var(--green-soft);color:#075c4b}.panel h3{font-size:16px;margin:14px 0 6px}.panel p{font-size:12px;line-height:1.6;color:var(--muted);margin:0}
+    .audit{display:grid;grid-template-columns:1fr 1fr;gap:12px}.audit article{padding:23px}.audit h3{margin:0 0 14px;font-size:17px}.audit ul{list-style:none;margin:0;padding:0}.audit li{position:relative;padding:10px 0 10px 22px;border-top:1px solid var(--line);font-size:12px;line-height:1.55;color:var(--muted)}.audit li:before{content:"";position:absolute;left:2px;top:15px;width:8px;height:8px;border-radius:50%;background:var(--green)}code{font-family:var(--mono);font-size:.92em;color:#9c2047}footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:38px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:700 9px/1.5 var(--mono)}a{color:#a41742;text-decoration:none;border-bottom:1px solid #e2a1b4}
+    @media(max-width:760px){.hero,.audit{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.intro,.receipt{min-height:410px;padding:28px}.section-head{align-items:flex-start;flex-direction:column}.section-head p{text-align:left}}
+  </style>
+</head>
+<body>
+  <main>
+    <header class="top"><span>bpo · lang_ja / wani_kani · clear_reviews</span><span class="ok">API verified · queue zero</span></header>
+    <section class="hero">
+      <article class="card intro">
+        <div>
+          <div class="eyebrow">One-off debt reset · August 1, 2026 UTC</div>
+          <h1>One seventy-two due.<br><em>Nothing left.</em></h1>
+          <p>The live, immediately-reviewable WaniKani queue was captured through the official assignment filter. Every returned assignment was submitted with zero incorrect meaning and reading answers.</p>
+        </div>
+        <div class="boundary"><strong>Scope held:</strong> this reset did not edit the recurring current-level radical/kanji autopilot, its schedule, or its vocabulary exclusion.</div>
+      </article>
+      <aside class="card receipt" aria-label="WaniKani review clear receipt">
+        <div>
+          <div class="label">Immediately available reviews</div>
+          <div class="equation"><strong class="from">172</strong><span class="arrow">→</span><strong id="remaining">0</strong></div>
+          <p>Sequential API writes at the documented rate limit.<br>Zero incorrect answers · zero rejected writes in the validated queue.</p>
+        </div>
+        <div>
+          <div class="meter" id="meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <button id="replay" type="button">Replay the clear</button>
+          <div class="stamp">completed 2026-08-01 23:44:08 Z<br>verified from WaniKani API v2</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><div class="eyebrow">01 · result</div><h2>What moved</h2></div><p>The queue contained only vocabulary this time; the existing critical-path worker had no due radical or kanji debt to hand over.</p></div>
+      <div class="grid">
+        <article class="card panel"><span class="num">169</span><h3>Vocabulary</h3><p>All immediately reviewable vocabulary assignments advanced with zero incorrect answers.</p></article>
+        <article class="card panel"><span class="num">3</span><h3>Kana vocabulary</h3><p>The kana vocabulary tail moved through the same review endpoint and pacing.</p></article>
+        <article class="card panel"><span class="num">0</span><h3>Remaining</h3><p>A second live query using the same official filter returned an empty collection.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><div class="eyebrow">02 · audit</div><h2>The guardrails held</h2></div></div>
+      <div class="audit">
+        <article class="card"><h3>Review-state integrity</h3><ul><li><code>immediately_available_for_review=true</code> selected the write set.</li><li>Each POST recorded 0 meaning and 0 reading mistakes.</li><li>The run ended only after a fresh queue query returned 0.</li></ul></article>
+        <article class="card"><h3>Autopilot boundary</h3><ul><li>No source file, launch schedule, or kill switch changed.</li><li>The recurring worker remains radicals + kanji only.</li><li>Vocabulary was included solely by this explicit one-off shorthand.</li></ul></article>
+      </div>
+    </section>
+
+    <footer><span>lang-ja_wani-kani-clear-reviews_2026-08-01_23-44 · bpo private</span><span><a href="https://linear.app/nomad-code/issue/TODO-333/lang-ja-wani-kani-clear-reviews">TODO-333</a> · <a href="https://docs.api.wanikani.com/20170710/#assignments">WaniKani API v2</a></span></footer>
+  </main>
+  <script>
+    const button=document.getElementById('replay'),remaining=document.getElementById('remaining'),bars=[...document.querySelectorAll('#meter i')];
+    button.addEventListener('click',()=>{let step=0;button.disabled=true;remaining.textContent='172';bars.forEach(x=>x.classList.remove('off'));const timer=setInterval(()=>{step++;remaining.textContent=String(Math.max(0,172-Math.ceil(step*172/8)));bars[Math.min(step-1,7)].classList.add('off');if(step===8){clearInterval(timer);remaining.textContent='0';button.disabled=false}},180)});
+  </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+/* grove · components
+   Studio primitives canonized from the growth-ortho auth-seam + rivet
+   artifact family. Class names match those artifacts, so markup ports
+   over unchanged. Token-driven; no per-component palette literals. */
+
+/* ---------------- Scale-to-fit canvas ----------------
+   Same engine as bone (see design-system/shared/components.css for the
+   full rationale): comp authored at a fixed design width, scaled
+   uniformly to the window via zoom. --fit-width overrides per page
+   (default 1440). Scoped :not(.overlay) so overlay engines are immune. */
+.frame {
+  width: 1440px;
+  margin: 0 auto;
+  background: var(--bg);
+  position: relative;
+}
+.frame:not(.overlay),
+.fit {
+  zoom: clamp(0.45, calc(tan(atan2(100vw, var(--fit-width, 1440px))) * 0.985), 1.6);
+}
+.standalone { background: var(--well); padding: 24px 0; min-height: 100vh; }
+.standalone .frame { box-shadow: var(--shadow-hero); }
+
+/* ---------------- Topbar + brandstrip ---------------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;height:58px;display:flex;align-items:center;gap:13px;padding:0 22px;
+  background:rgba(244,244,239,.86);backdrop-filter:saturate(1.4) blur(16px);-webkit-backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid var(--line)}
+.tb-brand{display:flex;align-items:center;gap:9px;font-weight:780;font-size:16px;letter-spacing:-.01em;font-family:var(--font-wordmark)}
+.tb-brand .mk{width:17px;height:17px;border-radius:5px;background:var(--forest);position:relative}
+.tb-brand .mk::after{content:"";position:absolute;right:2px;bottom:2px;width:6px;height:6px;border-radius:1px;background:var(--lime-b)}
+.tb-x{color:#c5c5bb;font-weight:500;font-size:15px;margin:0 -2px}
+.tb-clientlogo{height:23px;width:23px;border-radius:6px;object-fit:contain;display:block;background:var(--card)}
+.tb-client{font-weight:820;font-size:15px;letter-spacing:-.01em;color:var(--forest);font-family:var(--font-wordmark)}
+.tb-sep{width:1px;height:20px;background:var(--line)}
+.tb-ctx{font-size:12.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:8px}
+.tb-ctx .dot{width:7px;height:7px;border-radius:999px;background:var(--forest);box-shadow:0 0 0 0 rgba(18,124,112,.5);animation:pulse 2.4s var(--ease) infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(18,124,112,.45)}70%{box-shadow:0 0 0 9px rgba(18,124,112,0)}100%{box-shadow:0 0 0 0 rgba(18,124,112,0)}}
+.tb-spacer{margin-left:auto}
+.tb-live{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tb-live .d{width:7px;height:7px;border-radius:50%;background:var(--forest);animation:pulse 2.4s var(--ease) infinite}
+.tb-tag{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--found-d);background:var(--found-bg);border:1px solid var(--found-bd);padding:5px 11px;border-radius:var(--r-chip);display:inline-flex;align-items:center;gap:6px}
+.tb-tag .ic{font-size:12px}
+.brandstrip{position:fixed;top:58px;left:0;right:0;height:3px;z-index:49;background:linear-gradient(90deg,var(--forest),var(--lime) 62%,var(--found))}
+/* Full-bleed app shells (fixed-inset flex column) opt the bar back into flow —
+   the fixed default overlaps the top 58px of any page that doesn't pad for it
+   the way .layout does. */
+.topbar.inflow{position:static;flex:none}
+.brandstrip.inflow{position:static;flex:none}
+
+/* ---------------- Layout: sticky rail + main ---------------- */
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:0;max-width:1480px;margin:0 auto;padding:61px 0 0}
+.rail{position:sticky;top:61px;align-self:start;height:calc(100vh - 61px);padding:26px 16px 26px 26px;display:flex;flex-direction:column;gap:3px;overflow:auto}
+.rail .rl-h{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin:6px 8px 8px}
+.rail a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--muted);font-size:13.5px;font-weight:620;padding:9px 11px;border-radius:var(--r-nav);transition:color .2s,background .2s;cursor:pointer}
+.rail a .ic{font-size:16px;color:#b6b6ab;transition:color .2s}
+.rail a:hover{color:var(--ink);background:var(--well)}
+.rail a.on{color:var(--forest);background:var(--g-lime)}
+.rail a.on .ic{color:var(--forest)}
+.rail .rl-foot{margin-top:auto;font-size:10.5px;color:var(--faint);line-height:1.5;padding:14px 9px 0;border-top:1px solid var(--line)}
+.rail .rl-foot b{color:var(--found-d)}
+main{padding:30px 40px 120px;min-width:0}
+section{scroll-margin-top:78px}
+
+/* ---------------- Section heads & prose ---------------- */
+.sec-head{display:flex;align-items:baseline;gap:12px;margin:0 0 18px}
+.sec-kick{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--forest);display:inline-flex;align-items:center;gap:7px}
+.sec-kick .ic{font-size:14px;color:var(--lime);animation:kick 3.2s var(--ease) infinite}
+@keyframes kick{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.sec-n{margin-left:auto;font-size:10.5px;color:var(--faint);font-weight:700;letter-spacing:.04em}
+h2.sec-title{font-size:27px;line-height:1.12;font-weight:780;letter-spacing:-.03em;margin:6px 0 0;font-family:var(--font-display)}
+.lede{font-size:14.5px;line-height:1.6;color:var(--body);max-width:66ch;margin:10px 0 0}
+.lede b{color:var(--ink)}
+.divider{height:1px;background:var(--line);margin:54px 0}
+.note{font-size:12.5px;line-height:1.55;color:var(--muted);margin:14px 0 0}
+.note b{color:#34342c}
+.foot{margin-top:54px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:10px;color:var(--faint);letter-spacing:.02em;line-height:1.8}
+.foot code{color:#7a8a82}
+
+/* ---------------- Hero ---------------- */
+.hero{background:linear-gradient(180deg,#fff,#fbfbf6);border:1px solid var(--line);border-radius:var(--r-hero);padding:32px 34px;
+  box-shadow:var(--shadow-hero);display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center}
+.hero-eyebrow{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em;display:flex;align-items:center;gap:8px;text-transform:uppercase}
+.hero-eyebrow .d{width:9px;height:9px;border-radius:2px;background:var(--lime)}
+.hero h1{font-size:40px;line-height:1.06;font-weight:800;letter-spacing:-.035em;margin:16px 0 0;font-family:var(--font-display)}
+.hero h1 .em{color:var(--forest)}
+.hero-sub{font-size:14.5px;line-height:1.62;color:var(--body);margin:16px 0 0;max-width:52ch}
+.hero-sub b{color:var(--ink)} .hero-sub .lk{color:var(--warn);font-weight:680}
+.hero-chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.hchip{font-size:11.5px;font-weight:720;padding:6px 12px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.hchip .ic{font-size:13px}
+.hchip.v{color:var(--forest);background:var(--g-lime);border:1px solid #bcd9bf}
+.hchip.q{color:var(--muted);background:#f3f3ec;border:1px solid var(--line)}
+
+/* Big number */
+.bignum{text-align:center}
+.bignum .n{font-size:128px;font-weight:840;letter-spacing:-.05em;line-height:.86;color:var(--forest);font-variant-numeric:tabular-nums}
+.bignum .n .u{font-size:54px;color:var(--lime);font-weight:800;margin-left:2px}
+.bignum .cap{font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.45;margin-top:12px;max-width:30ch;margin-inline:auto}
+.bignum .cap b{color:var(--ink)}
+.bignum .leak{margin-top:16px;display:inline-flex;align-items:baseline;gap:9px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:var(--r-tile);padding:10px 16px}
+.bignum .leak .v{font-size:23px;font-weight:840;color:var(--warn);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.bignum .leak .l{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--warn);text-align:left;line-height:1.25}
+
+/* ---------------- KPI tiles ---------------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);padding:16px;display:block;min-height:0}
+.kpi-n{font-size:24px;font-weight:840;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi-n .u{font-size:15px;color:var(--muted);margin-left:1px}
+.kpi-l{font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.35;display:flex;align-items:center;gap:5px}
+.kpi-l .ic{font-size:12px;color:var(--faint)}
+
+/* ---------------- Cards ---------------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-card)}
+.rails{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.rail-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-card)}
+.rail-card.prev{border-color:#bcd9bf;background:linear-gradient(180deg,#fff,#f6fbf6)}
+.rail-card.rec{border-color:var(--found-bd);background:linear-gradient(180deg,#fff,#f6fafb)}
+.rc-h{display:flex;align-items:center;gap:10px}
+.rc-tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:6px;font-weight:600}
+.rc-tag.prev{background:var(--g-lime);color:var(--forest-d)} .rc-tag.rec{background:var(--found-bg);color:var(--found-d)}
+.rc-h b{font-size:18px;font-weight:780;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.rc-h img{width:22px;height:22px;border-radius:6px;object-fit:contain;background:var(--card);border:1px solid var(--line)}
+.rc-p{font-size:13.5px;line-height:1.6;color:var(--body);margin-top:12px} .rc-p b{color:var(--ink)}
+.rc-m{font-family:var(--font-mono);font-size:11px;letter-spacing:.02em;color:var(--muted);margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.rc-m b{color:var(--forest-d)}
+
+/* ---------------- Horizontal bars ---------------- */
+.bars{display:flex;flex-direction:column;gap:13px}
+.bars-leg{display:flex;gap:22px;margin:2px 0 16px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.bars-leg i{width:15px;height:10px;border-radius:3px;display:inline-block;vertical-align:-1px;margin-right:7px}
+.brow{display:grid;grid-template-columns:188px 1fr;align-items:center;gap:16px}
+.brow-name{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:680}
+.brow-name img{width:24px;height:24px;border-radius:6px;object-fit:contain;background:var(--card);border:1px solid var(--line);flex:none}
+.brow-name small{display:block;font-size:9.5px;font-weight:600;color:var(--muted);margin-top:1px;letter-spacing:.01em}
+.brow-track{position:relative;height:36px;background:var(--well);border-radius:var(--r-chip);overflow:hidden}
+.brow-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:#cdd6cf;border-radius:var(--r-chip);transition:width 1.1s var(--ease)}
+.brow-auth{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--forest);border-radius:var(--r-chip) 0 0 var(--r-chip);transition:width 1.1s var(--ease) .12s}
+.brow-val{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:flex-end;gap:11px;padding-right:14px;font-family:var(--font-mono);font-size:12px;color:var(--ink);white-space:nowrap;z-index:2}
+.brow-val b{font-weight:600} .brow-val .pct{color:var(--forest-d)} .brow-val .lk{color:var(--warn)}
+
+/* ---------------- Data table ---------------- */
+.tw{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:8px 22px 14px;box-shadow:var(--shadow-card)}
+table.dt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.dt th{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:14px 10px 10px;border-bottom:1px solid var(--line);font-weight:500}
+table.dt th.l{text-align:left}
+table.dt td{font-family:var(--font-mono);font-size:13.5px;color:var(--ink);text-align:right;padding:13px 10px;border-bottom:1px solid #eef0ea}
+table.dt td.l{text-align:left}
+table.dt td.mech{display:flex;align-items:center;gap:10px;font-family:var(--font-ui);font-weight:620}
+table.dt td.mech .dot{width:9px;height:9px;border-radius:3px;flex:none}
+table.dt tr.sub td{font-family:var(--font-ui);font-weight:760;border-top:1px solid #d7ded8;border-bottom:1px solid #d7ded8;background:var(--g-lime)}
+table.dt tr.tot td{color:var(--muted)}
+
+/* Confidence pills */
+.cpill{display:inline-block;min-width:46px;text-align:center;padding:3px 10px;border-radius:var(--r-pill);font-family:var(--font-mono);font-size:11.5px;letter-spacing:.01em}
+.cpill.hi{background:var(--g-lime);color:var(--forest-d)} .cpill.mid{background:var(--amber-bg);color:var(--amber)} .cpill.lo{background:var(--warn-bg);color:var(--warn)}
+
+/* ---------------- Formula + confidence rows ---------------- */
+.formula{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);padding:15px 18px;font-family:var(--font-mono);font-size:12.5px;color:var(--body);line-height:1.6;margin-bottom:18px}
+.formula b{color:var(--ink)} .formula .k{color:var(--forest);font-weight:500}
+.cf{position:relative;display:flex;flex-direction:column;gap:14px;padding-top:4px}
+.crow{display:grid;grid-template-columns:300px 1fr 46px;align-items:center;gap:16px}
+.crow-lab{font-size:14px;font-weight:680;line-height:1.25}
+.crow-lab small{display:block;font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:.02em;margin-top:3px;font-weight:400}
+.crow-track{position:relative;height:14px;background:var(--well);border-radius:var(--r-pill);overflow:hidden}
+.crow-fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:var(--r-pill);transition:width 1.1s var(--ease)}
+.crow-fill.hi{background:var(--forest)} .crow-fill.mid{background:var(--amber)} .crow-fill.lo{background:var(--warn)}
+.crow-pct{font-family:var(--font-mono);font-size:16px;text-align:right;letter-spacing:-.5px}
+.crow-pct.hi{color:var(--forest-d)} .crow-pct.mid{color:var(--amber)} .crow-pct.lo{color:var(--warn)}
+.cf-line{position:absolute;top:0;bottom:0;width:0;border-left:1.5px dashed #b7c2bb;pointer-events:none}
+.cf-line span{position:absolute;top:-6px;left:8px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg);padding:0 5px;white-space:nowrap}
+
+/* ---------------- Motion ---------------- */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .65s var(--spring)}
+.reveal.shown{opacity:1;transform:none}
+.kpi,.rail-card{transition:transform .3s var(--spring),box-shadow .3s var(--ease),border-color .3s}
+.kpi:hover,.rail-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:#d6ddd7}
+.kpi:hover .kpi-n{color:var(--forest);transition:color .3s}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}}
+
+/* ---------------- Responsive ---------------- */
+@media(max-width:1080px){
+  .layout{grid-template-columns:1fr}
+  .rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;overflow:visible;border-bottom:1px solid var(--line);padding:12px 20px}
+  .rail .rl-h,.rail .rl-foot{display:none}
+  .rail a{padding:7px 10px;font-size:12.5px}
+  main{padding:24px 20px 90px}
+  .hero{grid-template-columns:1fr;gap:24px}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .rails{grid-template-columns:1fr}
+  .crow{grid-template-columns:1fr 90px 40px}
+  .tb-ctx{display:none}
+}
+@media(max-width:760px){
+  .tb-tag,.tb-x,.tb-sep,.tb-client{display:none}
+  .topbar{gap:9px;padding:0 14px}
+  .bignum .n{font-size:96px} .bignum .n .u{font-size:40px}
+  .brow{grid-template-columns:1fr}
+}
+
+/* ---------------- Phone (≤640px): reflow, don't shrink ----------------
+   The scale-to-fit zoom canvas jams a 1440px comp into the phone (floored
+   at 0.45 → 648px into a 390px screen). Below the phone breakpoint we drop
+   zoom entirely, let the canvas go fluid, and reflow every primitive to a
+   single readable column. This block ships in the always-linked components
+   file, so every present and future artifact inherits it automatically.
+   Heavy-handed by design — !important overrides per-artifact <style> too. */
+@media(max-width:640px){
+  /* Kill the zoom trick; make the fixed canvas fluid */
+  html{-webkit-text-size-adjust:100%}
+  body{overflow-x:hidden}
+  .frame{width:100%!important;min-width:0}
+  .frame:not(.overlay),.fit{zoom:1!important}
+
+  /* Topbar: solid fill (blur is costly on mobile GPUs), tighter */
+  .topbar{height:52px;gap:9px;padding:0 14px;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+  .brandstrip{top:52px}
+
+  /* Collapse every grove grid to one column */
+  .layout{grid-template-columns:1fr!important;padding-top:52px}
+  .rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;overflow:visible;border-bottom:1px solid var(--line);padding:10px 16px}
+  .rail .rl-h,.rail .rl-foot{display:none}
+  main{padding:20px 16px 84px!important}
+  .hero{grid-template-columns:1fr!important;gap:22px;padding:22px 20px}
+  .kpis{grid-template-columns:repeat(2,1fr)!important;gap:10px}
+  .rails,.brow,.crow{grid-template-columns:1fr!important}
+  .crow{gap:8px} .crow-pct{text-align:left}
+  .card,.rail-card,.tw{padding:18px!important}
+  .divider{margin:38px 0}
+
+  /* Rescale oversized display type (mobile-only; desktop untouched) */
+  .hero h1{font-size:clamp(26px,8vw,40px)}
+  h2.sec-title{font-size:21px}
+  .bignum .n{font-size:clamp(52px,18vw,96px)}
+  .bignum .n .u{font-size:clamp(24px,8vw,40px)}
+  .lede,.hero-sub{max-width:none}
+
+  /* Safety nets for bespoke per-artifact <style> layouts */
+  [class*="grid"],[class*="cols"],[class*="row"]:not(.brow-name):not(.rc-h){grid-template-columns:1fr!important}
+  /* Let every grid/flex item shrink below its content's min-width — without
+     this, a nested wide table or nowrap chain forces its whole column wide
+     and the page overflows even though the grid "collapsed". This is the
+     single most important rule for bespoke content behaving on mobile. */
+  .frame *,.layout *,main *{min-width:0}
+  /* Wide/unwrappable content scrolls inside its own box, never the page */
+  .tw,.rb-wrap,[class*="wrap"],[class*="scroll"]{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{max-width:100%}
+  img,svg,video,iframe{max-width:100%;height:auto}
+  pre{max-width:100%;overflow-x:auto}
+  /* Break genuinely unbreakable strings (URLs, code, route chains) */
+  h1,h2,h3,h4,p,li,td,th,dd,figcaption,blockquote,.lede,.hero-sub,.note,.cap,.rc-p{overflow-wrap:anywhere}
+}
+
+/* Extra-narrow (≤380px, iPhone SE / mini): single-column KPIs too */
+@media(max-width:380px){
+  .kpis{grid-template-columns:1fr!important}
+  .bignum .n{font-size:64px}
+}

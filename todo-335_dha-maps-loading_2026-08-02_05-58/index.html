@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-335 · dha maps loading</title>
+  <meta name="description" content="Why Nearby maps reloaded, what changed, and how the new cache and E2E coverage behave">
+  <script>
+  (function () {
+    var KEY = 'bpo-unlocked';
+    var unlocked = false, reveal = false;
+    try {
+      unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+      reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+    } catch (e) {}
+
+    var hide, cover;
+    if (!unlocked) {
+      hide = document.createElement('style');
+      hide.id = '__pw_gate_hide__';
+      hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+      (document.head || document.documentElement).appendChild(hide);
+    } else if (reveal) {
+      cover = document.createElement('style');
+      cover.id = '__pw_reveal_pre__';
+      cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+      (document.head || document.documentElement).appendChild(cover);
+      setTimeout(function () {
+        var c = document.getElementById('__pw_reveal_pre__');
+        if (c) c.remove();
+      }, 4000);
+    }
+
+    window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+    var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+    var i = 0;
+    (function next() {
+      if (i >= prefixes.length) {
+        if (hide) hide.remove();
+        if (cover) cover.remove();
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = prefixes[i++] + 'password-wall/gate.js';
+      s.onerror = next;
+      document.head.appendChild(s);
+    })();
+  })();
+  </script>
+
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    :root {
+      --paper: #f1efe6;
+      --surface: #fbfaf5;
+      --ink: #17241f;
+      --muted: #68716d;
+      --forest: #143f34;
+      --moss: #2f6b55;
+      --lime: #c8ed74;
+      --sky: #bfdeeb;
+      --sand: #e5c98e;
+      --rose: #d98e79;
+      --line: #d4d7ce;
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 82% 3%, rgba(191, 222, 235, .55), transparent 28rem),
+        var(--paper);
+      font: 15px/1.55 var(--sans);
+    }
+    a { color: inherit; }
+    code, .mono { font-family: var(--mono); }
+    main { width: min(100% - 36px, 1080px); margin: 0 auto; padding: 34px 0 72px; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(23, 36, 31, .15);
+      font: 700 11px/1 var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid rgba(23, 36, 31, .17);
+      border-radius: 999px;
+      background: rgba(251, 250, 245, .68);
+    }
+    .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--moss); }
+    .hero { padding: clamp(54px, 9vw, 104px) 0 48px; }
+    .eyebrow {
+      margin-bottom: 17px;
+      color: var(--moss);
+      font: 800 12px/1 var(--mono);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      font: 730 clamp(46px, 9vw, 94px)/.91 var(--sans);
+      letter-spacing: -.075em;
+    }
+    h1 em { color: var(--moss); font-style: normal; }
+    .lede {
+      max-width: 720px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(18px, 2.2vw, 23px);
+      line-height: 1.42;
+      letter-spacing: -.015em;
+    }
+    .verdict {
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 14px;
+      margin: 10px 0 58px;
+    }
+    .verdict-main, .verdict-side, .panel, .test-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(251, 250, 245, .83);
+      box-shadow: 0 12px 42px rgba(20, 63, 52, .06);
+    }
+    .verdict-main { padding: clamp(25px, 4vw, 40px); }
+    .verdict-side { display: grid; align-content: space-between; padding: 28px; background: var(--forest); color: white; }
+    .label {
+      color: var(--moss);
+      font: 800 11px/1.2 var(--mono);
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+    .verdict-side .label { color: var(--lime); }
+    .answer { margin: 13px 0 8px; font-size: clamp(26px, 4vw, 42px); line-height: 1.08; letter-spacing: -.045em; }
+    .answer-note { max-width: 630px; margin: 0; color: var(--muted); font-size: 16px; }
+    .big-number { margin-top: 34px; font: 760 clamp(50px, 8vw, 82px)/.85 var(--sans); letter-spacing: -.07em; }
+    .big-number small { display: block; margin-top: 15px; color: rgba(255,255,255,.65); font: 600 12px/1.35 var(--mono); letter-spacing: 0; }
+    section { margin-top: 72px; }
+    .section-head { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 24px; margin-bottom: 24px; }
+    h2 { margin: 7px 0 0; font-size: clamp(30px, 5vw, 52px); line-height: 1; letter-spacing: -.055em; }
+    .section-intro { justify-self: end; max-width: 480px; margin: 0; color: var(--muted); font-size: 16px; }
+    .cause-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; counter-reset: cause; }
+    .cause {
+      min-height: 246px;
+      padding: 23px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      counter-increment: cause;
+    }
+    .cause::before {
+      content: "0" counter(cause);
+      display: block;
+      margin-bottom: 42px;
+      color: var(--rose);
+      font: 800 12px/1 var(--mono);
+    }
+    .cause h3 { margin: 0 0 9px; font-size: 21px; letter-spacing: -.025em; }
+    .cause p { margin: 0; color: var(--muted); }
+    .architecture {
+      display: grid;
+      grid-template-columns: 1fr 58px 1fr;
+      align-items: stretch;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .layer { position: relative; overflow: hidden; padding: 28px; border-radius: 22px; min-height: 260px; }
+    .layer.server { background: var(--sky); }
+    .layer.browser { background: var(--lime); }
+    .layer-index { position: absolute; right: 20px; top: 10px; color: rgba(23,36,31,.13); font: 800 78px/1 var(--mono); }
+    .layer h3 { position: relative; margin: 13px 0 12px; font-size: 28px; line-height: 1.05; letter-spacing: -.04em; }
+    .layer p { position: relative; max-width: 370px; margin: 0; color: rgba(23,36,31,.7); }
+    .tag { position: relative; display: inline-block; padding: 6px 9px; border: 1px solid rgba(23,36,31,.2); border-radius: 7px; font: 750 11px/1 var(--mono); text-transform: uppercase; }
+    .arrow { display: grid; place-items: center; color: var(--moss); font: 800 28px/1 var(--mono); }
+    .measurements { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .panel { padding: 27px; }
+    .panel.before { background: #f7ece7; }
+    .panel.after { background: #edf4e3; }
+    .metric { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: end; padding: 16px 0; border-bottom: 1px solid rgba(23,36,31,.12); }
+    .metric:last-child { border: 0; }
+    .metric-name { color: var(--muted); }
+    .metric-value { font: 750 22px/1 var(--mono); letter-spacing: -.06em; }
+    .metric-value.bad { color: #9a4a39; }
+    .metric-value.good { color: var(--moss); }
+    .caveat { margin: 13px 0 0; color: var(--muted); font-size: 12px; }
+    .boundary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--surface);
+    }
+    .boundary > div { padding: 28px; }
+    .boundary > div + div { border-left: 1px solid var(--line); }
+    .boundary h3 { margin: 10px 0 14px; font-size: 24px; letter-spacing: -.035em; }
+    .clean-list { padding: 0; margin: 0; list-style: none; }
+    .clean-list li { position: relative; padding: 9px 0 9px 28px; border-bottom: 1px solid rgba(23,36,31,.09); }
+    .clean-list li:last-child { border: 0; }
+    .clean-list li::before { position: absolute; left: 0; font: 800 14px/1.6 var(--mono); }
+    .included li::before { content: "✓"; color: var(--moss); }
+    .excluded li::before { content: "—"; color: var(--rose); }
+    .test-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .test-card { min-height: 175px; padding: 21px; }
+    .test-card strong { display: block; margin: 34px 0 6px; font-size: 26px; line-height: 1; letter-spacing: -.04em; }
+    .test-card span { color: var(--muted); }
+    .release {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 26px;
+      margin-top: 72px;
+      padding: 30px;
+      border-radius: 22px;
+      background: var(--forest);
+      color: white;
+    }
+    .release h2 { margin: 7px 0 8px; color: white; font-size: clamp(28px, 4vw, 42px); }
+    .release p { margin: 0; color: rgba(255,255,255,.65); }
+    .release-link {
+      flex: 0 0 auto;
+      padding: 13px 18px;
+      border-radius: 10px;
+      background: var(--lime);
+      color: var(--ink);
+      font: 800 13px/1 var(--mono);
+      text-decoration: none;
+    }
+    footer { display: flex; justify-content: space-between; gap: 18px; margin-top: 30px; color: var(--muted); font: 12px/1.5 var(--mono); }
+    footer a { text-underline-offset: 3px; }
+
+    @media (max-width: 800px) {
+      .verdict, .section-head, .measurements { grid-template-columns: 1fr; }
+      .section-intro { justify-self: start; }
+      .cause-grid { grid-template-columns: 1fr; }
+      .cause { min-height: auto; }
+      .cause::before { margin-bottom: 24px; }
+      .test-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      main { width: min(100% - 24px, 1080px); padding-top: 18px; }
+      .topbar { align-items: flex-start; }
+      .topbar > span:last-child { display: none; }
+      .hero { padding: 50px 0 34px; }
+      .architecture { grid-template-columns: 1fr; }
+      .arrow { min-height: 36px; transform: rotate(90deg); }
+      .boundary { grid-template-columns: 1fr; }
+      .boundary > div + div { border-left: 0; border-top: 1px solid var(--line); }
+      .test-grid { grid-template-columns: 1fr; }
+      .release, footer { align-items: flex-start; flex-direction: column; }
+      .release-link { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="topbar">
+      <span class="pill">TODO-335 · verified</span>
+      <span>nearby search / loading performance</span>
+    </div>
+
+    <header class="hero">
+      <div class="eyebrow">Dhamma.org · nearby locations</div>
+      <h1>The map now <em>remembers.</em></h1>
+      <p class="lede">It loaded every time because two different things forgot their work: the server rebuilt the Nearby page, then the browser rebuilt the Google Map. Both layers now reuse what they already know.</p>
+    </header>
+
+    <section class="verdict" aria-label="Answer">
+      <article class="verdict-main">
+        <div class="label">Can it be better or cached?</div>
+        <div class="answer">Yes. Cache the page briefly; reuse the map for the life of the tab.</div>
+        <p class="answer-note">Five-minute ISR removes repeat database rendering. <code>reuseMaps</code> keeps the same Google Maps instance across Search → Locations navigation, so the warm return no longer shows a blocking map loader.</p>
+      </article>
+      <aside class="verdict-side">
+        <div class="label">Warm page response</div>
+        <div class="big-number">3.7 ms<small>production-mode ISR HIT<br>local verification</small></div>
+      </aside>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="label">Root cause</div><h2>Three waits, stacked</h2></div>
+        <p class="section-intro">The Google API script itself was already loaded once. The repeated wait came from page rendering, a fresh map constructor, and treating every remount as cold.</p>
+      </div>
+      <div class="cause-grid">
+        <article class="cause"><h3>Dynamic page</h3><p>The Nearby routes had no revalidation policy, so every request ran the location queries again and returned <code>private, no-store</code>.</p></article>
+        <article class="cause"><h3>Fresh map instance</h3><p>Client-side tab navigation unmounted the map. Returning constructed another Google Map instead of reusing the compatible instance.</p></article>
+        <article class="cause"><h3>Blocking tiles gate</h3><p>Every mount reset <code>isLoading</code> and covered the map until <code>tilesloaded</code>, even when that map type had already rendered in this tab.</p></article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="label">Design</div><h2>Two caches, two lifetimes</h2></div>
+        <p class="section-intro">Caching is split deliberately. Server data gets a bounded freshness window; the expensive visual object lives only inside the current browser document.</p>
+      </div>
+      <div class="architecture" aria-label="Two-layer cache architecture">
+        <article class="layer server">
+          <span class="layer-index">1</span>
+          <span class="tag">Server · 5 minutes</span>
+          <h3>Next.js ISR</h3>
+          <p>Nearby location HTML and server queries are shared, then revalidated after 300 seconds.</p>
+        </article>
+        <div class="arrow" aria-hidden="true">→</div>
+        <article class="layer browser">
+          <span class="layer-index">2</span>
+          <span class="tag">Browser · current tab</span>
+          <h3>Google Map reuse</h3>
+          <p>Compatible map instances survive component remounts. Ready map types skip the repeat blocking loader.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="label">Evidence</div><h2>Before and after</h2></div>
+        <p class="section-intro">Live test-site observations established the problem; a production build verified the new cache contract and browser behavior.</p>
+      </div>
+      <div class="measurements">
+        <article class="panel before">
+          <div class="label">Before · live test site</div>
+          <div class="metric"><span class="metric-name">Cache policy</span><span class="metric-value bad">no-store</span></div>
+          <div class="metric"><span class="metric-name">Page TTFB observed</span><span class="metric-value bad">0.4–1.59 s</span></div>
+          <div class="metric"><span class="metric-name">Search → Locations</span><span class="metric-value bad">~1.92 s</span></div>
+          <div class="metric"><span class="metric-name">Repeat map cover</span><span class="metric-value bad">visible</span></div>
+        </article>
+        <article class="panel after">
+          <div class="label">After · local production build</div>
+          <div class="metric"><span class="metric-name">Cache policy</span><span class="metric-value good">s-maxage=300</span></div>
+          <div class="metric"><span class="metric-name">First render / MISS</span><span class="metric-value good">154 ms</span></div>
+          <div class="metric"><span class="metric-name">Warm render / HIT</span><span class="metric-value good">3.7 ms</span></div>
+          <div class="metric"><span class="metric-name">Repeat map cover</span><span class="metric-value good">absent</span></div>
+        </article>
+      </div>
+      <p class="caveat">Timing environments differ, so the meaningful contract is the change from <code>no-store</code> to a verified ISR <code>HIT</code>, plus identity-level reuse of the same <code>.gm-style</code> map DOM node.</p>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="label">Freshness boundary</div><h2>Fast, without pretending</h2></div>
+        <p class="section-intro">The cache is intentionally modest. It improves repeat navigation while keeping operational changes bounded and observable.</p>
+      </div>
+      <div class="boundary">
+        <div>
+          <div class="label">May lag ≤ 5 minutes</div>
+          <h3>Location metadata</h3>
+          <ul class="clean-list included">
+            <li>name and public URL</li>
+            <li>coordinates</li>
+            <li>active / inactive status</li>
+          </ul>
+        </div>
+        <div>
+          <div class="label">Not cached by this change</div>
+          <h3>Explicit boundaries</h3>
+          <ul class="clean-list excluded">
+            <li>course availability</li>
+            <li>a full browser reload</li>
+            <li>camera and filter persistence</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="label">World-class guardrail</div><h2>Test the user’s return trip</h2></div>
+        <p class="section-intro">The E2E assertion checks the behavior that matters: navigate away, return, keep one script and the same map node, and never resurrect the warm loader.</p>
+      </div>
+      <div class="test-grid">
+        <article class="test-card"><div class="label">Repository</div><strong>614</strong><span>tests passed<br>16 skipped</span></article>
+        <article class="test-card"><div class="label">Browser smoke</div><strong>1.4 s</strong><span>production-mode<br>Chromium pass</span></article>
+        <article class="test-card"><div class="label">Build output</div><strong>● ISR</strong><span>base and deep-link<br>routes classified</span></article>
+        <article class="test-card"><div class="label">Regression cadence</div><strong>05:45</strong><span>UTC nightly<br>+ manual full suite</span></article>
+      </div>
+    </section>
+
+    <section class="release">
+      <div>
+        <div class="label" style="color:var(--lime)">Ready for review · not merged</div>
+        <h2>Draft PR #517</h2>
+        <p>Branch <code>todo-335-maps-loading</code> · commit <code>8921251a</code></p>
+      </div>
+      <a class="release-link" href="https://github.com/dhammaorg/portal-v2/pull/517">Open draft PR ↗</a>
+    </section>
+
+    <footer>
+      <span><a href="https://linear.app/nomad-code/issue/TODO-335/dha-maps-loading">TODO-335 · dha-maps-loading ↗</a></span>
+      <span>2026-08-02 · nearby search performance</span>
+    </footer>
+  </main>
+</body>
+</html>

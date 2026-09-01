@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>The World in Miniature · Princeton University Art Museum</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    /* Chart-scope palette — grove hues chroma-snapped to pass the six checks
+       (validated: L-band ✓ · chroma ✓ · protan ΔE 40.8 ✓ · contrast ✓) */
+    :root {
+      --c-mus:   #0d8f7f;  --c-mus-bg:  #d9ece7;   /* the collection / museum      (forest, snapped) */
+      --c-pow:   #c4501f;  --c-pow-bg:  #f6e3da;   /* the monument to power        (warn,   snapped) */
+      --c-sch:   #3a92ba;  --c-sch-bg:  #e3eef2;   /* knowledge production         (found,  snapped) */
+      --c-era:   #a07c15;  --c-era-bg:  #f3ead2;   /* time · the old progression   (amber,  snapped) */
+      --c-lime:  #84c241;                          /* ONE moment: the university reframe               */
+    }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    main { max-width: 1060px; margin: 0 auto; padding: 30px 24px 80px; }
+
+    /* ---------- header ---------- */
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--c-pow); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-pow); }
+    h1 { font:800 clamp(34px, 5.4vw, 54px)/1.02 var(--font-display); letter-spacing:-.025em;
+      color:var(--ink); margin:16px 0 6px; }
+    h1 em { font-style:normal; color:var(--c-mus); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 14px; }
+    .sub a { color: var(--forest-d); text-decoration-color: var(--line); }
+    .lede { max-width:70ch; font:400 16.5px/1.6 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:640; }
+
+    .pullquote { margin:26px 0 6px; padding:18px 22px; border-left:3px solid var(--c-mus);
+      background:var(--card); border-radius: 0 var(--r-panel) var(--r-panel) 0;
+      box-shadow: var(--shadow-card); }
+    .pullquote p { font:500 clamp(17px, 2.2vw, 21px)/1.45 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .pullquote cite { display:block; margin-top:8px; font:500 11.5px/1 var(--font-mono);
+      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 58px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(22px,3vw,28px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .k h2 em { font-style: normal; color: var(--forest-d); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:18px; }
+    .blurb b { color:var(--ink); font-weight:620; }
+
+    /* ---------- legend ---------- */
+    .lgd { display:flex; gap:16px 22px; flex-wrap:wrap; margin:14px 2px 0;
+      font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+    .lgd span { display:inline-flex; align-items:center; gap:8px; }
+    .lgd i { width:11px; height:11px; border-radius:50%; }
+
+    /* ---------- hero viz ---------- */
+    .hero-card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-hero); overflow:hidden; }
+    .mode-bar { display:flex; align-items:center; gap:10px; padding:14px 16px 0; flex-wrap:wrap; }
+    .mode-btn { font:600 12px/1 var(--font-mono); letter-spacing:.03em; padding:9px 14px;
+      border-radius:var(--r-pill); border:1px solid var(--line); background:var(--bg);
+      color:var(--muted); cursor:pointer; transition:all .35s var(--ease); }
+    .mode-btn:hover { border-color:var(--faint); color:var(--ink); }
+    .mode-btn[aria-pressed="true"] { color:#fff; }
+    #btn-state[aria-pressed="true"]   { background:var(--c-pow); border-color:var(--c-pow); }
+    #btn-fortune[aria-pressed="true"] { background:var(--c-era); border-color:var(--c-era); }
+    #btn-univ[aria-pressed="true"]    { background:var(--c-mus); border-color:var(--c-mus); }
+    .mode-note { flex:1 1 260px; min-width:220px; position:relative; height:44px; }
+    .mode-note p { position:absolute; inset:0; display:flex; align-items:center;
+      font:400 13px/1.35 var(--font-ui); color:var(--muted); opacity:0;
+      transition:opacity .7s var(--ease); }
+    .mode-note p b { color:var(--ink); font-weight:620; margin-right:5px; }
+    [data-mode="state"]   .mode-note .n-state,
+    [data-mode="fortune"] .mode-note .n-fortune,
+    [data-mode="univ"]    .mode-note .n-univ { opacity:1; }
+
+    .hero-card svg { display:block; width:100%; height:auto; }
+    #srcState, #srcFortune, #srcUniv { transition: opacity 1s var(--ease); }
+    [data-mode="state"]   #srcFortune, [data-mode="state"]   #srcUniv,
+    [data-mode="fortune"] #srcState,   [data-mode="fortune"] #srcUniv,
+    [data-mode="univ"]    #srcState,   [data-mode="univ"]    #srcFortune { opacity:.08; }
+    .hero-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:12px 18px 15px; border-top:1px solid var(--line); }
+    .hero-cap b { color:var(--forest-d); font-weight:600; }
+
+    .ax-label { font:500 10.5px var(--font-mono); letter-spacing:.06em; text-transform:uppercase; fill:var(--muted); }
+    .ax-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* ---------- stat tiles ---------- */
+    .tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:12px; margin-top:16px; }
+    .tile { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px 14px; box-shadow:var(--shadow-card); position:relative; overflow:hidden; }
+    .tile::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tc,var(--forest)); }
+    .tile .v { font:800 34px/1 var(--font-display); letter-spacing:-.03em; color:var(--ink);
+      font-variant-numeric:tabular-nums; }
+    .tile .v small { font:700 17px/1 var(--font-display); color:var(--tc,var(--forest)); margin-left:2px; }
+    .tile .l { margin-top:6px; font:500 11px/1.45 var(--font-mono); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- generic figures ---------- */
+    .fig { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); overflow:hidden; }
+    .fig svg { display:block; width:100%; height:auto; }
+    .fig.scroll svg { min-width:720px; }
+    .fig.scroll { overflow-x:auto; }
+    .fig-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:11px 18px 14px; border-top:1px solid var(--line); }
+    .fig-cap b { color:var(--forest-d); font-weight:600; }
+    .stop { cursor:pointer; outline:none; }
+    .stop circle.c { transition: r .25s var(--spring); }
+    .stop:hover circle.c, .stop:focus-visible circle.c { r:8; }
+    .obj { cursor:pointer; outline:none; }
+    .obj g.gl, .obj path, .obj circle, .obj rect { transition: transform .3s var(--spring); }
+    .obj:hover .hit, .obj:focus-visible .hit { fill:var(--c-mus-bg); }
+    .rt-label { font:500 10.5px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; fill:var(--muted); }
+    .rt-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* draw-in for long paths */
+    .draw { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); }
+    .shown .draw { animation: drawin 2.2s var(--ease) forwards; animation-delay: var(--d,0ms); }
+    @keyframes drawin { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .draw { stroke-dasharray:none; stroke-dashoffset:0; } }
+
+    /* fade-in helper for grouped svg layers */
+    .grp { opacity:0; transition:opacity .9s var(--ease); transition-delay:var(--d,0ms); }
+    .shown .grp { opacity:1; }
+
+    /* ---------- split bar ---------- */
+    .split { margin-top:16px; }
+    .split .bar { display:flex; gap:2px; height:32px; border-radius:8px; overflow:hidden; }
+    .split .seg { display:flex; align-items:center; padding:0 13px; font:700 12px var(--font-mono);
+      color:#fff; letter-spacing:.03em; min-width:0; white-space:nowrap; }
+    .split .seg.donor { background:var(--c-mus); flex:2; }
+    .split .seg.other { background:var(--c-era); flex:1; }
+    .split .cap { display:flex; justify-content:space-between; margin-top:8px;
+      font:500 11px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- scholars ---------- */
+    .chorus { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px; }
+    .voice { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:9px; }
+    .voice .who { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .voice .who b { font:700 14.5px/1.1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .voice .role { font:600 9.5px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); color:var(--vr); background:var(--vr-bg); flex:none; }
+    .voice q { font:400 13.5px/1.55 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .voice q::before, .voice q::after { color:var(--vr); font-weight:700; }
+    .voice .note { font:400 11.5px/1.5 var(--font-ui); color:var(--muted); margin-top:auto; }
+    .voice.framework   { --vr:var(--c-sch); --vr-bg:var(--c-sch-bg); }
+    .voice.context     { --vr:var(--c-era); --vr-bg:var(--c-era-bg); }
+    .voice.institution { --vr:var(--c-mus); --vr-bg:var(--c-mus-bg); }
+    .voice.press       { --vr:var(--c-pow); --vr-bg:var(--c-pow-bg); }
+    .voice.argument    { --vr:#5a8a1e; --vr-bg:#e8f3d8; }
+
+    /* ---------- table view ---------- */
+    details.tbl { margin-top:18px; border:1px solid var(--line); border-radius:var(--r-panel);
+      background:var(--card); overflow:hidden; }
+    details.tbl summary { cursor:pointer; padding:13px 18px; font:600 12.5px var(--font-mono);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--forest-d); list-style:none; }
+    details.tbl summary::-webkit-details-marker { display:none; }
+    details.tbl summary::before { content:"▸ "; }
+    details.tbl[open] summary::before { content:"▾ "; }
+    details.tbl table { width:100%; border-collapse:collapse; font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    details.tbl th, details.tbl td { text-align:left; padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+    details.tbl th { font:600 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+    details.tbl td:first-child { font-family:var(--font-mono); font-weight:500; color:var(--ink); white-space:nowrap; }
+
+    /* ---------- closing ---------- */
+    .close-quote { margin:22px 0 0; padding:20px 24px; border-radius:var(--r-card);
+      background:linear-gradient(150deg,#15201d,#0c5a50 130%); color:#eef3ef;
+      box-shadow:var(--shadow-hero); }
+    .close-quote p { font:500 clamp(16px,2.1vw,20px)/1.5 var(--font-display); letter-spacing:-.01em; }
+    .close-quote p em { font-style:normal; color:var(--lime-b); }
+    .close-quote cite { display:block; margin-top:10px; font:500 11px var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:#9fb5ac; font-style:normal; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      font:400 11.5px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.02em; }
+    footer a { color:var(--muted); text-decoration-color:var(--line); }
+
+    /* ---------- tooltip ---------- */
+    .tip { position:fixed; z-index:60; max-width:300px; background:var(--ink); color:#f0f4f1;
+      font:400 12.5px/1.5 var(--font-ui); padding:10px 13px; border-radius:10px;
+      box-shadow:var(--shadow-lift); pointer-events:none; opacity:0;
+      transform:translateY(5px); transition:opacity .18s var(--ease), transform .18s var(--ease); }
+    .tip.on { opacity:1; transform:none; }
+    .tip b { color:#fff; font-weight:640; }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ================= header ================= -->
+  <header class="mo-reveal">
+    <div class="eyebrow"><span class="mo-dot"></span> essay reading · look sharp! · nolan patrick · 2026-05-10</div>
+    <h1>The world <em>in miniature</em></h1>
+    <p class="sub">The Princeton University Art Museum's encyclopedic collection — the essay's argument, drawn.
+      Source: <a href="https://nolanpatrick.substack.com/p/the-world-in-miniature-at-the-princeton">nolanpatrick.substack.com</a></p>
+    <p class="lede">Reopened in October 2025 in a building nearly twice its former size, the Princeton University Art
+      Museum holds <b>more than 117,000 works</b> spanning the globe and <b>five thousand years</b>. Patrick reads it as a
+      specific kind of institution — the <b>“universal survey museum”</b> of Duncan and Wallach — but a new variation on
+      it. Where the classic version monuments state power and the American one (the Met) monuments private fortune,
+      Princeton's runs on the <b>university</b>: networks of academic knowledge and alumni wealth, bringing the world, in
+      miniature, to campus.</p>
+    <div class="pullquote">
+      <p>“Its layout aims to bring the world to campus” — yet the museum, the essay argues, still <b>remains a demonstration of power.</b></p>
+      <cite>Nolan Patrick · the essay's central claim</cite>
+    </div>
+    <div class="lgd" role="list">
+      <span role="listitem"><i style="background:var(--c-mus)"></i> the collection · the objects</span>
+      <span role="listitem"><i style="background:var(--c-pow)"></i> the monument to power</span>
+      <span role="listitem"><i style="background:var(--c-sch)"></i> knowledge production</span>
+      <span role="listitem"><i style="background:var(--c-lime)"></i> the university reframe <em style="font-style:normal;color:var(--faint)">(once)</em></span>
+    </div>
+  </header>
+
+  <!-- ================= 01 · the three monuments ================= -->
+  <section id="power">
+    <div class="k mo-reveal"><span class="n">01</span><h2>Three ways to <em>monument power</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The universal survey museum, in Duncan and Wallach's account, casts every
+      visitor in <b>“the role of an ideal citizen”</b> — heir to a civilized past — through a “programmed experience.”
+      Historically it was a tool of <b>state power</b>. The American variation, the Met, was built by private
+      industrialists as <b>“a monument that would equate their interests with those of the public.”</b> Patrick's claim:
+      Princeton is a <b>third variation</b> — the university museum, powered by knowledge and alumni fortune. Toggle the
+      source; watch the same museum answer to a different master.</p>
+
+    <div class="hero-card mo-reveal" style="--d:140ms" data-mode="univ" id="heroCard">
+      <div class="mode-bar">
+        <button class="mode-btn" id="btn-state"   aria-pressed="false">state power</button>
+        <button class="mode-btn" id="btn-fortune" aria-pressed="false">private fortune</button>
+        <button class="mode-btn" id="btn-univ"    aria-pressed="true">the university</button>
+        <div class="mode-note" aria-live="polite">
+          <p class="n-state"><b>The classic model.</b> The museum monumentalizes the state; the visitor is positioned as an “ideal citizen,” heir to a civilized past.</p>
+          <p class="n-fortune"><b>The American model (the Met).</b> Private wealth builds it — “a monument that would equate their interests with those of the public.”</p>
+          <p class="n-univ"><b>Princeton's model.</b> Power flows from the university — academic knowledge production and the fortune of its alumni.</p>
+        </div>
+      </div>
+      <figure aria-hidden="false" role="img"
+        aria-label="Diagram: a classical museum building at center. Above it, three interchangeable sources of power feed into it — state authority (a crown), private fortune (a coin stack and a board of trustees), and the university (a network of knowledge and alumni nodes). A toggle fades between the three. The museum and its 'ideal citizen' visitor stay constant.">
+        <svg viewBox="0 0 960 400">
+          <line class="vz-gridline" x1="40" y1="346" x2="920" y2="346"/>
+
+          <!-- ============ the museum (constant) ============ -->
+          <g id="museum">
+            <!-- pediment -->
+            <path d="M356,248 L480,190 L604,248 Z" fill="var(--c-mus-bg)" stroke="var(--ink)"
+                  stroke-width="1.85" stroke-linejoin="round" opacity=".95"/>
+            <!-- architrave -->
+            <rect x="356" y="248" width="248" height="13" fill="#fff" stroke="var(--ink)" stroke-width="1.85"/>
+            <!-- columns -->
+            <g stroke="var(--ink)" stroke-width="1.85">
+              <rect x="378" y="263" width="11" height="66" fill="#fff"/>
+              <rect x="424" y="263" width="11" height="66" fill="#fff"/>
+              <rect x="470" y="263" width="11" height="66" fill="#fff"/>
+              <rect x="516" y="263" width="11" height="66" fill="#fff"/>
+              <rect x="562" y="263" width="11" height="66" fill="#fff"/>
+            </g>
+            <!-- steps -->
+            <rect x="350" y="329" width="260" height="8" fill="#fff" stroke="var(--ink)" stroke-width="1.85"/>
+            <rect x="340" y="337" width="280" height="9" fill="#fff" stroke="var(--ink)" stroke-width="1.85"/>
+            <text class="ax-label strong" x="480" y="372" text-anchor="middle">the universal survey museum</text>
+            <!-- the visitor: an "ideal citizen" -->
+            <g opacity=".72">
+              <circle cx="712" cy="326" r="6" fill="none" stroke="var(--ink)" stroke-width="1.85"/>
+              <path d="M712,332 L712,344 M704,352 L712,344 L720,352" fill="none" stroke="var(--ink)"
+                    stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+              <text class="ax-label" x="712" y="372" text-anchor="middle">the visitor</text>
+              <text class="ax-label" x="712" y="386" text-anchor="middle">“an ideal citizen”</text>
+            </g>
+          </g>
+
+          <!-- ============ source A · state power ============ -->
+          <g id="srcState">
+            <path d="M446,112 L446,86 L462,100 L480,72 L498,100 L514,86 L514,112 Z"
+                  fill="var(--c-pow)" fill-opacity=".13" stroke="var(--c-pow)" stroke-width="1.85"
+                  stroke-linejoin="round"/>
+            <circle cx="462" cy="83" r="2.6" fill="var(--c-pow)"/>
+            <circle cx="480" cy="68" r="2.6" fill="var(--c-pow)"/>
+            <circle cx="498" cy="83" r="2.6" fill="var(--c-pow)"/>
+            <!-- authority rays -->
+            <path d="M446,108 L410,150 M514,108 L550,150" fill="none" stroke="var(--c-pow)"
+                  stroke-width="1.6" stroke-linecap="round" opacity=".4"/>
+            <!-- funnel into the pediment apex -->
+            <path class="vz-path flow draw" style="--vz-c:var(--c-pow); --vz-dash:14; --len:78"
+                  d="M480,114 L480,188"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-pow); --mote-path:path('M480,114 L480,188'); --d:0s"/>
+            <text class="ax-label strong" x="480" y="52" text-anchor="middle" fill="var(--c-pow)">a tool of state power</text>
+          </g>
+
+          <!-- ============ source B · private fortune ============ -->
+          <g id="srcFortune">
+            <!-- board of trustees -->
+            <g fill="var(--c-era)">
+              <circle cx="438" cy="60" r="3.2"/><circle cx="459" cy="60" r="3.2"/>
+              <circle cx="480" cy="60" r="3.2"/><circle cx="501" cy="60" r="3.2"/>
+              <circle cx="522" cy="60" r="3.2"/>
+            </g>
+            <!-- coin stack -->
+            <g stroke="var(--c-era)" stroke-width="1.85" fill="var(--c-era)" fill-opacity=".12">
+              <ellipse cx="480" cy="106" rx="20" ry="5.6"/>
+              <ellipse cx="480" cy="97" rx="20" ry="5.6"/>
+              <ellipse cx="480" cy="88" rx="20" ry="5.6"/>
+            </g>
+            <path d="M480,72 L480,84" stroke="var(--c-era)" stroke-width="1.4" opacity=".45"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-era); --vz-dash:14; --len:76"
+                  d="M480,112 L480,188"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-era); --mote-path:path('M480,112 L480,188'); --d:-1.4s"/>
+            <text class="ax-label strong" x="480" y="46" text-anchor="middle" fill="var(--c-era)">private fortune · the Met's board</text>
+          </g>
+
+          <!-- ============ source C · the university (lime moment) ============ -->
+          <g id="srcUniv">
+            <!-- knowledge/alumni lattice -->
+            <path d="M430,68 L480,92 L530,68 M424,110 L480,92 L536,110 M480,56 L480,92"
+                  fill="none" stroke="var(--c-sch)" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round" opacity=".5"/>
+            <circle cx="430" cy="68" r="4" fill="var(--c-sch)"/>
+            <circle cx="530" cy="68" r="4" fill="var(--c-sch)"/>
+            <circle cx="424" cy="110" r="4" fill="var(--c-sch)"/>
+            <circle cx="536" cy="110" r="4" fill="var(--c-sch)"/>
+            <circle cx="480" cy="56" r="4" fill="var(--c-sch)"/>
+            <!-- the single lime moment: the university node + its loop -->
+            <circle class="vz-ring orbit" cx="480" cy="92" r="23" style="--vz-c:var(--c-lime)"/>
+            <circle class="vz-dot breathe" cx="480" cy="92" r="6" style="--vz-c:var(--c-lime)"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-lime); --vz-dash:14; --len:76"
+                  d="M480,118 L480,188"/>
+            <circle class="vz-mote" r="3.2" style="--vz-c:var(--c-lime); --mote-path:path('M480,118 L480,188'); --d:-.7s"/>
+            <circle class="vz-mote" r="2.6" style="--vz-c:var(--c-sch); --mote-path:path('M480,118 L480,188'); --d:-3.1s"/>
+            <text class="ax-label strong" x="480" y="42" text-anchor="middle" fill="var(--forest-d)">knowledge + alumni networks</text>
+          </g>
+        </svg>
+      </figure>
+      <div class="hero-cap"><b>The constant is the shell — the source of power is what changes.</b> Princeton's director,
+        James Steward, calls the reopened museum “a hub and gathering space”; its layout, the essay notes, “aims to bring
+        the world to campus.” But bringing the world in, Patrick argues, is still a way of demonstrating who holds it.</div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-mus); --d:60ms">
+        <div class="v"><span class="num" data-count="117">0</span><small>k+</small></div>
+        <div class="l">works of art · spanning the globe</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:140ms">
+        <div class="v"><span class="num" data-count="5000">0</span></div>
+        <div class="l">years of human history</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-sch); --d:220ms">
+        <div class="v"><span class="num" data-count="10">0</span></div>
+        <div class="l">curatorial areas · African to Asian</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--ink); --d:300ms">
+        <div class="v"><span class="num" data-count="9">0</span></div>
+        <div class="l">second-floor pavilions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · the flattening ================= -->
+  <section id="flatten">
+    <div class="k mo-reveal"><span class="n">02</span><h2>From a march <em>to a lattice</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The old universal museum arranged cultures as a <b>progression</b> — a
+      ranked climb toward Western modernity, the West as the summit. Princeton's second floor is instead structured as
+      <b>nine pavilions</b> “that vary in levels of spatial enclosure,” a plan that flattens the collection across time
+      and space and sets cultures in dialogue rather than in rank. Same encyclopedic ambition; a different geometry of
+      power.</p>
+
+    <div class="fig scroll mo-reveal" style="--d:140ms" id="flattenObserve">
+      <svg viewBox="0 0 960 300" role="img"
+        aria-label="Left: the classic model — a rising staircase of culture-dots climbing toward a highlighted node labeled 'the West', a progression. Right: Princeton's model — a three by three grid of nine equal pavilion cells connected by faint dialogue lines, no hierarchy.">
+        <!-- divider -->
+        <line x1="480" y1="30" x2="480" y2="270" stroke="var(--faint)" stroke-width="1.5" stroke-dasharray="3 7"/>
+        <text class="rt-label" x="60" y="40">the classic model</text>
+        <text class="rt-label" x="900" y="40" text-anchor="end">princeton's model</text>
+
+        <!-- LEFT · the progression -->
+        <g class="grp" style="--d:120ms">
+          <path class="vz-path draw" style="--vz-c:var(--c-era); --vz-dash:0; --len:430"
+                d="M70,240 L150,214 L230,186 L310,156 L390,120 L430,102" stroke-dasharray="none" opacity=".7"/>
+          <polyline points="418,98 434,100 424,114" fill="none" stroke="var(--c-era)"
+                    stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle class="vz-dot" cx="70"  cy="240" r="5" style="--vz-c:var(--c-era)"/>
+          <circle class="vz-dot" cx="150" cy="214" r="5" style="--vz-c:var(--c-era)"/>
+          <circle class="vz-dot" cx="230" cy="186" r="5" style="--vz-c:var(--c-era)"/>
+          <circle class="vz-dot" cx="310" cy="156" r="5" style="--vz-c:var(--c-era)"/>
+          <circle class="vz-dot" cx="390" cy="120" r="5" style="--vz-c:var(--c-era)"/>
+          <circle class="vz-dot breathe" cx="430" cy="102" r="7" style="--vz-c:var(--c-pow)"/>
+          <text class="rt-label strong" x="392" y="90" fill="var(--c-pow)">“the West”</text>
+          <text class="ax-label" x="70" y="262">cultures ranked · a climb to modernity</text>
+        </g>
+
+        <!-- RIGHT · the nine pavilions -->
+        <g class="grp" style="--d:320ms">
+          <!-- dialogue lattice -->
+          <path d="M600,90 L720,90 L840,90 M600,160 L720,160 L840,160 M600,230 L720,230 L840,230
+                   M600,90 L600,230 M720,90 L720,230 M840,90 L840,230
+                   M600,90 L720,160 L840,90 M600,230 L720,160 L840,230"
+                fill="none" stroke="var(--c-mus)" stroke-width="1.2" opacity=".28" stroke-linecap="round"/>
+          <g>
+            <rect x="574" y="64"  width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="694" y="64"  width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="814" y="64"  width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="574" y="134" width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="694" y="134" width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="814" y="134" width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="574" y="204" width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="694" y="204" width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+            <rect x="814" y="204" width="52" height="52" rx="7" fill="var(--c-mus)" fill-opacity=".16" stroke="var(--c-mus)" stroke-width="1.85"/>
+          </g>
+          <circle class="vz-dot breathe" cx="600" cy="90"  r="4" style="--vz-c:var(--c-mus); --d:-.4s"/>
+          <circle class="vz-dot breathe" cx="720" cy="160" r="4" style="--vz-c:var(--c-mus); --d:-1.6s"/>
+          <circle class="vz-dot breathe" cx="840" cy="230" r="4" style="--vz-c:var(--c-mus); --d:-2.8s"/>
+          <text class="ax-label" x="574" y="278">nine equal pavilions · cultures in dialogue</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>Read as geometry, not metric:</b> the essay describes the arrangement — a progression versus
+        a flattened set of nine pavilions — not a measured quantity. The reframe is spatial: the plan refuses the ranked
+        march the universal museum was invented to stage.</div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · the world in miniature ================= -->
+  <section id="cabinet">
+    <div class="k mo-reveal"><span class="n">03</span><h2>The cabinet of <em>curiosities</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The museum's Asian-art display is titled <b>“World in Miniature.”</b> It
+      revives the <b>Wunderkammer</b> — the Qing-dynasty and Euro-American cabinets that gathered varied objects together
+      “to delight the eye and to bring the world, in miniature, into the home or gallery,” prizing curiosity over
+      typological order. The <i>Princeton Collects</i> show extends the metaphor: <b>≈150 alumni-donated works</b>, called
+      “a celebration of the Museum in miniature.” Hover a compartment.</p>
+
+    <div class="fig scroll mo-reveal" style="--d:140ms" id="cabinetObserve">
+      <svg viewBox="0 0 960 330" role="img"
+        aria-label="A cabinet of curiosities: a framed case divided into eight compartments, each holding a small object from a different culture — a Southwest figurine, a Chinese snuff bottle, a Japanese sword guard, a European enamel, an Albrecht Dürer woodcut, a Nick Cave Soundsuit, a West African shield, and a samurai outfit. A lime label plate on the crown reads 'world in miniature'.">
+        <!-- case frame -->
+        <rect x="80" y="52" width="800" height="248" rx="9" fill="#fff" stroke="var(--ink)" stroke-width="1.85"/>
+        <!-- shelves + dividers -->
+        <g stroke="var(--line)" stroke-width="1.5">
+          <line x1="80" y1="176" x2="880" y2="176"/>
+          <line x1="280" y1="52" x2="280" y2="300"/>
+          <line x1="480" y1="52" x2="480" y2="300"/>
+          <line x1="680" y1="52" x2="680" y2="300"/>
+        </g>
+        <!-- lime label plate on the crown: the one lime moment -->
+        <g>
+          <ellipse cx="480" cy="52" rx="74" ry="17" fill="#fff" stroke="var(--c-lime)" stroke-width="1.85"/>
+          <circle cx="418" cy="52" r="3" fill="var(--c-lime)"/>
+          <circle cx="542" cy="52" r="3" fill="var(--c-lime)"/>
+          <text x="480" y="56" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5"
+                letter-spacing=".08em" fill="var(--forest-d)" font-weight="600">WORLD IN MINIATURE</text>
+        </g>
+
+        <!-- objects: forest glyphs, each a hoverable stop -->
+        <!-- 1 · Southwest figurine -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;American Southwest figurine.&lt;/b&gt; From the Ancient Americas holdings — gathered in the 'World in Miniature' case beside continents away.">
+          <rect class="hit" x="90" y="62" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(180,114)" fill="none" stroke="var(--c-mus)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="0" cy="-16" r="6" fill="var(--c-mus-bg)"/>
+            <path d="M-9,16 L-4,-5 Q0,-11 4,-5 L9,16 Z" fill="var(--c-mus-bg)"/>
+          </g>
+          <text class="ax-label" x="180" y="158" text-anchor="middle">figurine</text>
+        </g>
+        <!-- 2 · Chinese snuff bottle -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;Chinese snuff bottle.&lt;/b&gt; The display's logic descends from Qing-dynasty cabinets that placed varied precious objects together.">
+          <rect class="hit" x="290" y="62" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(380,114)" fill="var(--c-mus-bg)" stroke="var(--c-mus)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M-8,16 Q-11,-2 -6,-8 L-6,-12 L6,-12 L6,-8 Q11,-2 8,16 Z"/>
+            <rect x="-5" y="-18" width="10" height="6" rx="1"/>
+          </g>
+          <text class="ax-label" x="380" y="158" text-anchor="middle">snuff bottle</text>
+        </g>
+        <!-- 3 · Japanese sword guard (tsuba) -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;Japanese sword guard (tsuba).&lt;/b&gt; Small and exquisite — the sort of object the cabinet prized for sensual delight, not classification.">
+          <rect class="hit" x="490" y="62" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(580,112)" fill="var(--c-mus-bg)" stroke="var(--c-mus)" stroke-width="1.85">
+            <circle cx="0" cy="0" r="16"/>
+            <rect x="-4" y="-7" width="8" height="14" rx="1" fill="#fff"/>
+          </g>
+          <text class="ax-label" x="580" y="158" text-anchor="middle">sword guard</text>
+        </g>
+        <!-- 4 · European enamel -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;European enamel.&lt;/b&gt; The Wunderkammer mixed continents freely — Europe shelved beside Asia and the Americas, curiosity over hierarchy.">
+          <rect class="hit" x="690" y="62" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(780,112)" fill="var(--c-mus-bg)" stroke="var(--c-mus)" stroke-width="1.85" stroke-linejoin="round">
+            <rect x="-15" y="-12" width="30" height="24" rx="5"/>
+            <circle cx="0" cy="0" r="4.5" fill="var(--c-mus)"/>
+          </g>
+          <text class="ax-label" x="780" y="158" text-anchor="middle">enamel</text>
+        </g>
+        <!-- 5 · Dürer woodcut -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;Albrecht Dürer woodcut.&lt;/b&gt; A European print among figurines and bottles — the cabinet valued rarity and wonder over typological knowledge.">
+          <rect class="hit" x="90" y="186" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(180,236)" fill="#fff" stroke="var(--c-mus)" stroke-width="1.85" stroke-linecap="round">
+            <rect x="-14" y="-15" width="28" height="30" rx="2" fill="var(--c-mus-bg)"/>
+            <path d="M-14,-5 L14,-5 M-14,4 L14,4 M-4,-15 L-4,15"/>
+          </g>
+          <text class="ax-label" x="180" y="282" text-anchor="middle">woodcut</text>
+        </g>
+        <!-- 6 · Nick Cave Soundsuit -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;Nick Cave Soundsuit.&lt;/b&gt; In the Orientation Gallery, director James Steward reads it beside a samurai outfit and a West African shield as 'modes of self-protection.'">
+          <rect class="hit" x="290" y="186" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(380,236)" fill="none" stroke="var(--c-mus)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="0" cy="-18" r="4" fill="var(--c-mus-bg)"/>
+            <path d="M0,-14 L0,16 M-10,-8 Q0,-13 10,-8 M-12,0 Q0,-5 12,0 M-11,8 Q0,3 11,8"/>
+          </g>
+          <text class="ax-label" x="380" y="282" text-anchor="middle">soundsuit</text>
+        </g>
+        <!-- 7 · West African shield -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;West African shield.&lt;/b&gt; Juxtaposed with the Soundsuit and samurai outfit — cultures set in dialogue rather than ranked in a line.">
+          <rect class="hit" x="490" y="186" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(580,236)" fill="var(--c-mus-bg)" stroke="var(--c-mus)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M0,-17 Q15,-9 12,4 Q8,17 0,19 Q-8,17 -12,4 Q-15,-9 0,-17 Z"/>
+            <path d="M0,-11 L0,13" fill="none"/>
+          </g>
+          <text class="ax-label" x="580" y="282" text-anchor="middle">shield</text>
+        </g>
+        <!-- 8 · Samurai outfit -->
+        <g class="obj" tabindex="0" data-tip="&lt;b&gt;Samurai outfit.&lt;/b&gt; The third 'mode of self-protection' — Japan, in conversation with a contemporary American artist and West Africa.">
+          <rect class="hit" x="690" y="186" width="180" height="104" rx="6" fill="transparent"/>
+          <g class="gl" transform="translate(780,238)" fill="var(--c-mus-bg)" stroke="var(--c-mus)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M-14,11 Q-14,-11 0,-13 Q14,-11 14,11 Z"/>
+            <path d="M-7,-13 Q0,-24 7,-13" fill="none"/>
+          </g>
+          <text class="ax-label" x="780" y="282" text-anchor="middle">samurai outfit</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>The oldest way to hold the world:</b> Tony Bennett and Krzysztof Pomian trace the museum's
+        curiosity back to cabinets fixed on “all that was most rare and most inaccessible.” Princeton stages it as
+        pleasure — “encounters that excite the imagination” — and, in <i>Princeton Collects</i>, as a portrait of its own
+        donors.</div>
+    </div>
+  </section>
+
+  <!-- ================= 04 · the two networks ================= -->
+  <section id="networks">
+    <div class="k mo-reveal"><span class="n">04</span><h2>Power through <em>networks</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">If the classic museum's power was the state and the Met's was fortune,
+      Princeton's is <b>two networks feeding one hub</b>. On one side, <b>knowledge production</b>: wall labels written by
+      named academics and practitioners, many not Princeton-affiliated — an NYU PhD candidate, the museum's Chief
+      Conservator, an Alaska Southeast professor, a Minneapolis theater director, a printmaker, a Japanese tea expert. On
+      the other, <b>alumni fortune</b>: more than 200 benefactors, some 2,000 works given, and about two-thirds of the new
+      building's cost.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="netObserve">
+      <svg viewBox="0 0 960 340" role="img"
+        aria-label="A central hub — the Princeton University Art Museum — fed by two networks. On the left, blue nodes labeled 'knowledge production' (wall-label authors). On the right, nodes labeled 'alumni fortune', with the university itself marked as a lime node. Value flows inward along the connecting paths toward the museum.">
+        <!-- connecting paths (drawn behind) -->
+        <path id="netL1" class="vz-path flow draw" style="--vz-c:var(--c-sch); --vz-dash:14; --len:230; --d:200ms" d="M150,80  C300,110 360,150 452,168"/>
+        <path id="netL2" class="vz-path flow draw" style="--vz-c:var(--c-sch); --vz-dash:14; --len:210; --d:260ms" d="M120,180 C260,178 360,172 452,178"/>
+        <path id="netL3" class="vz-path flow draw" style="--vz-c:var(--c-sch); --vz-dash:14; --len:230; --d:320ms" d="M150,282 C300,252 360,210 452,192"/>
+        <path id="netR1" class="vz-path flow draw" style="--vz-c:var(--c-lime); --vz-dash:14; --len:230; --d:240ms" d="M810,80  C660,110 600,150 508,168"/>
+        <path id="netR2" class="vz-path flow draw" style="--vz-c:var(--c-era); --vz-dash:14; --len:210; --d:300ms" d="M840,180 C700,178 600,172 508,178"/>
+        <path id="netR3" class="vz-path flow draw" style="--vz-c:var(--c-era); --vz-dash:14; --len:230; --d:360ms" d="M810,282 C660,252 600,210 508,192"/>
+
+        <!-- LEFT · knowledge production -->
+        <text class="rt-label strong" x="60" y="40" fill="var(--c-sch)">knowledge production</text>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Wall labels by named scholars.&lt;/b&gt; An NYU PhD candidate and the museum's Chief Conservator among the voices — the label is where academic authority is staged.">
+          <circle class="c" cx="150" cy="80" r="6" fill="var(--c-sch)"/>
+          <text class="ax-label" x="128" y="66">academics</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Practitioners, not just professors.&lt;/b&gt; A Minneapolis theater director, a printmaker, a Japanese tea expert — expertise imported from far beyond the campus.">
+          <circle class="c" cx="120" cy="180" r="6" fill="var(--c-sch)"/>
+          <text class="ax-label" x="98" y="206">practitioners</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Many not Princeton-affiliated.&lt;/b&gt; The museum frames itself as a knowledge hub by convening a network wider than the university itself.">
+          <circle class="c" cx="150" cy="282" r="6" fill="var(--c-sch)"/>
+          <text class="ax-label" x="128" y="308">the field</text>
+        </g>
+
+        <!-- RIGHT · alumni fortune (lime moment = the university node) -->
+        <text class="rt-label strong" x="900" y="40" text-anchor="end" fill="var(--c-era)">alumni fortune</text>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;The university, at the center of it.&lt;/b&gt; Princeton's global networks of alumni and friends are what let the museum 'amass an enviable collection' — the essay's real engine of power.">
+          <circle class="vz-ring halo" cx="810" cy="80" r="15" style="--vz-c:var(--c-lime)"/>
+          <circle class="c" cx="810" cy="80" r="6.5" fill="var(--c-lime)"/>
+          <text class="ax-label strong" x="832" y="66" fill="var(--forest-d)">the university</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;200+ benefactors, 2021–2025.&lt;/b&gt; They donated or promised gifts totaling some 2,000 works of art.">
+          <circle class="c" cx="840" cy="180" r="6" fill="var(--c-era)"/>
+          <text class="ax-label" x="862" y="206">benefactors</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;≈ two-thirds of the building.&lt;/b&gt; Donors funded roughly two-thirds of the new structure — Artnet estimated the cost 'upwards of $300 million.'">
+          <circle class="c" cx="810" cy="282" r="6" fill="var(--c-era)"/>
+          <text class="ax-label" x="832" y="308">the building</text>
+        </g>
+
+        <!-- the hub: the museum -->
+        <g>
+          <rect x="446" y="146" width="68" height="60" rx="8" fill="var(--c-mus-bg)" stroke="var(--c-mus)" stroke-width="1.85"/>
+          <path d="M446,146 L480,120 L514,146 Z" fill="var(--c-mus-bg)" stroke="var(--c-mus)" stroke-width="1.85" stroke-linejoin="round"/>
+          <g stroke="var(--c-mus)" stroke-width="1.6">
+            <line x1="462" y1="164" x2="462" y2="200"/>
+            <line x1="480" y1="164" x2="480" y2="200"/>
+            <line x1="498" y1="164" x2="498" y2="200"/>
+          </g>
+          <text class="ax-label strong" x="480" y="230" text-anchor="middle">PUAM · the hub</text>
+        </g>
+        <!-- inbound motes: value flowing to the museum -->
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-sch);  --mote-path:path('M150,80 C300,110 360,150 452,168'); --d:0s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-sch);  --mote-path:path('M150,282 C300,252 360,210 452,192'); --d:-2.6s"/>
+        <circle class="vz-mote" r="3.2" style="--vz-c:var(--c-lime); --mote-path:path('M810,80 C660,110 600,150 508,168'); --d:-1.3s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-era);  --mote-path:path('M810,282 C660,252 600,210 508,192'); --d:-3.9s"/>
+      </svg>
+      <div class="fig-cap"><b>The museum as crossroads:</b> designed with multiple entrances, it convenes knowledge and
+        wealth into one collection. The essay's point is that this convening <i>is</i> the demonstration of power — just
+        rendered in networks rather than in a crown.</div>
+    </div>
+
+    <div class="split mo-reveal" style="--d:220ms" role="img"
+      aria-label="Of the new building's cost, roughly two-thirds came from donors and about one-third from other sources.">
+      <div class="bar">
+        <div class="seg donor">donor-funded · ≈ ⅔</div>
+        <div class="seg other">other · ≈ ⅓</div>
+      </div>
+      <div class="cap"><span>the new building · est. upwards of $300M (Artnet)</span><span>share of construction cost</span></div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:60ms">
+        <div class="v">$<span class="num" data-count="300">0</span><small>M+</small></div>
+        <div class="l">new building · Artnet estimate</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:140ms">
+        <div class="v"><span class="num" data-count="200">0</span><small>+</small></div>
+        <div class="l">benefactors · 2021–2025</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-mus); --d:220ms">
+        <div class="v"><span class="num" data-count="2000">0</span></div>
+        <div class="l">works given or promised</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-sch); --d:300ms">
+        <div class="v"><span class="num" data-count="150">0</span></div>
+        <div class="l"><i>Princeton Collects</i> · all alumni-donated</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · the chorus ================= -->
+  <section id="chorus">
+    <div class="k mo-reveal"><span class="n">05</span><h2>The scholars' <em>chorus</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick builds the reading from a framework, its historical context, the
+      institution's own voice, and the press that priced the reopening.</p>
+    <div class="chorus">
+      <div class="voice framework mo-reveal" style="--d:60ms">
+        <div class="who"><b>Carol Duncan &amp; Alan Wallach</b><span class="role">framework</span></div>
+        <q>[the visitor is cast in] the role of an ideal citizen.</q>
+        <div class="note">“The Universal Survey Museum” (1980) — the archetype PUAM inherits, historically a tool of state power.</div>
+      </div>
+      <div class="voice context mo-reveal" style="--d:120ms">
+        <div class="who"><b>Tony Bennett</b><span class="role">context</span></div>
+        <q>The Birth of the Museum — the modern museum as an inheritor of the cabinet of curiosities.</q>
+        <div class="note">Bennett supplies the lineage from the Wunderkammer to the public survey museum.</div>
+      </div>
+      <div class="voice context mo-reveal" style="--d:180ms">
+        <div class="who"><b>Krzysztof Pomian</b><span class="role">context</span></div>
+        <q>…all that was most rare and most inaccessible.</q>
+        <div class="note">On the collecting impulse behind cabinets — curiosity fixed on the rare, quoted via Bennett.</div>
+      </div>
+      <div class="voice institution mo-reveal" style="--d:240ms">
+        <div class="who"><b>James Steward</b><span class="role">the institution</span></div>
+        <q>[the objects are] modes of self-protection.</q>
+        <div class="note">PUAM's director, framing the Orientation Gallery — and the museum as “a hub and gathering space.”</div>
+      </div>
+      <div class="voice press mo-reveal" style="--d:300ms">
+        <div class="who"><b>Brian Boucher · Artnet</b><span class="role">the price</span></div>
+        <q>[the new building cost] upwards of $300 million.</q>
+        <div class="note">The number that makes the demonstration of power legible — roughly two-thirds from donors.</div>
+      </div>
+      <div class="voice press mo-reveal" style="--d:360ms">
+        <div class="who"><b>Sheets · Short · the press</b><span class="role">the reopening</span></div>
+        <q>Hilarie M. Sheets (NYT) and Aaron Short (Hyperallergic) on the October 2025 reopening.</q>
+        <div class="note">The building nearly doubled; four years of construction; centrally sited as a campus crossroads.</div>
+      </div>
+      <div class="voice argument mo-reveal" style="--d:420ms">
+        <div class="who"><b>Nolan Patrick</b><span class="role">the argument</span></div>
+        <q>[PUAM] remains a demonstration of power.</q>
+        <div class="note">Not state, not fortune — the university variation, run on knowledge production and alumni networks.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 06 · the conclusion ================= -->
+  <section id="close">
+    <div class="k mo-reveal"><span class="n">06</span><h2>A demonstration <em>of power</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The essay's conclusion doesn't fault the museum for its ambition — it
+      names the ambition's source. The universal museum was always a way of showing who holds the world. Princeton shows
+      it differently: through participation in knowledge production and dependence on the university's global networks.
+      The world in miniature is also a map of the power that assembled it.</p>
+
+    <div class="close-quote mo-reveal" style="--d:160ms">
+      <p>The Princeton University Art Museum <em>remains a demonstration of power</em> — differing from other universal
+        museums in the extent to which it emphasizes participation in <em>knowledge production</em>, and in its
+        dependence on the university's global networks.</p>
+      <cite>Nolan Patrick · Look Sharp! · conclusion</cite>
+    </div>
+
+    <details class="tbl mo-reveal" style="--d:240ms">
+      <summary>data table · every figure &amp; claim drawn above</summary>
+      <table>
+        <thead><tr><th>Figure</th><th>Value</th><th>Series / note</th></tr></thead>
+        <tbody>
+          <tr><td>Collection</td><td>117,000+ works</td><td>the collection — spanning the globe, five thousand years</td></tr>
+          <tr><td>Curatorial areas</td><td>ten</td><td>African, Ancient Mediterranean, Asian, American, European, Ancient Americas…</td></tr>
+          <tr><td>Reopening</td><td>October 2025</td><td>four-year build; building nearly twice the former size</td></tr>
+          <tr><td>Second floor</td><td>nine pavilions</td><td>“vary in levels of spatial enclosure” — flatten time &amp; space</td></tr>
+          <tr><td>Nick Cave mosaic</td><td>≈ 40 ft tall</td><td>the collection — in the reopened museum</td></tr>
+          <tr><td><i>Princeton Collects</i></td><td>≈ 150 works</td><td>all alumni-donated — “a celebration of the Museum in miniature”</td></tr>
+          <tr><td>Benefactors (2021–25)</td><td>200+</td><td>alumni fortune — some 2,000 works given or promised</td></tr>
+          <tr><td>New building cost</td><td>upwards of $300M</td><td>the monument to power — ≈ two-thirds donor-funded (Artnet)</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Archetype</th><th>Source of power</th><th>Per the essay</th></tr></thead>
+        <tbody>
+          <tr><td>Classic survey museum</td><td>the state</td><td>casts the visitor as “an ideal citizen,” heir to a civilized past</td></tr>
+          <tr><td>American (the Met)</td><td>private fortune</td><td>“a monument that would equate their interests with those of the public”</td></tr>
+          <tr><td>Princeton (PUAM)</td><td>the university</td><td>knowledge production + alumni networks — “bring the world to campus”</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    <span>bpo · essay reading · the world in miniature, puam</span>
+    <span><a href="https://nolanpatrick.substack.com/p/the-world-in-miniature-at-the-princeton">source essay</a> · built 2026-07-14 13-30 utc</span>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- staggered reveals ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.mo-reveal').forEach(function (el) { io.observe(el); });
+  if (reduce) document.querySelectorAll('.mo-reveal').forEach(function (el) { el.classList.add('shown'); });
+
+  /* ---- count-up tiles ---- */
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, target = +el.getAttribute('data-count');
+      function fmt(n) { return n >= 1000 ? n.toLocaleString('en-US') : String(n); }
+      if (reduce) { el.textContent = fmt(target); return; }
+      var t0 = null, dur = 1300;
+      function step(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(Math.round(target * ease));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+
+  /* ---- power-source toggle: auto-cycle until the reader takes over ---- */
+  var card = document.getElementById('heroCard');
+  var modes = ['state', 'fortune', 'univ'];
+  var btn = {
+    state:   document.getElementById('btn-state'),
+    fortune: document.getElementById('btn-fortune'),
+    univ:    document.getElementById('btn-univ')
+  };
+  var userDrove = false, timer = null;
+  function setMode(m) {
+    card.setAttribute('data-mode', m);
+    modes.forEach(function (k) { btn[k].setAttribute('aria-pressed', k === m); });
+  }
+  modes.forEach(function (m) {
+    btn[m].addEventListener('click', function () {
+      userDrove = true; clearInterval(timer); setMode(m);
+    });
+  });
+  if (!reduce) {
+    timer = setInterval(function () {
+      if (userDrove) return clearInterval(timer);
+      var cur = card.getAttribute('data-mode');
+      setMode(modes[(modes.indexOf(cur) + 1) % modes.length]);
+    }, 5000);
+  }
+
+  /* ---- one tooltip for all [data-tip] ---- */
+  var tip = document.getElementById('tip');
+  function showTip(el) {
+    tip.innerHTML = el.getAttribute('data-tip');
+    tip.classList.add('on');
+    tip.setAttribute('aria-hidden', 'false');
+    var r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+    var x = r.left + r.width / 2 - tr.width / 2;
+    x = Math.max(10, Math.min(x, window.innerWidth - tr.width - 10));
+    var y = r.top - tr.height - 12;
+    if (y < 8) y = r.bottom + 12;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.classList.remove('on'); tip.setAttribute('aria-hidden', 'true'); }
+  document.querySelectorAll('[data-tip]').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { showTip(el); });
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('focus', function () { showTip(el); });
+    el.addEventListener('blur', hideTip);
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

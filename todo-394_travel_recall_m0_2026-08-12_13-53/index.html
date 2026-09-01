@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TODO-394 · travel recall M0</title>
+<meta name="description" content="211 photos recalled from the archive into ref/ albums — and the purge interlock that lets the next purge take them back">
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+<style>:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--rust:#a3421f;--line:#d6d9cf;--card:#fffdf6}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{width:min(100% - 32px,880px);margin:auto;padding:30px 0 34px}.eyebrow{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}h1{margin:10px 0 8px;font:700 clamp(28px,5.5vw,46px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.05em}h2{margin:26px 0 10px;font:700 13px/1.2 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--forest)}.lede{max-width:720px;color:var(--muted);font-size:15.5px;margin:0 0 18px}.big{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;padding:18px;border-radius:14px;background:var(--ink);color:#fff;text-align:center}.big b{display:block;font:700 44px/1 ui-monospace,monospace;letter-spacing:-.05em}.big .to b{color:var(--lime)}.big span{font:600 11px/1.4 ui-monospace,monospace;color:#9fb0a9;text-transform:uppercase;letter-spacing:.08em}.big .arrow{font:700 30px/1 ui-monospace,monospace;color:var(--lime)}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}.stat{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center}.stat b{display:block;font:700 20px/1.1 ui-monospace,monospace;letter-spacing:-.04em}.stat span{color:var(--muted);font-size:11px}.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line)}th{font:700 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}td.n{text-align:right;font:600 13px/1.2 ui-monospace,monospace}tr:last-child td{border-bottom:0}.zero{color:var(--muted)}.hit{color:var(--forest);font-weight:700}.note{margin-top:12px;padding:13px 16px;border-radius:14px;background:var(--forest);color:#fff;font-size:12.5px}.note b{color:var(--lime)}.warn{margin-top:10px;padding:13px 16px;border-radius:14px;background:var(--rust);color:#fff;font-size:12.5px}.warn b{color:#ffe08a}pre{margin:0;padding:13px 16px;border-radius:14px;background:var(--ink);color:#dfe7e3;font:12px/1.6 ui-monospace,monospace;overflow-x:auto}pre b{color:var(--lime)}footer{display:flex;justify-content:space-between;gap:12px;margin-top:20px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}@media(max-width:640px){.grid{grid-template-columns:repeat(2,1fr)}.big{grid-template-columns:1fr}.big .arrow{transform:rotate(90deg)}}</style></head>
+<body><main>
+<div class="eyebrow">nomad-code / bpo · TODO-394 · travel recall</div>
+<h1>211 photos, back on the phone</h1>
+<p class="lede">This morning the purge took 4,356 photos out of the library. This afternoon the index gave 211 of them back — but only the ones I'm about to walk past. Vienna and Budapest from August 2017, the Nordic drive from March 2025, staged into <code>ref/</code> albums and pushed to the phone by iCloud. The archive stays the archive; these are a loan.</p>
+
+<div class="big">
+<div><b>601</b><span>library after the purge</span></div>
+<div class="arrow">→</div>
+<div class="to"><b>813</b><span>+211 recalled, +1 screenshot</span></div>
+</div>
+
+<div class="grid">
+<div class="stat"><b>46</b><span>ref/vienna-2017</span></div>
+<div class="stat"><b>143</b><span>ref/budapest-2017</span></div>
+<div class="stat"><b>12</b><span>ref/tromso-2025</span></div>
+<div class="stat"><b>9</b><span>ref/oslo-2025</span></div>
+<div class="stat"><b>1</b><span>ref/london-2023</span></div>
+</div>
+
+<h2>What the itinerary actually has</h2>
+<p class="lede">Every upcoming destination, joined against the index and a full EXIF sweep of 57,611 Timeline stills. The honest answer is smaller than the ticket assumed — and the empty rows are the finding.</p>
+<div class="wrap"><table>
+<thead><tr><th>destination</th><th class="n">index</th><th class="n">timeline</th><th>note</th></tr></thead>
+<tbody>
+<tr><td>Budapest</td><td class="n hit">143</td><td class="n">30</td><td>same 2017 trip, overlap likely</td></tr>
+<tr><td>Vienna</td><td class="n hit">46</td><td class="n">1</td><td>Aug 16–18 2017</td></tr>
+<tr><td>Tromsø + Narvik/Harstad</td><td class="n zero">0</td><td class="n hit">11</td><td>Mar 2025</td></tr>
+<tr><td>Oslo + OSL airport</td><td class="n zero">0</td><td class="n hit">10</td><td>one frame is Gardermoen</td></tr>
+<tr><td>London</td><td class="n">1</td><td class="n">1</td><td>2009 · 2023</td></tr>
+<tr><td>Copenhagen · Milan</td><td class="n zero">0</td><td class="n zero">0</td><td>trips happened, photos didn't survive locally</td></tr>
+<tr><td>Riga · Vilnius · Tallinn · Tirana · Malta · Larnaca · Sofia · Bucharest · Tenerife</td><td class="n zero">0</td><td class="n zero">0</td><td>first visits</td></tr>
+</tbody></table></div>
+
+<h2>Three assumptions that didn't survive the data</h2>
+<div class="wrap"><table>
+<thead><tr><th>assumed</th><th>measured</th></tr></thead>
+<tbody>
+<tr><td>EXIF-GPS backfill lights up the dark cities</td><td><b>0.7%</b> — Google Takeout strips EXIF GPS (2 of 300 sampled). The JSON sidecar is all Google kept. Timeline media never went through Takeout: <b>~95%</b> intact.</td></tr>
+<tr><td>Trip folders hold 140 / 49 / 83 files</td><td>Real media <b>18 / 2 / 13</b>. The <code>Archive 🗄️</code> folders are weblocs, md and csv. Copenhagen has zero photos.</td></tr>
+<tr><td>The purge deletes ref imports by construction</td><td>It <b>refuses</b> on them — old capture, new UUID, never exported. Then they'd outlive the purge. Needed a real interlock.</td></tr>
+</tbody></table></div>
+
+<div class="warn"><b>City boxes lose trips.</b> A naive Oslo bounding box misses OSL Gardermoen by 35 km, and a Tromsø box misses the Narvik leg of the same drive by 130 km — 7 of 21 Nordic frames sit outside any city box. The human caught this from memory before the code did. M1's gazetteer is centre+radius with airports listed separately, and the stay-folder name as a second channel — typos and all (<code>Trosmo</code>, <code>Copenhangen</code>).</div>
+
+<h2>The interlock, proven on live data</h2>
+<pre>OLD predicate would REFUSE on : <b>213</b> pre-cutoff asset(s)
+NEW predicate blocks on       : <b>2</b>   (unrelated favorites that landed today)
+
+purge: library 813  favorites 420
+       safe to purge (captured &lt; 2026-08-01): <b>216  (incl. 211 recall ref import(s))</b>
+       DRY — no deletion requested
+
+coverage gap 227 → ref imports <b>211</b> → unexplained 224 → <b>13</b></pre>
+<div class="note"><b>state["ref_imports"]</b> is the ledger. It tells <code>verify</code> the gap is explained and tells <code>purge</code> the bytes are safe elsewhere — immutable in the Takeout archive and the Timeline tree — so it neither refuses on them nor leaves them behind. No Google bytes re-enter the ark or either cloud lane. Favoriting a recalled photo on the trip keeps it, like any other photo. <b>8 new tests</b> pin all three behaviours; 101 pass.</div>
+
+<h2>The one thing only a human can do</h2>
+<div class="warn"><b>Request a fresh Google Takeout for 2023-07-01 → now.</b> The ark starts 2025-08 and both existing Takeouts stop 2023-07-01, so two full years — the Nordics, the Baltics, Milan, all of 2024 — are absent from the index entirely. Timeline covers that window with 1,819 files. A new Takeout is the only thing that closes it, and every downstream stage already exists. It takes days to produce; starting it is the highest-leverage move available.</div>
+
+<footer><span>TODO_394-code-photos-travel_recall</span><span>2026-08-12 · 13-53 Z</span></footer>
+</main></body></html>

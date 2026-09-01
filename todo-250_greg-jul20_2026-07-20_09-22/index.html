@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dha · Greg July 20 action lanes</title>
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    body{min-height:100vh}
+    a{text-decoration:underline;text-decoration-color:var(--found-bd);text-underline-offset:3px}
+    .shell{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:44px 0 84px}
+    .mast{display:flex;align-items:center;gap:9px;color:var(--muted);font:500 10px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase}
+    .mast i{width:8px;height:8px;border-radius:3px;background:var(--lime)}
+    .hero-local{margin-top:20px;padding:36px;border:1px solid var(--line);border-radius:var(--r-hero);background:linear-gradient(145deg,#fff,#f3faf7);box-shadow:var(--shadow-hero)}
+    .eyebrow{color:var(--forest);font:700 11px/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+    h1{max-width:880px;margin:14px 0 0;font-size:clamp(34px,6vw,64px);line-height:.98;letter-spacing:-.048em}
+    .lede-local{max-width:72ch;margin:20px 0 0;color:var(--body);font-size:15px;line-height:1.65}
+    .principle{display:flex;align-items:center;gap:10px;margin-top:24px;padding:13px 15px;border:1px solid #bcd9bf;border-radius:var(--r-panel);background:var(--g-lime);color:var(--forest-d);font-size:13px;font-weight:680}
+    .principle i{width:9px;height:9px;border-radius:50%;background:var(--forest);flex:none}
+    .section{margin-top:48px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:17px}
+    .section-head h2{font-size:25px;letter-spacing:-.03em}
+    .section-head p{max-width:58ch;color:var(--muted);font-size:12.5px;line-height:1.5;text-align:right}
+    .lanes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .lane{position:relative;min-height:270px;padding:24px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card);box-shadow:var(--shadow-card)}
+    .lane.recommended{border-color:#bcd9bf;background:linear-gradient(180deg,#fff,#f6fbf6)}
+    .lane-num{color:var(--faint);font:600 10px/1 var(--font-mono);letter-spacing:.08em}
+    .tag{position:absolute;top:20px;right:20px;padding:5px 9px;border-radius:7px;background:var(--well);color:var(--muted);font:600 9px/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
+    .tag.go{background:var(--g-lime);color:var(--forest-d)}
+    .lane h3{margin:18px 0 0;font-size:22px;letter-spacing:-.025em}
+    .lane .why{margin:10px 0 0;color:var(--body);font-size:13.5px;line-height:1.58}
+    .move{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
+    .move b{display:block;color:var(--forest-d);font:700 10px/1 var(--font-mono);letter-spacing:.07em;text-transform:uppercase}
+    .move p{margin-top:7px;color:var(--ink);font-size:12.5px;line-height:1.5}
+    .sequence{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .step{padding:20px;border:1px solid var(--line);border-radius:var(--r-panel);background:var(--card)}
+    .step .when{color:var(--forest);font:700 10px/1 var(--font-mono);letter-spacing:.07em;text-transform:uppercase}
+    .step h3{margin:12px 0 0;font-size:17px;letter-spacing:-.02em}
+    .step p{margin:8px 0 0;color:var(--body);font-size:12.5px;line-height:1.55}
+    .guards{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .guard-card{padding:24px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card);box-shadow:var(--shadow-card)}
+    .guard-card h3{font-size:18px}
+    .guard-list{display:grid;gap:11px;margin-top:16px}
+    .guard-list li{display:grid;grid-template-columns:9px 1fr;gap:10px;color:var(--body);font-size:12.5px;line-height:1.5}
+    .guard-list i{width:8px;height:8px;margin-top:5px;border-radius:3px;background:var(--warn)}
+    .guard-list.safe i{background:var(--forest)}
+    .decision{padding:27px;border:1px solid var(--found-bd);border-radius:var(--r-card);background:var(--found-bg)}
+    .decision .label{color:var(--found-d);font:700 10px/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+    .decision h2{margin:12px 0 0;font-size:25px;letter-spacing:-.03em}
+    .decision p{margin:11px 0 0;color:var(--body);font-size:13.5px;line-height:1.62}
+    .sources{margin-top:42px;padding-top:19px;border-top:1px solid var(--line);color:var(--faint);font:400 10px/1.75 var(--font-mono)}
+    .sources a{color:var(--muted)}
+    @media(max-width:760px){
+      .shell{width:min(100% - 24px,560px);padding-top:24px}
+      .hero-local{padding:26px 21px}
+      .section-head{display:block}.section-head p{margin-top:8px;text-align:left}
+      .lanes,.sequence,.guards{grid-template-columns:1fr}
+      .lane{min-height:0}
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="mast"><i></i>dha · TODO-250 · Brendan × Greg</div>
+
+    <section class="hero-local">
+      <div class="eyebrow">Conversation → controlled pilots</div>
+      <h1>The goal is a tighter loop, not a larger stack.</h1>
+      <p class="lede-local">The July 20 exchange points to one operating model: meetings create context, issues hold outcomes, previews make progress reviewable, and credentials grant agents authority without giving them custody of secrets. Each layer should be piloted independently so Brendan and the volunteer team stay in control.</p>
+      <div class="principle"><i></i>Keep raw context private. Promote decisions and executable work only when they are ready for the team.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Four action lanes</h2>
+        <p>One conversation, four different risk profiles. The first lane can begin without waiting on infrastructure.</p>
+      </div>
+      <div class="lanes">
+        <article class="lane recommended">
+          <span class="lane-num">01</span><span class="tag go">pilot first</span>
+          <h3>Granola for meeting memory</h3>
+          <p class="why">Granola works with Teams by capturing local system audio. It stores transcript text and notes, not the completed audio recording. The important constraint: its automatic consent message currently supports Zoom on macOS—not Teams.</p>
+          <div class="move"><b>Next move</b><p>Ask the group for an explicit two-meeting pilot. Announce transcription manually at the start, keep notes private by default, and agree a transcript-retention period before the first meeting.</p></div>
+        </article>
+
+        <article class="lane">
+          <span class="lane-num">02</span><span class="tag">design the loop</span>
+          <h3>GitHub Projects as shared agent context</h3>
+          <p class="why"><code>ghp</code> already reads Project #26 live and produces compact issue bundles with comments, files, and cross-references. What it lacks versus the Linear loop is explicit start → journal → respond write behavior.</p>
+          <div class="move"><b>Next move</b><p>Keep Linear as Brendan’s private intake for now. Prototype a narrowly scoped GitHub journal command on one public-ready issue, with every write visible and reversible. Do not migrate the portal before that loop proves itself.</p></div>
+        </article>
+
+        <article class="lane">
+          <span class="lane-num">03</span><span class="tag">security pilot</span>
+          <h3>1Password for agent authority</h3>
+          <p class="why">The new 1Password Environments MCP for Codex does not return raw values through MCP, model context, terminal output, or disk. It injects approved variables into the target process for the task. That is materially narrower than granting a terminal session broad CLI access.</p>
+          <div class="move"><b>Next move</b><p>Evaluate it in a disposable environment with one low-risk credential. Require task-scoped approval, a named target process, and a check that stdout/logs cannot echo the value. Keep CLI + biometrics as the human-operated fallback.</p></div>
+        </article>
+
+        <article class="lane">
+          <span class="lane-num">04</span><span class="tag">infra dependency</span>
+          <h3>PR previews + Playwright CI</h3>
+          <p class="why">Portal V2 already has 68 passing local Playwright tests and a dispatch-only GitHub workflow. The workflow itself records the blocker: PR runs need a usable database. Current deployment targets <code>main</code> on a self-hosted runner.</p>
+          <div class="move"><b>Next move</b><p>Design the preview contract before wiring CI: one URL per PR, V2 and legacy reachable together, isolated or read-only test data, teardown on close, then Playwright pointed at that URL with failure-only evidence.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Recommended sequence</h2>
+        <p>Fast learning first; expensive infrastructure only after its contract is clear.</p>
+      </div>
+      <div class="sequence">
+        <article class="step"><div class="when">This week</div><h3>Run two consented meetings</h3><p>Test whether Granola actually improves decisions, action extraction, and issue briefs for this volunteer team.</p></article>
+        <article class="step"><div class="when">In parallel</div><h3>Define promotion rules</h3><p>Raw transcript stays private; meeting summary becomes a private TODO brief; only accepted outcomes become GitHub issues.</p></article>
+        <article class="step"><div class="when">Then</div><h3>Spike one preview PR</h3><p>Start with a single V2 PR and a documented data strategy. Add legacy and required CI only after the URL lifecycle works.</p></article>
+      </div>
+    </section>
+
+    <section class="section guards">
+      <article class="guard-card">
+        <h3>Guardrails that keep humans in control</h3>
+        <ul class="guard-list safe">
+          <li><i></i><span>Every issue has one observable outcome and one current owner.</span></li>
+          <li><i></i><span>Every meeting begins with explicit disclosure and agreement.</span></li>
+          <li><i></i><span>Every agent write lands in a visible journal before state changes.</span></li>
+          <li><i></i><span>Every credential grant is scoped to a process, task, and short lifetime.</span></li>
+          <li><i></i><span>Every preview is disposable and posts its URL back to the PR.</span></li>
+        </ul>
+      </article>
+      <article class="guard-card">
+        <h3>Do not do yet</h3>
+        <ul class="guard-list">
+          <li><i></i><span>Silently transcribe Teams because no bot appears.</span></li>
+          <li><i></i><span>Dump raw transcripts into public GitHub comments.</span></li>
+          <li><i></i><span>Move the whole portal workflow from GitHub to Linear.</span></li>
+          <li><i></i><span>Give agents broad vault access as the default path.</span></li>
+          <li><i></i><span>Make Playwright required before previews and data are stable.</span></li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section decision">
+      <div class="label">Decision to make with Greg</div>
+      <h2>Are we willing to run a two-meeting Granola pilot?</h2>
+      <p>If yes, the pilot should answer three questions: Did the summary preserve the decisions? Did it reduce the work of creating outcome-owned issues? Did everyone remain comfortable with the disclosure, access, and retention model? A “no” on any one is enough to stop or redesign the pilot.</p>
+    </section>
+
+    <footer class="sources">
+      Prepared 2026-07-20 09:22 UTC · private working synthesis, not a team commitment.<br>
+      Evidence: local <code>ghp board</code>, <code>portal-v2/.github/workflows/e2e.yml</code>, and <code>deploy-test.yml</code> ·
+      <a href="https://docs.granola.ai/help-center/consent-security-privacy/getting-consent">Granola consent</a> ·
+      <a href="https://docs.granola.ai/help-center/taking-notes/transcription">Granola transcription</a> ·
+      <a href="https://docs.granola.ai/help-center/consent-security-privacy/transcript-auto-deletion">Granola retention</a> ·
+      <a href="https://1password.com/blog/1password-trusted-access-layer-for-openai-codex">1Password × Codex</a> ·
+      <a href="https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/deploy-to-environment">GitHub preview environments</a>.
+    </footer>
+  </main>
+</body>
+</html>

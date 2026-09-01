@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The same workout, heavier for us · MetCon X 2027 · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--us:#b85339;--field:#8a949c;--fix:#176b78;--gold:#c59a45}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1020px,calc(100% - 36px));margin:auto;padding:40px 0 56px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(38px,6.2vw,64px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:16ch;margin:16px 0}
+h1 em{color:var(--us);font-weight:400}
+.lede{max-width:72ch;font-size:17px;line-height:1.62;color:#43534a}
+.chip{display:flex;flex-wrap:wrap;gap:7px;margin:22px 0}
+.chip span{font:700 11px ui-monospace,monospace;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:7px 13px;color:#43534a}
+.chip span b{color:var(--us)}
+h2{font:700 25px/1.1 Georgia,serif;margin:34px 0 12px}
+.note{color:var(--muted);margin:-6px 0 14px;max-width:78ch;line-height:1.5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font-size:13px;font-weight:700}
+td{font:700 15px Georgia,serif}
+td.mono{font:700 13px ui-monospace,monospace}
+td.us{color:var(--us)}td.fix{color:var(--fix)}td.f{color:var(--field)}
+td small,th small{display:block;font:500 10px ui-monospace,monospace;color:var(--muted);margin-top:3px;font-weight:400}
+tr.hi td,tr.hi th{background:#edf4ef}
+.bars{margin:18px 0}
+.br{display:grid;grid-template-columns:150px minmax(20px,1fr) 66px;align-items:center;gap:10px;margin:8px 0;font:700 11px ui-monospace,monospace;color:var(--muted)}
+.br i{display:block;height:11px;border-radius:8px}
+.br b{font:700 12px ui-monospace,monospace;color:var(--ink)}
+.warn{border-left:4px solid var(--us);padding:15px 18px;background:#f9ece7;border-radius:0 12px 12px 0;line-height:1.55;margin:22px 0;font-size:15px}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:24px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ol{margin:0;padding-left:20px;line-height:1.68;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · MetCon X 2027 · Pro · 25 min cap</div>
+<h1>Same workout.<br><em>Heavier for us.</em></h1>
+<p class="lede">MetCon X is published, so it can be trained instead of guessed at. The loads are prescribed in kilos rather than percentages — which means a weaker pair is doing a genuinely different workout. This is the sheet that turns our strength gap into a time gap.</p>
+<div class="chip">
+<span>60 cal <b>ROW</b></span><span>45 dual DB <b>GTOH 22.5</b></span><span>60 DB <b>BENCH 22.5</b></span><span>45 <b>SANDBAG SQUAT 70</b></span><span>60 m <b>CARRY 70</b></span><span>45 <b>BURPEES</b> over bench</span><span>60 cal <b>ROW</b></span>
+</div>
+<h2>The loads, as a share of what we can lift</h2>
+<div class="panel bars">
+<div class="br"><span>SANDBAG 70 KG</span><i style="width:100%;background:linear-gradient(90deg,var(--us) 0 100%)"></i><b>—</b></div>
+<div class="br"><span>Brendan today</span><i style="width:58%;background:var(--us)"></i><b>58%</b></div>
+<div class="br"><span>Solid path</span><i style="width:44%;background:var(--fix)"></i><b>44%</b></div>
+<div class="br"><span>Field median</span><i style="width:42%;background:var(--field)"></i><b>42%</b></div>
+<div class="br" style="margin-top:18px"><span>DUAL DB 45 KG OH</span><i style="width:100%;background:linear-gradient(90deg,var(--us) 0 100%)"></i><b>—</b></div>
+<div class="br"><span>Brendan today</span><i style="width:79%;background:var(--us)"></i><b>79%</b></div>
+<div class="br"><span>Solid path</span><i style="width:65%;background:var(--fix)"></i><b>65%</b></div>
+<div class="br"><span>Field median</span><i style="width:56%;background:var(--field)"></i><b>56%</b></div>
+</div>
+<p class="note">Sandbag as a share of squat e1RM; overhead as a share of strict-press 1RM. For a median Pro athlete the bag is a 42% squat — sets of ten. For Brendan today it is a <b>58% squat, forty-five times</b>: sets of three with rest. And 45 KG overhead at 79% of strict press means every single rep has to be a dip and drive.</p>
+<div class="warn"><b>Cap risk.</b> At today's numbers the sandbag station alone could eat 7–8 minutes in threes, which puts the whole chipper against the 25-minute cap. A missing score is not just lost points — at Copenhagen 2026, Morris/Jay won Endurance outright and still carried <b>no overall placing</b> because one score was absent.</div>
+<h2>No pairs discount where it hurts</h2>
+<p class="note">Per-athlete volume, pairs versus solo Pro.</p>
+<div class="panel"><table><thead><tr><th>Station</th><th>Pairs · per athlete</th><th>Solo</th><th>Discount</th></tr></thead><tbody>
+<tr><th>Row calories</th><td class="mono">120 → ≈60</td><td class="mono">90</td><td class="mono f">0.67×</td></tr>
+<tr><th>Dual DB GTOH</th><td class="mono">45 → ≈22</td><td class="mono">30</td><td class="mono f">0.75×</td></tr>
+<tr class="hi"><th>DB bench press</th><td class="mono">60 → ≈30</td><td class="mono">30</td><td class="mono us">1.00× — none</td></tr>
+<tr><th>Sandbag squats</th><td class="mono">45 → ≈22</td><td class="mono">30</td><td class="mono f">0.75×</td></tr>
+<tr class="hi"><th>60 m carry</th><td class="mono">60 m → ≈30 m</td><td class="mono">30 m</td><td class="mono us">1.00× — none</td></tr>
+<tr><th>Burpees</th><td class="mono">45 → ≈22</td><td class="mono">30</td><td class="mono f">0.75×</td></tr>
+</tbody></table></div>
+<h2>The split, from our own numbers</h2>
+<p class="note">Chris out-rowed Brendan by 312 m at CPH and lifts 25 KG more; Brendan out-ran him by 421 m. Load it accordingly.</p>
+<div class="panel"><table><thead><tr><th>Station</th><th>Brendan</th><th>Chris</th><th>Why</th></tr></thead><tbody>
+<tr><th>Row 60 cal (each round)</th><td class="mono">27</td><td class="mono">33</td><td style="font:400 13px Inter,sans-serif;color:#43534a">Chris is the rower</td></tr>
+<tr><th>Dual GTOH 45</th><td class="mono">19</td><td class="mono">26</td><td style="font:400 13px Inter,sans-serif;color:#43534a">Chris presses 26% more</td></tr>
+<tr><th>DB bench 60</th><td class="mono">30</td><td class="mono">30</td><td style="font:400 13px Inter,sans-serif;color:#43534a">no discount — split even</td></tr>
+<tr><th>Sandbag squats 45</th><td class="mono">20</td><td class="mono">25</td><td style="font:400 13px Inter,sans-serif;color:#43534a">Chris's lift</td></tr>
+<tr><th>Carry 60 m</th><td class="mono">30 m</td><td class="mono">30 m</td><td style="font:400 13px Inter,sans-serif;color:#43534a">even, unbroken</td></tr>
+<tr><th>Burpees 45</th><td class="mono">25</td><td class="mono">20</td><td style="font:400 13px Inter,sans-serif;color:#43534a">Brendan's engine</td></tr>
+</tbody></table></div>
+<h2>Station budget for a 21:00 pair</h2>
+<p class="note">Modelled, not measured. The first rehearsal overwrites every rate here — at today's strength the sandbag and GTOH rates are optimistic by roughly half, which is exactly what the table is for.</p>
+<div class="panel"><table><thead><tr><th>Station</th><th>Rate assumed</th><th>Budget</th></tr></thead><tbody>
+<tr><th>60 cal row</th><td class="mono">20 cal/min alternating</td><td class="mono">3:00</td></tr>
+<tr><th>45 dual GTOH</th><td class="mono">13 reps/min</td><td class="mono">3:30</td></tr>
+<tr><th>60 DB bench</th><td class="mono">22 reps/min</td><td class="mono">2:45</td></tr>
+<tr><th>45 sandbag squats</th><td class="mono">10 reps/min</td><td class="mono">4:30</td></tr>
+<tr><th>60 m carry</th><td class="mono">2 × 30 m each</td><td class="mono">1:30</td></tr>
+<tr><th>45 burpees</th><td class="mono">17 reps/min</td><td class="mono">2:40</td></tr>
+<tr><th>60 cal row</th><td class="mono">18 cal/min</td><td class="mono">3:20</td></tr>
+<tr class="hi"><th><b>Total</b></th><td></td><td class="mono"><b>21:15</b></td></tr>
+</tbody></table></div>
+<div class="rules"><h3>What to train, in priority order</h3><ol>
+<li><b>Sandbag, the real thing.</b> Get a 70 KG bag. It does not transfer from a barbell — the shape and the front-rack hold are the exercise. Squats in 5s–10s, carries 60 m unbroken.</li>
+<li><b>DB jerk at 22.5 dual.</b> EMOM 5–8 reps for ten minutes. It doubles as shoulder-to-overhead practice for the Strength workout — the two share a pattern this year.</li>
+<li><b>DB bench volume.</b> 60 reps at 22.5 dual is grip and shoulder endurance. 5 × 15 short rest, then add fatigue before it.</li>
+<li><b>Burpees over bench.</b> Cheapest station on the sheet — drill 45 unbroken at 17/min.</li>
+<li><b>Row calories after fatigue.</b> Never fresh. The second 60 is the one that hurts: 5 × 20 cal after lifting.</li>
+</ol></div>
+<footer>Record: <code>projects/fit-athx/metcon-x-2027.md</code> · workout text: <code>programme-2027.md</code> · load shares from CPH 2026 lifts (Epley e1RM) vs 2026 Pro · Male field medians · rehearsals: twice before London, monthly after, three as a pair in Phase 5</footer>
+</main></body></html>

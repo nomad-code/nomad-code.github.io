@@ -1,0 +1,180 @@
+{
+    "round":  {
+                  "id":  77,
+                  "course":  "LookOutPoint_gsp",
+                  "date":  "2026-07-17",
+                  "updated":  "2026-07-17T15:11:11.9341011+08:00",
+                  "shots":  77
+              },
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "thru":  18,
+                        "strokes":  77,
+                        "toParNum":  5,
+                        "toPar":  "+5",
+                        "sgTotal":  -5.82,
+                        "sg":  {
+                                   "off-tee":  9.78,
+                                   "approach":  -3.47,
+                                   "around-green":  -2.18,
+                                   "putting":  -9.95
+                               },
+                        "holes":  [
+                                      {
+                                          "hole":  1,
+                                          "par":  4,
+                                          "strokes":  3,
+                                          "toPar":  -1,
+                                          "sg":  1.049,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  2,
+                                          "par":  3,
+                                          "strokes":  5,
+                                          "toPar":  2,
+                                          "sg":  -1.951,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  3,
+                                          "par":  5,
+                                          "strokes":  5,
+                                          "toPar":  0,
+                                          "sg":  -0.381,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  4,
+                                          "par":  4,
+                                          "strokes":  5,
+                                          "toPar":  1,
+                                          "sg":  -0.95,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  5,
+                                          "par":  3,
+                                          "strokes":  6,
+                                          "toPar":  3,
+                                          "sg":  -2.95,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  6,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.049,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  7,
+                                          "par":  5,
+                                          "strokes":  4,
+                                          "toPar":  -1,
+                                          "sg":  0.62,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  8,
+                                          "par":  3,
+                                          "strokes":  5,
+                                          "toPar":  2,
+                                          "sg":  -1.949,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  9,
+                                          "par":  5,
+                                          "strokes":  4,
+                                          "toPar":  -1,
+                                          "sg":  0.621,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  10,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.05,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  11,
+                                          "par":  3,
+                                          "strokes":  4,
+                                          "toPar":  1,
+                                          "sg":  -0.95,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  12,
+                                          "par":  5,
+                                          "strokes":  5,
+                                          "toPar":  0,
+                                          "sg":  -0.381,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  13,
+                                          "par":  4,
+                                          "strokes":  5,
+                                          "toPar":  1,
+                                          "sg":  -0.95,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  14,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.049,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  15,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.05,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  16,
+                                          "par":  4,
+                                          "strokes":  2,
+                                          "toPar":  -2,
+                                          "sg":  2.05,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  17,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.05,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  18,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.049,
+                                          "complete":  true
+                                      }
+                                  ],
+                        "lastShot":  {
+                                         "hole":  18,
+                                         "shot":  4,
+                                         "ballSpeed":  6.2,
+                                         "club":  null,
+                                         "carry":  0,
+                                         "vla":  0,
+                                         "totalDist":  8.6
+                                     }
+                    }
+                ]
+}

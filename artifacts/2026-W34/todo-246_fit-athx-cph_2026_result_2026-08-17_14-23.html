@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>13 of 16 · ATHX Copenhagen 2026 · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--str:#b85339;--end:#176b78;--mcx:#c59a45}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1000px,calc(100% - 36px));margin:auto;padding:40px 0 64px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(40px,7vw,74px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:13ch;margin:16px 0}
+h1 em{color:var(--end);font-weight:400}
+.lede{max-width:70ch;font-size:17px;line-height:1.62;color:#43534a}
+.verdict{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;margin:28px 0;padding:24px;border:1px solid #b9cdc1;border-radius:18px;background:#edf4ef}
+.verdict p{font:600 17px/1.45 Georgia,serif;margin:0;max-width:62ch}
+.delta{font:750 46px/1 Georgia,serif;color:var(--end);white-space:nowrap}
+.delta small{display:block;font:600 10px ui-monospace,monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:7px;text-align:right}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.card{position:relative;overflow:hidden}.card:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--wk)}
+.card.s{--wk:var(--str)}.card.e{--wk:var(--end)}.card.m{--wk:var(--mcx)}
+.wk{font:700 11px ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--wk)}
+.score{font:750 clamp(30px,4.4vw,44px)/1 Georgia,serif;letter-spacing:-.03em;margin:8px 0 4px}
+.meta{color:var(--muted);line-height:1.6;font-size:13px}
+h2{font:700 26px/1.1 Georgia,serif;margin:38px 0 14px}
+.note{color:var(--muted);margin:-6px 0 16px;max-width:76ch;line-height:1.5}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 9px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+tbody th{font-size:13px;font-weight:700}td{font:700 17px Georgia,serif}
+td small{display:block;font:500 10px ui-monospace,monospace;color:var(--muted);margin-top:3px}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:22px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ul{margin:0;padding-left:18px;line-height:1.65;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:34px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+a{color:var(--end)}
+@media(max-width:760px){.verdict{grid-template-columns:1fr}.delta small{text-align:left}.grid3{grid-template-columns:1fr}th,td{padding:9px 6px}}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · ATHX Copenhagen 2026 · 15 Aug 2026</div>
+<h1>13th of 16.<br><em>Endurance held.</em></h1>
+<p class="lede">First ATHX race, pairs, ATHX&nbsp;Pro, Male — Brendan OBrien &amp; Christopher Reeves, 41 points at the Bella Centre. Points are the sum of the three workout ranks, so the format pays consistency; our spread was 16 · 11 · 14 and the strength block set the ceiling.</p>
+<section class="verdict"><p>Endurance was the ranked strength of the day and MetCon X tracked it. Strength was last of the sixteen pairs that recorded a lift — 373 KG behind the winning total. That single block is the whole gap to mid-pack.</p><div class="delta">41<small>points · 13 of 16</small></div></section>
+<section class="grid3">
+<article class="card s"><div class="wk">Strength · rank 16/16</div><div class="score">649 KG</div><div class="meta">press 129 · squat 220 · deadlift 300<br>winner 1022 KG</div></article>
+<article class="card e"><div class="wk">Endurance · rank 11/17</div><div class="score">9.837 KM</div><div class="meta">run 4.421 · row 5.416<br>winner 10.608 KM</div></article>
+<article class="card m"><div class="wk">MetCon X · rank 14/17</div><div class="score">20:28</div><div class="meta">one timed final<br>winner 13:52</div></article>
+</section>
+<h2>Who did what</h2>
+<p class="note">The team-individual board splits every block except MetCon X, which stays team-level by design.</p>
+<div class="panel"><table><thead><tr><th>Block</th><th>Team</th><th>Brendan</th><th>Chris</th></tr></thead><tbody>
+<tr><th>1RM strict press</th><td>129 KG</td><td>57 KG</td><td>72 KG</td></tr>
+<tr><th>3RM back squat</th><td>220 KG</td><td>110 KG</td><td>110 KG</td></tr>
+<tr><th>5RM deadlift</th><td>300 KG</td><td>145 KG</td><td>155 KG</td></tr>
+<tr><th>Endurance run</th><td>4.421 KM</td><td>2.421 KM</td><td>2.000 KM</td></tr>
+<tr><th>Endurance row</th><td>5.416 KM</td><td>2.552 KM</td><td>2.864 KM</td></tr>
+<tr><th>MetCon X</th><td>20:28</td><td colspan="2"><small>team-level only — no per-athlete split published</small></td></tr>
+</tbody></table></div>
+<div class="rules"><h3>Reading the board correctly</h3><ul>
+<li><b>17 pairs, 16 placings.</b> Morris/Jay won Endurance outright but recorded no Strength score, so they carry no overall rank — that is why the board is 16 deep while the workout views run to 17.</li>
+<li><b>The 41 is a tie.</b> Rosenthal/Thiam scored 41 too — stronger on Strength (8th), weaker on both Endurance and MetCon X. The tie broke their way.</li>
+<li><b>Athlete ULIDs are stable</b> across events and years, so every future race joins to this one exactly: Brendan <code>01kfsjha41…</code>, Chris <code>01kfmnmkvr…</code>.</li>
+<li><b>Scores compare within category + gender only.</b> Pro loads differ from ATHX and Lite; a percentile from one cohort means nothing in another.</li>
+</ul></div>
+<h2>What it sets up</h2>
+<p class="note">The 2027 plan is singles Pro Jan–Jun, then doubles with Chris Jul–Nov, opening at Copenhagen 2027 (31 Jul–1 Aug, Bella Centre) — the same venue, twelve months on.</p>
+<footer>Source: athxgames.com team + team-individual boards, pulled 2026-08-17 with <code>bob/athx</code> (<code>scrape --years 2026 --events copenhagen</code>) · record: <code>projects/fit-athx/races/cph-2026.md</code> · <a href="https://athxgames.com/team-leaderboards?filters%5Byear%5D=2026&filters%5Bevent%5D=01k8b7kghhb3nk1h7gvshdxsjw&filters%5Bgender%5D=01h03f5pw2wnccj0pda5vvdhe6&filters%5Bevent_category%5D=01h03f5pwtphh8t02p9jmhxw93">official board</a></footer>
+</main></body></html>

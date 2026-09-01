@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FIT · local brain, external claws</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css"><link rel="stylesheet" href="../design-repo/grove/tokens.css"><link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+body{background:var(--paper,#f4f4ef);color:#18241e}.wrap{max-width:1120px;margin:auto;padding:50px 22px 90px}h1{font:700 clamp(42px,7vw,78px)/.96 Georgia,serif;letter-spacing:-.05em;margin:9px 0 18px;max-width:12ch}h2{font:700 28px/1.1 Georgia,serif;margin:0 0 14px}.eyebrow{font:700 11px/1 ui-monospace,monospace;letter-spacing:.13em;text-transform:uppercase;color:#b24d2d}.lead{font-size:19px;line-height:1.55;max-width:72ch;color:#435249}.contract{margin:34px 0 14px;padding:22px 25px;border-left:5px solid #1e7867;background:#fff;border-radius:0 16px 16px 0;font:700 24px/1.35 Georgia,serif}.topology{display:grid;grid-template-columns:1.05fr 1.6fr;gap:16px;margin-top:30px}.brain{background:#163c32;color:#fff;border-radius:18px;padding:26px;display:flex;flex-direction:column;justify-content:center;min-height:235px}.brain span,.claw span,.label{font:700 10px/1.3 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase}.brain b{font:700 38px/1 Georgia,serif;margin:9px 0}.brain p{color:#c9ddd6;line-height:1.5}.claws{display:grid;grid-template-columns:1fr 1fr;gap:12px}.claw{background:#fff;border:1px solid #dde1dc;border-radius:15px;padding:18px}.claw b{display:block;font:700 18px/1.2 Georgia,serif;margin:6px 0}.claw p{font-size:13px;line-height:1.45;color:#536159}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:44px}.metric{background:#fff;border:1px solid #dde1dc;border-radius:15px;padding:19px}.metric b{display:block;font:700 35px/1 ui-monospace,monospace;margin:7px 0}.metric p{font-size:13px;line-height:1.45;color:#536159}section{margin-top:48px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:#fff;border:1px solid #dde1dc;border-radius:16px;padding:22px}ul{margin:0;padding-left:20px}li{line-height:1.55;color:#435249;margin:7px 0}.time{width:100%;border-collapse:collapse;background:#fff;border-radius:15px;overflow:hidden}.time th,.time td{padding:13px 15px;border-bottom:1px solid #e5e8e3;text-align:left;vertical-align:top}.time th{font:700 11px ui-monospace,monospace;text-transform:uppercase;color:#627168;width:190px}.warn{color:#9b4027}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.links a{display:inline-block;text-decoration:none;background:#163c32;color:#fff;padding:10px 14px;border-radius:9px;font:700 12px ui-monospace,monospace}footer{margin-top:44px;border-top:1px solid #d2d8d1;padding-top:16px;color:#68756e;font:11px/1.65 ui-monospace,monospace}@media(max-width:800px){.topology,.twocol{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.brain{min-height:180px}}@media(max-width:480px){.claws,.metrics{grid-template-columns:1fr}}
+</style></head><body><main class="wrap">
+<div class="eyebrow">TODO-425 · FIT / STRAVA · 31 Aug 2026</div>
+<h1>Local brain, external claws</h1>
+<p class="lead">FIT keeps the complete activity memory at home. Share links, API shapes, Omar, and a future cloud lane are named projections—portable and useful, but never allowed to become the authority.</p>
+<div class="contract">Local is canonical. Outward is derived, redacted, rate-aware, and rebuildable.</div>
+
+<div class="topology">
+  <article class="brain"><span>Authority</span><b>FIT local</b><p>Archive + streams + media + voice context + provenance + corrections + race context.</p></article>
+  <div class="claws">
+    <article class="claw"><span>Native read</span><b>FIT API v1</b><p>Explicit instant, wall clock, offset, zone provenance, metrics, and loss metadata.</p></article>
+    <article class="claw"><span>Redacted</span><b>Share links</b><p>No GPS, raw stream values, memo text, descriptions, or local media paths.</p></article>
+    <article class="claw"><span>Lossy adapter</span><b>Strava v3 shape</b><p>Useful compatibility without pretending it carries the full local record.</p></article>
+    <article class="claw"><span>Hosted canvas</span><b>Omar</b><p>Disposable display target with a deployment ledger and API-rate backpressure.</p></article>
+  </div>
+</div>
+
+<div class="metrics">
+  <article class="metric"><span class="label">archive audit</span><b>5,097</b><p>UTC instant, captured offset, and source wall clock agree.</p></article>
+  <article class="metric"><span class="label">mismatches</span><b>0</b><p>No internal timestamp inconsistency in the current archive.</p></article>
+  <article class="metric"><span class="label">offset-only</span><b>3,571</b><p>Wall time is recoverable; geographic zone and DST identity remain unknown.</p></article>
+  <article class="metric"><span class="label">cloud draft</span><b>26 MB</b><p>5,097 share-safe JSON records exported locally, with zero skipped.</p></article>
+</div>
+
+<section><h2>Timezone contract</h2><table class="time"><tbody>
+<tr><th>instant_utc</th><td>The true point in time.</td></tr>
+<tr><th>wall_clock</th><td>The clock seen where the activity was captured; archive fake-Z is never converted as UTC.</td></tr>
+<tr><th>captured offset</th><td>The authority for reconstructing that wall clock.</td></tr>
+<tr><th>zone name</th><td>Reported provenance, not verified geography. A named rule set may exist without being the correct location.</td></tr>
+<tr><th>Omar</th><td><b>Keep +07:00.</b> It preserves the source 09:50 wall time for the verified Apple Health → Omar sample. GMT/UTC would break new no-GPS uploads.</td></tr>
+<tr><th class="warn">live nuance</th><td>The newest archive record reports <code>Africa/Addis_Ababa</code> at +03:00 while workout context is Sofia. The offset math is correct; the zone identity is not promoted to fact.</td></tr>
+</tbody></table></section>
+
+<section class="twocol">
+  <article class="card"><h2>API gaps</h2><ul><li>Default Strava quotas constrain both 15-minute and daily traffic.</li><li>Uploads are asynchronous and normalized after polling.</li><li>No general documented public delete or media-upload surface.</li><li>Hidden start times can return as 00:00:01.</li><li>Local v3 compatibility lacks writes, zones, social objects, routes, clubs, gears, and webhooks.</li></ul></article>
+  <article class="card"><h2>Vibe gaps</h2><ul><li>A feed card is not the memory of the session.</li><li>Strength sets can travel; intent, confidence, corrections, and voice context usually cannot.</li><li>Visibility settings are not the same thing as a deliberate redaction contract.</li><li>A hosted link should be a projection of the local record, not the only surviving record.</li></ul></article>
+</section>
+
+<section class="card"><h2>What now exists</h2><ul><li><code>/external</code> explains the topology and renders the live archive time audit.</li><li><code>/api/fit/v1</code> exposes native activity, capabilities, and time-audit routes.</li><li><code>/share/activities/&lt;id&gt;</code> and <code>?view=share</code> provide a redacted outward surface.</li><li><code>npm run export:outward</code> produced the complete 26 MB local cloud-input bundle as <b>draft</b>; nothing was published.</li><li>The FIT UI is branded FIT, while Strava is explicitly an adapter and third-party host.</li></ul><div class="links"><a href="https://linear.app/nomad-code/issue/TODO-425/fitstrava-local-first-external-claws">Open TODO-425</a></div></section>
+
+<footer>39/39 tests on the live archive · production build clean · archive and ark remain read-only · outward publication requires an explicit human gate · Omar deploy worker remains rate-limit aware</footer>
+</main></body></html>

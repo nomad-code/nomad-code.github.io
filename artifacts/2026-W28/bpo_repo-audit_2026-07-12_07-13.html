@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bpo · repo audit · 2026-07-12</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px 64px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .tablebox { overflow-x: auto; }
+  table.audit { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.audit th { text-align: left; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+    padding: 8px 10px; border-bottom: 1.5px solid var(--line); white-space: nowrap; }
+  table.audit td { padding: 9px 10px; border-bottom: 1px solid var(--line);
+    vertical-align: top; }
+  table.audit td:first-child { white-space: nowrap; font-family: var(--font-mono);
+    font-size: 12px; }
+  .sev { display: inline-block; padding: 2px 9px; border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; }
+  .sev-p0 { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-bd); }
+  .sev-lean { background: var(--found-bg); color: var(--found-d); border: 1px solid var(--found-bd); }
+  .sev-clean { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+  .sev-clear { background: #e8f1ea; color: var(--forest-d); border: 1px solid #cfe3d4; }
+  .fixed { color: var(--forest-d); font-weight: 600; }
+  .owner-list li { margin: 10px 0; }
+  code { font-family: var(--font-mono); font-size: .92em; background: var(--well);
+    padding: 1px 5px; border-radius: 4px; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="tb-brand">Nomad Code</span><span class="tb-sep">/</span>
+  <span class="tb-ctx">bpo · repo audit</span>
+  <span class="tb-spacer"></span>
+  <span class="tb-tag">2026-07-12 · 07:13 UTC</span>
+</div>
+<div class="brandstrip"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">bpo · full three-way audit → lean / clean / clear</div>
+    <h1>The repo lost 8&nbsp;MB, one committed credential, and every doc-vs-disk lie.</h1>
+    <p class="hero-sub">Three parallel auditors swept the boot layer + dna, the scripts + infra,
+    and the content tree. Everything they found is fixed in nine commits on
+    <code>claude/repo-audit-0onect</code> — except three items only the owner can do,
+    listed at the bottom.</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">22 → 14&nbsp;MB</div><div class="kpi-l">working tree (−36%)</div></div>
+    <div class="kpi"><div class="kpi-n">1</div><div class="kpi-l">committed credential removed</div></div>
+    <div class="kpi"><div class="kpi-n">1,175 / 2,000</div><div class="kpi-l">boot tokens (59%)</div></div>
+    <div class="kpi"><div class="kpi-n">13 / 13</div><div class="kpi-l">projects with lean SPECs</div></div>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">01</span><span class="sec-kick">Findings → fixes</span></div>
+  <div class="card tablebox">
+    <table class="audit">
+      <tr><th>axis</th><th>finding</th><th>fix</th></tr>
+      <tr><td><span class="sev sev-p0">P0</span></td>
+        <td>A committed service credential found under <code>projects/</code> — unused by any code.</td>
+        <td class="fixed">Removed from tree; the key pattern gitignored; rotation + history-purge runbook filed beside it (projects/ is private and never ships).</td></tr>
+      <tr><td><span class="sev sev-lean">lean</span></td>
+        <td>7.4&nbsp;MB of orphaned screenshot PNGs in <code>projects/fukuoka-visa/</code>, referenced by nothing.</td>
+        <td class="fixed">Deleted (recoverable from history until purged).</td></tr>
+      <tr><td><span class="sev sev-lean">lean</span></td>
+        <td>No root <code>.gitignore</code>; three <code>.DS_Store</code> tracked; seven per-project ignores duplicating generic rules.</td>
+        <td class="fixed">Root .gitignore added (OS/python/node/<code>*-sa.json</code>); .DS_Store untracked; per-project files keep only their local data/secret rules.</td></tr>
+      <tr><td><span class="sev sev-lean">lean</span></td>
+        <td><code>cold/</code> documented in five places but never created; stale pre-bpo docs (manifest.yaml, dev.md, backlog.md, RESEARCH.md, dotfiles diagrams, MIGRATION.md) squatting in dna/ and root.</td>
+        <td class="fixed">cold/ created; all of it retired there.</td></tr>
+      <tr><td><span class="sev sev-clean">clean</span></td>
+        <td>Stop hook injected a drifted fixed-path gate tag (breaking nested depths via the shared idempotency marker), pushed hardcoded <code>main</code>, no error handling, first-slug-only commit messages.</td>
+        <td class="fixed">Both injectors now read canonical <code>gate-snippet.html</code>; pushes current branch; <code>set&nbsp;-uo&nbsp;pipefail</code> + mkdir spinlock; all slugs in the message. Verified in a scratch-clone dry run.</td></tr>
+      <tr><td><span class="sev sev-clean">clean</span></td>
+        <td>provenance/ frozen 2026-07-05 — the builder was wired to nothing; all of W28 missing.</td>
+        <td class="fixed">New <code>provenance-stop.sh</code> as second Stop hook — always exits 0, no-ops off the owner's machine, shares the commit lock.</td></tr>
+      <tr><td><span class="sev sev-clean">clean</span></td>
+        <td>Script bugs: <code>tokens --budget 500</code> crash; <code>linear comment/respond</code> IndexError + raw HTTP tracebacks; <code>sync-from-bob</code> watching nonexistent <code>bone</code>; <code>session_prompts.py</code> able to grab a company-world session, no redaction.</td>
+        <td class="fixed">argparse; usage exits + clean HTTP errors; bone dropped; nomad-world allowlist + the provenance secret-redactor on every Linear-bound line.</td></tr>
+      <tr><td><span class="sev sev-clean">clean</span></td>
+        <td>Two stray artifacts (top-level todo-172; rogue <code>idk/</code> folder the hook can never file).</td>
+        <td class="fixed">Both filed into <code>2026-W28/</code>; filenames unchanged so published slugs survive.</td></tr>
+      <tr><td><span class="sev sev-clear">clear</span></td>
+        <td>ji ontology defined 3× with 3 conflicting folder maps, none matching disk; ONTOLOGY-GUIDE still calling itself CLAUDE.md; READMEs describing bob-world systems (bone/klarity/design-system/atlas) that aren't here; dead <code>inject_og.py</code> reference.</td>
+        <td class="fixed"><code>dna/ontology.md</code> is the single canon (authority gradient + deprecated table folded in, folder map matches disk); GUIDE removed; dna/design-repo/password-wall READMEs rewritten to bpo scope; <code>viz.css</code> documented; dead refs gone.</td></tr>
+      <tr><td><span class="sev sev-clear">clear</span></td>
+        <td>Two projects with no SPEC.md; three SPECs bloated to 33–103 lines.</td>
+        <td class="fixed">golf-spica + golf-swingnerds get SPECs; tmobile/travel-kiwi/bpo-cal-ingest slimmed to goal + done-when (excess moved verbatim to project READMEs). All 13 SPECs now 13–27 lines.</td></tr>
+    </table>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="card">
+      <div class="sec-kick">Verified green</div>
+      <p style="font-size:14px">Syntax checks across every script (bash/python/node) · boot ledger 1,175/2,000 ·
+      deploy simulation: allowlist + tripwire green, gate injected exactly once at every depth ·
+      Stop-hook dry run: week-filing, multi-slug commit, graceful failed push, lock released ·
+      dead-ref sweep clean outside archived evidence.</p>
+    </div>
+    <div class="card">
+      <div class="sec-kick">Left alone, deliberately</div>
+      <p style="font-size:14px">Published artifacts (immutable record — near-duplicate iterations are legitimate
+      multi-session output) · grove CSS comments referencing bob systems (upstream-synced;
+      local edits would read as permanent drift) · old note bodies (evidence, per the
+      authority gradient).</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">02</span><span class="sec-kick">Owner actions — the three things only you can do</span></div>
+  <div class="card">
+    <ol class="owner-list" style="padding-left:20px; font-size:14.5px">
+      <li><strong>Rotate the credential.</strong> The runbook sitting beside it in <code>projects/</code>
+        (private, never ships) has the two commands. Nothing consumes it, so nothing breaks.</li>
+      <li><strong>Optionally purge history</strong> (same runbook, step 2) — a
+        <code>git filter-repo</code> rewrite from your machine; also reclaims the deleted PNGs
+        from the pack (~8&nbsp;MB smaller clone).</li>
+      <li><strong>Backfill W28 provenance once</strong>: <code>node scripts/build-provenance.mjs</code> on the
+        m3 — from then on the new Stop hook keeps it current per session.</li>
+    </ol>
+  </div>
+
+  <div class="foot">bpo · repo audit · nine commits on <code>claude/repo-audit-0onect</code> · gated · grove</div>
+</div>
+</body>
+</html>

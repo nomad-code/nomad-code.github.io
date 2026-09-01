@@ -1,0 +1,44 @@
+{
+    "round":  {
+                  "id":  75,
+                  "course":  "georgiacc_v2_gsp",
+                  "date":  "2026-07-16",
+                  "updated":  "2026-07-16T11:36:25.6352079+08:00",
+                  "shots":  4
+              },
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "thru":  1,
+                        "strokes":  4,
+                        "toParNum":  1,
+                        "toPar":  "+1",
+                        "sgTotal":  -0.95,
+                        "sg":  {
+                                   "off-tee":  0,
+                                   "approach":  -0.15,
+                                   "around-green":  -0.58,
+                                   "putting":  -0.22
+                               },
+                        "holes":  [
+                                      {
+                                          "hole":  12,
+                                          "par":  3,
+                                          "strokes":  4,
+                                          "toPar":  1,
+                                          "sg":  -0.949,
+                                          "complete":  true
+                                      }
+                                  ],
+                        "lastShot":  {
+                                         "hole":  12,
+                                         "shot":  4,
+                                         "ballSpeed":  2.7,
+                                         "club":  "PT",
+                                         "carry":  null,
+                                         "vla":  0,
+                                         "totalDist":  0.7
+                                     }
+                    }
+                ]
+}

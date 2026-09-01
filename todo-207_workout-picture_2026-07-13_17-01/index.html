@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-207 · workouts × voice-memos · The full picture</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --lane: #b8873a; }
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; overflow-x:hidden; background:var(--bg); }
+    main { max-width:1040px; margin:0 auto; padding:26px 24px 72px; }
+
+    .eyebrow { display:flex; align-items:center; gap:9px; font:600 12px/1 var(--font-mono); letter-spacing:.06em; color:var(--lane); text-transform:uppercase; }
+    .eyebrow .d { width:8px; height:8px; border-radius:50%; background:var(--lane); box-shadow:0 0 0 4px rgba(184,135,58,.18); }
+    h1 { font:700 40px/1.04 var(--font-display); letter-spacing:-.02em; margin:15px 0 10px; color:var(--ink); }
+    h1 em { font-style:normal; color:var(--forest); }
+    .lede { max-width:68ch; font:400 16px/1.55 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:600; }
+
+    .callout { margin:22px 0 4px; border:1px solid #e5cfa6; background:#faf3e6; border-radius:var(--r-tile); padding:15px 18px; }
+    .callout.ok { border-color:#bcd9bc; background:#eef6ee; }
+    .callout h3 { font:700 14px/1.2 var(--font-display); color:#8a6520; margin:0 0 5px; display:flex; gap:8px; align-items:center; }
+    .callout.ok h3 { color:var(--forest-d); }
+    .callout p { font:400 13.5px/1.55 var(--font-ui); color:var(--body); margin:0; }
+    .callout code { font:500 12.5px var(--font-mono); color:#8a6520; background:rgba(138,101,32,.09); padding:1px 6px; border-radius:5px; }
+
+    .kpis { display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 6px; }
+    .kpi { flex:1 1 128px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-tile); padding:14px 16px; }
+    .kpi-n { font:700 26px/1 var(--font-display); color:var(--ink); }
+    .kpi-n small { font:600 13px/1 var(--font-mono); color:var(--muted); margin-left:2px; }
+    .kpi-l { font:500 11px/1.3 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:6px; }
+
+    section.grp { margin-top:34px; }
+    .grp-head { display:flex; align-items:baseline; gap:10px; border-bottom:2px solid var(--line); padding-bottom:8px; margin-bottom:16px; }
+    .grp-head h2 { font:700 21px/1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .grp-head .ji { font-size:19px; letter-spacing:2px; }
+    .grp-head .sub { font:500 12px/1 var(--font-mono); color:var(--muted); margin-left:auto; }
+    .grp-head .sub a { color:var(--forest-d); text-decoration:none; }
+
+    .cols { display:grid; grid-template-columns:1.05fr 1fr; gap:14px; }
+    @media (max-width:720px){ .cols { grid-template-columns:1fr; } }
+    .panel { background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:16px 18px; }
+    .panel h3 { font:700 14px/1.2 var(--font-display); color:var(--forest); margin:0 0 10px; text-transform:uppercase; letter-spacing:.03em; font-size:12.5px; }
+
+    table.mods { width:100%; border-collapse:collapse; font:400 13.5px/1.4 var(--font-ui); }
+    table.mods td { padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:baseline; }
+    table.mods td.mv { font:600 13px var(--font-ui); color:var(--ink); }
+    table.mods td.rp { font:600 13px var(--font-mono); color:var(--forest-d); white-space:nowrap; text-align:right; width:34px; }
+    table.mods td.ld { font:500 12.5px var(--font-mono); color:var(--muted); white-space:nowrap; text-align:right; }
+    table.mods tr:last-child td { border-bottom:none; }
+    table.mods tr.card td { color:var(--muted); }
+
+    .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .chip { display:inline-block; font:600 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:.03em; padding:5px 9px; border-radius:var(--r-pill); border:1px solid var(--line); color:var(--body); background:var(--card); }
+    .chip.load { color:var(--forest-d); border-color:#bcd9bc; background:#eef6ee; }
+    .chip.dist { color:#2f6c8f; border-color:#b8d3e2; background:#eaf3f8; }
+    .chip.kit  { color:#7a5cab; border-color:#cfc0e6; background:#f2edf9; }
+    .chip.flag { color:var(--warn); border-color:var(--warn-bd,#e3b9a6); background:var(--warn-bg,#f6e3da); }
+
+    .metrics { display:flex; flex-wrap:wrap; gap:9px; }
+    .metric { flex:1 1 78px; }
+    .metric .m-n { font:700 18px/1 var(--font-display); color:var(--ink); }
+    .metric .m-l { font:500 10.5px/1.2 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-top:4px; }
+    .pending { font:400 13px/1.55 var(--font-ui); color:var(--muted); }
+    .pending b { color:#8a6520; }
+
+    details.tx { margin-top:12px; border-top:1px dashed var(--line); padding-top:10px; }
+    details.tx summary { font:600 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:.04em; color:var(--muted); cursor:pointer; }
+    details.tx p { font:400 13.5px/1.6 var(--font-ui); color:var(--body); margin:9px 0 0; }
+
+    section.method { margin-top:40px; }
+    .flow { display:flex; flex-wrap:wrap; align-items:stretch; gap:8px; margin-top:4px; }
+    .step { flex:1 1 155px; background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:12px 14px; }
+    .step .n { font:600 10.5px/1 var(--font-mono); color:var(--lane); text-transform:uppercase; letter-spacing:.05em; }
+    .step .t { font:700 14px/1.2 var(--font-display); color:var(--ink); margin:6px 0 4px; }
+    .step .d { font:400 12px/1.45 var(--font-ui); color:var(--muted); }
+    .step code { font:500 11.5px var(--font-mono); color:var(--forest-d); }
+
+    footer { margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font:400 12.5px/1.6 var(--font-mono); color:var(--muted); }
+    footer b { color:var(--body); }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow"><span class="d"></span> TODO-207 · workouts × voice-memos</div>
+  <h1>The full picture of <em>every workout</em></h1>
+  <p class="lede">Strava knows I ran and <b>where</b>. Only the voice memo knows it
+  was a 5K <b>plus</b> a weight-vest circuit, then strict press, squats and
+  deadlifts at a second gym — and that I <b>forgot to end the workout</b>. Fused
+  by time, the spoken record and the sensor record become one honest log.</p>
+
+  <div class="callout"><h3>⚠ Strava metrics pending</h3><p>The Strava API application (client 164335) is marked <b>Inactive</b>, so no activities can be read or written yet. Reactivate it at <code>strava.com/settings/api</code> (app owner, browser) — tokens are fine, it is the app registration. Then <code>python3 join.py &amp;&amp; python3 render.py</code> fuses every metric and <code>join.py --write-strava</code> pushes these narratives back into each activity.</p></div>
+
+  <div class="kpis"><div class="kpi"><div class="kpi-n">2</div><div class="kpi-l">workouts</div></div><div class="kpi"><div class="kpi-n">13</div><div class="kpi-l">efforts logged</div></div><div class="kpi"><div class="kpi-n">2190<small>lifted</small></div><div class="kpi-l">kg total load</div></div><div class="kpi"><div class="kpi-n">5K</div><div class="kpi-l">distance</div></div><div class="kpi"><div class="kpi-n">11</div><div class="kpi-l">movements</div></div><div class="kpi"><div class="kpi-n">0/2<small>pending</small></div><div class="kpi-l">on strava</div></div></div>
+
+  
+  <section class="grp">
+    <div class="grp-head">
+      <span class="ji">🏋️ 🏋️🏄</span>
+      <h2>2026-07-13 14:40</h2>
+      <span class="sub"><a href="https://linear.app/nomad-code/issue/TODO-205">TODO-205</a> · memo 6435A8F0 · 11s</span>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <h3>What I did — from the memo</h3>
+        <table class="mods"><tr class="card"><td class="mv">surf</td><td class="rp"></td><td class="ld">—</td></tr></table>
+        <div class="chips"><span class="chip flag">⚠ forgot-to-end</span></div>
+      </div>
+      <div class="panel">
+        <h3>Strava — the metrics</h3>
+        <p class="pending">Metrics <b>pending</b> — the Strava API app is inactive. Reactivate, then <code>python3 join.py</code> fuses GPS, pace, HR and time here automatically.</p>
+        <details class="tx"><summary>full transcript</summary><p>All right, when I surfed, I forgot to end the workout. So it was about 18 minutes till I dropped the board off. For the next 10 minutes, we&#x27;re kind of just getting back home.</p></details>
+      </div>
+    </div>
+  </section>
+  <section class="grp">
+    <div class="grp-head">
+      <span class="ji">🏋️ 🏋️🏃 🏋️🧊</span>
+      <h2>2026-07-13 13:59</h2>
+      <span class="sub"><a href="https://linear.app/nomad-code/issue/TODO-204">TODO-204</a> · memo 8596D5AF · 77s</span>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <h3>What I did — from the memo</h3>
+        <table class="mods"><tr class="card"><td class="mv">run</td><td class="rp"></td><td class="ld">—</td></tr><tr class=""><td class="mv">pull-up</td><td class="rp">8</td><td class="ld">bw</td></tr><tr class=""><td class="mv">dip</td><td class="rp">8</td><td class="ld">bw</td></tr><tr class=""><td class="mv">thruster</td><td class="rp">10</td><td class="ld">5 kg</td></tr><tr class=""><td class="mv">walking-lunge</td><td class="rp">25</td><td class="ld">bw</td></tr><tr class="card"><td class="mv">ice-bath</td><td class="rp"></td><td class="ld">5 minutes</td></tr><tr class=""><td class="mv">strict-press</td><td class="rp">7</td><td class="ld">40 kg</td></tr><tr class=""><td class="mv">strict-press</td><td class="rp">5</td><td class="ld">40 kg</td></tr><tr class=""><td class="mv">squat</td><td class="rp">7</td><td class="ld">80 kg</td></tr><tr class=""><td class="mv">push-up</td><td class="rp">30</td><td class="ld">bw</td></tr><tr class=""><td class="mv">squat</td><td class="rp">5</td><td class="ld">80 kg</td></tr><tr class=""><td class="mv">deadlift</td><td class="rp">7</td><td class="ld">100 kg</td></tr></table>
+        <div class="chips"><span class="chip load">2190 kg total load</span><span class="chip dist">5K</span><span class="chip kit">20lb weight vest</span><span class="chip flag">⚠ forgot-to-end</span></div>
+      </div>
+      <div class="panel">
+        <h3>Strava — the metrics</h3>
+        <p class="pending">Metrics <b>pending</b> — the Strava API app is inactive. Reactivate, then <code>python3 join.py</code> fuses GPS, pace, HR and time here automatically.</p>
+        <details class="tx"><summary>full transcript</summary><p>So I did my normal flow of running from Midewi Manor and doing a fast 5K. And then with a 20-pound weight vest, eight pull-ups, eight dips, 10 thrusters with 2X5 kg. And then walking lunges, 25. Just the weight vest, no, nothing else. And then drove and ordered chicken and then drove and did the ice bath for five minutes. Magnesium for five. Note, I forgot to end the workout, so that one&#x27;s a bit long. So fix that. T-O-D-O, fix that. Then I had the chicken and then I drove to Man Overboard and did seven strict press, 40 kg, ROX, then five strict press, 40 kg, then seven squats, 80 kg, 30 push-ups, then five squats, 80 kg, and then seven deadlifts, 100 kg. KG.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="method">
+    <div class="grp-head"><h2>How it fuses</h2><span class="sub">bpo owns the join · strava-nix is the adapter</span></div>
+    <div class="flow"><div class="step"><div class="n">01 · capture</div><div class="t">Voice memo</div><div class="d">spoken after training — TODO-200 transcribes it to a dna note</div></div><div class="step"><div class="n">02 · extract</div><div class="t">signals.py</div><div class="d">clause parse → sets · reps · load · distance · flags</div></div><div class="step"><div class="n">03 · match</div><div class="t">join.py</div><div class="d">nearest Strava activity in a true-UTC window (−15/+120 min)</div></div><div class="step"><div class="n">04 · record</div><div class="t">dna/workouts/</div><div class="d">one durable fused note per memo, git-versioned</div></div><div class="step"><div class="n">05 · write-back</div><div class="t">Strava desc</div><div class="d">append the narrative, guarded by a voice-memo: marker</div></div></div>
+  </section>
+
+  <footer>
+    <b>Source of truth:</b> dna/voice-memos (spoken) + Strava (sensed) → dna/workouts (fused).
+    Match key is <b>start_date</b> in true UTC; window −15 / +120 min because memos
+    are recorded after finishing. Write-back is append-only, idempotent on a
+    <b>voice-memo:</b> marker. Generated 2026-07-13_17-01 · TODO-207.
+  </footer>
+</main>
+</body>
+</html>

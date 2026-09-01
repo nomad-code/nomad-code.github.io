@@ -1,0 +1,121 @@
+/* grove · viz — the particle grammar (TECH-461)
+   One visual language for every data drawing in the grove family,
+   canonized from the growth-ortho introband (TECH-408/410): claims are
+   dots, process is paths, resolution is order. Three zoom levels speak it:
+
+     overture — the WebGL introband (site intro; reference implementation)
+     verse    — inline-SVG card visualizations (.vz), this file
+     glyph    — 24px .ic icons built from the same primitives
+
+   Four primitives only. Every .vz composition is made of these and
+   nothing else:
+
+     dot  = a claim            .vz-dot   (+ .vz-mote to travel a path)
+     path = a route            .vz-path
+     grid = the ledger         .vz-gridline / .vz-cell
+     ring = an agent's loop    .vz-ring
+
+   Color is semantic, everywhere, at every zoom level:
+     claim/flow = forest · agentic action = Found blue · leak = warn
+     recovered value = lime, RATIONED — one lime moment per viz, the way
+     the introband spends its single lime glow.
+
+   Markup contract: <figure class="vz vz-<name>" aria-hidden="true"> (or
+   role="img" + aria-label when the viz carries meaning) wrapping one
+   inline <svg viewBox="0 0 320 200">. Strokes inherit the .ic discipline:
+   1.85, round caps, round joins — so cards and icons read as one family. */
+
+:root {
+  /* Semantic viz colors — map onto grove tokens, never raw hexes in comps */
+  --vz-claim:   var(--forest);
+  --vz-claim-d: var(--forest-d);
+  --vz-agent:   var(--found);
+  --vz-agent-d: var(--found-d);
+  --vz-leak:    var(--warn);
+  --vz-found:   var(--lime);
+  --vz-paper:   #fbfbf6;      /* introband paper — viz canvas wash */
+  --vz-faint:   var(--line);  /* grid hairlines */
+
+  /* Shared discipline */
+  --vz-stroke: 1.85;          /* same weight as .ic glyphs */
+  --vz-beat:   4s;            /* one breath — matches the introband pulse */
+}
+
+/* ---------------- Container ---------------- */
+.vz{display:block;margin:0;background:linear-gradient(155deg,#ffffff,var(--vz-paper) 48%,#f3f8f4);
+  border:1px solid var(--vz-faint);border-radius:var(--r-panel);overflow:hidden}
+.vz svg{display:block;width:100%;height:auto}
+.vz-cap{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);padding:9px 12px;border-top:1px solid var(--vz-faint)}
+.vz-cap b{color:var(--forest-d);font-weight:600}
+
+/* ---------------- Primitive: dot (a claim) ---------------- */
+.vz-dot{fill:var(--vz-c,var(--vz-claim));stroke:none}
+.vz-dot.breathe{animation:vz-breathe var(--vz-beat) var(--ease) infinite;animation-delay:var(--d,0s)}
+
+/* A dot that travels a route. Give each mote its path + a stagger:
+   <circle class="vz-mote" r="3.2" style="--mote-path:path('M …');--d:-1.3s"/> */
+.vz-mote{fill:var(--vz-c,var(--vz-claim));stroke:none;
+  offset-path:var(--mote-path);offset-distance:62%;offset-rotate:0deg;
+  animation:vz-travel calc(var(--vz-beat)*2) linear infinite;animation-delay:var(--d,0s)}
+
+/* ---------------- Primitive: path (a route) ---------------- */
+.vz-path{fill:none;stroke:var(--vz-c,var(--vz-claim));stroke-width:var(--vz-stroke);
+  stroke-linecap:round;stroke-linejoin:round;opacity:.5}
+.vz-path.flow{--vz-dash:14;stroke-dasharray:4 10;
+  animation:vz-flow var(--vz-beat) linear infinite;animation-delay:var(--d,0s)}
+.vz-path.faint{opacity:.22}
+
+/* ---------------- Primitive: grid (the ledger) ---------------- */
+.vz-gridline{fill:none;stroke:var(--vz-faint);stroke-width:1;stroke-linecap:round}
+.vz-cell{fill:var(--vz-c,var(--vz-claim));opacity:.85}
+.vz-cell.empty{fill:none;stroke:var(--vz-faint);stroke-width:1}
+
+/* ---------------- Primitive: ring (an agent's loop) ---------------- */
+.vz-ring{fill:none;stroke:var(--vz-c,var(--vz-agent));stroke-width:var(--vz-stroke);
+  stroke-linecap:round;opacity:.85}
+.vz-ring.orbit{--vz-dash:10;stroke-dasharray:2 8;
+  animation:vz-flow calc(var(--vz-beat)*1.5) linear infinite}
+.vz-ring.halo{opacity:.28;stroke-width:1}
+
+/* ---------------- Semantic color modifiers ----------------
+   Set on any primitive (or a <g>) — primitives read --vz-c. */
+.claim{--vz-c:var(--vz-claim)}
+.agent{--vz-c:var(--vz-agent)}
+.leak{--vz-c:var(--vz-leak)}
+.found{--vz-c:var(--vz-found)}   /* ration: once per viz */
+.paper{--vz-c:var(--vz-paper)}
+
+/* ---------------- Legend ---------------- */
+.vz-leg{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10.5px;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.vz-leg i{width:11px;height:11px;border-radius:50%;display:inline-block;vertical-align:-2px;margin-right:7px}
+.vz-leg .claim i{background:var(--vz-claim)} .vz-leg .agent i{background:var(--vz-agent)}
+.vz-leg .leak i{background:var(--vz-leak)}   .vz-leg .found i{background:var(--vz-found)}
+
+/* ---------------- Motion ----------------
+   One clock: --vz-beat. Flow = the WebGL drift, breathe = the glow pulse.
+   components.css already zeroes all animation under prefers-reduced-motion;
+   the static frame is designed to read complete (motes hold at 62%). */
+@keyframes vz-flow{to{stroke-dashoffset:calc(var(--vz-dash,14) * -1px)}}
+@keyframes vz-travel{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes vz-breathe{0%,100%{opacity:.45}50%{opacity:1}}
+
+/* ---------------- Compositions ----------------
+   Six named verses, one per agent archetype. The name declares which
+   segment of the introband journey the card zooms into; geometry lives
+   in the artifact markup (see the TECH-461 grammar artifact for the
+   canonical SVG of each):
+
+   .vz-route    claims in flight — approach paths, motes streaming (act 1)
+   .vz-scrub    a ring gate on the route; leak dots deflect before the grid
+   .vz-ledger   the claim grid; one under-coded cell upgraded (lime moment)
+   .vz-recover  dots fall out of the grid; an agent path loops them back
+   .vz-watch    a route racing a deadline tick; agent ring holds the line
+   .vz-orbit    the lattice — one continuous agent loop around the ledger (act 3)
+
+   Composition rules:
+   1. Primitives only — no freeform illustration inside a .vz.
+   2. One lime element max; zero is fine.
+   3. Leak dots exit toward the bottom edge; recovered dots return forest.
+   4. The agent is always a ring or a blue path — never a box, never a bot. */

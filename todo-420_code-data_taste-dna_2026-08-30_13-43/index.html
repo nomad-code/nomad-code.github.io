@@ -1,0 +1,360 @@
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Taste · DNA · what I'd take</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/motion.css">
+<style>
+  body { background: var(--paper, #f4f4ef); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 24px 96px; }
+  h1 { font-size: 40px; line-height: 1.1; margin: 0 0 12px; }
+  h2 { font-size: 26px; margin: 0 0 10px; }
+  section { margin-top: 52px; }
+  .sub { color: #5b6660; line-height: 1.6; margin: 0 0 16px; max-width: 68ch; }
+  .card { background: #fff; border-radius: 16px; padding: 22px;
+           box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr));
+           gap: 12px; margin-top: 28px; }
+  .kpi { background:#fff; border-radius:14px; padding:16px 18px;
+          box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .kpi b { display:block; font-size:24px; font-family:"DM Mono",monospace; }
+  .kpi span { font-size:12px; color:#5b6660; text-transform:uppercase;
+               letter-spacing:.06em; }
+  .scroll { overflow-x: auto; }
+  table.tbl { width:100%; border-collapse:collapse; font-size:14px; }
+  table.tbl th { text-align:left; font-family:"DM Mono",monospace; font-size:11px;
+     text-transform:uppercase; letter-spacing:.08em; color:#7a8580;
+     padding:6px 10px; border-bottom:1px solid #e6e6df; white-space:nowrap; }
+  table.tbl td { padding:7px 10px; border-bottom:1px solid #f0f0ea;
+     vertical-align:middle; }
+  td.n, th.n { text-align:right; font-family:"DM Mono",monospace;
+     font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td.m { font-family:"DM Mono",monospace; white-space:nowrap; }
+  td.dim, .dim { color:#7a8580; }
+  td.w { width:130px; }
+  .bar { background:#e9e9e1; border-radius:4px; height:7px; overflow:hidden; }
+  .bar .f { background:#127c70; height:100%; border-radius:4px; }
+  .find { background:#fff; border-left:3px solid #127c70; border-radius:0 12px 12px 0;
+     padding:18px 22px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .find.warn { border-left-color:#c2683c; }
+  .find h3 { margin:0 0 8px; font-size:16px; }
+  .find.warn h3 { color:#c2683c; }
+  .find p { margin:0 0 10px; color:#4a544f; line-height:1.6; }
+  code { font-family:"DM Mono",monospace; font-size:.92em;
+     background:#f0f0e8; padding:1px 5px; border-radius:4px; }
+</style>
+
+<div class="wrap">
+  <h1>Taste, and what I'd take</h1>
+  <p class="sub">Three media, one axis. 42,630 tracks, 699 films, 4,892
+  workouts and 53,334 photographs, all rated on the same 0–10 scale recovered
+  from his own history — then packed onto devices by that rating alone.</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>699</b><span>films rated</span></div>
+    <div class="kpi"><b>456</b><span>albums rated</span></div>
+    <div class="kpi"><b>8,577</b><span>songs liked</span></div>
+    <div class="kpi"><b>4,892</b><span>workouts</span></div>
+    <div class="kpi"><b>2,685</b><span>hours trained</span></div>
+    <div class="kpi"><b>5,350</b><span>km covered</span></div>
+  </div>
+
+  <section>
+    <h2>First, a correction</h2>
+    <p class="sub">This morning I reported that his film and album curves agreed
+    to within <b>0.4 of a point</b> at the top, and called that the licence for
+    stamping one curve onto photographs. That was drawn from 50 films — all the
+    public RSS feed would give up. With all <b>699</b> scraped, it does not hold.</p>
+    <div class="card scroll"><table class="tbl">
+      <tr><th>where the mass sits</th><th colspan="2">films</th>
+          <th colspan="2">albums</th><th class="n">gap (pt)</th></tr>
+      <tr><td class='m'>the middle</td><td class='dim'>2.5–3.5★</td><td class='n'>76.4%</td><td class='dim'>6.0–7.9</td><td class='n'>72.6%</td><td class='n'><b>3.8</b></td></tr><tr><td class='m'>the top</td><td class='dim'>4.5★+</td><td class='n'>2.6%</td><td class='dim'>9.0+</td><td class='n'>6.4%</td><td class='n'><b>3.8</b></td></tr><tr><td class='m'>the floor</td><td class='dim'>≤1.5★</td><td class='n'>4.4%</td><td class='dim'>≤4.9</td><td class='n'>0.4%</td><td class='n'><b>4.0</b></td></tr>
+    </table></div>
+    <div class="find warn" style="margin-top:18px">
+      <h3>What the full set actually says</h3>
+      <p>The middle still agrees. The ends do not: he reserves <b>2.6%</b> of
+      films for the top band against <b>6.4%</b> of albums, and puts <b>4.4%</b>
+      of films on the floor against <b>0.4%</b> of albums. He is far stingier
+      with films and far more willing to condemn one.</p>
+      <p>The likeliest reason is not taste but <b>selection</b>. Albums are
+      sought out — 2 of 456 sit at or below 4.9, because a record he disliked
+      mostly never got rated. Films arrive: you get taken to them. 31 of 699 sit
+      at or below 1.5★, and one is <em>Birdemic: Shock and Terror</em>.</p>
+      <p>That has a consequence the earlier pass missed. Photographs are
+      captured the way films are watched — in bulk, often without deliberation —
+      so the <b>film</b> curve may be the better model for them than the album
+      curve currently in use. The scores in the other artifact are built on the
+      album curve. Changing it would move every photo, so it is flagged here,
+      not silently swapped.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Music · the ten-year drift</h2>
+    <p class="sub">Liked songs carry an <code>addedAt</code>, so taste is dated.
+    Valence is Spotify's 0–1 "musical positiveness"; energy is intensity. Both
+    fall, steadily, for a decade: valence -0.058, energy -0.093.</p>
+    <div class="card scroll"><table class="tbl">
+      <tr><th>year</th><th class="n">liked</th><th class="n">valence</th><th></th>
+          <th class="n">energy</th><th></th><th>top genre</th></tr>
+      <tr><td class='m'>2014</td><td class='n'>25</td><td class='n'>0.480</td><td class='w'><div class="bar"><div class="f" style="width:80.1%"></div></div></td><td class='n'>0.677</td><td class='w'><div class="bar"><div class="f" style="width:90.2%"></div></div></td><td class='dim'>hip hop</td></tr><tr><td class='m'>2015</td><td class='n'>1,222</td><td class='n'>0.515</td><td class='w'><div class="bar"><div class="f" style="width:85.9%"></div></div></td><td class='n'>0.683</td><td class='w'><div class="bar"><div class="f" style="width:91.1%"></div></div></td><td class='dim'>hip hop</td></tr><tr><td class='m'>2016</td><td class='n'>1,168</td><td class='n'>0.487</td><td class='w'><div class="bar"><div class="f" style="width:81.2%"></div></div></td><td class='n'>0.627</td><td class='w'><div class="bar"><div class="f" style="width:83.5%"></div></div></td><td class='dim'>rock</td></tr><tr><td class='m'>2017</td><td class='n'>1,011</td><td class='n'>0.467</td><td class='w'><div class="bar"><div class="f" style="width:77.9%"></div></div></td><td class='n'>0.620</td><td class='w'><div class="bar"><div class="f" style="width:82.6%"></div></div></td><td class='dim'>hip hop</td></tr><tr><td class='m'>2018</td><td class='n'>668</td><td class='n'>0.411</td><td class='w'><div class="bar"><div class="f" style="width:68.5%"></div></div></td><td class='n'>0.569</td><td class='w'><div class="bar"><div class="f" style="width:75.8%"></div></div></td><td class='dim'>indie soul</td></tr><tr><td class='m'>2019</td><td class='n'>732</td><td class='n'>0.478</td><td class='w'><div class="bar"><div class="f" style="width:79.6%"></div></div></td><td class='n'>0.599</td><td class='w'><div class="bar"><div class="f" style="width:79.8%"></div></div></td><td class='dim'>indie soul</td></tr><tr><td class='m'>2020</td><td class='n'>938</td><td class='n'>0.496</td><td class='w'><div class="bar"><div class="f" style="width:82.7%"></div></div></td><td class='n'>0.598</td><td class='w'><div class="bar"><div class="f" style="width:79.8%"></div></div></td><td class='dim'>indie soul</td></tr><tr><td class='m'>2021</td><td class='n'>453</td><td class='n'>0.470</td><td class='w'><div class="bar"><div class="f" style="width:78.4%"></div></div></td><td class='n'>0.603</td><td class='w'><div class="bar"><div class="f" style="width:80.3%"></div></div></td><td class='dim'>hip hop</td></tr><tr><td class='m'>2022</td><td class='n'>1,215</td><td class='n'>0.417</td><td class='w'><div class="bar"><div class="f" style="width:69.5%"></div></div></td><td class='n'>0.587</td><td class='w'><div class="bar"><div class="f" style="width:78.3%"></div></div></td><td class='dim'>indie rock</td></tr><tr><td class='m'>2023</td><td class='n'>1,145</td><td class='n'>0.423</td><td class='w'><div class="bar"><div class="f" style="width:70.5%"></div></div></td><td class='n'>0.584</td><td class='w'><div class="bar"><div class="f" style="width:77.8%"></div></div></td><td class='dim'>art pop</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="two">
+      <div class="card">
+        <h2 style="font-size:17px">The artists that hold weight</h2>
+        <p class="sub" style="margin-bottom:14px">Count is liked tracks — repeated
+        deliberate acts, not plays. Nobody accidentally likes 154 songs.</p>
+        <div class="scroll"><table class="tbl">
+          <tr><th>artist</th><th class="n">liked</th><th class="n">albums</th><th></th></tr>
+          <tr><td class='m'>Radiohead</td><td class='n'>154</td><td class='n dim'>14</td><td class='w'><div class="bar"><div class="f" style="width:96.2%"></div></div></td></tr><tr><td class='m'>Kendrick Lamar</td><td class='n'>115</td><td class='n dim'>10</td><td class='w'><div class="bar"><div class="f" style="width:71.9%"></div></div></td></tr><tr><td class='m'>Mac DeMarco</td><td class='n'>81</td><td class='n dim'>12</td><td class='w'><div class="bar"><div class="f" style="width:50.6%"></div></div></td></tr><tr><td class='m'>The Beatles</td><td class='n'>79</td><td class='n dim'>12</td><td class='w'><div class="bar"><div class="f" style="width:49.4%"></div></div></td></tr><tr><td class='m'>Kanye West</td><td class='n'>78</td><td class='n dim'>12</td><td class='w'><div class="bar"><div class="f" style="width:48.8%"></div></div></td></tr><tr><td class='m'>Beach House</td><td class='n'>70</td><td class='n dim'>6</td><td class='w'><div class="bar"><div class="f" style="width:43.8%"></div></div></td></tr><tr><td class='m'>Khruangbin</td><td class='n'>64</td><td class='n dim'>12</td><td class='w'><div class="bar"><div class="f" style="width:40.0%"></div></div></td></tr><tr><td class='m'>Death Grips</td><td class='n'>63</td><td class='n dim'>9</td><td class='w'><div class="bar"><div class="f" style="width:39.4%"></div></div></td></tr><tr><td class='m'>Tame Impala</td><td class='n'>57</td><td class='n dim'>10</td><td class='w'><div class="bar"><div class="f" style="width:35.6%"></div></div></td></tr><tr><td class='m'>Aphex Twin</td><td class='n'>55</td><td class='n dim'>7</td><td class='w'><div class="bar"><div class="f" style="width:34.4%"></div></div></td></tr><tr><td class='m'>Fleet Foxes</td><td class='n'>54</td><td class='n dim'>6</td><td class='w'><div class="bar"><div class="f" style="width:33.8%"></div></div></td></tr><tr><td class='m'>Bob Dylan</td><td class='n'>49</td><td class='n dim'>12</td><td class='w'><div class="bar"><div class="f" style="width:30.6%"></div></div></td></tr><tr><td class='m'>Animal Collective</td><td class='n'>48</td><td class='n dim'>9</td><td class='w'><div class="bar"><div class="f" style="width:30.0%"></div></div></td></tr><tr><td class='m'>A Tribe Called Quest</td><td class='n'>46</td><td class='n dim'>6</td><td class='w'><div class="bar"><div class="f" style="width:28.8%"></div></div></td></tr><tr><td class='m'>Frank Ocean</td><td class='n'>46</td><td class='n dim'>3</td><td class='w'><div class="bar"><div class="f" style="width:28.8%"></div></div></td></tr><tr><td class='m'>Anderson .Paak</td><td class='n'>45</td><td class='n dim'>10</td><td class='w'><div class="bar"><div class="f" style="width:28.1%"></div></div></td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:17px">Genre mass</h2>
+        <p class="sub" style="margin-bottom:14px">Tags are per-artist and overlap,
+        so these are weights rather than a partition.</p>
+        <div class="scroll"><table class="tbl">
+          <tr><th>genre</th><th class="n">tracks</th><th></th></tr>
+          <tr><td class='m'>hip hop</td><td class='n'>1,159</td><td class='w'><div class="bar"><div class="f" style="width:100.0%"></div></div></td></tr><tr><td class='m'>rock</td><td class='n'>1,025</td><td class='w'><div class="bar"><div class="f" style="width:88.4%"></div></div></td></tr><tr><td class='m'>indie rock</td><td class='n'>990</td><td class='w'><div class="bar"><div class="f" style="width:85.4%"></div></div></td></tr><tr><td class='m'>rap</td><td class='n'>972</td><td class='w'><div class="bar"><div class="f" style="width:83.9%"></div></div></td></tr><tr><td class='m'>alternative rock</td><td class='n'>787</td><td class='w'><div class="bar"><div class="f" style="width:67.9%"></div></div></td></tr><tr><td class='m'>art pop</td><td class='n'>757</td><td class='w'><div class="bar"><div class="f" style="width:65.3%"></div></div></td></tr><tr><td class='m'>indietronica</td><td class='n'>733</td><td class='w'><div class="bar"><div class="f" style="width:63.2%"></div></div></td></tr><tr><td class='m'>chamber pop</td><td class='n'>703</td><td class='w'><div class="bar"><div class="f" style="width:60.7%"></div></div></td></tr><tr><td class='m'>modern rock</td><td class='n'>578</td><td class='w'><div class="bar"><div class="f" style="width:49.9%"></div></div></td></tr><tr><td class='m'>permanent wave</td><td class='n'>575</td><td class='w'><div class="bar"><div class="f" style="width:49.6%"></div></div></td></tr><tr><td class='m'>indie soul</td><td class='n'>494</td><td class='w'><div class="bar"><div class="f" style="width:42.6%"></div></div></td></tr><tr><td class='m'>conscious hip hop</td><td class='n'>465</td><td class='w'><div class="bar"><div class="f" style="width:40.1%"></div></div></td></tr><tr><td class='m'>alternative r&amp;b</td><td class='n'>424</td><td class='w'><div class="bar"><div class="f" style="width:36.6%"></div></div></td></tr><tr><td class='m'>escape room</td><td class='n'>385</td><td class='w'><div class="bar"><div class="f" style="width:33.2%"></div></div></td></tr>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Music · where he overrules the critics</h2>
+    <p class="sub">His album score against AOTY's, on the 0–10 axis. He runs
+    <b>1.06 below</b> the critics on average — but the disagreements go both ways,
+    and the ones he defends are more interesting than the ones he dismisses.</p>
+    <div class="two">
+      <div class="card">
+        <h2 style="font-size:15px">He rates it higher</h2>
+        <div class="scroll"><table class="tbl">
+          <tr><th class="n">Δ</th><th class="n">AOTY</th><th class="n">his</th><th>album</th></tr>
+          <tr><td class='n'><b>+3.1</b></td><td class='n dim'>4.0</td><td class='n'>7.1</td><td>bryson tiller — <span class='dim'>t r a p s o u l</span></td></tr><tr><td class='n'><b>+2.2</b></td><td class='n dim'>7.2</td><td class='n'>9.4</td><td>khruangbin — <span class='dim'>the universe smiles upon you</span></td></tr><tr><td class='n'><b>+1.4</b></td><td class='n dim'>8.0</td><td class='n'>9.4</td><td>kaytranada — <span class='dim'>999</span></td></tr><tr><td class='n'><b>+1.4</b></td><td class='n dim'>7.3</td><td class='n'>8.7</td><td>twin peaks — <span class='dim'>down in heaven</span></td></tr><tr><td class='n'><b>+1.3</b></td><td class='n dim'>8.1</td><td class='n'>9.4</td><td>anderson paak — <span class='dim'>malibu</span></td></tr><tr><td class='n'><b>+1.3</b></td><td class='n dim'>7.5</td><td class='n'>8.8</td><td>radiohead — <span class='dim'>the king of limbs</span></td></tr><tr><td class='n'><b>+1.3</b></td><td class='n dim'>7.5</td><td class='n'>8.8</td><td>tame impala — <span class='dim'>innerspeaker</span></td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:15px">He rates it lower</h2>
+        <div class="scroll"><table class="tbl">
+          <tr><th class="n">Δ</th><th class="n">AOTY</th><th class="n">his</th><th>album</th></tr>
+          <tr><td class='n'><b>-4.6</b></td><td class='n dim'>8.6</td><td class='n'>4.0</td><td>bjrk — <span class='dim'>vulnicura</span></td></tr><tr><td class='n'><b>-4.1</b></td><td class='n dim'>8.6</td><td class='n'>4.5</td><td>portishead — <span class='dim'>third</span></td></tr><tr><td class='n'><b>-3.8</b></td><td class='n dim'>9.4</td><td class='n'>5.6</td><td>burial — <span class='dim'>untrue</span></td></tr><tr><td class='n'><b>-3.6</b></td><td class='n dim'>10.0</td><td class='n'>6.4</td><td>stevie ray vaughan — <span class='dim'>texas flood</span></td></tr><tr><td class='n'><b>-3.4</b></td><td class='n dim'>9.4</td><td class='n'>6.0</td><td>various artists — <span class='dim'>artificial intelligence</span></td></tr><tr><td class='n'><b>-3.3</b></td><td class='n dim'>8.8</td><td class='n'>5.5</td><td>swans — <span class='dim'>to be kind</span></td></tr><tr><td class='n'><b>-3.2</b></td><td class='n dim'>8.9</td><td class='n'>5.7</td><td>deafheaven — <span class='dim'>sunbather</span></td></tr>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Film · the whole curve, all 699</h2>
+    <div class="two">
+      <div class="card">
+        <div class="scroll"><table class="tbl">
+          <tr><th>stars</th><th class="n">val</th><th class="n">films</th>
+              <th class="n">%</th><th></th></tr>
+          <tr><td class='m'>★★★★★</td><td class='n dim'>5.0</td><td class='n'>2</td><td class='n dim'>0.3%</td><td class='w'><div class="bar"><div class="f" style="width:0.8%"></div></div></td></tr><tr><td class='m'>★★★★½</td><td class='n dim'>4.5</td><td class='n'>16</td><td class='n dim'>2.3%</td><td class='w'><div class="bar"><div class="f" style="width:6.5%"></div></div></td></tr><tr><td class='m'>★★★★</td><td class='n dim'>4.0</td><td class='n'>55</td><td class='n dim'>7.9%</td><td class='w'><div class="bar"><div class="f" style="width:22.4%"></div></div></td></tr><tr><td class='m'>★★★½</td><td class='n dim'>3.5</td><td class='n'>142</td><td class='n dim'>20.3%</td><td class='w'><div class="bar"><div class="f" style="width:57.7%"></div></div></td></tr><tr><td class='m'>★★★</td><td class='n dim'>3.0</td><td class='n'>246</td><td class='n dim'>35.2%</td><td class='w'><div class="bar"><div class="f" style="width:100.0%"></div></div></td></tr><tr><td class='m'>★★½</td><td class='n dim'>2.5</td><td class='n'>146</td><td class='n dim'>20.9%</td><td class='w'><div class="bar"><div class="f" style="width:59.3%"></div></div></td></tr><tr><td class='m'>★★</td><td class='n dim'>2.0</td><td class='n'>61</td><td class='n dim'>8.7%</td><td class='w'><div class="bar"><div class="f" style="width:24.8%"></div></div></td></tr><tr><td class='m'>★½</td><td class='n dim'>1.5</td><td class='n'>22</td><td class='n dim'>3.1%</td><td class='w'><div class="bar"><div class="f" style="width:8.9%"></div></div></td></tr><tr><td class='m'>★</td><td class='n dim'>1.0</td><td class='n'>8</td><td class='n dim'>1.1%</td><td class='w'><div class="bar"><div class="f" style="width:3.3%"></div></div></td></tr><tr><td class='m'>½</td><td class='n dim'>0.5</td><td class='n'>1</td><td class='n dim'>0.1%</td><td class='w'><div class="bar"><div class="f" style="width:0.4%"></div></div></td></tr>
+        </table></div>
+        <p class="sub" style="margin:14px 0 0">Mean 2.95★,
+        median 3.0★ — <b>5.91</b>
+        on the 0–10 axis. 3★ alone takes 35%.</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:15px">By decade — is he a nostalgist?</h2>
+        <p class="sub" style="margin-bottom:14px">Mildly. The 1960s and 70s score
+        highest, but on 15–16 films each — too thin to lean on. The honest read is
+        that the mean barely moves across ninety years.</p>
+        <div class="scroll"><table class="tbl">
+          <tr><th>decade</th><th class="n">films</th><th class="n">mean</th>
+              <th class="n">≥4★</th><th></th></tr>
+          <tr><td class='m'>1930s</td><td class='n'>6</td><td class='n'>2.75★</td><td class='n dim'>0%</td><td class='w'><div class="bar"><div class="f" style="width:2.7%"></div></div></td></tr><tr><td class='m'>1950s</td><td class='n'>15</td><td class='n'>2.87★</td><td class='n dim'>0%</td><td class='w'><div class="bar"><div class="f" style="width:6.8%"></div></div></td></tr><tr><td class='m'>1960s</td><td class='n'>16</td><td class='n'>3.19★</td><td class='n dim'>25%</td><td class='w'><div class="bar"><div class="f" style="width:7.3%"></div></div></td></tr><tr><td class='m'>1970s</td><td class='n'>15</td><td class='n'>3.07★</td><td class='n dim'>33%</td><td class='w'><div class="bar"><div class="f" style="width:6.8%"></div></div></td></tr><tr><td class='m'>1980s</td><td class='n'>45</td><td class='n'>2.89★</td><td class='n dim'>4%</td><td class='w'><div class="bar"><div class="f" style="width:20.5%"></div></div></td></tr><tr><td class='m'>1990s</td><td class='n'>99</td><td class='n'>3.01★</td><td class='n dim'>14%</td><td class='w'><div class="bar"><div class="f" style="width:45.0%"></div></div></td></tr><tr><td class='m'>2000s</td><td class='n'>172</td><td class='n'>3.04★</td><td class='n dim'>12%</td><td class='w'><div class="bar"><div class="f" style="width:78.2%"></div></div></td></tr><tr><td class='m'>2010s</td><td class='n'>217</td><td class='n'>2.83★</td><td class='n dim'>6%</td><td class='w'><div class="bar"><div class="f" style="width:98.6%"></div></div></td></tr><tr><td class='m'>2020s</td><td class='n'>110</td><td class='n'>3.00★</td><td class='n dim'>12%</td><td class='w'><div class="bar"><div class="f" style="width:50.0%"></div></div></td></tr>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="two">
+      <div class="card">
+        <h2 style="font-size:17px">Everything at 4.5★ or above</h2>
+        <p class="sub" style="margin-bottom:14px">Eighteen films out of 699.
+        Two fives, ever.</p>
+        <div class="scroll"><table class="tbl">
+          <tr><th>stars</th><th class="n">year</th><th>film</th></tr>
+          <tr><td class='m'>5.0★</td><td class='n dim'>2026</td><td>The Odyssey</td></tr><tr><td class='m'>5.0★</td><td class='n dim'>1999</td><td>The Matrix</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2024</td><td>Dune: Part Two</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2023</td><td>Anatomy of a Fall</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2019</td><td>Knives Out</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2019</td><td>Parasite</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2008</td><td>The Dark Knight</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2006</td><td>The Prestige</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2004</td><td>DodgeBall: A True Underdog Story</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>2001</td><td>The Lord of the Rings: The Fellowship of the Ring</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1999</td><td>Fight Club</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1998</td><td>The Big Lebowski</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1997</td><td>Good Will Hunting</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1994</td><td>The Shawshank Redemption</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1980</td><td>The Empire Strikes Back</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1968</td><td>Once Upon a Time in the West</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1966</td><td>How the Grinch Stole Christmas!</td></tr><tr><td class='m'>4.5★</td><td class='n dim'>1960</td><td>The Apartment</td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:17px">The floor — which albums don't have</h2>
+        <p class="sub" style="margin-bottom:14px">This column is the evidence for
+        the selection argument above. He condemns films; he simply doesn't rate
+        bad records.</p>
+        <div class="scroll"><table class="tbl">
+          <tr><th>stars</th><th class="n">year</th><th>film</th></tr>
+          <tr><td class='m'>0.5★</td><td class='n dim'>2010</td><td>Birdemic: Shock and Terror</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>2024</td><td>Deadpool &amp; Wolverine</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>2018</td><td>Aquaman</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>2014</td><td>Guardians of the Galaxy</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>2013</td><td>The Frozen Ground</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>2010</td><td>Grown Ups</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>2008</td><td>Semi-Pro</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>1993</td><td>What's Eating Gilbert Grape</td></tr><tr><td class='m'>1.0★</td><td class='n dim'>1992</td><td>Unforgiven</td></tr><tr><td class='m'>1.5★</td><td class='n dim'>2025</td><td>Wicked: For Good</td></tr><tr><td class='m'>1.5★</td><td class='n dim'>2024</td><td>Blitz</td></tr><tr><td class='m'>1.5★</td><td class='n dim'>2024</td><td>Gladiator II</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Fitness · what the body has been doing</h2>
+    <p class="sub">4,892 activities since 2018, 2,685 hours,
+    5,350 km, nearly all with heart rate. This is the densest continuous
+    record in the whole graph — a watch on the wrist doesn't care whether the day
+    felt worth documenting.</p>
+    <div class="two">
+      <div class="card">
+        <div class="scroll"><table class="tbl">
+          <tr><th>sport</th><th class="n">count</th><th class="n">hrs</th>
+              <th class="n">km</th><th class="n">HR</th><th></th></tr>
+          <tr><td class='m'>Workout</td><td class='n'>1,222</td><td class='n'>439</td><td class='n'>65</td><td class='n dim'>91</td><td class='w'><div class="bar"><div class="f" style="width:97.8%"></div></div></td></tr><tr><td class='m'>Yoga</td><td class='n'>900</td><td class='n'>895</td><td class='n'>0</td><td class='n dim'>98</td><td class='w'><div class="bar"><div class="f" style="width:72.0%"></div></div></td></tr><tr><td class='m'>Run</td><td class='n'>670</td><td class='n'>348</td><td class='n'>3,476</td><td class='n dim'>129</td><td class='w'><div class="bar"><div class="f" style="width:53.6%"></div></div></td></tr><tr><td class='m'>Walk</td><td class='n'>606</td><td class='n'>230</td><td class='n'>723</td><td class='n dim'>81</td><td class='w'><div class="bar"><div class="f" style="width:48.5%"></div></div></td></tr><tr><td class='m'>Ride</td><td class='n'>415</td><td class='n'>116</td><td class='n'>441</td><td class='n dim'>95</td><td class='w'><div class="bar"><div class="f" style="width:33.2%"></div></div></td></tr><tr><td class='m'>HighIntensityIntervalTraining</td><td class='n'>327</td><td class='n'>98</td><td class='n'>0</td><td class='n dim'>107</td><td class='w'><div class="bar"><div class="f" style="width:26.2%"></div></div></td></tr><tr><td class='m'>Surfing</td><td class='n'>206</td><td class='n'>241</td><td class='n'>175</td><td class='n dim'>111</td><td class='w'><div class="bar"><div class="f" style="width:16.5%"></div></div></td></tr><tr><td class='m'>Swim</td><td class='n'>190</td><td class='n'>163</td><td class='n'>266</td><td class='n dim'>113</td><td class='w'><div class="bar"><div class="f" style="width:15.2%"></div></div></td></tr><tr><td class='m'>WeightTraining</td><td class='n'>142</td><td class='n'>82</td><td class='n'>0</td><td class='n dim'>106</td><td class='w'><div class="bar"><div class="f" style="width:11.4%"></div></div></td></tr><tr><td class='m'>Hike</td><td class='n'>99</td><td class='n'>50</td><td class='n'>180</td><td class='n dim'>96</td><td class='w'><div class="bar"><div class="f" style="width:7.9%"></div></div></td></tr><tr><td class='m'>Rowing</td><td class='n'>78</td><td class='n'>9</td><td class='n'>2</td><td class='n dim'>119</td><td class='w'><div class="bar"><div class="f" style="width:6.2%"></div></div></td></tr><tr><td class='m'>Golf</td><td class='n'>21</td><td class='n'>2</td><td class='n'>3</td><td class='n dim'>74</td><td class='w'><div class="bar"><div class="f" style="width:1.7%"></div></div></td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <div class="scroll"><table class="tbl">
+          <tr><th>year</th><th class="n">acts</th><th class="n">hrs</th>
+              <th class="n">km</th><th class="n">HR</th><th></th></tr>
+          <tr><td class='m'>2018</td><td class='n'>48</td><td class='n'>49</td><td class='n'>16</td><td class='n dim'>127</td><td class='w'><div class="bar"><div class="f" style="width:2.4%"></div></div></td></tr><tr><td class='m'>2019</td><td class='n'>177</td><td class='n'>254</td><td class='n'>61</td><td class='n dim'>114</td><td class='w'><div class="bar"><div class="f" style="width:8.8%"></div></div></td></tr><tr><td class='m'>2020</td><td class='n'>334</td><td class='n'>342</td><td class='n'>262</td><td class='n dim'>103</td><td class='w'><div class="bar"><div class="f" style="width:16.7%"></div></div></td></tr><tr><td class='m'>2021</td><td class='n'>99</td><td class='n'>134</td><td class='n'>40</td><td class='n dim'>104</td><td class='w'><div class="bar"><div class="f" style="width:5.0%"></div></div></td></tr><tr><td class='m'>2022</td><td class='n'>226</td><td class='n'>248</td><td class='n'>40</td><td class='n dim'>102</td><td class='w'><div class="bar"><div class="f" style="width:11.3%"></div></div></td></tr><tr><td class='m'>2023</td><td class='n'>486</td><td class='n'>367</td><td class='n'>174</td><td class='n dim'>94</td><td class='w'><div class="bar"><div class="f" style="width:24.3%"></div></div></td></tr><tr><td class='m'>2024</td><td class='n'>1,967</td><td class='n'>624</td><td class='n'>963</td><td class='n dim'>98</td><td class='w'><div class="bar"><div class="f" style="width:98.3%"></div></div></td></tr><tr><td class='m'>2025</td><td class='n'>651</td><td class='n'>306</td><td class='n'>1,565</td><td class='n dim'>104</td><td class='w'><div class="bar"><div class="f" style="width:32.5%"></div></div></td></tr><tr><td class='m'>2026</td><td class='n'>904</td><td class='n'>361</td><td class='n'>2,229</td><td class='n dim'>101</td><td class='w'><div class="bar"><div class="f" style="width:45.2%"></div></div></td></tr>
+        </table></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <h2 style="font-size:15px">The hardest things he has done</h2>
+      <p class="sub" style="margin-bottom:14px">Strava's suffer score. HYROX takes
+      seven of the top ten — a race format he only started in 2025.</p>
+      <div class="scroll"><table class="tbl">
+        <tr><th class="n">suffer</th><th class="n">date</th><th class="n">maxHR</th>
+            <th>what</th></tr>
+        <tr><td class='n'><b>231</b></td><td class='n dim'>2025-10-24</td><td class='n dim'>168</td><td>HYROX Bali</td></tr><tr><td class='n'><b>139</b></td><td class='n dim'>2025-11-29</td><td class='n dim'>169</td><td>HYROX Singapore</td></tr><tr><td class='n'><b>133</b></td><td class='n dim'>2025-11-16</td><td class='n dim'>169</td><td>HYROX Chicago</td></tr><tr><td class='n'><b>131</b></td><td class='n dim'>2026-08-07</td><td class='n dim'>171</td><td>Afternoon Run</td></tr><tr><td class='n'><b>117</b></td><td class='n dim'>2026-03-20</td><td class='n dim'>166</td><td>HYROX Bangkok 🏋️Open Singles</td></tr><tr><td class='n'><b>111</b></td><td class='n dim'>2026-02-01</td><td class='n dim'>181</td><td>HYROX Osaka</td></tr><tr><td class='n'><b>101</b></td><td class='n dim'>2026-03-01</td><td class='n dim'>165</td><td>HYROX Taipei Doubles — 1:01:19</td></tr><tr><td class='n'><b>84</b></td><td class='n dim'>2026-05-08</td><td class='n dim'>161</td><td>Night Run</td></tr><tr><td class='n'><b>75</b></td><td class='n dim'>2026-01-21</td><td class='n dim'>150</td><td>Afternoon Run</td></tr><tr><td class='n'><b>72</b></td><td class='n dim'>2026-02-23</td><td class='n dim'>169</td><td>HYROX Las Vegas 🏋️ Doubles Open</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Three witnesses, one timeline</h2>
+    <p class="sub">Each column is an independent record of the same years, kept
+    by a different app for a different reason. Where they disagree is where the
+    interesting questions are — 2024 has the most workouts ever recorded and
+    almost no photographs.</p>
+    <p class="sub"><b>Read the zeros as gaps, not as behaviour.</b> Songs stop
+    after 2023 because the Spotify export was taken on 2024-04-29 and nothing
+    has replaced it; he did not stop listening. Workouts start in 2018 because
+    that is when the Strava account does. The photo dip in 2023–25 is the seam
+    between the Google archive (ends 2023-07) and the live library. Three
+    incomplete records that fail in different places is exactly why more than
+    one witness is worth keeping.</p>
+    <div class="card scroll"><table class="tbl">
+      <tr><th>year</th><th class="n">songs liked</th><th></th>
+          <th class="n">workouts</th><th></th><th class="n">photos</th><th></th></tr>
+      <tr><td class='m'>2013</td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>633</td><td class='w'><div class="bar"><div class="f" style="width:5.3%"></div></div></td></tr><tr><td class='m'>2014</td><td class='n'>25</td><td class='w'><div class="bar"><div class="f" style="width:1.9%"></div></div></td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>188</td><td class='w'><div class="bar"><div class="f" style="width:1.6%"></div></div></td></tr><tr><td class='m'>2015</td><td class='n'>1,222</td><td class='w'><div class="bar"><div class="f" style="width:94.0%"></div></div></td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>426</td><td class='w'><div class="bar"><div class="f" style="width:3.5%"></div></div></td></tr><tr><td class='m'>2016</td><td class='n'>1,168</td><td class='w'><div class="bar"><div class="f" style="width:89.8%"></div></div></td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>514</td><td class='w'><div class="bar"><div class="f" style="width:4.3%"></div></div></td></tr><tr><td class='m'>2017</td><td class='n'>1,011</td><td class='w'><div class="bar"><div class="f" style="width:77.8%"></div></div></td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>4,312</td><td class='w'><div class="bar"><div class="f" style="width:35.9%"></div></div></td></tr><tr><td class='m'>2018</td><td class='n'>668</td><td class='w'><div class="bar"><div class="f" style="width:51.4%"></div></div></td><td class='n'>48</td><td class='w'><div class="bar"><div class="f" style="width:2.4%"></div></div></td><td class='n'>4,615</td><td class='w'><div class="bar"><div class="f" style="width:38.5%"></div></div></td></tr><tr><td class='m'>2019</td><td class='n'>732</td><td class='w'><div class="bar"><div class="f" style="width:56.3%"></div></div></td><td class='n'>177</td><td class='w'><div class="bar"><div class="f" style="width:8.8%"></div></div></td><td class='n'>3,154</td><td class='w'><div class="bar"><div class="f" style="width:26.3%"></div></div></td></tr><tr><td class='m'>2020</td><td class='n'>938</td><td class='w'><div class="bar"><div class="f" style="width:72.2%"></div></div></td><td class='n'>334</td><td class='w'><div class="bar"><div class="f" style="width:16.7%"></div></div></td><td class='n'>6,976</td><td class='w'><div class="bar"><div class="f" style="width:58.1%"></div></div></td></tr><tr><td class='m'>2021</td><td class='n'>453</td><td class='w'><div class="bar"><div class="f" style="width:34.8%"></div></div></td><td class='n'>99</td><td class='w'><div class="bar"><div class="f" style="width:5.0%"></div></div></td><td class='n'>7,397</td><td class='w'><div class="bar"><div class="f" style="width:61.6%"></div></div></td></tr><tr><td class='m'>2022</td><td class='n'>1,215</td><td class='w'><div class="bar"><div class="f" style="width:93.5%"></div></div></td><td class='n'>226</td><td class='w'><div class="bar"><div class="f" style="width:11.3%"></div></div></td><td class='n'>11,997</td><td class='w'><div class="bar"><div class="f" style="width:100.0%"></div></div></td></tr><tr><td class='m'>2023</td><td class='n'>1,145</td><td class='w'><div class="bar"><div class="f" style="width:88.1%"></div></div></td><td class='n'>486</td><td class='w'><div class="bar"><div class="f" style="width:24.3%"></div></div></td><td class='n'>1,096</td><td class='w'><div class="bar"><div class="f" style="width:9.1%"></div></div></td></tr><tr><td class='m'>2024</td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>1,967</td><td class='w'><div class="bar"><div class="f" style="width:98.3%"></div></div></td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td></tr><tr><td class='m'>2025</td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>651</td><td class='w'><div class="bar"><div class="f" style="width:32.5%"></div></div></td><td class='n'>133</td><td class='w'><div class="bar"><div class="f" style="width:1.1%"></div></div></td></tr><tr><td class='m'>2026</td><td class='n'>0</td><td class='w'><div class="bar"><div class="f" style="width:0.0%"></div></div></td><td class='n'>904</td><td class='w'><div class="bar"><div class="f" style="width:45.2%"></div></div></td><td class='n'>11,451</td><td class='w'><div class="bar"><div class="f" style="width:95.4%"></div></div></td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>The DNA — what fits on what</h2>
+    <p class="sub">This is the payoff of putting everything on one axis. A 9.3
+    photo and a 9.3 song are equally rare <em>by construction</em>, so they can
+    compete for the same megabyte and packing a device becomes sort-and-fill —
+    no per-medium fudge factor.</p>
+    <p class="sub">Sizes are measured, not assumed: <b>1.11 MB</b> mean per photo
+    over 1,963 real archive files, <b>0.06 MB</b> for a watch-sized render,
+    <b>4 MB</b> per song at 256k AAC, <b>0.05 MB</b> for a film's poster and
+    identity. A film cannot live on a watch; its name can. The device budgets are
+    the one genuinely speculative input, and are stated so they can be argued with.</p>
+    <div class="card scroll"><table class="tbl">
+      <tr><th>device</th><th class="n">budget</th><th class="n">cutoff</th>
+          <th class="n">photos</th><th class="n">songs</th><th class="n">films</th>
+          <th class="n">used</th><th></th></tr>
+      <tr><td class='m'>Apple Watch</td><td class='n dim'>2 GB</td><td class='n'><b>8.7</b></td><td class='n'>4,918</td><td class='n'>438</td><td class='n'>18</td><td class='n dim'>2.0 GB</td><td class='dim'>on the wrist, offline</td></tr><tr><td class='m'>iPhone</td><td class='n dim'>32 GB</td><td class='n'><b>7.0</b></td><td class='n'>23,034</td><td class='n'>1,799</td><td class='n'>85</td><td class='n dim'>32.0 GB</td><td class='dim'>in the pocket</td></tr><tr><td class='m'>M3</td><td class='n dim'>40 GB</td><td class='n'><b>7.0</b></td><td class='n'>29,513</td><td class='n'>2,049</td><td class='n'>91</td><td class='n dim'>40.0 GB</td><td class='dim'>working set — 62 GiB free</td></tr><tr><td class='m'>M5</td><td class='n dim'>3,400 GB</td><td class='n'><b>1.0</b></td><td class='n'>53,334</td><td class='n'>3,154</td><td class='n'>699</td><td class='n dim'>70.2 GB</td><td class='dim'>the vault</td></tr>
+    </table></div>
+    <div class="find" style="margin-top:18px">
+      <h3>The whole rated corpus is 70 GB</h3>
+      <p>Which means the vault isn't the problem — M5 swallows everything with
+      3.3 TB spare. The squeeze is entirely at the small end. The watch keeps
+      things rated <b>8.7 and above</b>; the phone drops to 7.0. That cutoff
+      <em>is</em> the answer to "what am I taking" at each size.</p>
+      <p>5,423 liked songs are unrated and are counted but never
+      promoted. Inventing a score for them would put unearned material on the
+      smallest device — the exact failure this project keeps catching.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>The one day</h2>
+    <p class="sub">The house-burning question isn't which photograph, it's which
+    <em>day</em> — and the system can already answer it, because day-albums are
+    scored at the 90th percentile of their members. Note how many of these carry
+    <b>zero</b> favourites: they surfaced on engagement, place and scarcity
+    alone, not because he ever hearted them.</p>
+    <div class="card scroll"><table class="tbl">
+      <tr><th class="n">score</th><th class="n">date</th><th class="n">frames</th>
+          <th class="n">favs</th><th>where</th></tr>
+      <tr><td class='n'><b>10.0</b></td><td class='n dim'>2022-07-01</td><td class='n'>33</td><td class='n dim'>0</td><td>event</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2021-09-21</td><td class='n'>22</td><td class='n dim'>0</td><td>Lake Louise</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2019-07-07</td><td class='n'>21</td><td class='n dim'>0</td><td>7588 Uncle's Neck Rd Toano, VA, United</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2022-03-24</td><td class='n'>17</td><td class='n dim'>0</td><td>work</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2022-07-04</td><td class='n'>13</td><td class='n dim'>0</td><td>event</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2021-12-25</td><td class='n'>13</td><td class='n dim'>0</td><td>7588 Uncle's Neck Rd Toano, VA, United</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2021-05-26</td><td class='n'>13</td><td class='n dim'>0</td><td>New York</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2020-09-10</td><td class='n'>13</td><td class='n dim'>0</td><td>7588 Uncle's Neck Rd Toano, VA, United</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2026-05-12</td><td class='n'>12</td><td class='n dim'>12</td><td>eating out</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2026-03-20</td><td class='n'>12</td><td class='n dim'>12</td><td>running</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2020-07-18</td><td class='n'>12</td><td class='n dim'>0</td><td>7588 Uncle's Neck Rd Toano, VA, United</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2020-05-10</td><td class='n'>11</td><td class='n dim'>0</td><td>7588 Uncle's Neck Rd Toano, VA, United</td></tr><tr><td class='n'><b>10.0</b></td><td class='n dim'>2026-03-14</td><td class='n'>10</td><td class='n dim'>10</td><td>scooter</td></tr><tr><td class='n'><b>9.9</b></td><td class='n dim'>2022-03-23</td><td class='n'>34</td><td class='n dim'>0</td><td>event</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>What's still wrong</h2>
+    <div class="find warn">
+      <h3>Open</h3>
+      <p><b>The album curve may be the wrong ruler for photographs.</b> See the
+      correction at the top. Films and photos share a capture pattern that albums
+      don't.</p>
+      <p><b>Songs are rated by album, not individually.</b> 3,154 of
+      8,577 liked tracks inherit a score from a rated album; the rest
+      have only the like. A per-track rating would need a model he hasn't built
+      by hand, so it isn't faked here.</p>
+      <p><b>Device budgets are guesses.</b> 2 GB on the watch and 32 GB on the
+      phone are plausible, not measured. Every cutoff above moves if they change.</p>
+      <p><b>Nothing has been copied, moved or deleted.</b> Tiers are computed.
+      Enforcing them needs a verified second copy to exist first, and there is
+      still no backup of any kind.</p>
+    </div>
+  </section>
+</div>

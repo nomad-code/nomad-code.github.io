@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Four years, four programmes · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--keep:#176b78;--risk:#b85339;--warn:#a9863f}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1000px,calc(100% - 36px));margin:auto;padding:40px 0 56px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(38px,6.2vw,66px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:15ch;margin:16px 0}
+h1 em{color:var(--risk);font-weight:400}
+.lede{max-width:72ch;font-size:17px;line-height:1.62;color:#43534a}
+h2{font:700 25px/1.1 Georgia,serif;margin:34px 0 12px}
+.note{color:var(--muted);margin:-6px 0 15px;max-width:76ch;line-height:1.5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font:700 14px ui-monospace,monospace}
+td{font-size:14px;line-height:1.5}
+td b{font-family:Georgia,serif}
+.yr td:first-child{font:750 18px Georgia,serif}
+.rates{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.r{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.r:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
+.r.k{--c:var(--keep)}.r.w{--c:var(--warn)}.r.x{--c:var(--risk)}
+.rl{font:700 10px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--c)}
+.rv{font:750 30px/1 Georgia,serif;margin:7px 0 3px}
+.rn{color:var(--muted);font-size:12.5px;line-height:1.5}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:24px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ol{margin:0;padding-left:20px;line-height:1.65;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+@media(max-width:760px){.rates{grid-template-columns:1fr}}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · programme drift 2023–2026 · caveat on the 2027 targets</div>
+<h1>Four years,<br><em>four programmes.</em></h1>
+<p class="lede">The KG targets in the projection are written in 2026 blocks — and 2026's blocks have never once survived into the next season. Straight from the warehouse, here is what actually got tested each year, and what that means for what to train.</p>
+<div class="panel"><table><thead><tr><th>Year</th><th>Strength</th><th>Endurance</th><th>Pro-only extra</th></tr></thead><tbody>
+<tr class="yr"><td>2023</td><td>STO 1RM · back squat 10RM</td><td>part A / part B</td><td>front squat 10RM + max strict pull-up reps (as a pair)</td></tr>
+<tr class="yr"><td>2024</td><td>STO 3RM · deadlift 5RM</td><td>1km ski · 2km row · 5km bike + 5km run / 25-min max</td><td>weighted pull-up 1RM</td></tr>
+<tr class="yr"><td>2025</td><td>strict press 10RM · back squat 5RM</td><td>run + <b>bike</b></td><td>pull-up 3RM</td></tr>
+<tr class="yr"><td>2026</td><td>strict press 1RM · back squat 3RM · deadlift 5RM</td><td>run + <b>row</b></td><td>— none —</td></tr>
+</tbody></table></div>
+<h2>Base rates over four years</h2>
+<section class="rates">
+<article class="r k"><div class="rl">Overhead press</div><div class="rv">4 / 4</div><div class="rn">Always tested — and never the same scheme twice. Train 1RM through 10RM.</div></article>
+<article class="r k"><div class="rl">Run</div><div class="rv">4 / 4</div><div class="rn">The only endurance constant. The second modality rotated ski/row/bike → bike → row.</div></article>
+<article class="r w"><div class="rl">Squat</div><div class="rv">3 / 4</div><div class="rn">Absent only in 2024. Scheme moved 10RM → 5RM → 3RM.</div></article>
+<article class="r x"><div class="rl">Pull-up · Pro only</div><div class="rv">3 / 4</div><div class="rn">2026 was the exception. 2025 Pro Male field: median <b>+33 KG × 3</b> (p25 +25, p75 +43, max +68). We have no number.</div></article>
+<article class="r w"><div class="rl">Deadlift / hinge</div><div class="rv">2 / 4</div><div class="rn">2024 and 2026 — and it is our best lift, so a year without it costs us.</div></article>
+<article class="r k"><div class="rl">MetCon X</div><div class="rv">4 / 4</div><div class="rn">One timed final every year. Content varies; the demand does not.</div></article>
+</section>
+<h2>Targets that survive a scheme change</h2>
+<p class="note">Estimated 1RM (Epley) is the only currency that transfers when the rep scheme moves — and the field proves it travels: the Pro Male squat median is 175 e1RM in 2025 (from a 5RM) and 168 in 2026 (from a 3RM), 4% apart across a full programme change.</p>
+<div class="panel"><table><thead><tr><th>e1RM</th><th>Brendan now</th><th>Solid</th><th>Aggressive</th><th>Pro Male field median</th></tr></thead><tbody>
+<tr><th>Press</th><td><b>59</b></td><td><b>71</b></td><td><b>80</b></td><td>73 – 78</td></tr>
+<tr><th>Squat</th><td><b>121</b></td><td><b>160</b></td><td><b>182</b></td><td>168 – 175</td></tr>
+<tr><th>Deadlift</th><td><b>169</b></td><td><b>210</b></td><td><b>233</b></td><td>210</td></tr>
+</tbody></table></div>
+<div class="rules"><h3>The plan in year-agnostic terms</h3><ol>
+<li><b>Overhead press</b> — certain to be tested, scheme unknown. Build across the 1–10 rep range, not to one number.</li>
+<li><b>Squat</b> — very likely. Solid leaves it ~5% under field median; aggressive clears it.</li>
+<li><b>Hinge</b> — even odds, and our strongest lift. Solid puts the deadlift exactly on the field median (210 e1RM).</li>
+<li><b>Weighted pull-up</b> — likely in Pro, currently zero data. Standing target: <b>+33 KG for 3</b>. Cheapest insurance in the plan.</li>
+<li><b>Run always, then row and bike and ski.</b> One rower-only winter is how you get caught by a bike year.</li>
+</ol></div>
+<footer>Source: <code>projects/fit-athx/warehouse/</code> (team 2023–2026, individual 2025–2026) · pull-up distribution: 2025 ATHX Pro · Male individual, n=143 · record: <code>projects/fit-athx/projections-2027.md</code></footer>
+</main></body></html>

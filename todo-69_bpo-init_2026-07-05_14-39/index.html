@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-69 · bpo-init · Nomad Code boots</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --fit-width: 1440px; }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    .tb-brand .mk { background: var(--forest); }
+    .tb-client { color: var(--ink); }
+    .nmc-mark {
+      width: 44px; height: 44px; border-radius: 12px; position: relative;
+      background: conic-gradient(from 210deg, var(--forest), var(--found), var(--lime), var(--forest));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.42), var(--shadow-card);
+    }
+    .nmc-mark:before {
+      content: ""; position: absolute; inset: 9px; border-radius: 7px;
+      background: var(--bg); box-shadow: inset 0 0 0 1px rgba(21,32,29,.09);
+    }
+    .nmc-mark:after {
+      content: ""; position: absolute; right: 10px; bottom: 10px; width: 10px; height: 10px;
+      border-radius: 3px; background: var(--lime);
+    }
+    .hero.boot { grid-template-columns: 1.02fr 1.08fr; overflow: hidden; position: relative; }
+    .hero.boot:after {
+      content: ""; position: absolute; right: -88px; top: -88px; width: 260px; height: 260px;
+      border-radius: 50%; border: 1px solid rgba(18,124,112,.12);
+    }
+    .boot-title { display: flex; align-items: center; gap: 16px; min-width: 0; }
+    .boot-title h1 { margin-top: 0; min-width: 0; }
+    .nmc-mark { flex: none; }
+    .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+    .world-card {
+      position: relative; min-height: 360px; border-radius: var(--r-card);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.82), rgba(246,250,248,.96)),
+        radial-gradient(circle at 70% 24%, rgba(132,194,65,.22), transparent 34%),
+        radial-gradient(circle at 18% 78%, rgba(74,138,160,.18), transparent 30%);
+      border: 1px solid var(--line); box-shadow: var(--shadow-card); padding: 22px;
+      overflow: hidden;
+    }
+    .world-grid {
+      position: absolute; inset: 0; opacity: .34;
+      background-image:
+        linear-gradient(rgba(21,32,29,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(21,32,29,.06) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(180deg, #000, transparent 92%);
+    }
+    .node {
+      position: absolute; display: grid; gap: 5px; width: 146px;
+      padding: 13px 14px; border-radius: var(--r-tile);
+      background: rgba(255,255,255,.88); border: 1px solid var(--line);
+      box-shadow: 0 12px 28px rgba(20,23,15,.07);
+    }
+    .node b { font-size: 14px; letter-spacing: -.02em; }
+    .node span { font: 10px/1.35 var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .node.work { left: 22px; top: 38px; }
+    .node.personal { right: 34px; top: 118px; border-color: #bcd9bf; background: linear-gradient(180deg,#fff,#f6fbf6); }
+    .node.future { left: 66px; bottom: 34px; }
+    .route {
+      position: absolute; height: 2px; transform-origin: left center;
+      background: linear-gradient(90deg, rgba(18,124,112,.18), var(--forest), rgba(132,194,65,.32));
+      border-radius: 999px;
+    }
+    .r1 { left: 160px; top: 94px; width: 250px; transform: rotate(13deg); }
+    .r2 { left: 204px; bottom: 114px; width: 238px; transform: rotate(-25deg); background: linear-gradient(90deg, rgba(74,138,160,.15), var(--found), rgba(18,124,112,.24)); }
+    .core {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      width: 128px; height: 128px; border-radius: 28px;
+      background: var(--ink); color: #edf3ef; display: grid; place-items: center;
+      text-align: center; box-shadow: var(--shadow-lift);
+    }
+    .core b { font-size: 30px; letter-spacing: -.05em; color: var(--lime-b); }
+    .core span { display: block; margin-top: 5px; font: 10px/1.35 var(--font-mono); color: #a9bab2; text-transform: uppercase; letter-spacing: .08em; }
+    .boot-pulse {
+      position: absolute; left: 50%; top: 50%; width: 128px; height: 128px;
+      border-radius: 28px; transform: translate(-50%,-50%); border: 1px solid rgba(18,124,112,.22);
+      animation: bootPulse 2.6s var(--ease) infinite;
+    }
+    @keyframes bootPulse {
+      0% { opacity: .9; transform: translate(-50%,-50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(1.55); }
+    }
+    .section-block { margin-top: 54px; }
+    main, section, .hero.boot, .world-card, .terminal, .topology { min-width: 0; }
+    .metric-stack { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-top: 18px; }
+    .metric {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+      padding: 18px; box-shadow: var(--shadow-card); min-height: 126px;
+    }
+    .metric .m-k { font: 10px/1.4 var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+    .metric .m-v { margin-top: 14px; font-size: 34px; font-weight: 840; letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: var(--forest); }
+    .metric .m-l { margin-top: 6px; font-size: 12.5px; line-height: 1.45; color: var(--body); }
+    .matrix {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px;
+    }
+    .lane-card {
+      position: relative; background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--r-card); padding: 22px; box-shadow: var(--shadow-card);
+    }
+    .lane-card h3 { font-size: 18px; line-height: 1.2; font-weight: 780; letter-spacing: -.02em; margin: 0; }
+    .lane-card p { font-size: 13.5px; color: var(--body); line-height: 1.55; margin: 10px 0 0; }
+    .lane-card .tag {
+      position: absolute; top: 18px; right: 18px; font: 10px var(--font-mono); text-transform: uppercase;
+      letter-spacing: .07em; color: var(--forest-d); background: var(--g-lime);
+      border: 1px solid #bcd9bf; border-radius: var(--r-chip); padding: 5px 9px;
+    }
+    .move-list { margin-top: 18px; display: grid; gap: 10px; }
+    .move {
+      display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 12px; align-items: center;
+      padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-tile); background: #fbfbf7;
+      font-size: 13px;
+    }
+    .move .from { color: var(--muted); overflow-wrap: anywhere; }
+    .move .arrow { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--g-lime); color: var(--forest); font-weight: 800; }
+    .move .to { color: var(--ink); font-weight: 720; text-align: right; overflow-wrap: anywhere; }
+    .check-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 18px; }
+    .check {
+      display: grid; grid-template-columns: 46px 1fr; gap: 14px; align-items: start;
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+      padding: 16px; min-height: 104px;
+    }
+    .check .g {
+      width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center;
+      background: var(--g-lime); color: var(--forest-d); font: 800 13px var(--font-mono);
+    }
+    .check b { display: block; font-size: 14px; letter-spacing: -.01em; }
+    .check span { display: block; margin-top: 5px; color: var(--body); font-size: 12.5px; line-height: 1.48; }
+    .status-board { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; margin-top: 18px; }
+    .terminal {
+      background: var(--ink); color: #dce6e1; border-radius: var(--r-card); padding: 20px 22px;
+      font: 12px/1.75 var(--font-mono); box-shadow: var(--shadow-card); overflow-x: auto;
+    }
+    .terminal .dim { color: #81948b; }
+    .terminal .ok { color: var(--lime-b); }
+    .terminal .warn { color: #e8bb8b; }
+    .todo-strip { display: grid; gap: 10px; }
+    .todo {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--r-tile);
+      padding: 14px 16px; display: grid; gap: 4px;
+    }
+    .todo b { font-size: 13.5px; }
+    .todo span { color: var(--body); font-size: 12.5px; line-height: 1.45; }
+    .todo.done { border-color: #bcd9bf; background: linear-gradient(180deg,#fff,#f7fbf7); }
+    .todo.blocked { border-color: var(--amber-bd); background: var(--amber-bg); }
+    .topology {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+      box-shadow: var(--shadow-card); padding: 22px; margin-top: 18px;
+      font: 13px/1.75 var(--font-mono); overflow-x: auto; color: var(--body);
+    }
+    .topology b { color: var(--forest-d); }
+    .topology i { color: var(--faint); font-style: normal; }
+    .provenance {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px;
+    }
+    .prov {
+      border: 1px solid var(--line); border-radius: var(--r-panel); padding: 16px;
+      background: var(--card); min-height: 130px;
+    }
+    .prov .p-n { font: 10px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .prov b { display: block; margin-top: 10px; font-size: 18px; letter-spacing: -.02em; }
+    .prov span { display: block; margin-top: 7px; font-size: 12.5px; line-height: 1.45; color: var(--body); }
+    .final-line {
+      margin-top: 48px; padding: 18px 0 0; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; gap: 18px; align-items: center;
+      font: 10.5px var(--font-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--faint);
+    }
+    .final-line b { color: var(--forest-d); }
+    @media(max-width:1080px) {
+      .hero.boot, .status-board { grid-template-columns: 1fr; }
+      .metric-stack { grid-template-columns: repeat(2,1fr); }
+      .provenance { grid-template-columns: 1fr; }
+    }
+    @media(max-width:760px) {
+      .layout { display: block; width: 100vw; max-width: 100vw; overflow-x: hidden; }
+      .rail { max-width: 100vw; overflow-x: auto; flex-wrap: nowrap; }
+      .rail a { flex: 0 0 auto; }
+      main { width: 100vw; max-width: 100vw; padding: 24px 14px 90px; overflow-x: hidden; }
+      .hero.boot { padding: 26px 18px; }
+      .boot-title { display: grid; grid-template-columns: 44px minmax(0,1fr); align-items: start; gap: 12px; }
+      .boot-title h1 { font-size: 33px; line-height: 1.05; overflow-wrap: anywhere; }
+      .hero-sub { max-width: 100%; font-size: 14px; }
+      .hero-meta { gap: 7px; }
+      .world-card { min-height: 430px; }
+      .node { width: 132px; }
+      .node.work { left: 16px; top: 30px; }
+      .node.personal { right: 16px; top: 142px; }
+      .node.future { left: 24px; bottom: 24px; }
+      .core { width: 112px; height: 112px; }
+      .metric-stack, .matrix, .check-grid { grid-template-columns: 1fr; }
+      .move { grid-template-columns: 1fr; }
+      .move .arrow { transform: rotate(90deg); }
+      .move .to { text-align: left; }
+      .final-line { display: grid; }
+    }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="tb-brand"><span class="mk"></span>bpo</div>
+  <span class="tb-x">×</span>
+  <span class="tb-client">nomad-code</span>
+  <span class="tb-sep"></span>
+  <span class="tb-ctx"><span class="dot"></span>TODO-69 · bpo-init</span>
+  <span class="tb-spacer"></span>
+  <span class="tb-live"><span class="d"></span>published</span>
+  <span class="tb-tag">m3 · W27</span>
+</header>
+<div class="brandstrip"></div>
+
+<div class="layout">
+  <nav class="rail">
+    <div class="rl-h">boot readout</div>
+    <a href="#boot" class="on">Boot</a>
+    <a href="#moves">Moves</a>
+    <a href="#gates">Gates</a>
+    <a href="#deploy">Deploy</a>
+    <a href="#topology">Topology</a>
+    <a href="#wrap">Wrap</a>
+    <div class="rl-foot">private source in<br><b>nomad-code/bpo</b><br>public mirror at org root</div>
+  </nav>
+
+  <main>
+    <section id="boot">
+      <div class="hero boot reveal">
+        <div>
+          <div class="hero-eyebrow"><span class="d"></span>nomad-code · first artifact of the personal world</div>
+          <div class="boot-title">
+            <div class="nmc-mark" aria-hidden="true"></div>
+            <h1>The second world boots.</h1>
+          </div>
+          <p class="hero-sub">bob proved the mechanism in the Found world. bpo is the personal fork:
+            one private source repo, one public gated artifact mirror, and one spine for projects,
+            dna, provenance, deploys, and future agents.</p>
+          <div class="hero-meta">
+            <span class="hchip v">fai/bob → work</span>
+            <span class="hchip v">nmc/bpo → personal</span>
+            <span class="hchip q">dha/bre → parked</span>
+          </div>
+        </div>
+        <div class="world-card" aria-label="bpo world topology">
+          <div class="world-grid"></div>
+          <div class="route r1"></div>
+          <div class="route r2"></div>
+          <div class="boot-pulse"></div>
+          <div class="core"><div><b>bpo</b><span>boot spine<br>verified</span></div></div>
+          <div class="node work"><span>source pattern</span><b>fai / bob</b><span>gate · grove · deploy</span></div>
+          <div class="node personal"><span>active world</span><b>nmc / bpo</b><span>dna · projects · artifacts</span></div>
+          <div class="node future"><span>future layer</span><b>dha / bre</b><span>parked, no context yet</span></div>
+        </div>
+      </div>
+
+      <div class="metric-stack reveal">
+        <div class="metric"><div class="m-k">boot tokens</div><div class="m-v">815<span style="font-size:18px;color:var(--muted)">/2k</span></div><div class="m-l">41% standing context after the route split.</div></div>
+        <div class="metric"><div class="m-k">live SPECs</div><div class="m-v">7</div><div class="m-l">Each migrated project carries a local contract.</div></div>
+        <div class="metric"><div class="m-k">knowledge fold</div><div class="m-v">328</div><div class="m-l">DNA files folded into the private bpo spine.</div></div>
+        <div class="metric"><div class="m-k">journal edges</div><div class="m-v">42</div><div class="m-l">Provenance now connects sessions to Linear.</div></div>
+      </div>
+    </section>
+
+    <section id="moves" class="section-block">
+      <div class="sec-head">
+        <span class="sec-kick">migration</span>
+        <span class="sec-n">01 · disposition</span>
+      </div>
+      <h2 class="sec-title">Scattered personal work now has one spine.</h2>
+      <p class="lede">The fork was not a copy of bob. It kept the shared mechanisms and moved personal material into
+        the nomad-code namespace with explicit boundaries.</p>
+      <div class="matrix reveal">
+        <div class="lane-card">
+          <span class="tag">kept</span>
+          <h3>Reusable mechanism</h3>
+          <p>Grove tokens, the password wall, clean artifact URLs, the positive allowlist deploy, and session-to-Linear journaling.</p>
+          <div class="move-list">
+            <div class="move"><span class="from">bob/design-repo/grove</span><span class="arrow">→</span><span class="to">bpo/design-repo/grove</span></div>
+            <div class="move"><span class="from">bob/password-wall</span><span class="arrow">→</span><span class="to">bpo/password-wall</span></div>
+            <div class="move"><span class="from">artifact deploy pattern</span><span class="arrow">→</span><span class="to">org-root mirror</span></div>
+          </div>
+        </div>
+        <div class="lane-card">
+          <span class="tag">moved</span>
+          <h3>Personal material</h3>
+          <p>Projects, DNA, sandbox history, raw bundles, and wip triage now sit in explicit bpo or archive locations.</p>
+          <div class="move-list">
+            <div class="move"><span class="from">sandbox projects + docs</span><span class="arrow">→</span><span class="to">projects/ ×7</span></div>
+            <div class="move"><span class="from">raw dna vault</span><span class="arrow">→</span><span class="to">dna/ + bpo-archive bundle</span></div>
+            <div class="move"><span class="from">sandbox history</span><span class="arrow">→</span><span class="to">nmc/zyx/bpo-archive</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gates" class="section-block">
+      <div class="sec-head">
+        <span class="sec-kick">verification</span>
+        <span class="sec-n">02 · gates passed</span>
+      </div>
+      <h2 class="sec-title">The boot contract is green where it matters.</h2>
+      <div class="check-grid reveal">
+        <div class="check"><div class="g">G0</div><div><b>Boot chain</b><span>Python 3.9 fix committed; route runs on a stock Mac.</span></div></div>
+        <div class="check"><div class="g">G1</div><div><b>Sandbox reconciliation</b><span>Conflicts cleared, pushed, and undispositioned work reduced to the live sandbox.</span></div></div>
+        <div class="check"><div class="g">G2</div><div><b>Bundles restore</b><span>Archive bundles restore-cloned and matched expected heads.</span></div></div>
+        <div class="check"><div class="g">G3</div><div><b>Project contracts</b><span>Seven SPEC.md contracts present; nested CLAUDE files defused.</span></div></div>
+        <div class="check"><div class="g">G4</div><div><b>Privacy boundary</b><span>Deploy ships artifacts, design-repo, password-wall, and index only.</span></div></div>
+        <div class="check"><div class="g">G5</div><div><b>Provenance</b><span>Sample reads show nomad-world edges and no Found leakage.</span></div></div>
+        <div class="check"><div class="g">G6</div><div><b>Public surface</b><span>Org-root artifact is gated; private dirs stay out of the public mirror.</span></div></div>
+        <div class="check"><div class="g">G7</div><div><b>Context budget</b><span>Boot stays under the 2,000-token ceiling after the route split.</span></div></div>
+      </div>
+    </section>
+
+    <section id="deploy" class="section-block">
+      <div class="sec-head">
+        <span class="sec-kick">deploy</span>
+        <span class="sec-n">03 · public mirror</span>
+      </div>
+      <h2 class="sec-title">Private source, public gated artifact, no repo-prefix URL.</h2>
+      <div class="status-board reveal">
+        <div class="terminal">
+          <span class="dim">$</span> source: nomad-code/bpo <span class="dim">(private)</span><br>
+          <span class="dim">$</span> action: build positive allowlist dist<br>
+          <span class="ok">✓</span> copy artifacts, design-repo, password-wall, index<br>
+          <span class="ok">✓</span> flatten artifacts/**/&lt;slug&gt;.html to /&lt;slug&gt;/index.html<br>
+          <span class="ok">✓</span> inject password wall backstop<br>
+          <span class="ok">✓</span> push mirror to nomad-code/nomad-code.github.io<br>
+          <span class="warn">!</span> legacy bpo-pages repo is disposable after delete_repo scope is granted
+        </div>
+        <div class="todo-strip">
+          <div class="todo done"><b>Live org-root URL</b><span>nomad-code.github.io serves TODO-69 without the old /bpo-pages prefix.</span></div>
+          <div class="todo done"><b>Gate check</b><span>bpo password unlocks; bob credentials do not cross the boundary.</span></div>
+          <div class="todo done"><b>Private dirs absent</b><span>dna/, projects/, provenance/, scripts/, and cold/ stay out of dist.</span></div>
+          <div class="todo blocked"><b>bpo-pages deletion</b><span>Ready to delete, but GitHub requires the gh token to have delete_repo scope.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="topology" class="section-block">
+      <div class="sec-head">
+        <span class="sec-kick">topology</span>
+        <span class="sec-n">04 · filesystem</span>
+      </div>
+      <h2 class="sec-title">The worlds are separate by path and by deploy contract.</h2>
+      <div class="topology reveal">~/dev/
+├─ fai/                         <i>Found AI work world</i>
+│  └─ bob/                      <i>original context layer</i>
+├─ nmc/                         <b>Nomad Code personal world</b>
+│  ├─ bpo/                      <b>private source · active context layer</b>
+│  │  ├─ artifacts/             <b>public, gated pages only after allowlist</b>
+│  │  ├─ design-repo/           <b>grove · bone · klarity</b>
+│  │  ├─ password-wall/         <b>bpo gate, independent key</b>
+│  │  ├─ projects/              <b>private project contracts</b>
+│  │  ├─ dna/                   <b>private knowledge base</b>
+│  │  └─ scripts/               <b>deploy · tokens · linear · provenance</b>
+│  └─ zyx/
+│     ├─ bpo-archive/           <i>verified raw bundles</i>
+│     └─ strava-nix/            <i>triaged into private repo</i>
+└─ dha/                         <i>Dhamma world · parked for later</i></div>
+    </section>
+
+    <section id="wrap" class="section-block">
+      <div class="sec-head">
+        <span class="sec-kick">wrap</span>
+        <span class="sec-n">05 · remaining edges</span>
+      </div>
+      <h2 class="sec-title">What remains is operational, not architectural.</h2>
+      <div class="provenance reveal">
+        <div class="prov"><div class="p-n">completed</div><b>wip triage</b><span>strava-nix moved to a private nomad-code repo; tmobile ingested; duplicate todo-77 removed.</span></div>
+        <div class="prov"><div class="p-n">completed</div><b>bob sync</b><span>sync-from-bob caught real drift and pulled today&apos;s viz.css growth into bpo.</span></div>
+        <div class="prov"><div class="p-n">blocked</div><b>repo deletion</b><span>nomad-code/bpo-pages can be dumped once gh is refreshed with delete_repo scope or deleted in the web UI.</span></div>
+      </div>
+      <div class="final-line">
+        <span>TODO-69 · bpo-init · artifact redesign</span>
+        <span><b>source:</b> nomad-code/bpo · <b>mirror:</b> nomad-code.github.io</span>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  const shown = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add('shown');
+        shown.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => shown.observe(el));
+
+  const sections = [...document.querySelectorAll('main section[id]')];
+  const links = [...document.querySelectorAll('.rail a')];
+  const active = new IntersectionObserver((entries) => {
+    const hit = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (!hit) return;
+    links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + hit.target.id));
+  }, { rootMargin: '-20% 0px -62% 0px', threshold: [0.1, 0.3, 0.6] });
+  sections.forEach(s => active.observe(s));
+</script>
+</body>
+</html>

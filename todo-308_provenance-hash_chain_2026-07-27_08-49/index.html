@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-308 · The BPO Blockchain Is Three Small Primitives</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <style>
+    :root {
+      --c-go:    #0d8f7f;  --c-go-bg:  #d9ece7;  --c-go-bd:  #b9d9d0;
+      --c-stop:  #c4501f;  --c-stop-bg:#f6e3da;  --c-stop-bd:#e3b9a6;
+      --c-gold:  #a07c15;  --c-gold-bg:#f3ead2;  --c-gold-bd:#e3d3a0;
+      --c-blue:  #3a92ba;  --c-blue-bg:#e3eef2;  --c-blue-bd:#cfe1e7;
+    }
+    body { min-height:100vh; overflow-x:hidden; }
+    main { max-width:960px; margin:0 auto; padding:34px 24px 90px; }
+
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.08em; text-transform:uppercase; color:var(--c-go); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-go); }
+    h1 { font:800 clamp(30px,4.8vw,50px)/1.04 var(--font-display); letter-spacing:-.03em;
+      color:var(--ink); margin:16px 0 8px; }
+    h1 em { font-style:normal; color:var(--c-go); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 12px; }
+    .lede { max-width:72ch; font:400 16.5px/1.62 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:660; }
+
+    section { margin-top:54px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(20px,3vw,26px)/1.12 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:14px; }
+    .blurb b { color:var(--ink); font-weight:640; }
+
+    .river { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    @media (max-width:680px){ .river{ grid-template-columns:1fr; } }
+    .chan { border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card); padding:15px 16px; }
+    .chan .o { font:800 22px/1 var(--font-display); margin-bottom:6px; }
+    .chan.c1 .o { color:var(--c-go); } .chan.c2 .o { color:var(--c-blue); } .chan.c3 .o { color:var(--c-gold); }
+    .chan h4 { font:700 14.5px/1.2 var(--font-display); color:var(--ink); margin:0 0 5px; }
+    .chan p { font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    .chan p b { color:var(--ink); }
+    .chan .q { font:italic 500 12.5px/1.45 var(--font-ui); color:var(--muted); margin-bottom:8px; font-style:italic; }
+
+    .gate { border:1px solid var(--c-stop-bd); border-left:4px solid var(--c-stop);
+      background:var(--c-stop-bg); border-radius:var(--r-panel); padding:16px 18px; max-width:76ch; }
+    .gate .t { font:700 15px/1.3 var(--font-display); color:var(--c-stop); margin-bottom:4px; }
+    .gate p { font:400 14px/1.55 var(--font-ui); color:var(--body); }
+    .gate p b { color:var(--ink); }
+    .gate.gold { border-color:var(--c-gold-bd); border-left-color:var(--c-gold); background:var(--c-gold-bg); }
+    .gate.gold .t { color:var(--c-gold); }
+
+    pre.code { border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card);
+      padding:14px 16px; overflow-x:auto; font:400 12.5px/1.6 var(--font-mono); color:var(--body); }
+    pre.code b { color:var(--c-go); font-weight:600; }
+    pre.code i { color:var(--c-stop); font-style:normal; }
+
+    table.ent { border-collapse:collapse; width:100%; font:400 13.5px/1.5 var(--font-ui); }
+    table.ent th { font:600 11px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--muted); text-align:left; padding:8px 10px; border-bottom:2px solid var(--line); }
+    table.ent td { padding:9px 10px; border-bottom:1px solid var(--line); color:var(--body); vertical-align:top; }
+    table.ent td:first-child { font:600 12px/1.4 var(--font-mono); color:var(--ink); white-space:nowrap; }
+
+    ul.x { list-style:none; padding:0; margin:0; display:grid; gap:9px; max-width:74ch; }
+    ul.x li { display:flex; gap:11px; align-items:flex-start; font:400 14.5px/1.55 var(--font-ui); color:var(--body); }
+    ul.x li b { color:var(--ink); font-weight:640; }
+    ul.x li::before { content:"✗"; color:var(--c-stop); font-weight:700; flex:0 0 auto; }
+    ul.x.check li::before { content:"→"; color:var(--c-go); }
+
+    .head { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px; }
+    .head .pill { font:600 11px/1 var(--font-mono); letter-spacing:.05em; padding:6px 10px;
+      border-radius:var(--r-pill); color:var(--c-go); background:var(--c-go-bg); border:1px solid var(--c-go-bd); }
+    .head code { font:500 11.5px/1.4 var(--font-mono); color:var(--muted); word-break:break-all; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow"><span class="mo-dot"></span> todo-308 · code-blockchain_provenance-version_control · 2026-07-27</p>
+  <h1>The BPO blockchain is <em>three small primitives</em></h1>
+  <p class="sub">how can I trust git when you can force push? · how do I know that action was ME in the moment?</p>
+  <p class="lede">Git is already a Merkle DAG — every commit hashes its tree and its parents, so history
+  <b>content</b> can't be silently altered. What force-push moves is a <b>ref</b>: a mutable pointer.
+  The gap is ref-level, not object-level, and closing it doesn't take a blockchain. A blockchain's actual
+  invention is consensus among mutually distrusting <b>writers</b> — bpo has exactly one writer. What it
+  needs are the three guarantees a blockchain bundles, unbundled:</p>
+
+  <section>
+    <div class="k"><span class="n">01</span><h2>Three questions, three guarantees</h2></div>
+    <div class="river">
+      <div class="chan c1">
+        <div class="o">⛓</div>
+        <h4>Hash chain — integrity</h4>
+        <p class="q">"how can I trust git when you can force push?"</p>
+        <p><b>provenance/chain.jsonl</b>: one hash-linked entry per record change. A rewritten history
+        breaks <b>prev</b> linkage or digest assertions, and CI goes red on the very next push.</p>
+      </div>
+      <div class="chan c2">
+        <div class="o">✍</div>
+        <h4>Signatures — authenticity</h4>
+        <p class="q">"how do I know that action was ME in the moment?"</p>
+        <p><b>ssh-keygen -Y sign</b>, namespace <b>bpo-provenance</b>, key resident on the machine that
+        acted (m3/m5). A signed entry pins its <b>entire ancestry</b> — its hash covers prev transitively.</p>
+      </div>
+      <div class="chan c3">
+        <div class="o">⚓</div>
+        <h4>Anchor — existed by time T</h4>
+        <p class="q">"maybe the only way… is to build a BPO blockchain?"</p>
+        <p>Phase 2 route: <b>head</b> prints the tip hash; a raw <b>curl</b> to OpenTimestamps anchors it
+        into Bitcoin. Piggyback a blockchain — never run one.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">02</span><h2>The shape</h2></div>
+    <p class="blurb"><b>git repo → graph context → hash chain.</b> The graph context already existed
+    (105 edge-records, one per session, machine/world/account stamped). Tonight's layer is one
+    zero-dependency script and its tripwire:</p>
+    <pre class="code">{"v":1,"seq":1,"ts":"2026-07-27T08:47Z","prev":<i>null</i>,"machine":"…",
+ "records":{"&lt;session-id&gt;":"<b>sha256 of raw record bytes</b>", …×105},
+ "signer":null,"sig":null}</pre>
+    <table class="ent">
+      <tr><th>piece</th><th>what it does</th></tr>
+      <tr><td>scripts/provenance-chain.mjs</td><td><b>append</b> · <b>verify</b> · <b>head</b> — node builtins only, no npm, no MCP. Append skips when nothing changed, so the chain grows with record changes, not with sessions.</td></tr>
+      <tr><td>checks.yml verify step</td><td>The force-push tripwire. Linkage + latest-digest-vs-disk + index consistency + every non-null signature, on every push.</td></tr>
+      <tr><td>provenance-stop.sh</td><td>Appends inside the commit lock; on append failure it bails <b>without committing</b>, so CI never sees records with no chain entry.</td></tr>
+      <tr><td>.gitattributes merge=union</td><td>m3 and m5 appending offline both keep their lines; verify reads the chain as a hash-linked <b>forest</b> — forks are info, unresolvable prev is an error. No repair command, ever.</td></tr>
+      <tr><td>tests/test_provenance_chain.py</td><td>10 cases: tamper a byte → red naming the record · delete → red · untracked → red · legit resume-merge update → green · fork → green.</td></tr>
+    </table>
+    <div class="head">
+      <span class="pill">GENESIS · seq 1 · 105 records</span>
+      <code>7544f3032c89cd0b4fd71257fb1c719a44c4f43b7931101e0300bf42eb05c52c</code>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">03</span><h2>Honest guarantee — v1 claims no more than it holds</h2></div>
+    <ul class="x check">
+      <li><b>Accidental / casual rewrite:</b> caught by CI on the next push. This is the everyday threat, and it is fully closed.</li>
+      <li><b>Signed spans:</b> one laptop-signed entry near the tip protects everything before it — the signature covers prev transitively, back to genesis.</li>
+      <li><b>Resumed sessions:</b> records legitimately mutate (the builder merges by id); verify honors the <b>latest</b> chain assertion, so real life stays green.</li>
+    </ul>
+    <div style="height:14px"></div>
+    <div class="gate">
+      <div class="t">What v1 does not stop</div>
+      <p>You, with your own keys, force-pushing a fully rebuilt <b>unsigned</b> chain. CI alone can't
+      catch that — laptops notice a shrunk chain on pull, and the phase-2 anchor closes it
+      definitively: a hash timestamped into Bitcoin can't be un-happened, even by you.</p>
+    </div>
+    <div style="height:14px"></div>
+    <div class="gate gold">
+      <div class="t">To arm the signatures</div>
+      <p>On m3 and m5, paste each <b>~/.ssh/id_ed25519.pub</b> into
+      <b>provenance/keys/allowed_signers</b> (format is commented in the file). Until then entries are
+      unsigned and verify warns — never fails.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">04</span><h2>The life-provenance road</h2></div>
+    <p class="blurb">The Apple-Watch-action-button question — HIIT 25, thrusters 2×15, <i>was that me,
+    then?</i> — is the same schema. The chain doesn't care that today's records are Claude sessions:
+    anything that lands as a JSON edge-record in <b>provenance/</b> gets chained, signed, and (phase 2)
+    anchored the moment it's written. Watch workouts, takeout-style activity exports, check-ins — each
+    is one small ingest script away from the same three guarantees. The primitive is built; the feeds
+    are routes.</p>
+  </section>
+</main>
+</body>
+</html>

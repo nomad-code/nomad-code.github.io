@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Heart-rate-led fitness state · TODO-387</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#213128;--muted:#68756c;--line:#d9dfda;--paper:#f7f5ee;--card:#fff;--forest:#315b43;--gold:#b8873a}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,sans-serif}main{max-width:1080px;margin:auto;padding:34px 22px 70px}.eyebrow{font:700 12px ui-monospace,monospace;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}h1{font:750 44px/1.03 Georgia,serif;max-width:16ch;margin:12px 0}.lede{max-width:72ch;color:#46564c;line-height:1.55}.verdict{background:#eaf2ea;border:1px solid #b9d0bd;border-radius:14px;padding:20px;margin:24px 0}.verdict strong{color:var(--forest)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.axis,.panel{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px}.axis h3{font:700 14px Georgia,serif;margin:0 0 12px}.barrow{display:grid;grid-template-columns:76px 1fr 52px;align-items:center;gap:8px;font-size:12px;margin:8px 0}.barrow i{display:block;height:8px;background:#8ba794;border-radius:9px;min-width:2px}.barrow b{font:600 11px ui-monospace,monospace}h2{font:700 24px Georgia,serif;margin:34px 0 14px}.split{display:grid;grid-template-columns:1fr 1fr;gap:13px}.kpi{font:750 31px Georgia,serif}.sub{color:var(--muted);font-size:12px}table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:8px;border-bottom:1px solid var(--line)}ul{line-height:1.6;color:#46564c}footer{margin-top:35px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:12px ui-monospace,monospace}@media(max-width:760px){.grid,.split{grid-template-columns:1fr}h1{font-size:36px}}
+</style></head><body><main>
+<div class="eyebrow">TODO-387 · living model · build 31ce19dce75c8c1e</div>
+<h1>Fitness is capacity <em>and</em> availability.</h1>
+<p class="lede">Heart rate is the primary aerobic signal and is interpreted as cost, not virtue. Apple VO₂max is audited but has <strong>zero scoring weight</strong>. Treadmill belt distance, time and incline outrank Watch estimates.</p>
+<div class="verdict"><strong>Current verdict.</strong> The 28 days ending July 15 contained 181.2 km across 25 run days, versus 81.2 km across 13 days in the latest window. Pre-injury durability was probably higher, but carried-forward aerobic/economy capacity overlaps within uncertainty. The clearest difference is medical availability: injury restricts what is safely expressible today without erasing latent capacity overnight.<br><br><strong>Best-evidenced era.</strong> The best-evidenced balanced 28-day era ended 2026-04-22. This is a best-supported era, not proof that sparse older or strength-unlogged periods were worse.</div>
+<h2>Five capacities, four moments</h2><div class="grid"><article class="axis"><h3 style="color:#2f6c8f">Aerobic Engine</h3><div class="barrow"><span>Best</span><i style="width:95%"></i><b>80–95</b></div><div class="barrow"><span>Pre-injury</span><i style="width:35%"></i><b>20–35</b></div><div class="barrow"><span>Chiba</span><i style="width:40%"></i><b>5–40</b></div><div class="barrow"><span>Latest</span><i style="width:40%"></i><b>5–40</b></div></article><article class="axis"><h3 style="color:#b8873a">Running Economy Speed</h3><div class="barrow"><span>Best</span><i style="width:70%"></i><b>55–70</b></div><div class="barrow"><span>Pre-injury</span><i style="width:40%"></i><b>20–40</b></div><div class="barrow"><span>Chiba</span><i style="width:45%"></i><b>5–45</b></div><div class="barrow"><span>Latest</span><i style="width:45%"></i><b>5–45</b></div></article><article class="axis"><h3 style="color:#5a7d4f">Durability</h3><div class="barrow"><span>Best</span><i style="width:100%"></i><b>80–100</b></div><div class="barrow"><span>Pre-injury</span><i style="width:60%"></i><b>45–60</b></div><div class="barrow"><span>Chiba</span><i style="width:55%"></i><b>20–55</b></div><div class="barrow"><span>Latest</span><i style="width:55%"></i><b>15–55</b></div></article><article class="axis"><h3 style="color:#9a5b45">Hyrox Station Capacity</h3><div class="barrow"><span>Best</span><i style="width:100%"></i><b>85–100</b></div><div class="barrow"><span>Pre-injury</span><i style="width:60%"></i><b>20–60</b></div><div class="barrow"><span>Chiba</span><i style="width:60%"></i><b>20–60</b></div><div class="barrow"><span>Latest</span><i style="width:60%"></i><b>20–60</b></div></article><article class="axis"><h3 style="color:#70558d">Strength Muscular Endurance</h3><div class="barrow"><span>Best</span><i style="width:100%"></i><b>90–100</b></div><div class="barrow"><span>Pre-injury</span><i style="width:65%"></i><b>25–65</b></div><div class="barrow"><span>Chiba</span><i style="width:65%"></i><b>25–65</b></div><div class="barrow"><span>Latest</span><i style="width:65%"></i><b>25–65</b></div></article></div>
+<p class="sub">Axis bars are relative evidence ranges, not a master score. Windows are 28 days; confidence is stored in the living JSON.</p>
+<h2>Chiba: output versus cost</h2><div class="split"><div class="panel"><div class="kpi">1:02:56</div><div>Chiba men’s doubles</div><p><b>157.6 avg / 171 max HR</b></p><p><b>43:06</b> at or above 159 bpm</p><p class="sub">High competitive output with sustained high cardiovascular cost. Partner work is unallocated.</p></div><div class="panel"><div class="kpi">1:08:43</div><div>Bangkok singles</div><p><b>150.5 avg / 166 max HR</b></p><p><b>8:56</b> at or above 159 bpm</p><p class="sub">All stations attributed to Brendan; format and conditions are not interchangeable with doubles.</p></div></div>
+<h2>Matched 1% treadmill evidence</h2><div class="panel"><table><thead><tr><th>Date</th><th>Belt distance</th><th>Speed</th><th>Avg HR</th><th>Context</th></tr></thead><tbody><tr><td>2026-03-30</td><td>12.0 km</td><td>12.4 km/h</td><td>140</td><td>post-strength</td></tr><tr><td>2026-03-31</td><td>12.0 km</td><td>12.2 km/h</td><td>132</td><td>post-strength</td></tr><tr><td>2026-04-01</td><td>12.0 km</td><td>12.6 km/h</td><td>134</td><td>post-strength</td></tr><tr><td>2026-04-03</td><td>10.0 km</td><td>11.3 km/h</td><td>125</td><td>post-strength</td></tr><tr><td>2026-04-05</td><td>2.2 km</td><td>9.3 km/h</td><td>108</td><td>post-strength</td></tr><tr><td>2026-04-05</td><td>2.2 km</td><td>9.5 km/h</td><td>107</td><td>post-strength</td></tr></tbody></table><p class="sub">Comparisons remain partitioned by gym and fresh versus post-strength context in the source model.</p></div>
+<h2>Evidence gaps</h2><div class="panel"><ul><li>Official Chiba participant splits were not recoverable from the season-9 result route; no splits were inferred.</li><li>Doubles partner station allocation is unknown and is not attributed to Brendan.</li><li>Direct strength observations are sparse outside BPO gym notes, lowering historical strength-era confidence.</li><li>Apple recovery/HRV observations end before the latest race window, so current recovery is stale.</li><li>Older Strava periods without detailed streams can support volume but not second-level HR drift or time-in-zone.</li></ul></div>
+<footer>As of 2026-08-10 · LT1 133–138 · LT2 151–159 · tested HRmax 166 · source: projects/workouts/fitness_state.json</footer>
+</main></body></html>

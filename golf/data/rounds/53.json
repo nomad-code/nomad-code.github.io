@@ -1,0 +1,44 @@
+{
+    "round":  {
+                  "id":  53,
+                  "course":  "bandon_v2_gsp",
+                  "date":  "2026-07-09",
+                  "updated":  "2026-07-15T17:19:40.3200006+08:00",
+                  "shots":  5
+              },
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "thru":  1,
+                        "strokes":  5,
+                        "toParNum":  1,
+                        "toPar":  "+1",
+                        "sgTotal":  -0.95,
+                        "sg":  {
+                                   "off-tee":  -0.45,
+                                   "approach":  -0.3,
+                                   "around-green":  0,
+                                   "putting":  -0.21
+                               },
+                        "holes":  [
+                                      {
+                                          "hole":  1,
+                                          "par":  4,
+                                          "strokes":  5,
+                                          "toPar":  1,
+                                          "sg":  -0.95,
+                                          "complete":  true
+                                      }
+                                  ],
+                        "lastShot":  {
+                                         "hole":  1,
+                                         "shot":  5,
+                                         "ballSpeed":  3.9,
+                                         "club":  "PT",
+                                         "carry":  null,
+                                         "vla":  0,
+                                         "totalDist":  0.8
+                                     }
+                    }
+                ]
+}

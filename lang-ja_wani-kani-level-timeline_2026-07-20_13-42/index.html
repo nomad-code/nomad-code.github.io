@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="WaniKani level-by-level pace timeline: exact level timestamps, mechanical floor, schedule delta, busy-period diagnosis, and the live level-13 review hinge.">
+  <title>lang-ja · WaniKani level timeline</title>
+  <!-- bpo password wall · self-locating loader. -->
+  <script>
+  (function () {
+    var KEY = 'bpo-unlocked';
+    var unlocked = false, reveal = false;
+    try {
+      unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+      reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+    } catch (e) {}
+    var hide, cover;
+    if (!unlocked) {
+      hide = document.createElement('style');
+      hide.id = '__pw_gate_hide__';
+      hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+      (document.head || document.documentElement).appendChild(hide);
+    } else if (reveal) {
+      cover = document.createElement('style');
+      cover.id = '__pw_reveal_pre__';
+      cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+      (document.head || document.documentElement).appendChild(cover);
+      setTimeout(function () { var c = document.getElementById('__pw_reveal_pre__'); if (c) c.remove(); }, 4000);
+    }
+    window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+    var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+    var i = 0;
+    (function next() {
+      if (i >= prefixes.length) { if (hide) hide.remove(); if (cover) cover.remove(); return; }
+      var s = document.createElement('script');
+      s.src = prefixes[i++] + 'password-wall/gate.js';
+      s.onerror = next;
+      document.head.appendChild(s);
+    })();
+  })();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{
+      --wk-pink:#f05b78;--wk-pink-d:#b73554;--wk-pink-bg:#fde7ed;
+      --night:#13231f;--mint:#d8eee8;--paper:#f4f4ef;--card:#fff;
+      --ink:#15201d;--body:#43433c;--muted:#6f7a76;--line:#e4eae6;
+      --forest:#127c70;--forest-d:#0c5a50;--lime:#9bd457;
+      --amber:#9a7a1f;--amber-bg:#f3ead2;--brick:#c1502e;--brick-bg:#f6e3da;
+      --blue:#4a8aa0;--blue-bg:#e3eef2;
+      --font-ui:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --font-mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;
+      --shadow:0 1px 2px rgba(20,23,15,.04),0 12px 32px rgba(20,23,15,.055)
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 var(--font-ui)}button{font:inherit}.wrap{width:min(1180px,calc(100% - 30px));margin:auto;padding:30px 0 72px}
+    .topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;color:var(--muted);font:500 10px var(--font-mono);letter-spacing:.1em;text-transform:uppercase}.topline b{color:var(--wk-pink-d)}.api-pill{display:flex;align-items:center;gap:7px;border:1px solid #c9ddd7;background:var(--mint);color:var(--forest-d);border-radius:999px;padding:5px 10px}.api-pill i{width:7px;height:7px;border-radius:50%;background:var(--forest)}
+    .hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:14px}.hero-main,.hinge,.panel,.insight,.method{border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.hero-main{background:linear-gradient(145deg,#fff,#fffafc);padding:clamp(25px,4.5vw,50px);overflow:hidden;position:relative}.hero-main:after{content:'上';position:absolute;right:-15px;bottom:-94px;font-size:280px;font-weight:850;color:rgba(240,91,120,.055);line-height:1;pointer-events:none}.eyebrow,.sec-kick{font:600 10px var(--font-mono);letter-spacing:.13em;text-transform:uppercase}.eyebrow{color:var(--wk-pink-d)}h1{font-size:clamp(40px,6.1vw,76px);letter-spacing:-.065em;line-height:.91;margin:15px 0 18px;max-width:780px;position:relative;z-index:1}h1 span{color:var(--wk-pink)}.lede{color:var(--body);font-size:clamp(15px,1.6vw,18px);max-width:65ch;position:relative;z-index:1}.lede b{color:var(--ink)}
+    .hero-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:28px;position:relative;z-index:1}.metric{border:1px solid var(--line);background:rgba(255,255,255,.78);border-radius:13px;padding:12px 13px}.metric strong{display:block;font-size:clamp(20px,2.4vw,30px);letter-spacing:-.045em;line-height:1}.metric span{display:block;color:var(--muted);font:500 9px var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-top:6px}
+    .hinge{background:var(--night);color:#f5fbf7;padding:24px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative}.hinge:after{content:'';position:absolute;width:240px;height:240px;border:1px solid rgba(155,212,87,.15);border-radius:50%;right:-120px;bottom:-118px;box-shadow:0 0 0 38px rgba(155,212,87,.035)}.hinge .live{font:600 10px var(--font-mono);letter-spacing:.11em;text-transform:uppercase;color:#a9cfc3;display:flex;align-items:center;gap:9px}.live i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 6px rgba(155,212,87,.12)}.hinge h2{font-size:30px;line-height:1.02;letter-spacing:-.04em;margin:24px 0 8px;position:relative;z-index:1}.hinge p{color:#bfd3ca;margin:0;position:relative;z-index:1}.hinge p b{color:#fff}.hinge-target{margin-top:25px;position:relative;z-index:1}.hinge-target .date{font-size:42px;font-weight:820;letter-spacing:-.055em;color:var(--lime);line-height:1}.hinge-target small{display:block;color:#9fc0b5;font:500 10px/1.5 var(--font-mono);margin-top:7px}.switch{display:grid;grid-template-columns:1fr 1fr;background:#20352f;border:1px solid #355248;border-radius:11px;padding:3px;margin-top:18px;position:relative;z-index:1}.switch button{border:0;border-radius:8px;background:transparent;color:#a9c1b8;padding:8px 7px;cursor:pointer;font-size:12px;font-weight:700}.switch button.active{background:#f8fcf9;color:var(--forest-d)}
+    .sec{margin-top:44px}.sec-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:13px}.sec-kick{color:var(--faint,#9aa29e)}.sec h2{font-size:clamp(25px,3vw,36px);letter-spacing:-.045em;line-height:1;margin:6px 0 0}.sec-note{color:var(--muted);font-size:12px;max-width:52ch;text-align:right}.panel{background:var(--card);padding:18px}
+    .legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap;color:var(--muted);font:500 10px var(--font-mono);margin-bottom:14px}.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-1px}.legend .ideal{background:var(--forest)}.legend .lost{background:var(--wk-pink)}.legend .tick{margin-left:auto}.legend .tick:before{content:'';display:inline-block;width:40px;border-top:1px dashed #aab4af;margin-right:6px;vertical-align:3px}
+    .filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 15px}.filters button{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;padding:6px 10px;font:600 10px var(--font-mono);cursor:pointer}.filters button.active{background:var(--night);border-color:var(--night);color:#fff}
+    .timeline{display:grid;gap:7px}.level-row{width:100%;display:grid;grid-template-columns:55px 170px minmax(160px,1fr) 110px 102px;gap:10px;align-items:center;border:1px solid transparent;border-radius:11px;background:transparent;padding:8px 9px;text-align:left;cursor:pointer;color:inherit}.level-row:hover,.level-row:focus-visible,.level-row.selected{outline:none;border-color:#dbe6e1;background:#f8faf7}.level-id{font-size:16px;font-weight:800;letter-spacing:-.03em}.dates{color:var(--muted);font:500 10px/1.5 var(--font-mono)}.dates b{display:block;color:var(--body);font-size:11px}.bar-area{height:18px;position:relative;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(20% - 1px),#eff2ee calc(20% - 1px),#eff2ee 20%);border-radius:5px}.bar-total{height:100%;display:flex;min-width:10px;border-radius:5px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(20,23,15,.08)}.bar-ideal{height:100%;background:var(--forest)}.bar-loss{height:100%;background:var(--wk-pink)}.wall,.loss{font:600 11px var(--font-mono);text-align:right;font-variant-numeric:tabular-nums}.loss{color:var(--wk-pink-d)}.tag{justify-self:end;border-radius:999px;padding:4px 7px;font:600 9px var(--font-mono);text-transform:uppercase;letter-spacing:.05em}.tag.tight{background:var(--mint);color:var(--forest-d)}.tag.close{background:var(--blue-bg);color:#356577}.tag.drift{background:var(--amber-bg);color:#765b12}.tag.stalled{background:var(--brick-bg);color:#994025}
+    .detail{margin-top:14px;border-radius:15px;background:#f3f6f2;border:1px solid var(--line);padding:16px 17px;display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:13px}.detail-main h3{margin:2px 0 5px;font-size:18px;letter-spacing:-.025em}.detail-main p{margin:0;color:var(--muted);font-size:12px}.detail-stat{border-left:1px solid #dce4df;padding-left:13px}.detail-stat strong{display:block;font-size:17px;letter-spacing:-.03em}.detail-stat span{color:var(--muted);font:500 9px/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.07em}.cumbar{height:15px;border-radius:999px;background:linear-gradient(90deg,var(--forest) 0 52.78%,var(--wk-pink) 52.78% 100%);margin-top:16px}.cumlabels{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font:500 10px var(--font-mono);margin-top:6px}.cumlabels b:first-child{color:var(--forest-d)}.cumlabels b:last-child{color:var(--wk-pink-d)}
+    .insights{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.insight{background:var(--card);padding:20px}.insight .num{font-size:38px;font-weight:830;letter-spacing:-.055em;line-height:1;color:var(--wk-pink)}.insight h3{font-size:16px;margin:12px 0 5px}.insight p{margin:0;color:var(--muted);font-size:13px}.insight.good .num{color:var(--forest)}.insight.warn .num{color:var(--amber)}
+    .step-list{margin-top:16px;border-top:1px solid var(--line)}.step{display:grid;grid-template-columns:142px 24px 1fr;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);align-items:start}.step time{font:600 10px/1.5 var(--font-mono);color:var(--forest-d)}.step .dot{width:12px;height:12px;border-radius:50%;background:var(--forest);box-shadow:0 0 0 5px var(--mint);margin-top:2px}.step.hot .dot{background:var(--wk-pink);box-shadow:0 0 0 5px var(--wk-pink-bg)}.step strong{display:block;font-size:13px}.step p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .method{background:#fff;padding:19px 20px}.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.method h3{font-size:14px;margin:0 0 6px}.method p{margin:0;color:var(--muted);font-size:12px}.method code{font:500 10px var(--font-mono);color:var(--forest-d)}.confidence{margin-top:15px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}.confidence b{color:var(--ink)}
+    footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:42px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font:500 9.5px/1.6 var(--font-mono)}
+    @media(max-width:880px){.hero{grid-template-columns:1fr}.hinge{min-height:390px}.insights{grid-template-columns:1fr}.method-grid{grid-template-columns:1fr}.level-row{grid-template-columns:50px 135px 1fr 90px}.level-row .tag{display:none}.detail{grid-template-columns:1fr 1fr}.detail-main{grid-column:1/-1}.detail-stat:nth-child(2){border-left:0;padding-left:0}.sec-head{align-items:start;flex-direction:column}.sec-note{text-align:left}}
+    @media(max-width:620px){.wrap{width:min(100% - 20px,1180px);padding-top:18px}.topline{align-items:flex-start;flex-direction:column}.hero-main{padding:24px 19px}.hero-metrics{grid-template-columns:1fr}.level-row{grid-template-columns:42px 1fr 82px;gap:7px}.dates{display:none}.bar-area{grid-column:2/3;grid-row:1}.wall{grid-column:3}.loss{display:none}.detail{grid-template-columns:1fr}.detail-main{grid-column:auto}.detail-stat{border-left:0;border-top:1px solid #dce4df;padding:10px 0 0}.legend .tick{display:none}.step{grid-template-columns:105px 18px 1fr}.cumlabels{font-size:8.5px}.hinge-target .date{font-size:35px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topline">
+      <div>bpo · <b>lang_ja / wani_kani</b> · pace audit</div>
+      <div class="api-pill"><i></i>API snapshot · Jul 20 21:42 WITA</div>
+    </div>
+
+    <header class="hero">
+      <section class="hero-main">
+        <div class="eyebrow">Level 2 → 13 · exact progression history</div>
+        <h1>135 days lived.<br><span>64 days off ceiling.</span></h1>
+        <p class="lede">You reached level 13 in <b>135d 7h</b>. The mechanically fastest all-correct path was <b>71d 10h</b>, leaving a schedule delta of <b>63d 21h</b>. That delta is calendar time—not a verdict on retention or whether a slower pace was worthwhile.</p>
+        <div class="hero-metrics">
+          <div class="metric"><strong>1.89×</strong><span>mechanical floor</span></div>
+          <div class="metric"><strong>7d 17h</strong><span>best normal level · L7</span></div>
+          <div class="metric"><strong>20d 6h</strong><span>largest jump · L12</span></div>
+        </div>
+      </section>
+
+      <aside class="hinge">
+        <div>
+          <div class="live"><i></i>Level 13 · tonight's hinge</div>
+          <h2>That 22:00 line is real.</h2>
+          <p><b>30 kanji</b> were due at 21:00. Clear at least <b>27</b> before the hour turns—and keep 32/35 on-path—to preserve the earlier bucket.</p>
+        </div>
+        <div class="hinge-target">
+          <div class="date" id="targetDate">Jul 23 · 19:00</div>
+          <small id="targetCopy">earliest L14 · +8h vs perfect floor</small>
+          <div class="switch" role="group" aria-label="Review completion hour">
+            <button class="active" data-scenario="before">Before 22:00</button>
+            <button data-scenario="after">After 22:00</button>
+          </div>
+        </div>
+      </aside>
+    </header>
+
+    <section class="sec" id="timeline">
+      <div class="sec-head">
+        <div><div class="sec-kick">01 · every jump</div><h2>Where the calendar stretched</h2></div>
+        <p class="sec-note">Green is the SRS floor. Pink is elapsed time beyond it. Select a row for direct lesson-delay evidence.</p>
+      </div>
+      <div class="panel">
+        <div class="legend"><span><i class="ideal"></i>mechanical floor</span><span><i class="lost"></i>schedule delta</span><span class="tick">grid = 4 days</span></div>
+        <div class="filters" role="group" aria-label="Timeline filter">
+          <button class="active" data-filter="all">All levels</button>
+          <button data-filter="tight">Within 2 days</button>
+          <button data-filter="stalled">Over 5 days</button>
+        </div>
+        <div class="timeline" id="levelRows" aria-live="polite"></div>
+        <div class="detail" id="levelDetail" aria-live="polite"></div>
+        <div class="cumbar" title="71d 10h floor + 63d 21h schedule delta"></div>
+        <div class="cumlabels"><b>71d 10h · SRS floor (52.8%)</b><b>63d 21h · delta (47.2%)</b></div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head">
+        <div><div class="sec-kick">02 · diagnosis</div><h2>The busy period has two signatures</h2></div>
+      </div>
+      <div class="insights">
+        <article class="insight warn"><div class="num">4d 5h</div><h3>Level 11: delayed start</h3><p>You entered L11 on Jun 13 at 02:37 and did not start its first lesson until Jun 17 at 08:07. That directly explains most of the 6d 10h delta.</p></article>
+        <article class="insight"><div class="num">12d 11h</div><h3>Level 12: unlocked, not picked up</h3><p>Enough kanji were unlocked for the 90% gate by Jun 29 at 23:14. Enough lessons were not started until Jul 12 at 10:48.</p></article>
+        <article class="insight good"><div class="num">21h 38m</div><h3>Level 7 proves the pace</h3><p>Your May 5–13 run came within one day of the normal 6d 20h floor. The tight schedule is demonstrated, not hypothetical.</p></article>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head">
+        <div><div class="sec-kick">03 · live critical path</div><h2>Why one late hour survives to level-up</h2></div>
+        <p class="sec-note">Assumes correct reviews and at least 32 of 35 kanji stay on the same path.</p>
+      </div>
+      <div class="panel">
+        <div class="step-list">
+          <div class="step"><time>JUL 16 · 15:01</time><div class="dot"></div><div><strong>Level 13 begins</strong><p>Radical lessons started one minute later. The perfect two-wave floor points to Jul 23 at 11:01.</p></div></div>
+          <div class="step"><time>JUL 20 · 09:52</time><div class="dot"></div><div><strong>All 15 radicals reach Guru</strong><p>Second-wave kanji unlocked about 8h 51m behind the perfect radical gate. All 35 kanji lessons were started by 09:55.</p></div></div>
+          <div class="step hot"><time>JUL 20 · 21:00</time><div class="dot"></div><div><strong>30 kanji become due at Apprentice 2</strong><p>Five were already through this review. Finishing the needed cohort before 22:00 keeps its next review in the Jul 21 20:00 bucket.</p></div></div>
+          <div class="step"><time>JUL 21 · 20:00</time><div class="dot"></div><div><strong>Next critical review</strong><p>Clear Apprentice 3; the 47-hour interval then lands at Jul 23 19:00.</p></div></div>
+          <div class="step"><time>JUL 23 · 19:00</time><div class="dot"></div><div><strong>Earliest level 14 on the preserved bucket</strong><p>Crossing tonight's 22:00 boundary shifts the final two steps one hour—to Jul 21 21:00 and Jul 23 20:00.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><div><div class="sec-kick">04 · evidence</div><h2>What is exact—and what is inferred</h2></div></div>
+      <div class="method">
+        <div class="method-grid">
+          <div><h3>Exact progression timestamps</h3><p><code>level_progressions</code> supplies each level entry, first lesson, and pass time. The Jun 26 09:01 and Jul 16 15:01 emails match it to the minute.</p></div>
+          <div><h3>Exact assignment gates</h3><p><code>assignments</code> supplies unlock, lesson, Guru, current SRS stage, and next-available time for every radical and kanji.</p></div>
+          <div><h3>API-defined floor</h3><p>The accelerated system is 37h per wave; normal is 82h per wave. Two curriculum waves make L2 74h and each normal level 164h.</p></div>
+        </div>
+        <div class="confidence"><b>Limit:</b> this token returns no individual review-event history. “Downstream SRS-path slippage” therefore combines late reviews and incorrect answers. Direct first-lesson and unlock-to-lesson delays are separately observable and exact.</div>
+      </div>
+    </section>
+
+    <footer>
+      <span>lang-ja_wani-kani-level-timeline_2026-07-20_13-42 · bpo private</span>
+      <span>Source: WaniKani API v2 · timestamps converted to WITA (UTC+8)</span>
+    </footer>
+  </main>
+
+  <script>
+  (function(){
+    var levels = [
+      {l:2,entry:'Mar 3 · 07:38',pass:'Mar 10 · 18:33',wall:'7d 10h 55m',wallD:7.455,ideal:'3d 2h',idealD:3.083,loss:'4d 8h 55m',lossD:4.373,start:'17m',pickup:'11m',note:'Accelerated SRS level; the comparison floor is 74 hours, not the normal 164.'},
+      {l:3,entry:'Mar 10 · 18:33',pass:'Mar 19 · 09:32',wall:'8d 14h 59m',wallD:8.624,ideal:'6d 20h',idealD:6.833,loss:'1d 18h 59m',lossD:1.791,start:'33m',pickup:'53m',note:'A close normal-level run: initial lessons and gate lessons were both picked up within an hour.'},
+      {l:4,entry:'Mar 19 · 09:32',pass:'Apr 2 · 07:39',wall:'13d 22h 7m',wallD:13.921,ideal:'6d 20h',idealD:6.833,loss:'7d 2h 7m',lossD:7.088,start:'55m',pickup:'15m',note:'The large delta happened inside the review path, not in lesson pickup.'},
+      {l:5,entry:'Apr 2 · 07:39',pass:'Apr 18 · 19:52',wall:'16d 12h 13m',wallD:16.509,ideal:'6d 20h',idealD:6.833,loss:'9d 16h 13m',lossD:9.676,start:'3h 50m',pickup:'1d 9h 15m',note:'Both review-path drag and a day-plus delay picking up enough unlocked kanji contributed.'},
+      {l:6,entry:'Apr 18 · 19:52',pass:'May 5 · 14:24',wall:'16d 18h 32m',wallD:16.772,ideal:'6d 20h',idealD:6.833,loss:'9d 22h 32m',lossD:9.939,start:'3h 39m',pickup:'6h 43m',note:'Nearly ten days beyond floor, dominated by downstream SRS timing rather than lesson start.'},
+      {l:7,entry:'May 5 · 14:24',pass:'May 13 · 08:03',wall:'7d 17h 38m',wallD:7.735,ideal:'6d 20h',idealD:6.833,loss:'21h 38m',lossD:.902,start:'1h 7m',pickup:'1h 35m',note:'Fastest normal-level run. This is the best demonstrated baseline for a sustainable tight schedule.'},
+      {l:8,entry:'May 13 · 08:03',pass:'May 23 · 21:45',wall:'10d 13h 42m',wallD:10.571,ideal:'6d 20h',idealD:6.833,loss:'3d 17h 42m',lossD:3.738,start:'6m',pickup:'13m',note:'Lessons were immediate. The extra time accumulated later in the SRS path.'},
+      {l:9,entry:'May 23 · 21:45',pass:'Jun 4 · 10:08',wall:'11d 12h 23m',wallD:11.516,ideal:'6d 20h',idealD:6.833,loss:'4d 16h 23m',lossD:4.683,start:'7m',pickup:'3d 12h 56m',note:'The clearest earlier unlock-to-lesson gap: enough kanji waited more than three days after they were available.'},
+      {l:10,entry:'Jun 4 · 10:08',pass:'Jun 13 · 02:37',wall:'8d 16h 29m',wallD:8.687,ideal:'6d 20h',idealD:6.833,loss:'1d 20h 29m',lossD:1.854,start:'30m',pickup:'12h 50m',note:'Another close run—under two days beyond the hard floor.'},
+      {l:11,entry:'Jun 13 · 02:37',pass:'Jun 26 · 09:01',wall:'13d 6h 25m',wallD:13.267,ideal:'6d 20h',idealD:6.833,loss:'6d 10h 25m',lossD:6.434,start:'4d 5h 30m',pickup:'9h 15m',note:'The busy-period signature is explicit: four days passed before the first level-11 lesson.'},
+      {l:12,entry:'Jun 26 · 09:01',pass:'Jul 16 · 15:01',wall:'20d 6h',wallD:20.25,ideal:'6d 20h',idealD:6.833,loss:'13d 10h',lossD:13.417,start:'5m',pickup:'12d 11h 34m',note:'Initial lessons were immediate, but enough unlocked kanji waited 12½ days before lesson pickup.'}
+    ];
+    var max = 20.25, selected = 12, filter = 'all';
+    var rows = document.getElementById('levelRows'), detail = document.getElementById('levelDetail');
+    function bucket(x){return x.lossD<=1?'tight':x.lossD<=2?'close':x.lossD<=5?'drift':'stalled'}
+    function bucketLabel(x){return x==='tight'?'tight':x==='close'?'close':x==='drift'?'drift':'stalled'}
+    function visible(x){return filter==='all'||(filter==='tight'&&x.lossD<=2)||(filter==='stalled'&&x.lossD>5)}
+    function renderRows(){
+      rows.innerHTML='';
+      levels.filter(visible).forEach(function(x){
+        var b=document.createElement('button');b.className='level-row'+(x.l===selected?' selected':'');b.dataset.level=x.l;
+        b.setAttribute('aria-label','Level '+x.l+', '+x.wall+' wall time, '+x.loss+' schedule delta');
+        b.innerHTML='<span class="level-id">L'+x.l+'</span><span class="dates"><b>'+x.entry+' →</b>'+x.pass+'</span><span class="bar-area"><span class="bar-total" style="width:'+((x.wallD/max)*100).toFixed(1)+'%"><i class="bar-ideal" style="width:'+((x.idealD/x.wallD)*100).toFixed(1)+'%"></i><i class="bar-loss" style="width:'+((x.lossD/x.wallD)*100).toFixed(1)+'%"></i></span></span><span class="wall">'+x.wall.replace(/ 0m$/,'')+'</span><span class="tag '+bucket(x)+'">'+bucketLabel(bucket(x))+'</span>';
+        b.addEventListener('click',function(){selected=x.l;renderRows();renderDetail()});rows.appendChild(b);
+      });
+    }
+    function renderDetail(){
+      var x=levels.find(function(v){return v.l===selected})||levels[0];
+      detail.innerHTML='<div class="detail-main"><div class="eyebrow">Level '+x.l+' → '+(x.l+1)+'</div><h3>'+x.entry+' to '+x.pass+'</h3><p>'+x.note+'</p></div><div class="detail-stat"><strong>'+x.loss+'</strong><span>schedule delta</span></div><div class="detail-stat"><strong>'+x.start+'</strong><span>first-lesson lag</span></div><div class="detail-stat"><strong>'+x.pickup+'</strong><span>90% unlock → lessons</span></div>';
+    }
+    document.querySelectorAll('[data-filter]').forEach(function(b){b.addEventListener('click',function(){filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(function(z){z.classList.toggle('active',z===b)});var vis=levels.filter(visible);if(!vis.some(function(x){return x.l===selected}))selected=vis[0].l;renderRows();renderDetail()})});
+    document.querySelectorAll('[data-scenario]').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('[data-scenario]').forEach(function(z){z.classList.toggle('active',z===b)});var after=b.dataset.scenario==='after';document.getElementById('targetDate').textContent=after?'Jul 23 · 20:00':'Jul 23 · 19:00';document.getElementById('targetCopy').textContent=after?'earliest L14 · +9h vs perfect floor':'earliest L14 · +8h vs perfect floor'})});
+    renderRows();renderDetail();
+  })();
+  </script>
+</body>
+</html>

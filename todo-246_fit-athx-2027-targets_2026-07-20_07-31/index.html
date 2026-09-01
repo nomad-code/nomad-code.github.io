@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ATHX 2027 season plan — singles Pro block and doubles block — with every-athlete-every-round benchmark targets from the full ATHX field.">
+  <title>TODO-246 · fit-athx · ATHX 2027 Season + Targets</title>
+  <!-- bpo password wall · self-locating loader. -->
+  <script>
+  (function () {
+    var KEY = 'bpo-unlocked';
+    var unlocked = false, reveal = false;
+    try {
+      unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+      reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+    } catch (e) {}
+    var hide, cover;
+    if (!unlocked) {
+      hide = document.createElement('style');
+      hide.id = '__pw_gate_hide__';
+      hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+      (document.head || document.documentElement).appendChild(hide);
+    } else if (reveal) {
+      cover = document.createElement('style');
+      cover.id = '__pw_reveal_pre__';
+      cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+      (document.head || document.documentElement).appendChild(cover);
+      setTimeout(function () { var c = document.getElementById('__pw_reveal_pre__'); if (c) c.remove(); }, 4000);
+    }
+    window.__FOUND_GATE__ = { label: 'bpo · Private', key: KEY };
+    var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+    var i = 0;
+    (function next() {
+      if (i >= prefixes.length) { if (hide) hide.remove(); if (cover) cover.remove(); return; }
+      var s = document.createElement('script');
+      s.src = prefixes[i++] + 'password-wall/gate.js';
+      s.onerror = next;
+      document.head.appendChild(s);
+    })();
+  })();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    html,body{overflow-x:hidden}
+    body{min-height:100vh}
+    button,a{font:inherit}
+    .wrap{width:min(1240px,100%);margin:0 auto;padding:34px clamp(14px,3.5vw,44px) 70px}
+
+    .topline{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}
+    .topline .brand{font:500 11px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+    .topline .brand b{color:var(--forest)}
+    .tchip{font:500 10px var(--font-mono);letter-spacing:.04em;color:var(--forest-d);background:var(--g-lime);border:1px solid #bdd9c9;border-radius:var(--r-chip);padding:5px 9px;text-decoration:none}
+
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:16px}
+    .hero-copy{background:linear-gradient(145deg,#fff,#fbfbf5);border:1px solid var(--line);border-radius:var(--r-hero);padding:clamp(24px,3.6vw,44px);box-shadow:var(--shadow-hero)}
+    .hero-eyebrow{font:500 10.5px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--forest)}
+    .hero-copy h1{font-size:clamp(34px,4.8vw,62px);line-height:.96;letter-spacing:-.052em;margin:14px 0 0}
+    .hero-copy h1 span{color:var(--forest)}
+    .hero-copy .lede{font-size:clamp(13.5px,1.4vw,16px);color:var(--body);max-width:62ch;margin-top:16px}
+    .hero-copy .lede b{color:var(--ink)}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+    .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);padding:13px 14px;position:relative;overflow:hidden}
+    .kpi:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--line)}
+    .kpi.g:after{background:#0b8a63}.kpi.b:after{background:#3b6fd4}.kpi.a:after{background:#b07508}
+    .kpi-n{font-size:25px;font-weight:800;letter-spacing:-.045em;color:var(--ink)}
+    .kpi-l{font:500 9.5px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-top:3px}
+
+    .dark-card{background:#14231f;color:#f7fbf8;border-radius:var(--r-hero);padding:24px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;min-height:290px}
+    .dark-card:before,.dark-card:after{content:"";position:absolute;border:1px solid rgba(155,212,87,.16);border-radius:50%;width:250px;height:250px;right:-100px;bottom:-115px}
+    .dark-card:after{width:170px;height:170px;right:-60px;bottom:-78px}
+    .dk-k{font:500 10px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:#9bcabd;display:flex;gap:8px;align-items:center}
+    .dk-k i{width:8px;height:8px;border-radius:50%;background:var(--lime-b);box-shadow:0 0 0 6px rgba(155,212,87,.12)}
+    .dk-n{font-size:clamp(64px,8vw,104px);font-weight:840;letter-spacing:-.07em;line-height:.8;color:var(--lime-b);position:relative;z-index:1;margin:20px 0 8px}
+    .dk-l{font-size:16px;font-weight:720;letter-spacing:-.02em;position:relative;z-index:1}
+    .dk-s{font:400 10px/1.7 var(--font-mono);color:#9bcabd;margin-top:6px;position:relative;z-index:1}
+
+    .sec{margin-top:46px}
+    .sec-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:14px}
+    .sec-kick{font:500 10px var(--font-mono);letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+    .sec-head h2{font-size:clamp(24px,2.8vw,34px);line-height:1.02;letter-spacing:-.04em;margin:7px 0 0}
+    .sec-note{font-size:12.5px;color:var(--muted);max-width:52ch}
+
+    /* season timeline */
+    .season{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:18px;overflow-x:auto}
+    .season-inner{min-width:860px}
+    .lane{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;padding:10px 0}
+    .lane + .lane{border-top:1px dashed var(--line)}
+    .lane-label{font-size:12.5px;font-weight:750;color:var(--ink);line-height:1.3}
+    .lane-label .sub{display:block;font:500 9.5px var(--font-mono);color:var(--muted);margin-top:2px;letter-spacing:.04em}
+    .lane-track{position:relative;height:84px}
+    .month-axis{display:grid;grid-template-columns:repeat(11,1fr);position:absolute;inset:0}
+    .month-axis i{border-left:1px solid #f0f2ec;font:500 8.5px var(--font-mono);color:var(--faint);padding:2px 0 0 4px;text-transform:uppercase;letter-spacing:.06em}
+    .race{position:absolute;top:34px;transform:translateX(-50%);cursor:default}
+    .race i{display:block;width:13px;height:13px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 0 0 1.5px rgba(20,23,15,.16), 0 2px 6px rgba(20,23,15,.18)}
+    .race.solo i{background:#0b8a63}
+    .race.dbl i{background:#3b6fd4}
+    .race b{position:absolute;left:50%;transform:translateX(-50%);font:600 8.5px var(--font-mono);letter-spacing:.02em;color:var(--body);white-space:nowrap;top:17px}
+    .race.l1 b{top:-15px}
+    .race.l2 b{top:29px}
+    .race:hover i{transform:scale(1.25)}
+    .race:hover i{transform:scale(1.25)}
+    .season-leg{display:flex;gap:16px;margin-top:10px;font:500 10px var(--font-mono);color:var(--muted)}
+    .season-leg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+
+    /* targets */
+    .tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px;margin-top:12px}
+    .tcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:18px}
+    .tcard h3{font-size:14.5px;font-weight:780;display:flex;gap:8px;align-items:center;letter-spacing:-.01em}
+    .tcard h3 i{width:10px;height:10px;border-radius:3px;flex:none}
+    .tcard .cohort{font:500 9.5px var(--font-mono);color:var(--muted);margin:3px 0 12px;letter-spacing:.05em;text-transform:uppercase}
+    .trow{display:grid;grid-template-columns:1.1fr repeat(4,1fr);gap:6px;align-items:center;padding:7px 0;border-top:1px solid #f2f4ee;font-size:12px}
+    .trow.head{font:600 8.5px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-top:0;padding-bottom:3px}
+    .trow .rname{font-weight:700;color:var(--ink);font-size:12px}
+    .trow .rname small{display:block;font:500 8.5px var(--font-mono);color:var(--faint);text-transform:uppercase;letter-spacing:.05em}
+    .trow span{text-align:right;font-variant-numeric:tabular-nums;color:var(--body)}
+    .trow .p90{font-weight:750;color:var(--forest-d);background:var(--g-lime);border-radius:6px;padding:2px 6px}
+    .trow .best{color:var(--muted)}
+
+    .strategy{background:#14231f;color:#eef6f0;border-radius:var(--r-card);padding:22px 24px;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+    .strategy h4{font-size:13px;font-weight:750;color:var(--lime-b)}
+    .strategy p{font-size:12px;line-height:1.65;color:#c3d6cc;margin-top:5px}
+    .strategy b{color:#fff}
+
+    .foot{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font:400 10.5px var(--font-mono);color:var(--faint)}
+
+    #tip{position:fixed;z-index:60;pointer-events:none;background:#15201d;color:#f4f8f5;font:500 11px/1.5 var(--font-mono);padding:7px 10px;border-radius:9px;box-shadow:var(--shadow-lift);opacity:0;transform:translateY(3px);transition:opacity .12s,transform .12s;white-space:nowrap}
+    #tip b{color:var(--lime-b)}
+    #tip.on{opacity:1;transform:none}
+
+    @media (max-width:900px){
+      .hero-grid{grid-template-columns:1fr}
+      .kpis{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topline">
+      <div class="brand">bpo · <b>fit-athx</b> · projects/fit-athx</div>
+      <div class="top-chips">
+        <a class="tchip" href="https://linear.app/nomad-code/issue/TODO-246/fit-athx" target="_blank" rel="noopener">TODO-246</a>
+      </div>
+    </div>
+
+    <header class="hero-grid">
+      <div class="hero-copy">
+        <div class="hero-eyebrow">ATHX 2027 · the plan</div>
+        <h1>Two blocks.<br><span id="startCount">23</span> <span>starts.</span></h1>
+        <p class="lede"><b>Singles Pro</b> from London in January to Lisbon in June —
+        then flip the switch: <b>doubles with Chris R</b> from Copenhagen through Bilbao.
+        Behind every start: the full field, <b>every athlete, every round</b>, scraped
+        into the warehouse so the targets below are real percentiles, not vibes.</p>
+        <div class="kpis" id="kpis"></div>
+      </div>
+      <aside class="dark-card">
+        <div class="dk-k"><i></i>Countdown · ATHX London 2027</div>
+        <div>
+          <div class="dk-n" id="days">—</div>
+          <div class="dk-l">days to the first Pro start</div>
+          <div class="dk-s">23–24 Jan 2027 · Excel London 🇬🇧</div>
+        </div>
+      </aside>
+    </header>
+
+    <section class="sec">
+      <div class="sec-head">
+        <div>
+          <div class="sec-kick">01 · Season</div>
+          <h2>Jan–Jun solo · Jul–Nov with Chris</h2>
+        </div>
+        <p class="sec-note">Every YEP race from the brief. Hover a dot for date + venue.</p>
+      </div>
+      <div class="season"><div class="season-inner">
+        <div class="lane">
+          <div class="lane-label">Singles Pro<span class="sub" id="soloCount"></span></div>
+          <div class="lane-track" id="soloTrack"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Doubles · w/ Chris R<span class="sub" id="dblCount"></span></div>
+          <div class="lane-track" id="dblTrack"></div>
+        </div>
+      </div>
+      <div class="season-leg">
+        <span><i style="background:#0b8a63"></i>singles Pro</span>
+        <span><i style="background:#3b6fd4"></i>doubles</span>
+      </div></div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head">
+        <div>
+          <div class="sec-kick">02 · Targets</div>
+          <h2>The field you're walking into</h2>
+        </div>
+        <p class="sec-note" id="benchNote">Round-by-round percentiles from the latest full
+        pull (2026 format). p90 = the score that beats 90% of the field — the working
+        target band. Caveat: ATHX has changed the round programme <b>every</b> year, so
+        expect a 2027 remix — the field's engine stays the same even when the tests move.</p>
+      </div>
+      <div class="tgrid" id="targets"></div>
+      <div class="strategy" id="strategy">
+        <div><h4>Points pay consistency</h4>
+          <p>Points = <b>sum of your three workout ranks</b>, lowest wins. A win and two
+          mid-packs loses to three top-fives. Train the weakest workout first: cutting a
+          20-rank leak beats adding 10&nbsp;kg to a strength you already podium.</p></div>
+        <div><h4>Where fields are thin</h4>
+          <p id="thinNote">Smaller cohorts (age bands, early-season stops) price ranks
+          cheaper — same absolute score, better points. The per-event tables in the
+          warehouse show which stops run shallow.</p></div>
+        <div><h4>Doubles is a different game</h4>
+          <p>Team scores sum both partners; the team-individual table shows exactly what
+          each half of every podium pair lifted and covered. Split the rounds with Chris
+          against that, not against gut feel.</p></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span id="prov">warehouse: —</span>
+      <span>TODO-246 · toolkit: bob/athx · tables: projects/fit-athx/warehouse/</span>
+    </footer>
+  </div>
+  <div id="tip"></div>
+
+  <script id="fit-data">window.FIT={"generated":"2026-07-20 07:29 UTC","benchmarks":[{"workout":"Strength","title":"Singles Pro","cohort":"2026 · ATHX Pro · Men","n":329,"rows":[{"name":"1RM Strict Press","unit":"kg","p50":78.0,"p75":85.0,"p90":95.0,"best":120.0},{"name":"3RM Back Squat","unit":"kg","p50":153.0,"p75":170.0,"p90":190.0,"best":240.0},{"name":"5RM Deadlift","unit":"kg","p50":180.0,"p75":200.0,"p90":215.0,"best":250.0},{"name":"Total","unit":"kg","p50":415.0,"p75":452.0,"p90":485.0,"best":580.0}]},{"workout":"Endurance","title":"Singles Pro","cohort":"2026 · ATHX Pro · Men","n":329,"rows":[{"name":"Run","unit":"km","p50":2.822,"p75":3.0,"p90":3.0,"best":3.546},{"name":"Row","unit":"km","p50":2.014,"p75":2.15,"p90":2.4427999999999996,"best":3.019},{"name":"Total","unit":"km","p50":4.842,"p75":5.138,"p90":5.4428,"best":6.019}]},{"workout":"MetCon X","title":"Singles Pro","cohort":"2026 · ATHX Pro · Men","n":329,"rows":[{"name":"Final","unit":"time","p50":998.0,"p75":857.0,"p90":748.2,"best":575.0}]},{"workout":"Strength","title":"Doubles","cohort":"2026 · ATHX · Men's pairs","n":1120,"rows":[{"name":"1RM Strict Press","unit":"kg","p50":135.0,"p75":148.0,"p90":160.0,"best":226.0},{"name":"3RM Back Squat","unit":"kg","p50":245.0,"p75":275.0,"p90":305.0,"best":384.0},{"name":"5RM Deadlift","unit":"kg","p50":300.0,"p75":340.0,"p90":361.0,"best":470.0},{"name":"Total","unit":"kg","p50":683.0,"p75":755.0,"p90":821.3000000000001,"best":1025.0}]},{"workout":"Endurance","title":"Doubles","cohort":"2026 · ATHX · Men's pairs","n":1118,"rows":[{"name":"Run","unit":"km","p50":3.816,"p75":4.161,"p90":4.4693000000000005,"best":5.294},{"name":"Row","unit":"km","p50":5.306,"p75":5.51275,"p90":5.6843,"best":6.268},{"name":"Total","unit":"km","p50":9.155,"p75":9.57075,"p90":9.9556,"best":11.19}]},{"workout":"MetCon X","title":"Doubles","cohort":"2026 · ATHX · Men's pairs","n":1118,"rows":[{"name":"Final","unit":"time","p50":949.5,"p75":854.25,"p90":788.7,"best":552.0}]}],"thin":"2026 Pro Male fields: median <b>34</b> per event, thinnest <b>24</b> (Dublin 2026). Same score, cheaper ranks — pick stops where the field runs shallow."};</script>
+  <script>
+  (function(){
+    'use strict';
+    var F = window.FIT || {};
+
+    /* ---------- season plan (from the TODO-246 brief) ---------- */
+    var SOLO = [
+      ["London","2027-01-23","23–24 Jan","Excel London","🇬🇧"],
+      ["Paris","2027-02-13","13–14 Feb","Paris Event Centre","🇫🇷"],
+      ["Valencia","2027-02-20","20 Feb","Feria Valencia","🇪🇸"],
+      ["Milan","2027-03-06","6–7 Mar","Fiera Milano","🇮🇹"],
+      ["Brussels","2027-03-20","20 Mar","Brussels Expo","🇧🇪"],
+      ["St Gallen","2027-04-10","10 Apr","Olma Messen St. Gallen","🇨🇭"],
+      ["Stuttgart","2027-04-17","17 Apr","Messe Stuttgart","🇩🇪"],
+      ["Vienna","2027-04-24","24 Apr","Marx Halle","🇦🇹"],
+      ["Madrid","2027-05-08","8–9 May","IFEMA Madrid","🇪🇸"],
+      ["Frankfurt","2027-05-22","22 May","Messe Frankfurt","🇩🇪"],
+      ["Montpellier","2027-05-28","28–29 May","Montpellier Exhibition Centre","🇫🇷"],
+      ["Glasgow","2027-06-05","5–6 Jun","Scottish Event Campus","🇬🇧"],
+      ["Dublin","2027-06-12","12–13 Jun","RDS Dublin","🇮🇪"],
+      ["Lisbon","2027-06-26","26–27 Jun","FIL Lisbon","🇵🇹"]
+    ];
+    var DBL = [
+      ["Copenhagen","2027-07-31","31 Jul–1 Aug","Bella Centre","🇩🇰"],
+      ["Berlin","2027-08-14","14–15 Aug","Arena Halle Berlin","🇩🇪"],
+      ["Birmingham","2027-08-20","20–22 Aug","NEC Birmingham","🇬🇧"],
+      ["Hamburg","2027-08-28","28 Aug","Hamburg Messe","🇩🇪"],
+      ["Marseille","2027-09-10","10–11 Sep","Marseille Chanot","🇫🇷"],
+      ["Turin","2027-09-25","25 Sep","Lingotto Fiere","🇮🇹"],
+      ["Amsterdam","2027-10-02","2–3 Oct","RAI Amsterdam","🇳🇱"],
+      ["Liverpool","2027-10-09","9–10 Oct","ACC Liverpool","🇬🇧"],
+      ["Bilbao","2027-11-06","6 Nov","Bilbao Exhibition Centre","🇪🇸"]
+    ];
+
+    document.getElementById('startCount').textContent = SOLO.length + DBL.length;
+    document.getElementById('soloCount').textContent = SOLO.length + ' races · Jan–Jun';
+    document.getElementById('dblCount').textContent = DBL.length + ' races · Jul–Nov';
+
+    var days = Math.max(0, Math.ceil((new Date('2027-01-23T08:00:00Z') - Date.now()) / 864e5));
+    document.getElementById('days').textContent = days.toLocaleString();
+
+    var kpis = [
+      ['solo Pro races', SOLO.length, 'g'],
+      ['doubles races', DBL.length, 'b'],
+      ['countries', (function(){ var s={}; SOLO.concat(DBL).forEach(function(r){ s[r[4]]=1; }); return Object.keys(s).length; })(), ''],
+      ['season span', 'Jan–Nov', 'a']
+    ];
+    document.getElementById('kpis').innerHTML = kpis.map(function(k){
+      return '<div class="kpi '+k[2]+'"><div class="kpi-n">'+k[1]+'</div><span class="kpi-l">'+k[0]+'</span></div>';
+    }).join('');
+
+    /* ---------- timeline ---------- */
+    var tip = document.getElementById('tip');
+    function showTip(html,x,y){
+      tip.innerHTML = html; tip.classList.add('on');
+      var w = tip.offsetWidth;
+      tip.style.left = Math.min(Math.max(8, x - w/2), window.innerWidth-w-8)+'px';
+      tip.style.top = (y-tip.offsetHeight-12)+'px';
+    }
+    function hideTip(){ tip.classList.remove('on'); }
+    var t0 = new Date('2027-01-01').getTime(), t1 = new Date('2027-12-01').getTime();
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'];
+    function lane(hostId, races, cls){
+      var host = document.getElementById(hostId);
+      host.innerHTML = '<div class="month-axis">' +
+        MONTHS.map(function(m){ return '<i>'+m+'</i>'; }).join('') + '</div>' +
+        races.map(function(r, i){
+          var pct = (new Date(r[1]).getTime() - t0) / (t1 - t0) * 100;
+          return '<div class="race '+cls+' '+(['','l1','l2'][i%3])+'" style="left:'+pct.toFixed(2)+'%" data-n="'+r[0]+'" data-d="'+r[2]+'" data-v="'+r[3]+' '+r[4]+'"><i></i><b>'+r[0]+'</b></div>';
+        }).join('');
+      host.querySelectorAll('.race').forEach(function(el){
+        el.addEventListener('mousemove', function(e){
+          showTip('<b>'+el.dataset.n+'</b> · '+el.dataset.d+'<br>'+el.dataset.v, e.clientX, e.clientY);
+        });
+        el.addEventListener('mouseleave', hideTip);
+      });
+    }
+    lane('soloTrack', SOLO, 'solo');
+    lane('dblTrack', DBL, 'dbl');
+
+    /* ---------- targets from warehouse benchmarks ---------- */
+    var COLORS = {Strength:'#0b8a63', Endurance:'#3b6fd4', 'MetCon X':'#b07508'};
+    function fmtTime(s){ if(s==null) return '—';
+      var m=Math.floor(s/60), ss=Math.round(s%60);
+      return m+':'+(ss<10?'0':'')+ss; }
+    function fm(v, unit){
+      if (v==null) return '—';
+      if (unit==='time') return fmtTime(v);
+      return (Math.round(v*(unit==='km'?1000:10))/(unit==='km'?1000:10)) + '';
+    }
+    var host = document.getElementById('targets');
+    (F.benchmarks || []).forEach(function(card){
+      var el = document.createElement('div');
+      el.className = 'tcard';
+      el.innerHTML = '<h3><i style="background:'+(COLORS[card.workout]||'#0b8a63')+'"></i>'+
+        card.workout+' · '+card.title+'</h3>'+
+        '<div class="cohort">'+card.cohort+' · n='+card.n+'</div>'+
+        '<div class="trow head"><span style="text-align:left">Round</span><span>median</span><span>p75</span><span>p90</span><span>best</span></div>'+
+        card.rows.map(function(r){
+          return '<div class="trow"><span class="rname" style="text-align:left">'+r.name+
+            '<small>'+r.unit+'</small></span>'+
+            '<span>'+fm(r.p50,r.unit)+'</span><span>'+fm(r.p75,r.unit)+'</span>'+
+            '<span class="p90">'+fm(r.p90,r.unit)+'</span><span class="best">'+fm(r.best,r.unit)+'</span></div>';
+        }).join('');
+      host.appendChild(el);
+    });
+    if (F.thin) document.getElementById('thinNote').innerHTML = F.thin;
+    document.getElementById('prov').textContent = 'warehouse: ' + (F.generated || 'pending first full pull');
+  })();
+  </script>
+</body>
+</html>

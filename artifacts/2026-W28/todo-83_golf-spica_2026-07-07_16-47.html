@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-83 · golf-spica-3 · Strokes-Gained Loop + Beautiful Swing</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+
+  /* the anchor loop card */
+  .loop {
+    border: 1px solid var(--forest);
+    background: linear-gradient(180deg, var(--g-lime), var(--card) 55%);
+    border-radius: var(--r-hero); padding: 22px 24px; box-shadow: var(--shadow-card);
+  }
+  .loop-kick { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--forest-d); margin-bottom: 6px; }
+  .loop h2 { font-size: 22px; line-height: 1.2; color: var(--ink); margin: 0 0 16px; }
+  .lsteps { counter-reset: s; display: grid; gap: 11px; }
+  .lstep { display: grid; grid-template-columns: 26px 1fr; gap: 13px; align-items: start;
+    font-size: 14.5px; color: var(--body); line-height: 1.5; }
+  .lstep:before { counter-increment: s; content: counter(s); font-family: var(--font-mono);
+    font-size: 13px; color: var(--card); background: var(--forest); width: 24px; height: 24px;
+    border-radius: 999px; display: grid; place-items: center; font-weight: 500; }
+  .lstep b { color: var(--ink); }
+  .lstep .arc { font-family: var(--font-mono); font-size: 10.5px; color: var(--forest-d);
+    text-transform: uppercase; letter-spacing: .05em; }
+  .loop-foot { margin-top: 15px; padding-top: 13px; border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  /* interactive strata */
+  .strata { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 4px 0 20px; }
+  .stratum { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+    padding: 15px 16px; cursor: pointer; transition: transform .28s var(--spring),
+    box-shadow .28s var(--ease), border-color .28s; position: relative; }
+  .stratum:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+  .stratum.act { border-color: var(--forest); background: linear-gradient(180deg,#fff,#f6fbf6); }
+  .stratum .code { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--faint); }
+  .stratum h4 { font-size: 15.5px; font-weight: 740; letter-spacing: -.02em; margin: 5px 0 2px; color: var(--ink); }
+  .stratum .share { font-family: var(--font-mono); font-size: 22px; color: var(--forest);
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em; margin-top: 8px; }
+  .stratum .share small { font-size: 11px; color: var(--muted); margin-left: 2px; }
+  .stratum .mini { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
+  .stratum .go { position: absolute; top: 14px; right: 14px; font-family: var(--font-mono);
+    font-size: 10px; color: var(--forest); opacity: 0; transition: opacity .2s; }
+  .stratum:hover .go, .stratum.act .go { opacity: 1; }
+
+  .detail { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--forest);
+    border-radius: var(--r-card); padding: 22px 24px; box-shadow: var(--shadow-card); }
+  .detail h3 { font-size: 19px; font-weight: 760; letter-spacing: -.02em; margin: 0 0 3px; color: var(--ink);
+    display: flex; align-items: center; gap: 10px; }
+  .detail .dcode { font-family: var(--font-mono); font-size: 10.5px; color: var(--forest);
+    background: var(--g-lime); padding: 3px 8px; border-radius: 6px; letter-spacing: .04em; }
+  .detail .dsub { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+  .dgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .dblock h5 { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--forest-d); margin: 0 0 8px; }
+  .dblock p, .dblock li { font-size: 13.5px; line-height: 1.55; color: var(--body); }
+  .dblock ul { margin: 0; padding-left: 17px; display: grid; gap: 5px; }
+  .dblock b { color: var(--ink); }
+
+  /* strokes-gained leverage bars reuse .crow */
+  .why { font-size: 12.5px; color: var(--muted); margin-top: 14px; line-height: 1.55; }
+  .why b { color: var(--ink); }
+
+  /* swing fault explorer */
+  .faults { display: grid; grid-template-columns: 210px 1fr; gap: 18px; }
+  .fault-list { display: flex; flex-direction: column; gap: 8px; }
+  .fbtn { text-align: left; background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--r-tile); padding: 13px 15px; cursor: pointer; font-family: var(--font-ui);
+    transition: border-color .2s, background .2s, transform .2s var(--spring); }
+  .fbtn:hover { transform: translateX(2px); }
+  .fbtn.act { border-color: var(--warn); background: var(--warn-bg); }
+  .fbtn .fn { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .fbtn .fp { font-family: var(--font-mono); font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--muted); margin-top: 3px; }
+  .fbtn.act .fp { color: var(--warn); }
+  .fpanel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 22px 24px; box-shadow: var(--shadow-card); }
+  .fpanel .flead { font-size: 15px; line-height: 1.55; color: var(--body); margin: 0 0 18px; }
+  .fpanel .flead b { color: var(--ink); }
+  .fp-row { display: grid; grid-template-columns: 96px 1fr; gap: 16px; padding: 13px 0;
+    border-top: 1px solid var(--line); }
+  .fp-row .k { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--forest-d); padding-top: 2px; }
+  .fp-row .v { font-size: 13.5px; line-height: 1.55; color: var(--body); }
+  .fp-row .v b { color: var(--ink); }
+  .fp-row.drill { background: linear-gradient(90deg,var(--g-lime),transparent 70%);
+    border-radius: var(--r-tile); margin: 0 -12px; padding: 14px 12px; border-top: 0; }
+  .fp-row.drill .k { color: var(--forest-d); }
+
+  /* P-position swing map */
+  .pmap-swing { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; }
+  .pnode { flex: 1; min-width: 66px; text-align: center; padding: 12px 6px; border-radius: var(--r-tile);
+    background: var(--card); border: 1px solid var(--line); position: relative; }
+  .pnode.hot { border-color: var(--warn); background: var(--warn-bg); }
+  .pnode .pn { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--forest-d); }
+  .pnode.hot .pn { color: var(--warn); }
+  .pnode .pl { font-size: 10px; color: var(--muted); margin-top: 4px; line-height: 1.25; }
+
+  /* rig table */
+  .rig { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .rig th { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--muted); text-align: left; padding: 9px 12px;
+    border-bottom: 1px solid var(--line); }
+  .rig td { padding: 12px; border-bottom: 1px solid var(--line); color: var(--body);
+    vertical-align: top; line-height: 1.5; }
+  .rig tr:last-child td { border-bottom: 0; }
+  .rig td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+  .rig b { color: var(--ink); }
+  .rig-wrap { overflow-x: auto; }
+
+  /* open-question chips */
+  .qa { display: grid; gap: 12px; }
+  .qrow { display: grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 14px 0;
+    border-top: 1px solid var(--line); }
+  .qrow:first-child { border-top: 0; }
+  .qrow .q { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.35; }
+  .qrow .q small { display: block; font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--found-d); text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; font-weight: 400; }
+  .qrow .a { font-size: 13.5px; line-height: 1.6; color: var(--body); }
+  .qrow .a b { color: var(--ink); }
+
+  /* north star */
+  .north { border: 1px solid var(--found-bd); background: linear-gradient(180deg,#fff,#f6fafb);
+    border-radius: var(--r-card); padding: 24px; box-shadow: var(--shadow-card); }
+  .north h3 { font-size: 19px; font-weight: 760; letter-spacing: -.02em; margin: 0 0 4px; color: var(--ink); }
+  .north .layers { display: grid; gap: 9px; margin-top: 16px; }
+  .nlayer { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start;
+    font-size: 13.5px; line-height: 1.5; color: var(--body); }
+  .nlayer .z { font-family: var(--font-mono); font-size: 10px; color: var(--found-d);
+    background: var(--found-bg); border: 1px solid var(--found-bd); border-radius: 6px;
+    height: 24px; display: grid; place-items: center; font-weight: 600; }
+  .nlayer b { color: var(--ink); }
+  .breathe { border-left: 3px solid var(--lime); padding-left: 15px; color: var(--body);
+    font-size: 15px; line-height: 1.6; margin: 0; }
+  .breathe b { color: var(--ink); }
+
+  a.lref { color: var(--found-d); text-decoration: none; border-bottom: 1px solid var(--found-bd); }
+  a.lref:hover { color: var(--found); }
+
+  @media (max-width: 860px) {
+    .strata { grid-template-columns: 1fr 1fr; }
+    .dgrid, .grid2, .grid3 { grid-template-columns: 1fr; }
+    .faults { grid-template-columns: 1fr; }
+    .qrow { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx"><span class="dot"></span>TODO-83 · golf-spica-3</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">Medewi Manor · Spica 3</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <div class="hero">
+    <div class="hero-eyebrow"><span class="d"></span>from a pile of sim rounds to a system that compounds</div>
+    <h1>Get better at golf, <span class="em">on purpose</span>.</h1>
+    <p class="hero-sub">You already have the two things most people never get: a launch monitor
+    that <b>scores every single shot</b>, and a camera that can film every swing. That's a
+    <b>strokes-gained engine</b> and a <b>swing lab</b> sitting in Medewi Manor. This turns
+    them into one loop — measure where the strokes hide, fix one swing fault at a time, refilm,
+    repeat. Same idea as beautiful surf from
+    <a class="lref" href="https://linear.app/nomad-code/issue/TODO-70/surf-flowstate">TODO-70</a>:
+    a target aesthetic, captured and iterated.</p>
+    <div class="hero-chips">
+      <span class="hchip v">strokes gained · the biggest lever</span>
+      <span class="hchip v">one fault per session</span>
+      <span class="hchip q">Spica 3 · GSPro · GolfJoy</span>
+      <span class="hchip q">grip · lead knee · the flick</span>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">4</div><div class="kpi-l">strokes-gained strata — where every stroke lives</div></div>
+    <div class="kpi"><div class="kpi-n">~⅔</div><div class="kpi-l">of the gap to scratch is the <em>long</em> game, not putting</div></div>
+    <div class="kpi"><div class="kpi-n">1</div><div class="kpi-l">swing fault per filmed session — never two</div></div>
+    <div class="kpi"><div class="kpi-n">2</div><div class="kpi-l">camera angles that catch everything: DTL + face-on</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 00 THE LOOP -->
+  <div class="sec-head"><span class="sec-kick">the loop · how you actually start</span><span class="sec-n">00 / start here</span></div>
+  <p class="lede" style="margin-bottom:18px">Don't try to "get good at golf." That's a fog. The
+  loop below is the whole method — it fits one sim session and it tells you, every time, the
+  <b>single</b> thing worth working on next. Everything else on this page is just detail behind these five moves.</p>
+  <div class="loop">
+    <div class="loop-kick">the weekly loop · one sim session · ~45 min</div>
+    <h2>Measure → find the leak → fix one thing → refilm → log it.</h2>
+    <div class="lsteps">
+      <div class="lstep"><span><span class="arc">measure</span> — Play a full round on <b>one GSPro course</b> (Mammoth Dunes or DPC Pebble). Let the Spica score every shot. Don't judge it — just let the data land.</span></div>
+      <div class="lstep"><span><span class="arc">find the leak</span> — Bucket the round into the <b>four strata</b> (tee / approach / around green / putting). Your worst stratum this round is the leak. It's usually <b>approach</b> — that's not a coincidence, it's the population prior below.</span></div>
+      <div class="lstep"><span><span class="arc">fix one thing</span> — Pick <b>one</b> swing fault (grip, lead knee, or the flick) that feeds that leak. Film it down-the-line and face-on. One fault. Never a checklist mid-swing.</span></div>
+      <div class="lstep"><span><span class="arc">refilm</span> — Drill it, then film the <em>same</em> shot again. Put the two clips side by side. The delta is the whole point — a beautiful swing is a diff you can see, like the surf clip.</span></div>
+      <div class="lstep"><span><span class="arc">log it</span> — One line in the journal: date, course, worst stratum, the fault you drilled, the score delta. Over weeks this becomes your <b>real</b> strokes-gained profile — better than any generic tip.</span></div>
+    </div>
+    <div class="loop-foot"><b>Why it works:</b> the sim removes the two things that stall most
+    golfers — no guessing where you lost strokes (the score already knows), and no waiting for a
+    range trip to test a change (next shot is one click away). You're running a tight measure-fix
+    loop most players can't. Protect it: <em>one</em> variable at a time.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 01 STROKES GAINED ONTOLOGY -->
+  <div class="sec-head"><span class="sec-kick">strokes-gained ontology · the biggest ask</span><span class="sec-n">01 / the map</span></div>
+  <p class="lede">Strokes gained is one idea: <b>every shot is worth a fraction of a stroke</b>,
+  and a good shot is one that leaves you better off than an average shot from the same spot.
+  Your Spica already computes this per shot — that per-shot "score" <em>is</em> strokes gained.
+  The power comes from bucketing thousands of those scores into four strata, so you can see
+  <b>where</b> your strokes leak, not just <em>that</em> they do.</p>
+
+  <div class="formula" style="margin:18px 0 20px">
+    <span class="k">strokes_gained</span> = <b>(avg strokes to hole out from where you started)</b>
+    − <b>(avg strokes from where the shot finished)</b> − <b>1</b>
+    &nbsp;&nbsp;·&nbsp;&nbsp; <span style="color:var(--forest)">+</span> = beat the field &nbsp; <span style="color:var(--warn)">−</span> = lost ground
+  </div>
+
+  <div class="strata" id="strata"></div>
+  <div id="stratum-detail"></div>
+
+  <div class="card" style="margin-top:20px">
+    <div class="sec-head" style="margin-bottom:14px"><span class="sec-kick">where your strokes actually leak</span><span class="sec-n">bogey golfer → scratch</span></div>
+    <p class="note" style="margin:0 0 18px">This is the population prior (Broadie, <em>Every Shot
+    Counts</em>): for a ~90s shooter closing the gap to scratch, here's roughly how the lost
+    strokes split by stratum. <b>Your own sim data overwrites this</b> — but until it does, this
+    is where to point practice. Note how small putting is versus the myth.</p>
+    <div class="cf" id="leverage"></div>
+    <p class="why"><b>The headline:</b> "drive for show, putt for dough" is mostly wrong for
+    amateurs. Two-thirds of the gap to scratch is the <b>long game</b> — full swings, tee and
+    approach. That's also exactly the part the Spica measures best, and the part your swing work
+    (grip / knee / flick) directly improves. The leverage and the swing fix point at the same place.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 02 THE SWING -->
+  <div class="sec-head"><span class="sec-kick">the beautiful swing · film, diff, fix one</span><span class="sec-n">02 / the swing lab</span></div>
+  <p class="lede">You named three faults: the grip is <b>meh</b>, the lead (left) knee doesn't do
+  <b>enough</b>, and you <b>flick</b> — a baseball swing that looks bad. Good news: those three
+  aren't random. They chain together, and they live at specific points in the swing. Pick one
+  below — cause, the fix, the drill, and the frame to watch.</p>
+
+  <div class="faults" style="margin-top:20px">
+    <div class="fault-list" id="fault-list"></div>
+    <div class="fpanel" id="fault-panel"></div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="sec-head" style="margin-bottom:12px"><span class="sec-kick">the swing as positions · watch the hot frames</span><span class="sec-n">P1 → P10</span></div>
+    <p class="note" style="margin:0 0 16px">Every swing passes through the same checkpoints. You
+    don't fix a "swing" — you fix a <b>frame</b>. The highlighted nodes are where your three
+    faults live, so those are the frames to scrub to when you review a clip.</p>
+    <div class="pmap-swing" id="pmap-swing"></div>
+    <p class="note" style="margin-top:14px"><b>Filming protocol:</b> two angles, phone at hip
+    height. <b>Down-the-line</b> (behind you, on the target line) shows plane, the flick, and
+    lead-knee movement. <b>Face-on</b> shows grip, weight shift, and shaft lean at impact. Same
+    two angles every time so clips are comparable week to week — that's what makes the diff real.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 03 THE RIG -->
+  <div class="sec-head"><span class="sec-kick">the rig · Spica 3 · GSPro · GolfJoy</span><span class="sec-n">03 / your kit</span></div>
+  <p class="lede">The simulator at Medewi Manor is a real advantage — most people improve blind.
+  Here's what each piece does and, below, straight answers to the open questions you raised.</p>
+
+  <div class="card" style="margin-top:18px">
+    <div class="rig-wrap">
+      <table class="rig">
+        <tr><th>piece</th><th>what it is</th><th>what it's for in the loop</th></tr>
+        <tr>
+          <td>Spica 3</td>
+          <td><b>GolfJoy's launch monitor.</b> Reads ball + club data (speed, launch, spin, path, face) and turns it into shot outcomes.</td>
+          <td><b>The measurement engine.</b> Its per-shot scoring is your strokes-gained feed. Trust the club-path & face-angle numbers for diagnosing the flick.</td>
+        </tr>
+        <tr>
+          <td>GSPro</td>
+          <td>Simulator software with real, laser-scanned <b>courses</b> — Mammoth Dunes, DPC Pebble Beach, and more.</td>
+          <td><b>The course you play over and over.</b> Same course = clean strokes-gained baseline. Pick one, run it as your benchmark round each week.</td>
+        </tr>
+        <tr>
+          <td>GolfJoy app</td>
+          <td>GolfJoy's own app + range/practice modes and social play, paired to the Spica.</td>
+          <td><b>Range & practice reps.</b> Good for drilling one club or one fault fast without a full round. Complements GSPro's "play the course" mode.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="sec-head" style="margin-bottom:12px"><span class="sec-kick">your open questions · straight answers</span><span class="sec-n">the vro's rig</span></div>
+    <div class="qa">
+      <div class="qrow">
+        <div class="q">Can I get the videos?<small>swing capture</small></div>
+        <div class="a">The Spica/GolfJoy setup captures shot <b>data</b>, not swing video by
+        default — for that, <b>add your own camera</b> (phone on a small tripod, DTL + face-on).
+        Apps like <b>Onform</b> or <b>Hudl Technique</b> auto-record, slow-mo, and let you draw
+        lines and overlay two clips. That's your "get the videos" pipeline: camera → Onform →
+        side-by-side diff. Check whether the GolfJoy app itself exposes a clip export before buying anything.</div>
+      </div>
+      <div class="qrow">
+        <div class="q">How well does it sync with Trackman?<small>data trust</small></div>
+        <div class="a">Trackman (dual radar) is the tour-lab gold standard, so treat it as the
+        reference, not the Spica. The Spica is a strong <b>consumer/camera-based</b> monitor —
+        excellent for <b>relative</b> tracking (is my club path improving?) and shot scoring,
+        but expect some offset on absolute numbers (spin especially) vs Trackman. <b>For the
+        loop that's fine</b> — you care about your own deltas over time, and the Spica is
+        consistent with itself. Only chase Trackman-level precision if you're fitting clubs.</div>
+      </div>
+      <div class="qrow">
+        <div class="q">Which is the one my vro('s) has?<small>identify the kit</small></div>
+        <div class="a">Sounds like the same GolfJoy <b>Spica 3</b> — that's the one described
+        here ("the golf joy one, pretty good"). Confirm on the unit: GolfJoy branding, the
+        Spica-3 model label, and whether he runs <b>GSPro</b> (the courses like Mammoth Dunes /
+        DPC Pebble) alongside the GolfJoy app. If his differs, the loop is identical — only the
+        exact monitor's quirks change.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 04 NORTH STAR -->
+  <div class="sec-head"><span class="sec-kick">north star · shot traces on real geography</span><span class="sec-n">04 / the dream</span></div>
+  <div class="north">
+    <h3>GSPro courses × Esri 3D × strokes-gained shot traces.</h3>
+    <p class="rc-p" style="margin-top:6px">You floated tying the courses to Esri data like
+    <a class="lref" href="https://linear.app/foundai/issue/TECH-481/esri-3d">TECH-481 · esri-3d</a>
+    — but with <b>shot traces and strokes gained</b>. That's the real vision: not a spreadsheet
+    of numbers, but your rounds drawn onto the actual terrain. Here's the stack.</p>
+    <div class="layers">
+      <div class="nlayer"><span class="z">1</span><span><b>Terrain</b> — Esri 3D world elevation + imagery for the real course (Pebble, Mammoth Dunes). The ground truth GSPro already laser-scanned.</span></div>
+      <div class="nlayer"><span class="z">2</span><span><b>Shot traces</b> — each shot from the Spica (start x,y → carry → finish) drawn as an arc on the terrain. Every round you've played, layered.</span></div>
+      <div class="nlayer"><span class="z">3</span><span><b>Strokes-gained heat</b> — color each trace by its SG score. Red arcs = where you bled strokes on that hole, green = where you gained. The leak becomes a <em>place</em> you can see.</span></div>
+      <div class="nlayer"><span class="z">4</span><span><b>Stratum overlay</b> — filter to tee / approach / around-green / putting. Watch your approach misses cluster short-right on the terrain, not just in a table.</span></div>
+    </div>
+    <div class="rc-m" style="margin-top:18px"><b>Feasibility:</b> the data exists (Spica shot logs
+    + Esri ArcGIS 3D APIs + GSPro's course geometry). This is a real project when you want it —
+    it belongs in bpo, personal. The loop above works today with zero of this built; the Esri
+    map is the beautiful surface you earn once the log has rounds in it.</div>
+  </div>
+
+  <p class="breathe" style="margin:34px 0 0">The whole thing rests on one habit: <b>one measured
+  round, one filmed fault, one logged line — every week.</b> Do that and in three months you'll
+  have a personal strokes-gained profile, a folder of side-by-side swing diffs, and a swing that
+  looks the way you want. Not from a tip. From the loop.</p>
+
+  <div class="foot">
+    TODO-83 · golf-spica-3 &nbsp;·&nbsp; <code>bpo · Medewi Manor</code> &nbsp;·&nbsp;
+    strokes-gained ontology + swing-fix loop &nbsp;·&nbsp; 2026-07-07 16:47Z &nbsp;·&nbsp;
+    refs: TODO-70 surf-flowstate · TECH-402 golf-strata · TECH-481 esri-3d
+  </div>
+</div>
+
+<script>
+(function () {
+  // ---- STRATA DATA ----
+  var STRATA = [
+    { code: 'SG:OTT', name: 'Off the Tee', share: 26, cls: 'mid',
+      sub: 'Drives on par-4s and par-5s.',
+      measures: 'How far and how straight your tee shot leaves you — distance you can trust, in play.',
+      leaks: ['Baseball-plane flick sends the face open/closed → wide misses','Big number holes: OB / hazard off the tee doubles the damage','Chasing distance you can\'t control instead of a stock swing'],
+      fix: 'A repeatable tee swing beats a longer wild one. Fix the flick (below) — face control off the tee is worth more than +10 yds of carry.' },
+    { code: 'SG:APP', name: 'Approach', share: 40, cls: 'lo',
+      sub: 'Shots to the green from outside ~50 yds (not tee shots).',
+      measures: 'How close your iron/approach shots finish to the hole — the single biggest driver of score.',
+      leaks: ['Proximity: pin-high but 40 ft is a lost stroke vs 15 ft','Short-siding: the flick + weak grip miss short-right','Distance control: sim wind + lie make this brutally honest'],
+      fix: 'This is your #1 leverage point. Grip + shaft-lean-at-impact directly control face and low-point — the two things approach proximity depends on. Drill approach clubs on GolfJoy range mode.' },
+    { code: 'SG:ARG', name: 'Around the Green', share: 18, cls: 'mid',
+      sub: 'Shots within ~50 yds that aren\'t putts — chips, pitches.',
+      measures: 'How well you convert a greenside miss into an up-and-down. Recovery, not power.',
+      leaks: ['The flick is worst here — flippy wrists = chunk/thin','No forward shaft lean → inconsistent contact','Wrong club / trying to be cute instead of the safe shot'],
+      fix: 'Quiet hands, handle leads, weight forward. The same anti-flick fix that helps the full swing rescues your short game. Low-hanging strokes.' },
+    { code: 'SG:PUTT', name: 'Putting', share: 16, cls: 'hi',
+      sub: 'Everything on the putting surface.',
+      measures: 'Strokes gained rolling the ball — mostly distance control on the first putt, then makes inside 8 ft.',
+      leaks: ['3-putts from lag distance control, not missed short ones','Over-practicing this because it feels productive','Sim greens read differently than real — calibrate, don\'t over-index'],
+      fix: 'Smallest lever of the four. Lag distance control (avoid 3-putts) beats grinding 6-footers. Don\'t let it steal time from approach.' }
+  ];
+
+  var strataEl = document.getElementById('strata');
+  var detailEl = document.getElementById('stratum-detail');
+  STRATA.forEach(function (s, i) {
+    var d = document.createElement('div');
+    d.className = 'stratum' + (i === 1 ? ' act' : '');
+    d.innerHTML =
+      '<div class="code">' + s.code + '</div>' +
+      '<h4>' + s.name + '</h4>' +
+      '<div class="share">' + s.share + '<small>% of the gap</small></div>' +
+      '<div class="mini">' + s.sub + '</div>' +
+      '<div class="go">view ▸</div>';
+    d.addEventListener('click', function () {
+      Array.prototype.forEach.call(strataEl.children, function (c) { c.classList.remove('act'); });
+      d.classList.add('act');
+      renderDetail(s);
+    });
+    strataEl.appendChild(d);
+  });
+  function renderDetail(s) {
+    detailEl.innerHTML =
+      '<div class="detail">' +
+        '<h3><span class="dcode">' + s.code + '</span>' + s.name + '</h3>' +
+        '<p class="dsub">' + s.sub + '</p>' +
+        '<div class="dgrid">' +
+          '<div class="dblock"><h5>what it measures</h5><p>' + s.measures + '</p>' +
+            '<h5 style="margin-top:16px">where you leak here</h5><ul>' +
+            s.leaks.map(function (l) { return '<li>' + l + '</li>'; }).join('') + '</ul></div>' +
+          '<div class="dblock"><h5>the fix</h5><p>' + s.fix + '</p></div>' +
+        '</div>' +
+      '</div>';
+  }
+  renderDetail(STRATA[1]);
+
+  // ---- LEVERAGE BARS ----
+  var lev = document.getElementById('leverage');
+  STRATA.slice().sort(function (a, b) { return b.share - a.share; }).forEach(function (s) {
+    var cls = s.share >= 35 ? 'lo' : (s.share >= 22 ? 'mid' : 'hi');
+    var row = document.createElement('div');
+    row.className = 'crow';
+    row.innerHTML =
+      '<div class="crow-lab">' + s.name + '<small>' + s.code + '</small></div>' +
+      '<div class="crow-track"><div class="crow-fill ' + cls + '" data-w="' + (s.share * 2.2) + '"></div></div>' +
+      '<div class="crow-pct ' + cls + '">' + s.share + '%</div>';
+    lev.appendChild(row);
+  });
+
+  // ---- SWING FAULTS ----
+  var FAULTS = [
+    { key: 'grip', name: 'The grip is meh', pos: 'P1 · address',
+      lead: 'The grip is the steering wheel. A "meh" grip — too weak, in the palms, or mismatched hands — makes the clubface hard to control, which forces the hands to <b>save it late</b> (that\'s where the flick comes from). Fix this first; it\'s upstream of everything.',
+      cause: 'Club sitting in the palms instead of the fingers, and the hands rotated so the face wants to stay open. Weak grip → open face → instinctive flick to close it at the last moment.',
+      fix: 'Neutral grip: lead hand shows <b>2–2.5 knuckles</b> looking down; both "V"s (thumb-forefinger) point up toward your trail shoulder. Club runs through the <b>fingers</b>, not the palm. Light pressure — about 4/10.',
+      drill: 'Grip in a mirror, no ball. Set it, check the knuckles and Vs, then <b>re-grip 20×</b> until neutral is automatic. Then hit slow half-swings on GolfJoy range only checking the grip.',
+      watch: 'Face-on frame at P1. You can literally count the knuckles on video.' },
+    { key: 'knee', name: 'Lead knee — not enough', pos: 'P4 · top',
+      lead: 'The lead (left) knee is your <b>coil and ground anchor</b>. "Not enough" usually means it collapses inward or you stand up — you lose the stretch that powers the downswing, and the body stops turning so the <b>arms take over</b> (hello, flick).',
+      cause: 'Instead of staying flexed and rotating, the lead knee dives in or straightens early. No stored coil → no lower-body sequence → arms rescue the swing.',
+      fix: 'Keep <b>flex in the lead knee</b> through the backswing and let it point roughly at (or just behind) the ball at the top. Feel the trail glute load. On the way down, the lead leg <b>posts up</b> — pushes into the ground — before the arms fire.',
+      drill: 'Alignment stick across the hips or a chair outside the lead knee. Make backswings keeping the knee flexed and inside the stick — no sway, no stand-up. Then add the "post-up": feel the lead leg straighten as you start down.',
+      watch: 'Down-the-line, P4 → P6. Watch the lead knee stay quiet and flexed, then post.' },
+    { key: 'flick', name: 'The flick / baseball swing', pos: 'P6 → P7 · release',
+      lead: 'The one that "looks bad." A baseball swing = the plane is too <b>flat/horizontal</b> and the hands <b>flip</b> the clubhead past the handle at the bottom (casting/early release). It scoops, it\'s inconsistent, and it\'s the root of your worst contact — but it\'s a <b>symptom</b> of the grip + knee above.',
+      cause: 'Arms swing around the body on a flat plane (baseball), and with no lag the wrists release early — the clubhead passes the hands before impact, adding loft and killing compression.',
+      fix: 'Two feels: (1) <b>steeper, more upright plane</b> — swing the club more up-and-down over the trail shoulder, not around like a bat, with a little spine tilt away from target. (2) <b>Handle leads the clubhead</b> into impact — forward shaft lean, hands ahead of the ball, chest covering it. Trap the ball, don\'t flip it.',
+      drill: 'Pump drill: from the top, pump down to P6 (shaft parallel, hands leading) 2–3× feeling lag, then hit. Or the "punch shot" drill — low, abbreviated finish, hands ahead — on GolfJoy range. Watch the Spica\'s <b>club path & dynamic loft</b> numbers drop toward neutral.',
+      watch: 'Down-the-line, P6 → P7. The clubhead should stay <em>behind</em> the hands into impact — no flip.' }
+  ];
+
+  var listEl = document.getElementById('fault-list');
+  var panelEl = document.getElementById('fault-panel');
+  FAULTS.forEach(function (f, i) {
+    var b = document.createElement('button');
+    b.className = 'fbtn' + (i === 0 ? ' act' : '');
+    b.innerHTML = '<div class="fn">' + f.name + '</div><div class="fp">' + f.pos + '</div>';
+    b.addEventListener('click', function () {
+      Array.prototype.forEach.call(listEl.children, function (c) { c.classList.remove('act'); });
+      b.classList.add('act');
+      renderFault(f);
+      highlightP(f.key);
+    });
+    listEl.appendChild(b);
+  });
+  function renderFault(f) {
+    panelEl.innerHTML =
+      '<p class="flead">' + f.lead + '</p>' +
+      '<div class="fp-row"><div class="k">cause</div><div class="v">' + f.cause + '</div></div>' +
+      '<div class="fp-row"><div class="k">the fix</div><div class="v">' + f.fix + '</div></div>' +
+      '<div class="fp-row drill"><div class="k">drill</div><div class="v">' + f.drill + '</div></div>' +
+      '<div class="fp-row"><div class="k">watch</div><div class="v">' + f.watch + '</div></div>';
+  }
+  renderFault(FAULTS[0]);
+
+  // ---- P-POSITIONS ----
+  var PPOS = [
+    { p: 'P1', l: 'address', hot: ['grip'] },
+    { p: 'P2', l: 'takeaway', hot: [] },
+    { p: 'P3', l: 'lead-arm ∥', hot: [] },
+    { p: 'P4', l: 'top', hot: ['knee'] },
+    { p: 'P5', l: 'transition', hot: ['knee'] },
+    { p: 'P6', l: 'delivery', hot: ['flick','knee'] },
+    { p: 'P7', l: 'impact', hot: ['flick'] },
+    { p: 'P8', l: 'extension', hot: [] },
+    { p: 'P9', l: 'follow', hot: [] },
+    { p: 'P10', l: 'finish', hot: [] }
+  ];
+  var pmapEl = document.getElementById('pmap-swing');
+  PPOS.forEach(function (p) {
+    var n = document.createElement('div');
+    n.className = 'pnode';
+    n.setAttribute('data-hot', p.hot.join(','));
+    n.innerHTML = '<div class="pn">' + p.p + '</div><div class="pl">' + p.l + '</div>';
+    pmapEl.appendChild(n);
+  });
+  function highlightP(key) {
+    Array.prototype.forEach.call(pmapEl.children, function (n) {
+      var hot = (n.getAttribute('data-hot') || '').split(',');
+      n.classList.toggle('hot', hot.indexOf(key) !== -1);
+    });
+  }
+  highlightP('grip');
+
+  // ---- reveal bars on load ----
+  function fillBars() {
+    document.querySelectorAll('.crow-fill').forEach(function (f) {
+      f.style.width = Math.min(100, parseFloat(f.getAttribute('data-w'))) + '%';
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { fillBars(); io.disconnect(); } });
+    }, { threshold: 0.2 });
+    io.observe(document.getElementById('leverage'));
+  } else {
+    fillBars();
+  }
+})();
+</script>
+</body>
+</html>

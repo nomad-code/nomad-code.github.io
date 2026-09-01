@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-301 · monorepo triptych</title>
+  <meta name="description" content="Three worlds, one direction: portal-v2 practice, platform debt, Rob's deployment spine">
+  <script>
+  (function(){var K='bpo-unlocked',ok=false,h;try{ok=localStorage.getItem(K)==='true'||sessionStorage.getItem(K)==='true'}catch(e){}if(!ok){h=document.createElement('style');h.id='__pw_gate_hide__';h.textContent='html > body > *:not(#__pw_gate__){visibility:hidden!important}';document.head.appendChild(h)}window.__BPO_GATE__={label:'bpo · Private',key:K};var p=['','../','../../','../../../'],i=0;(function n(){if(i>=p.length){if(h)h.remove();return}var s=document.createElement('script');s.src=p[i++]+'password-wall/gate.js';s.onerror=n;document.head.appendChild(s)})()})();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 32px,1020px);margin:auto;padding:54px 0 70px}.eyebrow,.k{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}
+    h1{margin:14px 0 12px;font:700 clamp(34px,7vw,62px)/.98 ui-monospace,monospace;letter-spacing:-.055em}.lede{max-width:740px;color:var(--muted);font-size:18px}
+    .address{margin-top:24px;padding:15px 17px;border-radius:12px;background:var(--ink);color:#fff;font:700 clamp(15px,3vw,21px)/1.2 ui-monospace,monospace;overflow-wrap:anywhere}
+    section.block{margin-top:34px}section.block>h2{font:700 24px/1.15 ui-monospace,monospace;letter-spacing:-.03em;margin:8px 0 14px}
+    .trip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+    .panel{border:1px solid var(--line);border-radius:15px;background:var(--card);overflow:hidden}
+    .panel header{padding:14px 18px;background:var(--ink);color:#fff}.panel header .k{color:var(--lime)}.panel header h2{margin:4px 0 0;font:700 19px/1.15 ui-monospace,monospace;letter-spacing:-.02em}
+    .panel .body{padding:16px 18px}.panel p{color:var(--muted);margin:0 0 10px;font-size:14px}.panel b{color:var(--ink)}
+    .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:15px;background:var(--card)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);text-align:left}
+    th,td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}td code,p code,li code{font:600 12.5px/1.4 ui-monospace,monospace;background:#00000010;padding:1px 5px;border-radius:5px}
+    .ladder{display:grid;gap:8px;margin-top:14px}.rung{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+    .rung b{font:700 13px/1.4 ui-monospace,monospace;color:var(--forest)}.rung span{color:var(--muted);font-size:14px}
+    .checks{margin-top:34px;padding:22px;border-radius:16px;background:var(--forest);color:#fff}.check{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #ffffff25}.check:last-child{border:0}.dot{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900}
+    .checks code{background:#ffffff22;color:#fff}
+    ul{margin:8px 0;padding-left:20px}li{margin:5px 0}li::marker{color:var(--forest)}
+    .next{margin-top:34px;padding:22px;border:2px solid var(--ink);border-radius:16px;background:var(--lime)}
+    .next .k{color:var(--ink)}.next h2{font:700 22px/1.15 ui-monospace,monospace;margin:6px 0 10px}.next p{margin:0 0 8px}
+    a{color:inherit}footer{display:flex;justify-content:space-between;gap:14px;margin-top:38px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}
+    @media(max-width:840px){.trip{grid-template-columns:1fr}}
+    @media(max-width:700px){.rung{grid-template-columns:1fr}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">nomad-code / bpo · dha ingest · 3 of 3 · synthesis</div>
+    <h1>monorepo triptych</h1>
+    <p class="lede">Three worlds are converging on the same architecture from different directions: a working example, an app under pressure, and a spec with a prototype ladder. The move is to synchronize them — land this in bpo, then carry it into TECH/routing and BOB with platform as the sandbox, aligned with Rob.</p>
+    <div class="address">TODO_301-dha-ingest_monorepo</div>
+
+    <div class="trip">
+      <article class="panel">
+        <header><div class="k">practice · dha world</div><h2>portal-v2</h2></header>
+        <div class="body">
+          <p><b>A monorepo that already ships.</b> Bun workspaces (not pnpm), mise toolchain, Turborepo as a thin task/cache layer — no <code>^build</code>, virtual <code>ci:run</code>, the one cross-package edge wired outside turbo on purpose.</p>
+          <p><b>Its quiet strengths:</b> continuous legacy-parity harnesses in <code>tools/</code>, layered SOPS/age secrets per host, one-command onboarding, remote turbo cache in a single CI job.</p>
+          <p><b>Role here:</b> inspiration and existence proof — never referenced by name in company contexts.</p>
+        </div>
+      </article>
+      <article class="panel">
+        <header><div class="k">pressure · found world</div><h2>platform</h2></header>
+        <div class="body">
+          <p><b>One shell, achieved</b> (TECH-728 collapsed four variants). Client bundle contract done, every data path slug-parameterized, fail-closed.</p>
+          <p><b>The debts:</b> client slug baked into the image and re-read six times; manifest tabs read by no UI; upstream chat engine imported by hand-maintained snapshot ledger; client data synced across repos by script.</p>
+          <p><b>Role here:</b> the sandbox — the first real app to live on the spine, and the source of the "many clients, one shell" requirement.</p>
+        </div>
+      </article>
+      <article class="panel">
+        <header><div class="k">spec · rob</div><h2>TECH-657 spine</h2></header>
+        <div class="body">
+          <p><b>How code ships at Found:</b> polyglot monorepo, native tools authoritative, dependency-graph affected routing, Changesets, promotion branches <code>main → deploy/staging → deploy/production</code> with human merges as the only deploy triggers, signed release manifest, same-image-digest promotion, WIF over static keys, roll-forward DB.</p>
+          <p><b>Role here:</b> the direction of travel. Implementation starts with the TECH-729 prototype ladder.</p>
+        </div>
+      </article>
+    </div>
+
+    <section class="block">
+      <h2>doctrine vs practice vs debt</h2>
+      <div class="tablewrap"><table>
+        <tr><th>TECH-657 says</th><th>portal-v2 already does</th><th>platform's current debt</th></tr>
+        <tr><td>Turborepo owns TS tasks + caching only; never assume it understands the whole graph</td><td>Turbo runs tasks and caches; carries zero dependency ordering; odd edges are wired natively</td><td>No turbo at all — but also no graph: one package, so "affected" = everything, every time</td></tr>
+        <tr><td>Native tools stay authoritative</td><td>bun/biome/playwright/sass invoked directly; turbo never wraps what it doesn't own</td><td>npm scripts + type-stripped CLIs, already native-tool-shaped — imports cleanly</td></tr>
+        <tr><td>Dependency-aware affected deploys; fail closed on unknowns</td><td>n/a at 1-app scale (the honest version of the same principle)</td><td>Affected-routing is the mechanism that will let one repo hold shell + N client lanes without N full deploys</td></tr>
+        <tr><td>Immutable artifacts; production promotes the exact staging digest</td><td>Timestamped releases + digest-free host deploy (its scale permits it)</td><td>Cloud Run images per client — the digest-promotion model drops in directly</td></tr>
+        <tr><td>Explicit per-environment identity/secret boundaries</td><td>SOPS/age recipients per host — same instinct, file-sized</td><td>Per-lane SA + secret namespace already the stated model; TECH-731 hardens the deployer side</td></tr>
+      </table></div>
+      <p style="color:var(--muted);margin-top:10px">Reading down the middle column: the dha repo is a live, 1-app-scale proof of the spec's central doctrine. Reading down the right: platform's debts are precisely what the spine + a monorepo retire. The three worlds don't conflict anywhere.</p>
+    </section>
+
+    <section class="block">
+      <h2>rob's ladder (TECH-729 → 734)</h2>
+      <div class="ladder">
+        <div class="rung"><b>TECH-729</b><span>Prove it: Turborepo dummy app, PR validation + Pulumi preview, staging → production promotion on GCP Cloud Run, Changesets, same-digest promotion. Deliberately boring app surface.</span></div>
+        <div class="rung"><b>TECH-730</b><span>Custom domains for staging/prod once the spine works.</span></div>
+        <div class="rung"><b>TECH-731</b><span>Split deployer identities per environment — staging creds can't mutate prod.</span></div>
+        <div class="rung"><b>TECH-732</b><span>SST spike: app-owned infra + local dev, judged against the promotion model. Recommendation, not adoption.</span></div>
+        <div class="rung"><b>TECH-733</b><span>Rollback = redeploy a known-good digest, never rebuild.</span></div>
+        <div class="rung"><b>TECH-734</b><span>Ephemeral PR environments for affected deployables, idempotent teardown, TTL.</span></div>
+      </div>
+      <p style="color:var(--muted);margin-top:10px">Where the worlds can overlap without naming names: thin-turbo discipline (729), per-env secret/identity layering (731), release-dir rollback instincts (733), and cron-driven parity/verification harnesses as the model for post-deploy verification (734's "verify absence after teardown" energy).</p>
+    </section>
+
+    <section class="block">
+      <h2>the one open decision</h2>
+      <ul>
+        <li><b>Runtime client resolution vs per-service isolation.</b> The harness dream (one deployed shell, client resolved at runtime) contradicts platform's written security thesis (isolation as IAM policy, one service per client). Middle path: keep one lane per client, resolve the slug from lane env at runtime — kills the build-time bake, keeps the isolation story intact, and leaves the door open to a true multi-client shell later. This is the question to align with Rob on <i>before</i> the packages split, because it decides what "app" means in <code>apps/</code>.</li>
+      </ul>
+    </section>
+
+    <div class="next">
+      <div class="k">next move</div>
+      <h2>land → align → demo</h2>
+      <p><b>Landed:</b> this ingest lives in bpo (it spans BOB and BRE worlds — nowhere else can hold both).</p>
+      <p><b>Align:</b> carry the synthesis into TECH/routing and BOB. Platform is the sandbox; same direction as Rob from the first deliverable — overlap with the TECH-657 vision or improve it, using the dha repo as unnamed prior art.</p>
+      <p><b>Demo:</b> PWA on desktop + iOS by <b>2026-07-27 22:00 WITA</b> (14:00 UTC). One shell, installable on both surfaces — the smallest artifact that makes "many clients, one shell" tangible.</p>
+    </div>
+
+    <section class="checks">
+      <div class="k" style="color:var(--lime)">Durable record</div>
+      <div class="check"><span class="dot">1</span><div><b>Three worlds, zero conflicts.</b><br>Working monorepo practice (dha), an app whose debts a monorepo retires (platform), and a spec + prototype ladder (Rob) all point the same way.</div></div>
+      <div class="check"><span class="dot">2</span><div><b>Thin turbo is the shared doctrine.</b><br>Task fan-out and cache; native tools authoritative; the graph earns trust before it earns authority.</div></div>
+      <div class="check"><span class="dot">3</span><div><b>The blocking question is security posture, not build tooling.</b><br>Runtime client vs per-service isolation decides the shape of <code>apps/</code> — align with Rob before splitting packages.</div></div>
+      <div class="check"><span class="dot">4</span><div><b>Trajectory recorded.</b><br>bpo landing done → TECH/routing + BOB next → platform sandbox → PWA demo target tonight 22:00 WITA.</div></div>
+    </section>
+
+    <footer>
+      <a href="https://linear.app/nomad-code/issue/TODO-301/dha-ingest-monorepo">TODO-301 ↗</a>
+      <span>2026-07-27 · ccr</span>
+    </footer>
+  </main>
+</body>
+</html>

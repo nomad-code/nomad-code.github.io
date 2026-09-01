@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-318 · GitHub main allow list</title>
+  <meta name="description" content="BPO context routing and repository-aware GitHub publication policy.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root {
+      --paper: #f3f1e8;
+      --ink: #17231f;
+      --muted: #66716c;
+      --forest: #164c3b;
+      --forest-dark: #0d3026;
+      --lime: #c9f36a;
+      --amber: #f3c86a;
+      --line: #d6d9cf;
+      --card: #fffdf6;
+      --danger: #7f352f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { width: min(100% - 32px, 1040px); margin: auto; padding: 56px 0 72px; }
+    .eyebrow, .k {
+      font: 750 11px/1.2 ui-monospace, SFMono-Regular, monospace;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--forest);
+    }
+    h1 {
+      max-width: 850px;
+      margin: 14px 0 16px;
+      font: 750 clamp(38px, 7vw, 74px)/.96 ui-monospace, SFMono-Regular, monospace;
+      letter-spacing: -.065em;
+    }
+    .lede { max-width: 760px; color: var(--muted); font-size: 19px; }
+    .clear {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--forest);
+      color: white;
+      font-weight: 750;
+    }
+    .clear::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--lime); }
+    .classifier {
+      display: grid;
+      grid-template-columns: 1fr 180px auto;
+      gap: 10px;
+      margin-top: 34px;
+      padding: 22px;
+      border-radius: 18px;
+      background: var(--forest-dark);
+      color: white;
+      box-shadow: 0 18px 40px #17231f18;
+    }
+    .classifier label { display: grid; gap: 7px; }
+    .classifier span { font-size: 12px; color: #d9e5df; }
+    input, button {
+      min-height: 46px;
+      border: 0;
+      border-radius: 10px;
+      font: 650 14px/1.2 ui-monospace, SFMono-Regular, monospace;
+    }
+    input { width: 100%; padding: 0 13px; background: white; color: var(--ink); }
+    button {
+      align-self: end;
+      padding: 0 18px;
+      background: var(--lime);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 850;
+    }
+    button:hover { filter: brightness(.96); }
+    .decision {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      min-height: 72px;
+      margin-top: 4px;
+      padding: 14px 16px;
+      border: 1px solid #ffffff28;
+      border-radius: 12px;
+      background: #ffffff0b;
+    }
+    .signal {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--amber);
+      color: var(--ink);
+      font-weight: 900;
+    }
+    .decision strong { display: block; font-size: 17px; }
+    .decision small { color: #d9e5df; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
+    .card {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+    }
+    .card h2 { margin: 9px 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); }
+    .matrix { margin-top: 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+    .row { display: grid; grid-template-columns: 1.2fr .75fr 1.4fr; border-top: 1px solid var(--line); }
+    .row:first-child { border-top: 0; }
+    .row > div { padding: 13px 16px; }
+    .row.head { background: #e6e9df; font-weight: 800; }
+    .repo { font-family: ui-monospace, SFMono-Regular, monospace; overflow-wrap: anywhere; }
+    .yes { color: var(--forest); font-weight: 850; }
+    .no { color: var(--danger); font-weight: 850; }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 38px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font: 12px/1.4 ui-monospace, SFMono-Regular, monospace;
+    }
+    @media (max-width: 760px) {
+      .classifier, .grid { grid-template-columns: 1fr; }
+      .classifier button { width: 100%; }
+      .row { grid-template-columns: 1fr; padding: 10px 0; }
+      .row > div { padding: 3px 15px; }
+      .row.head { display: none; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / bpo · context and publication contract</div>
+  <h1>Know the world before touching the remote.</h1>
+  <p class="lede">At the workspace root, BPO is the default. Repository instructions can change how code is handled, but they cannot silently reroute Linear or grant permission to publish.</p>
+  <div class="clear">context status · clear</div>
+
+  <section class="classifier" aria-labelledby="classifier-title">
+    <label>
+      <span id="classifier-title">GitHub remote or owner/repository</span>
+      <input id="remote" value="https://github.com/nomad-code/yottaworkout.git" autocomplete="off" spellcheck="false">
+    </label>
+    <label>
+      <span>Target branch</span>
+      <input id="branch" value="master" autocomplete="off" spellcheck="false">
+    </label>
+    <button id="check" type="button">Check route</button>
+    <div class="decision" aria-live="polite">
+      <div class="signal" id="signal">?</div>
+      <div><strong id="verdict">Check a repository</strong><small id="reason">The result names the matched rule—never a guess from the local folder.</small></div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <div class="k">BPO default</div>
+      <h2>Workflow identity stays put</h2>
+      <p>A session rooted at the workspace uses nomad-code TODO unless the prompt explicitly selects another world or ticket prefix.</p>
+    </article>
+    <article class="card">
+      <div class="k">Owned repository</div>
+      <h2>Main is welcome</h2>
+      <p>On an exact allowlist match, direct main or master is allowed after checks. Keep commits PR-sized and independently reviewable.</p>
+    </article>
+    <article class="card">
+      <div class="k">Collaborative or unknown</div>
+      <h2>Branch, then PR</h2>
+      <p>Unlisted means protected by default. Planning, auditing, cleaning, and syncing never imply publication authority.</p>
+    </article>
+  </section>
+
+  <section class="matrix" aria-label="Seed repository policy">
+    <div class="row head"><div>Repository</div><div>Default push</div><div>Rule</div></div>
+    <div class="row"><div class="repo">brendobrien/etc</div><div class="yes">allowed</div><div>owner-controlled · main</div></div>
+    <div class="row"><div class="repo">found-ai/bob</div><div class="yes">allowed</div><div>explicit exact-repo allow · main</div></div>
+    <div class="row"><div class="repo">found-ai/sanitize-harness</div><div class="yes">allowed</div><div>explicit exact-repo allow · main</div></div>
+    <div class="row"><div class="repo">Brendobrien/code2026Q1</div><div class="yes">allowed</div><div>owner-controlled · main</div></div>
+    <div class="row"><div class="repo">nomad-code/strava-nix</div><div class="yes">allowed</div><div>owner-controlled · main</div></div>
+    <div class="row"><div class="repo">nomad-code/yottaworkout</div><div class="yes">allowed</div><div>owner-controlled · master</div></div>
+    <div class="row"><div class="repo">dhammaorg/portal-v2</div><div class="no">PR required</div><div>heavy collaboration · explicit exclusion</div></div>
+    <div class="row"><div class="repo">found-ai/fai-x</div><div class="no">PR required</div><div>heavy collaboration · explicit exclusion</div></div>
+  </section>
+
+  <footer>
+    <span>TODO-318 · code-github-main_allow_list</span>
+    <span>2026-07-28 - 10-30-43 Z</span>
+  </footer>
+</main>
+<script>
+  const rules = new Map([
+    ["brendobrien/etc", "main"],
+    ["found-ai/bob", "main"],
+    ["found-ai/sanitize-harness", "main"],
+    ["brendobrien/code2026q1", "main"],
+    ["nomad-code/strava-nix", "main"],
+    ["nomad-code/yottaworkout", "master"]
+  ]);
+  const excluded = new Set(["dhammaorg/portal-v2", "found-ai/fai-x"]);
+
+  function normalize(value) {
+    return value.trim().toLowerCase()
+      .replace(/^ssh:\/\/git@github\.com\//, "")
+      .replace(/^git@github\.com:/, "")
+      .replace(/^https?:\/\/github\.com\//, "")
+      .replace(/^github\.com\//, "")
+      .replace(/\.git\/?$/, "")
+      .replace(/^\/+|\/+$/g, "")
+      .split("/").slice(0, 2).join("/");
+  }
+
+  function classify() {
+    const repo = normalize(document.getElementById("remote").value);
+    const branch = document.getElementById("branch").value.trim().toLowerCase();
+    const signal = document.getElementById("signal");
+    const verdict = document.getElementById("verdict");
+    const reason = document.getElementById("reason");
+
+    if (!repo.includes("/")) {
+      signal.textContent = "!";
+      signal.style.background = "var(--amber)";
+      verdict.textContent = "Repository unresolved";
+      reason.textContent = "Provide a GitHub remote or owner/repository. Ambiguity stops before any write.";
+      return;
+    }
+    if (excluded.has(repo)) {
+      signal.textContent = "PR";
+      signal.style.background = "#f2aaa2";
+      verdict.textContent = "Branch + PR required";
+      reason.textContent = repo + " is an explicitly collaborative repository.";
+      return;
+    }
+    if (!rules.has(repo)) {
+      signal.textContent = "PR";
+      signal.style.background = "var(--amber)";
+      verdict.textContent = "Branch + PR required";
+      reason.textContent = repo + " has no exact allowlist entry; unknown defaults closed.";
+      return;
+    }
+    const expected = rules.get(repo);
+    if (branch !== expected) {
+      signal.textContent = "↗";
+      signal.style.background = "var(--lime)";
+      verdict.textContent = "Feature branch is safe";
+      reason.textContent = repo + " is allowed on " + expected + "; this target is already a non-default branch.";
+      return;
+    }
+    signal.textContent = "✓";
+    signal.style.background = "var(--lime)";
+    verdict.textContent = "Direct " + expected + " allowed";
+    reason.textContent = "Exact allowlist match for " + repo + ". Run relevant checks; keep the change PR-sized.";
+  }
+
+  document.getElementById("check").addEventListener("click", classify);
+  document.getElementById("remote").addEventListener("keydown", event => { if (event.key === "Enter") classify(); });
+  document.getElementById("branch").addEventListener("keydown", event => { if (event.key === "Enter") classify(); });
+  classify();
+</script>
+</body>
+</html>

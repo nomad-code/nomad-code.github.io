@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-189 · range rig · every swing, timestamped</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  .frame{padding:0 clamp(16px,4vw,64px) 40px}
+  .band{margin-top:30px}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:900px){.g3{grid-template-columns:1fr}}
+  @media(max-width:640px){.g2{grid-template-columns:1fr}}
+
+  .spec{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);padding:18px 20px;box-shadow:var(--shadow-card);display:flex;flex-direction:column}
+  .spec-k{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--forest);margin-bottom:8px}
+  .spec h4{font-size:15px;font-weight:740;color:var(--ink);margin:0 0 7px;line-height:1.25}
+  .spec p{font-size:13px;line-height:1.58;color:var(--body);margin:0}
+  .spec p b{color:var(--ink)}
+  .spec.warn{border-color:var(--warn-bd);background:linear-gradient(180deg,var(--warn-bg),var(--card) 72%)}
+  .spec.warn .spec-k{color:var(--warn)}
+  .spec.key{border-color:#bcd9bf;background:linear-gradient(180deg,var(--g-lime),var(--card) 72%)}
+  .spec.mid{border-color:var(--amber-bd);background:linear-gradient(180deg,var(--amber-bg),var(--card) 72%)}
+  .spec.mid .spec-k{color:var(--amber)}
+
+  .pill{display:inline-block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;padding:3px 8px;border-radius:var(--r-pill);white-space:nowrap}
+  .pill.ok{background:var(--g-lime);color:var(--forest-d)}
+  .pill.mid{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+  .pill.no{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-bd)}
+  .pill.blue{background:var(--found-bg);color:var(--found-d);border:1px solid var(--found-bd)}
+
+  /* viz scroll shell — diagram keeps its readable width, box scrolls on phones */
+  .vz .scrollbox{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .vz .scrollbox svg{min-width:620px}
+
+  /* tier cards: channel chips + animated coverage bar */
+  .tier-h{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .tier-h b{font-size:16px;font-weight:780;letter-spacing:-.02em}
+  .tier-carry{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);margin-bottom:12px}
+  .chn{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 14px}
+  .chn i{font-style:normal;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.03em;padding:3px 8px;border-radius:var(--r-chip);border:1px solid var(--line);color:var(--faint);background:var(--card);transition:all .5s var(--ease)}
+  .reveal.shown .chn i.on{color:var(--forest-d);background:var(--g-lime);border-color:#bcd9bf}
+  .reveal.shown .chn i.maybe{color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bd)}
+  .cov{margin-top:auto}
+  .cov-lab{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .cov-lab b{color:var(--forest-d);font-weight:600}
+  .cov-track{height:12px;background:var(--well);border-radius:var(--r-pill);overflow:hidden}
+  .cov-fill{height:100%;width:0;border-radius:var(--r-pill);background:var(--forest);transition:width 1.2s var(--spring) .15s}
+  .cov-fill.mid{background:var(--amber)}
+  .reveal.shown .cov-fill{width:var(--w)}
+  .tier-m{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+  .checklist{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .checklist li{display:grid;grid-template-columns:auto 1fr;gap:11px;font-size:13.5px;line-height:1.5;color:var(--body)}
+  .checklist li b{color:var(--ink)}
+  .fn{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.6}
+  .fn b{color:var(--ink)}
+  .kpi-l{overflow-wrap:anywhere;min-width:0}
+
+  /* staggered entrances — animation-fill backwards so hover lifts stay live */
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .kpis .kpi,.hero .hchip{opacity:0}
+  .kpis.shown .kpi,.reveal.shown .hchip{opacity:1;animation:rise .55s var(--spring) backwards}
+  .kpis.shown .kpi:nth-child(2),.reveal.shown .hchip:nth-child(2){animation-delay:.09s}
+  .kpis.shown .kpi:nth-child(3),.reveal.shown .hchip:nth-child(3){animation-delay:.18s}
+  .kpis.shown .kpi:nth-child(4),.reveal.shown .hchip:nth-child(4){animation-delay:.27s}
+  .chn i{transition-duration:.45s}
+  .reveal.shown .chn i:nth-child(2){transition-delay:.06s}
+  .reveal.shown .chn i:nth-child(3){transition-delay:.12s}
+  .reveal.shown .chn i:nth-child(4){transition-delay:.18s}
+  .reveal.shown .chn i:nth-child(5){transition-delay:.24s}
+  .reveal.shown .chn i:nth-child(6){transition-delay:.3s}
+  .reveal.shown .chn i:nth-child(7){transition-delay:.36s}
+  .reveal.shown .chn i:nth-child(8){transition-delay:.42s}
+  .reveal.shown .chn i:nth-child(9){transition-delay:.48s}
+  @media(prefers-reduced-motion:reduce){.kpis .kpi,.hero .hchip{opacity:1!important;animation:none!important}}
+</style>
+</head>
+<body class="standalone">
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span>
+    <span class="tb-sep"></span>
+    <span class="tb-ctx"><span class="dot"></span>TODO-189 · range rig</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">research · 2026-07-11</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <!-- HERO -->
+  <div class="hero band reveal" style="margin-top:80px">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>every swing, timestamped · golf-sn_ios_app</div>
+      <h1>the range rig is a <span class="em">phone</span>.</h1>
+      <p class="hero-sub">The system you already run <b>is</b> the answer. The SwingNerds iOS app
+      on a tripod auto-detects every swing, films it at up to 240 fps, and stamps each shot with a
+      <b>microsecond UTC timestamp</b> — the spine that joins video, Spica&nbsp;3 ball data and the
+      nightly vault pull. The only real decision left is <b>how much metrics hardware to carry</b>.
+      <span class="lk">One leak found</span> — the cloud quietly culls clips past 500 — and plugged the same night.</p>
+      <div class="hero-chips">
+        <span class="hchip v">✓ SN = capture bus</span>
+        <span class="hchip v">✓ Spica 3 is outdoor-first</span>
+        <span class="hchip v">✓ clips mirrored nightly</span>
+        <span class="hchip q">watch = DIY, own ticket</span>
+      </div>
+    </div>
+    <div class="bignum">
+      <div class="n">1<span class="u">phone</span></div>
+      <div class="cap"><b>SN iOS mobile recording</b> — built exactly for "away from your sim bay":
+      tripod, auto swing detection, cloud sync, timestamp-paired to launch-monitor shots.</div>
+      <div class="leak"><span class="v">500</span><span class="l">clip cloud cap —<br>plugged by video_mirror</span></div>
+    </div>
+  </div>
+
+  <!-- KPIS -->
+  <div class="kpis band reveal">
+    <div class="kpi"><div class="kpi-n num" data-count="286">0<span class="u">clips</span></div><div class="kpi-l">mirrored to ~/ark on first run — append-only, resumable</div></div>
+    <div class="kpi"><div class="kpi-n num" data-count="240">0<span class="u">fps</span></div><div class="kpi-l">SN capture ceiling on tripod (60 / 120 / 240)</div></div>
+    <div class="kpi"><div class="kpi-n num" data-count="20">0<span class="u">+ metrics</span></div><div class="kpi-l">per SwingNerds shot, each µs-UTC stamped</div></div>
+    <div class="kpi"><div class="kpi-n">~1<span class="u">frame</span></div><div class="kpi-l">impact sync inside each clip via <span class="mono">dtlBallStrikeSeconds</span></div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 01 THE SPINE -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12h20M7 12V8m5 4V5m5 7V9"/></svg>the spine</span>
+    <h2 class="sec-title">One timestamp joins everything</h2>
+    <span class="sec-n">01</span>
+  </div>
+  <p class="lede reveal">Phone films, Spica measures, the SN cloud pairs them <b>by time</b> — no GSPro
+  required at the range. The nightly pull loops it all into the vault before the cloud forgets.</p>
+
+  <figure class="vz band reveal" role="img" aria-label="Data flow: iPhone video and Spica 3 metrics converge on the SwingNerds cloud pairing ring, then sn_pull carries shots into the ~/ark ledger.">
+    <div class="scrollbox">
+    <svg viewBox="0 0 640 232">
+      <!-- timestamp spine -->
+      <line class="vz-gridline" x1="28" y1="196" x2="612" y2="196"/>
+      <g class="vz-gridline">
+        <line x1="90" y1="192" x2="90" y2="200"/><line x1="200" y1="192" x2="200" y2="200"/>
+        <line x1="320" y1="192" x2="320" y2="200"/><line x1="440" y1="192" x2="440" y2="200"/>
+        <line x1="560" y1="192" x2="560" y2="200"/>
+      </g>
+      <text x="612" y="216" text-anchor="end" font-family="DM Mono, monospace" font-size="9.5" fill="#a7a79c" letter-spacing=".08em">µS UTC — EVERY SHOT, EVERY CLIP, ONE CLOCK</text>
+
+      <!-- sources -->
+      <g class="claim">
+        <circle class="vz-dot breathe" cx="70" cy="62" r="6" style="--d:0s"/>
+        <circle class="vz-dot breathe" cx="70" cy="138" r="6" style="--d:-1.4s"/>
+      </g>
+      <text x="70" y="38" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6f7a76">iPhone · 240fps</text>
+      <text x="70" y="166" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6f7a76">Spica 3 · ball data</text>
+
+      <!-- routes into the pairing ring -->
+      <g class="claim">
+        <path id="p1" class="vz-path flow" d="M80 64 C 160 72, 210 88, 268 98" style="--d:0s"/>
+        <path id="p2" class="vz-path flow" d="M80 136 C 160 128, 210 112, 268 102" style="--d:-2s"/>
+        <circle class="vz-mote" r="3.2" style="--mote-path:path('M80 64 C 160 72, 210 88, 268 98');--d:0s"/>
+        <circle class="vz-mote" r="3.2" style="--mote-path:path('M80 136 C 160 128, 210 112, 268 102');--d:-3.1s"/>
+      </g>
+
+      <!-- SN cloud pairing ring (agent) -->
+      <g class="agent">
+        <circle class="vz-ring halo" cx="300" cy="100" r="36"/>
+        <circle class="vz-ring orbit" cx="300" cy="100" r="26"/>
+      </g>
+      <text x="300" y="104" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#356577">SN cloud</text>
+      <text x="300" y="150" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#a7a79c">pairs clip ⇄ shot by timestamp</text>
+
+      <!-- agentic pull to the ledger -->
+      <g class="agent">
+        <path class="vz-path flow" d="M336 100 C 390 100, 420 100, 466 100" style="--d:-1s"/>
+        <circle class="vz-mote" r="3.2" style="--mote-path:path('M336 100 C 390 100, 420 100, 466 100');--d:-1.6s"/>
+      </g>
+      <text x="401" y="86" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#356577">sn_pull · nightly</text>
+
+      <!-- ~/ark ledger -->
+      <g class="claim">
+        <rect class="vz-cell" x="476" y="58" width="18" height="18" rx="3"/>
+        <rect class="vz-cell" x="500" y="58" width="18" height="18" rx="3"/>
+        <rect class="vz-cell" x="524" y="58" width="18" height="18" rx="3"/>
+        <rect class="vz-cell" x="476" y="82" width="18" height="18" rx="3"/>
+        <rect class="vz-cell found" x="500" y="82" width="18" height="18" rx="3"/>
+        <rect class="vz-cell" x="524" y="82" width="18" height="18" rx="3"/>
+        <rect class="vz-cell" x="476" y="106" width="18" height="18" rx="3"/>
+        <rect class="vz-cell" x="500" y="106" width="18" height="18" rx="3"/>
+        <rect class="vz-cell empty" x="524" y="106" width="18" height="18" rx="3"/>
+      </g>
+      <text x="509" y="150" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6f7a76">~/ark · owned, forever</text>
+    </svg>
+    </div>
+    <figcaption class="vz-cap"><b>the capture bus</b> · a video URL + 20+ metrics + the µs stamp ride every shot record</figcaption>
+  </figure>
+  <div class="vz-leg band reveal" style="margin-top:12px">
+    <span class="claim"><i></i>swing data</span>
+    <span class="agent"><i></i>agentic pull / pairing</span>
+    <span class="found"><i></i>the owned archive</span>
+  </div>
+
+  <figure class="vz band reveal" role="img" aria-label="A film strip of video frames; one frame near two-thirds in is marked as the impact frame, located by the dtlBallStrikeSeconds offset.">
+    <div class="scrollbox">
+    <svg viewBox="0 0 640 96">
+      <text x="24" y="18" font-family="DM Mono, monospace" font-size="10" fill="#6f7a76">clip · 240 fps</text>
+      <text x="616" y="18" text-anchor="end" font-family="DM Mono, monospace" font-size="10" fill="#9a7a1f">impact = dtlBallStrikeSeconds</text>
+      <!-- frames -->
+      <g>
+        <rect class="vz-cell empty" x="24"  y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="66"  y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="108" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="150" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="192" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="234" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="276" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="318" y="30" width="38" height="36" rx="4"/>
+        <rect x="360" y="30" width="38" height="36" rx="4" fill="#f3ead2" stroke="#9a7a1f" stroke-width="1.85"/>
+        <rect class="vz-cell empty" x="402" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="444" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="486" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="528" y="30" width="38" height="36" rx="4"/>
+        <rect class="vz-cell empty" x="570" y="30" width="38" height="36" rx="4"/>
+      </g>
+      <!-- impact marker -->
+      <g style="--vz-c:#9a7a1f">
+        <circle class="vz-dot breathe" cx="379" cy="48" r="4.5"/>
+      </g>
+      <text x="379" y="86" text-anchor="middle" font-family="DM Mono, monospace" font-size="9.5" fill="#9a7a1f">±1 frame</text>
+      <!-- scanning playhead -->
+      <g class="claim">
+        <circle class="vz-mote" r="3" style="--mote-path:path('M24 24 L608 24')"/>
+      </g>
+    </svg>
+    </div>
+    <figcaption class="vz-cap"><b>impact sync</b> · every clip carries the strike moment as a seconds-offset — the join between video, pose AI and ball data needs no human scrubbing</figcaption>
+  </figure>
+
+  <div class="divider"></div>
+
+  <!-- 02 THREE TIERS -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><path d="M4 18h4M4 12h9M4 6h16"/></svg>the tiers</span>
+    <h2 class="sec-title">Three rigs — pick per outing</h2>
+    <span class="sec-n">02</span>
+  </div>
+  <p class="lede reveal">Nine data channels a swing can emit. Each tier lights more of them —
+  the bar is how much of a full sim-bay record you take home.</p>
+
+  <div class="g3 band reveal">
+    <div class="spec key">
+      <div class="tier-h"><span class="rc-tag prev">light · default</span></div>
+      <b style="font-size:16px;font-weight:780;letter-spacing:-.02em">iPhone + tripod</b>
+      <div class="tier-carry">pocket → tripod → play</div>
+      <div class="chn">
+        <i class="on">clip</i><i class="on">pose AI</i><i class="on">µs stamp</i>
+        <i>ball speed</i><i>launch</i><i>spin</i><i>carry</i><i>club path</i><i>sim join</i>
+      </div>
+      <div class="cov"><div class="cov-lab"><span>channels</span><b>3 / 9</b></div>
+        <div class="cov-track"><div class="cov-fill" style="--w:33%"></div></div></div>
+      <div class="tier-m"><span class="pill ok">ARCHIVED</span> SN cloud → sn_pull → mirror, zero setup</div>
+    </div>
+    <div class="spec mid">
+      <div class="tier-h"><span class="rc-tag rec">metrics</span></div>
+      <b style="font-size:16px;font-weight:780;letter-spacing:-.02em">+ Spica 3 on the mat</b>
+      <div class="tier-carry">+ one coaster-sized unit · 6.5–7.5 h battery · range balls fine</div>
+      <div class="chn">
+        <i class="on">clip</i><i class="on">pose AI</i><i class="on">µs stamp</i>
+        <i class="maybe">ball speed</i><i class="maybe">launch</i><i class="maybe">spin</i><i class="maybe">carry</i>
+        <i>club path</i><i>sim join</i>
+      </div>
+      <div class="cov"><div class="cov-lab"><span>channels</span><b>7 / 9</b></div>
+        <div class="cov-track"><div class="cov-fill mid" style="--w:78%"></div></div></div>
+      <div class="tier-m"><span class="pill mid">VERIFY PAIRING</span> GolfJoyPro-only data is trapped (the TODO-171 lesson) — it must reach SN to count</div>
+    </div>
+    <div class="spec">
+      <div class="tier-h"><span class="rc-tag rec" style="background:var(--well);color:var(--muted)">full · heavy</span></div>
+      <b style="font-size:16px;font-weight:780;letter-spacing:-.02em">+ Windows laptop w/ GSPro</b>
+      <div class="tier-carry">the proven sim-bay pipeline, outdoors</div>
+      <div class="chn">
+        <i class="on">clip</i><i class="on">pose AI</i><i class="on">µs stamp</i>
+        <i class="on">ball speed</i><i class="on">launch</i><i class="on">spin</i><i class="on">carry</i>
+        <i class="on">club path</i><i class="on">sim join</i>
+      </div>
+      <div class="cov"><div class="cov-lab"><span>channels</span><b>9 / 9</b></div>
+        <div class="cov-track"><div class="cov-fill" style="--w:100%"></div></div></div>
+      <div class="tier-m"><span class="pill ok">ARCHIVED</span> LM → GSPro → SN real-time sync, identical to the bay</div>
+    </div>
+  </div>
+  <p class="fn reveal">Spica 3 is genuinely outdoor-first (−10–40 °C, any ball) and feeds GSPro / E6 /
+  Creative Golf natively — since Mar 2026 GSPro needs no adapter; club-face data arrives with stickers.
+  The <b>one unverified link</b>: whether SN mobile recording pairs clips with a Spica feed that never
+  touches GSPro. One support email — or range trip #1 — answers it.</p>
+
+  <div class="divider"></div>
+
+  <!-- 03 THE LEAK -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v10m0 0-4-4m4 4 4-4M4 21h16"/></svg>leak · plugged</span>
+    <h2 class="sec-title">"Every swing" had a trapdoor</h2>
+    <span class="sec-n">03</span>
+  </div>
+  <p class="lede reveal">The account runs <span class="mono">videoStorageLimit: 500</span> with
+  <span class="mono">autoDeleteOldVideos: true</span> — the cloud copy is a <b>rolling window</b>,
+  not an archive. Shipped <b>video_mirror.py</b> the same night.</p>
+
+  <figure class="vz band reveal" role="img" aria-label="The SwingNerds cloud holds a rolling 500-clip window; old clips fall out the bottom. A blue recovery loop carries every clip into the append-only ~/ark archive before deletion.">
+    <div class="scrollbox">
+    <svg viewBox="0 0 640 224">
+      <!-- rolling cloud window -->
+      <text x="200" y="30" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6f7a76">SN cloud · rolling 500-clip window</text>
+      <g class="claim">
+        <rect class="vz-cell empty" x="92" y="46" width="20" height="20" rx="3"/>
+        <rect class="vz-cell empty" x="92" y="72" width="20" height="20" rx="3"/>
+        <rect class="vz-cell breathe" x="120" y="46" width="20" height="20" rx="3" style="--d:0s"/>
+        <rect class="vz-cell breathe" x="120" y="72" width="20" height="20" rx="3" style="--d:-2s"/>
+        <rect class="vz-cell" x="148" y="46" width="20" height="20" rx="3" opacity=".55"/>
+        <rect class="vz-cell" x="148" y="72" width="20" height="20" rx="3" opacity=".55"/>
+        <rect class="vz-cell" x="176" y="46" width="20" height="20" rx="3" opacity=".7"/>
+        <rect class="vz-cell" x="176" y="72" width="20" height="20" rx="3" opacity=".7"/>
+        <rect class="vz-cell" x="204" y="46" width="20" height="20" rx="3" opacity=".85"/>
+        <rect class="vz-cell" x="204" y="72" width="20" height="20" rx="3" opacity=".85"/>
+        <rect class="vz-cell" x="232" y="46" width="20" height="20" rx="3"/>
+        <rect class="vz-cell" x="232" y="72" width="20" height="20" rx="3"/>
+        <rect class="vz-cell" x="260" y="46" width="20" height="20" rx="3"/>
+        <rect class="vz-cell" x="260" y="72" width="20" height="20" rx="3"/>
+      </g>
+      <text x="102" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#a7a79c">oldest</text>
+      <text x="270" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#a7a79c">newest</text>
+
+      <!-- the leak: culled clips exit toward the bottom edge -->
+      <g class="leak">
+        <path class="vz-path faint" d="M92 96 C 70 140, 60 180, 56 216"/>
+        <circle class="vz-dot breathe" cx="74" cy="146" r="3.4" style="--d:0s"/>
+        <circle class="vz-dot breathe" cx="64" cy="178" r="3" style="--d:-1.3s"/>
+        <circle class="vz-dot breathe" cx="58" cy="206" r="2.6" style="--d:-2.4s"/>
+      </g>
+      <text x="80" y="216" font-family="DM Mono, monospace" font-size="9.5" fill="#c1502e">autoDelete — silent loss</text>
+
+      <!-- recovery loop: agent path catches everything before the cull -->
+      <g class="agent">
+        <path class="vz-path flow" d="M200 100 C 220 150, 330 166, 430 150 S 520 120, 520 96" style="--d:0s"/>
+        <circle class="vz-mote" r="3.2" style="--mote-path:path('M200 100 C 220 150, 330 166, 430 150 S 520 120, 520 96');--d:0s"/>
+        <circle class="vz-mote" r="3.2" style="--mote-path:path('M200 100 C 220 150, 330 166, 430 150 S 520 120, 520 96');--d:-4s"/>
+      </g>
+      <text x="380" y="200" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#356577">video_mirror.py · nightly launchd · resumable</text>
+
+      <!-- the owned archive -->
+      <g class="found"><rect class="vz-cell" x="486" y="40" width="68" height="52" rx="8" opacity=".28"/></g>
+      <g class="claim">
+        <rect class="vz-cell" x="496" y="50" width="14" height="14" rx="2.5"/>
+        <rect class="vz-cell" x="514" y="50" width="14" height="14" rx="2.5"/>
+        <rect class="vz-cell" x="532" y="50" width="14" height="14" rx="2.5"/>
+        <rect class="vz-cell" x="496" y="68" width="14" height="14" rx="2.5"/>
+        <rect class="vz-cell" x="514" y="68" width="14" height="14" rx="2.5"/>
+        <rect class="vz-cell empty" x="532" y="68" width="14" height="14" rx="2.5"/>
+      </g>
+      <text x="520" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6f7a76">~/ark · append-only</text>
+      <text x="520" y="128" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#0c5a50" font-weight="500">286 clips · first run</text>
+    </svg>
+    </div>
+    <figcaption class="vz-cap"><b>plugged</b> · chained into <b>refresh.py</b> so the nightly job keeps it current · CDN 403s non-browser UAs — the tool sends a Safari UA</figcaption>
+  </figure>
+
+  <div class="divider"></div>
+
+  <!-- 04 THE WATCH -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M9 3h6M9 21h6M12 9v3l2 2"/></svg>the watch</span>
+    <h2 class="sec-title">Off-the-shelf is a dead end</h2>
+    <span class="sec-n">04</span>
+  </div>
+  <p class="lede reveal">Both polished options keep your swings. The only watch data that ever
+  joins the vault is data <b>you</b> capture.</p>
+  <div class="g3 band reveal">
+    <div class="spec warn"><div class="spec-k">roundabout · course-only</div><h4>Great display, zero record</h4>
+      <p>Swing detection needs a started round on a mapped course, dedupes same-spot swings
+      (a range bay <b>is</b> one spot), HealthKit gets workout-level data only, <b>no export</b>.
+      Lovely live lat/long on course; a dead end as an owned record.</p>
+      <div class="tier-m"><span class="pill no">NO EXPORT</span></div></div>
+    <div class="spec warn"><div class="spec-k">golfshot swing id</div><h4>Best range logger, same wall</h4>
+      <p>On-Range mode logs tempo, hand speed, path, impact moment with near-zero false positives —
+      the best off-the-shelf range logger found. And still: <b>no export found</b>.</p>
+      <div class="tier-m"><span class="pill no">NO EXPORT</span></div></div>
+    <div class="spec key"><div class="spec-k">owned path · diy</div><h4>200 Hz CoreMotion → vault</h4>
+      <svg viewBox="0 0 280 56" style="display:block;width:100%;height:auto;margin:2px 0 10px" aria-hidden="true">
+        <path class="vz-path" style="--vz-c:var(--forest);opacity:.85" d="M4 30 q8 -4 16 0 t16 0 t16 0 q6 -2 10 0 l6 -22 l5 40 l5 -26 q8 6 16 2 t16 -2 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/>
+        <circle class="vz-mote claim" r="2.6" style="--mote-path:path('M4 30 q8 -4 16 0 t16 0 t16 0 q6 -2 10 0 l6 -22 l5 40 l5 -26 q8 6 16 2 t16 -2 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0')"/>
+        <circle class="vz-dot breathe found" cx="72" cy="10" r="3.4"/>
+        <text x="84" y="13" font-family="DM Mono, monospace" font-size="8.5" fill="#9a7a1f">impact</text>
+      </svg>
+      <p>watchOS ships a <b>200 Hz accel+gyro API</b> (<span class="mono">CMBatchedSensorManager</span>,
+      Series 8+); Apple's SwingWatch sample is the whole pattern — detect, batch the window,
+      timestamp, POST. Adds lat/long+time per swing → on-course strokes gained goes self-sufficient too.</p>
+      <div class="tier-m"><span class="pill ok">JOINS THE VAULT</span> worth its own ticket</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 05 PLAYBOOK -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M21 12a9 9 0 1 1-9-9"/></svg>playbook</span>
+    <h2 class="sec-title">Do these, in order</h2>
+    <span class="sec-n">05</span>
+  </div>
+  <div class="g2 band reveal">
+    <div class="spec key"><div class="spec-k">this week</div><h4>Two decisions</h4>
+      <ul class="checklist">
+        <li><span class="pill mid">BY JUL 16</span><span><b>SN Pro trial ends</b> — the whole rig leans on Pro
+          (video storage, vision, AI). Keep or drop <b>before</b> range day.</span></li>
+        <li><span class="pill mid">TRIP #1</span><span><b>Light tier + Spica 3</b> — test whether SN mobile
+          recording pairs with the Spica feed sans GSPro; note what the GolfJoyPro app keeps.</span></li>
+      </ul></div>
+    <div class="spec"><div class="spec-k">later</div><h4>Queue</h4>
+      <ul class="checklist">
+        <li><span class="pill blue">TICKET</span><span><b>DIY watch logger</b> — 200 Hz CoreMotion → vault;
+          the only exportable per-swing watch data, and the Roundabout replacement.</span></li>
+        <li><span class="pill blue">BONUS</span><span><b>TrackMan / Toptracer venue</b> — a smart range adds its
+          own exports; the 4.7 G TrackMan corpus in <span class="mono">~/ark</span> came from exactly that.</span></li>
+      </ul></div>
+  </div>
+
+  <div class="foot reveal">
+    <div><b>TODO-189 · range rig</b> — every swing, timestamped. Sources: swingnerds.com (+ owned API via
+    <code>sn_pull</code>), golfjoy.com Spica 3 FAQ + GSPro partnership note, roundaboutapp.com help docs,
+    Apple WWDC23 <code>CMBatchedSensorManager</code>, golfshot.com Swing ID. Unverified negatives worth one
+    email each: GolfJoy Pro app export · Golfshot export · Roundabout range mode.</div>
+    <div>grove · warm paper, forest + lime · <code>2026-07-11 06:42 UTC</code></div>
+  </div>
+</div>
+
+<noscript><style>.reveal,.kpis .kpi,.hero .hchip{opacity:1!important;transform:none!important}</style></noscript>
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  setTimeout(()=>document.querySelectorAll('.reveal').forEach(e=>e.classList.add('shown')),1600);
+
+  // count-up KPIs once visible (timeout safety: never stuck at 0)
+  const counted=new WeakSet();
+  const runCount=el=>{if(counted.has(el))return;counted.add(el);
+    const end=+el.dataset.count,t0=performance.now();
+    (function tick(t){const p=Math.min(1,(t-t0)/1100),v=Math.round(end*(1-Math.pow(1-p,3)));
+      el.firstChild.textContent=v;if(p<1)requestAnimationFrame(tick)})(t0);};
+  const cu=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting)return;cu.unobserve(e.target);runCount(e.target);
+  }),{threshold:.4});
+  document.querySelectorAll('[data-count]').forEach(el=>cu.observe(el));
+  setTimeout(()=>document.querySelectorAll('[data-count]').forEach(runCount),2500);
+</script>
+</body>
+</html>

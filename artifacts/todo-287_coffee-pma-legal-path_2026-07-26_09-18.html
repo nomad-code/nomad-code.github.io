@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>Coffee PMA · The Legal Path &amp; the Wealth Harness</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <style>
+    :root {
+      --c-go:    #0d8f7f;  --c-go-bg:  #d9ece7;  --c-go-bd:  #b9d9d0;
+      --c-stop:  #c4501f;  --c-stop-bg:#f6e3da;  --c-stop-bd:#e3b9a6;
+      --c-gold:  #a07c15;  --c-gold-bg:#f3ead2;  --c-gold-bd:#e3d3a0;
+      --c-blue:  #3a92ba;  --c-blue-bg:#e3eef2;  --c-blue-bd:#cfe1e7;
+    }
+    body { min-height:100vh; overflow-x:hidden; }
+    main { max-width:960px; margin:0 auto; padding:34px 24px 90px; }
+
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.08em; text-transform:uppercase; color:var(--c-go); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-go); }
+    h1 { font:800 clamp(30px,4.8vw,50px)/1.04 var(--font-display); letter-spacing:-.03em;
+      color:var(--ink); margin:16px 0 8px; }
+    h1 em { font-style:normal; color:var(--c-go); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 12px; }
+    .sub a { color:var(--forest-d); }
+    .lede { max-width:72ch; font:400 16.5px/1.62 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:660; }
+
+    section { margin-top:54px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(20px,3vw,26px)/1.12 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:14px; }
+    .blurb b { color:var(--ink); font-weight:640; }
+
+    .gate { border:1px solid var(--c-stop-bd); border-left:4px solid var(--c-stop);
+      background:var(--c-stop-bg); border-radius:var(--r-panel); padding:16px 18px; max-width:76ch; }
+    .gate .t { font:700 15px/1.3 var(--font-display); color:var(--c-stop); margin-bottom:4px; }
+    .gate p { font:400 14px/1.55 var(--font-ui); color:var(--body); }
+    .gate p b { color:var(--ink); }
+
+    table.kbli { border-collapse:collapse; width:100%; font:400 13.5px/1.45 var(--font-ui); }
+    table.kbli th { font:600 11px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--muted); text-align:left; padding:8px 10px; border-bottom:2px solid var(--line); }
+    table.kbli td { padding:8px 10px; border-bottom:1px solid var(--line); color:var(--body); vertical-align:top; }
+    table.kbli td:first-child { font:600 13px/1.4 var(--font-mono); color:var(--ink); white-space:nowrap; }
+    tr.star td { background:var(--c-go-bg); }
+    tr.star td:first-child { color:var(--c-go); }
+    .pill { display:inline-block; font:600 10.5px/1 var(--font-mono); letter-spacing:.05em;
+      padding:4px 8px; border-radius:var(--r-pill); }
+    .pill.go   { color:var(--c-go);   background:#fff;             border:1px solid var(--c-go-bd); }
+    .pill.stop { color:var(--c-stop); background:var(--c-stop-bg); border:1px solid var(--c-stop-bd); }
+
+    .cards2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media (max-width:680px){ .cards2{ grid-template-columns:1fr; } }
+    .card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-card); padding:18px; position:relative; overflow:hidden; }
+    .card::before { content:""; position:absolute; inset:0 auto 0 0; width:4px; }
+    .card.go::before   { background:var(--c-go); }
+    .card.gold::before { background:var(--c-gold); }
+    .card h3 { font:700 16px/1.25 var(--font-display); color:var(--ink); margin:0 0 6px; }
+    .card .tag { font:600 11px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      display:inline-block; padding:5px 9px; border-radius:var(--r-pill); margin-bottom:10px; }
+    .card.go .tag   { color:var(--c-go);   background:var(--c-go-bg);   border:1px solid var(--c-go-bd); }
+    .card.gold .tag { color:var(--c-gold); background:var(--c-gold-bg); border:1px solid var(--c-gold-bd); }
+    .card p { font:400 14px/1.55 var(--font-ui); color:var(--body); }
+    .card p b { color:var(--ink); }
+
+    ul.x { list-style:none; padding:0; margin:0; display:grid; gap:9px; max-width:74ch; }
+    ul.x li { display:flex; gap:11px; align-items:flex-start; font:400 14.5px/1.55 var(--font-ui); color:var(--body); }
+    ul.x li b { color:var(--ink); font-weight:640; }
+    ul.x li::before { content:"✗"; color:var(--c-stop); font-weight:700; flex:0 0 auto; }
+    ul.x.check li::before { content:"→"; color:var(--c-go); }
+
+    .river { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    @media (max-width:680px){ .river{ grid-template-columns:1fr; } }
+    .chan { border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card); padding:15px 16px; }
+    .chan .o { font:800 22px/1 var(--font-display); margin-bottom:6px; }
+    .chan.c1 .o { color:var(--c-go); } .chan.c2 .o { color:var(--c-blue); } .chan.c3 .o { color:var(--faint); }
+    .chan h4 { font:700 14.5px/1.2 var(--font-display); color:var(--ink); margin:0 0 5px; }
+    .chan p { font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    .chan p b { color:var(--ink); }
+
+    table.ent { border-collapse:collapse; width:100%; font:400 13.5px/1.5 var(--font-ui); }
+    table.ent th { font:600 11px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--muted); text-align:left; padding:8px 10px; border-bottom:2px solid var(--line); }
+    table.ent td { padding:9px 10px; border-bottom:1px solid var(--line); color:var(--body); vertical-align:top; }
+    table.ent td:first-child { font:600 12px/1.4 var(--font-mono); color:var(--muted); white-space:nowrap; }
+
+    ol.verify { padding-left:0; margin:0; list-style:none; counter-reset:v; display:grid; gap:10px; max-width:74ch; }
+    ol.verify li { counter-increment:v; display:flex; gap:13px; align-items:flex-start;
+      font:400 14.5px/1.55 var(--font-ui); color:var(--body); }
+    ol.verify li::before { content:counter(v); flex:0 0 26px; height:26px; border-radius:50%;
+      background:var(--c-go); color:#fff; font:700 13px/26px var(--font-mono); text-align:center; }
+    ol.verify li b { color:var(--ink); font-weight:640; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      font:500 12px/1.7 var(--font-mono); color:var(--faint); letter-spacing:.03em; }
+    footer a { color:var(--forest-d); }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow"><span class="mo-dot"></span> TODO-287 · pt pma · by the book</p>
+  <h1>The coffee concept is <em>already legal-adjacent</em> —<br>activate, don't reinvent</h1>
+  <p class="sub">PT NOMAD CODE COLLECTIVE · <a href="https://linear.app/nomad-code/issue/TODO-287">TODO-287</a> · companion to <a href="https://linear.app/nomad-code/issue/TODO-227">TODO-227</a></p>
+  <p class="lede">The session's finding: the PMA's deed <b>already registers KBLI 56101 (Restaurant)</b> — the repo's "68111 real-estate only" belief was wrong. Run the concept as a <b>restaurant, not a café</b> (56303 is on Bali's Feb-2026 foreign-closure proposal), and the <b>cheap-and-compliant path likely needs no deed amendment</b>. Everything is gated by one thing: compliance.</p>
+
+  <section>
+    <div class="k"><span class="n">00</span><h2>Gate 0 — nothing operates until this clears</h2></div>
+    <div class="gate">
+      <div class="t">⚠ TODO-227 · compliance cleanup</div>
+      <p>Dormant since Sep 2024 · two OSS sanction notices · likely <b>~7 quarters LKPM + ~22 months SPT</b> outstanding → <b>live NIB-suspension risk</b>. A suspended NIB invalidates every KBLI and kills E28A sponsorship. Bali's proposed rules also demand compliance docs <b>before</b> commercial operations. The good news: <b>Rp 11B is already paid up</b> — it clears the Rp 10B/location F&amp;B realization and Bali's proposed paid-up proof.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">01</span><h2>KBLI reality — eight lines, one star</h2></div>
+    <table class="kbli">
+      <tr><th>KBLI</th><th>Activity</th><th>Read</th></tr>
+      <tr class="star"><td>56101</td><td><b>Restaurant</b></td><td><span class="pill go">RUN THE CONCEPT HERE</span> 100% PMA-open · medium-low risk · already in the deed</td></tr>
+      <tr><td>68111</td><td>Own real estate</td><td>holds/leases the premises · SS 10092400490850001 tied here</td></tr>
+      <tr><td>68200</td><td>Fee/contract real estate</td><td>—</td></tr>
+      <tr><td>82302</td><td>Special-events organizer</td><td>cuppings / tastings — usable</td></tr>
+      <tr><td>47630 · 47920 · 85410 · 96129</td><td>retail · brokerage · sports-ed · fitness</td><td>dormant lines</td></tr>
+      <tr><td>56303</td><td>Café / tavern</td><td><span class="pill stop">AVOID</span> on Bali's Feb-2026 proposed foreign-closure list</td></tr>
+      <tr><td>10761</td><td>Coffee processing (roasting)</td><td>not in deed — light amendment if the roastery half is wanted</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">02</span><h2>The fork</h2></div>
+    <div class="cards2">
+      <div class="card go">
+        <span class="tag">Cheapest-compliant ✓</span>
+        <h3>Activate 56101 in OSS</h3>
+        <p>No deed amendment. Confirm 56101 is <b>active</b> under NIB 1009240049085 (own Sertifikat Standar?) · meet the <b>&gt;Rp 10B/location</b> realization via LKPM — capital already in.</p>
+      </div>
+      <div class="card gold">
+        <span class="tag">Best (if needed)</span>
+        <h3>One light notarial amendment</h3>
+        <p>~$300–750, 15–30 days. Still anchored on 56101; add <b>10761 roasting</b> in the same deed. Never touch vulnerable small-café codes.</p>
+      </div>
+    </div>
+    <p class="blurb" style="margin-top:14px;">Premises: real commercial-zoned space (no virtual office) · <b>scooters ×2 = trivial commercial use</b> · sleeping-there dropped · lease or HGB under 68111, never 27/28-yr wasting-leasehold. Storage is a ~$2k/yr bundled perk, never a driver.</p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">03</span><h2>Evaluated &amp; rejected — partner, don't own</h2></div>
+    <ul class="x">
+      <li><b>Owning a coffee farm (Munduk):</b> foreigners can't own farmland — PMA route is <b>HGU with a &gt;25 ha floor</b> for foreign plantation activity + IUP licence. Industrial scale, wrong KBLI, 2.5 h from Sanur, maximally time-heavy.</li>
+      <li><b>Passive equity in Series / Munduk:</b> <b>even 1% foreign ownership converts the company to a PMA</b> (Rp 10B/KBLI thresholds land on a small roaster) · no private-co portfolio exemption · nominee = void &amp; illegal (Art. 33).</li>
+    </ul>
+    <p class="blurb" style="margin-top:14px;"><b>The clean channel is commerce:</b> pre-finance harvests · buy beans generously · wholesale/collab with Ken · mentorship &amp; connections. He doesn't want equity anyway — he wants them to <b>succeed</b>. What he wants is also the legally cleanest thing available. Equity, when it exists, lives in the future <b>US Nomad Code co.</b></p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">04</span><h2>The wealth harness — cap the stock, not the flow</h2></div>
+    <p class="blurb">Net worth capped (~$100k, 2016 dollars) · GDP <b>uncapped</b> · a <b>river, not a reservoir</b> — surplus routes to named people and places (list lives in <b>dna/wealth-harness.md</b>, bpo-only). Channel order:</p>
+    <div class="river">
+      <div class="chan c1"><div class="o">1</div><h4>Commerce</h4><p>Pre-finance, purchases, wages, training. Deductible with business purpose · dignified · zero gift paperwork. <b>Most of the river.</b></p></div>
+      <div class="chan c2"><div class="o">2</div><h4>Gifts</h4><p><b>$19k/recipient/yr (2026)</b> needs no filing · above → Form 709, tracking only ($15M lifetime) · foreign recipients owe no US tax.</p></div>
+      <div class="chan c3"><div class="o">3</div><h4>Institutions</h4><p>Foundations/DAFs can't cleanly grant to individuals — wrong tool for making Ken a millionaire. Skip.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">05</span><h2>Two entities, two purposes</h2></div>
+    <table class="ent">
+      <tr><th></th><th>US "Nomad Code" co. (future)</th><th>PT NOMAD CODE COLLECTIVE 🇮🇩</th></tr>
+      <tr><td>purpose</td><td>income + equity — the pump station</td><td>residency + impact/passion</td></tr>
+      <tr><td>motive</td><td>where routing capacity accrues</td><td><b>not</b> money — coffee, community</td></tr>
+      <tr><td>status</td><td>formalize from sole-prop (US task)</td><td>exists · make compliant + operating</td></tr>
+      <tr><td>ties</td><td colspan="2">the PMA already triggers <b>US Form 5471</b> (Komisaris seat) — one CPA must see both</td></tr>
+    </table>
+    <p class="blurb" style="margin-top:14px;">Irish passport: <b>tax-neutral</b> for parked money (US taxes worldwide by citizenship; Ireland taxes by residence) · crown jewel = <b>EU residence right</b>, free to keep · modest EUR cash buffer fine (FBAR) · <b>never EU-domiciled funds — PFIC</b>.</p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">06</span><h2>Verify (in order)</h2></div>
+    <ol class="verify">
+      <li><b>OSS</b> (oss.go.id), NIB 1009240049085 → which of the 8 KBLI are active · does 56101 carry its own Sertifikat Standar?</li>
+      <li><b>Accountant / Reza @ Visa Pro</b> → anything filed since Sep 2024? Quantify LKPM + SPT backlog &amp; fines → clear (TODO-227).</li>
+      <li><b>Notary</b> → (a) 56101 covers the concept? amendment (+10761)? · (b) commercial/F&amp;B zoning of the target premises.</li>
+      <li><b>Sanity-check</b> Rp 10B/location realization reporting against the Rp 11B paid-up.</li>
+    </ol>
+  </section>
+
+  <footer>
+    bpo · private · 2026-07-26 09:18 Z · figures are 2026 web sources — Bali rules moving fast, re-verify live with the notary ·
+    <a href="https://linear.app/nomad-code/issue/TODO-287">TODO-287</a> · sources: xpnd.co.id · balizero.com · aseanbriefing.com · putranto-alliance.com · statrys.com · IRS 2026 exclusions
+  </footer>
+</main>
+</body>
+</html>

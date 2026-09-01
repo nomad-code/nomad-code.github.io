@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-301 · platform, one shell</title>
+  <meta name="description" content="found-ai/platform: one shell many clients — what's done, what's missing">
+  <script>
+  (function(){var K='bpo-unlocked',ok=false,h;try{ok=localStorage.getItem(K)==='true'||sessionStorage.getItem(K)==='true'}catch(e){}if(!ok){h=document.createElement('style');h.id='__pw_gate_hide__';h.textContent='html > body > *:not(#__pw_gate__){visibility:hidden!important}';document.head.appendChild(h)}window.__BPO_GATE__={label:'bpo · Private',key:K};var p=['','../','../../','../../../'],i=0;(function n(){if(i>=p.length){if(h)h.remove();return}var s=document.createElement('script');s.src=p[i++]+'password-wall/gate.js';s.onerror=n;document.head.appendChild(s)})()})();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 32px,980px);margin:auto;padding:54px 0 70px}.eyebrow,.k{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}
+    h1{margin:14px 0 12px;font:700 clamp(34px,7vw,62px)/.98 ui-monospace,monospace;letter-spacing:-.055em}.lede{max-width:720px;color:var(--muted);font-size:18px}
+    .address{margin-top:24px;padding:15px 17px;border-radius:12px;background:var(--ink);color:#fff;font:700 clamp(15px,3vw,21px)/1.2 ui-monospace,monospace;overflow-wrap:anywhere}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .card{padding:20px;border:1px solid var(--line);border-radius:15px;background:var(--card)}.card h2{font-size:18px;margin:8px 0}.card p{color:var(--muted);margin:0}
+    section.block{margin-top:34px}section.block>h2{font:700 24px/1.15 ui-monospace,monospace;letter-spacing:-.03em;margin:8px 0 14px}
+    .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:15px;background:var(--card)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);text-align:left}
+    th,td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}td code,p code,li code{font:600 12.5px/1.4 ui-monospace,monospace;background:#00000010;padding:1px 5px;border-radius:5px}
+    .done{border-left:4px solid var(--forest)}.gap{border-left:4px solid #b3542e}
+    .checks{margin-top:34px;padding:22px;border-radius:16px;background:var(--forest);color:#fff}.check{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #ffffff25}.check:last-child{border:0}.dot{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900}
+    .checks code{background:#ffffff22;color:#fff}
+    ul{margin:8px 0;padding-left:20px}li{margin:5px 0}li::marker{color:var(--forest)}ol{margin:8px 0;padding-left:22px}ol li{margin:6px 0}
+    a{color:inherit}footer{display:flex;justify-content:space-between;gap:14px;margin-top:38px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}
+    @media(max-width:700px){.grid,.grid2{grid-template-columns:1fr}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">nomad-code / bpo · dha ingest · 2 of 3</div>
+    <h1>platform: the shell is done, the clients aren't</h1>
+    <p class="lede">The "many clients, one shell" you're aiming for — the Codex / Claude-desktop-iOS harness shape — is <b>already half-built in found-ai/platform</b>. The shell converged. What's missing is that the client is a compile-time constant, not a runtime value.</p>
+    <div class="address">TODO_301-dha-ingest_monorepo</div>
+
+    <section class="grid">
+      <article class="card done"><div class="k">converged</div><h2>One shell, empirically</h2><p><code>AppShell</code> replaced the four-variant <code>ShellSwitch</code> dispatch (TECH-728: "delete the variant flag — one deploy, one design"). The many-shells experiment ran and was collapsed. Residue: two misnamed variant CSS files still globally imported.</p></article>
+      <article class="card done"><div class="k">contract</div><h2>Client bundle spec</h2><p>Per-client manifest (slug, source sha, artifacts + sha256, chat allowlist, <code>enabled_core_tabs</code>, <code>client_surfaces</code>), zod-validated loaders, fail-closed for unconfigured clients. The hard contract work most teams never do is done.</p></article>
+      <article class="card gap"><div class="k">the gap</div><h2>Client baked at build</h2><p><code>NEXT_PUBLIC_CLIENT_SLUG</code> is a Docker build <code>ARG</code>, re-read in six places with the same hardcoded fallback. No <code>/[client]/</code> route, no session client, no switcher. One image = one client.</p></article>
+    </section>
+
+    <section class="block">
+      <h2>the harness analogy, made precise</h2>
+      <div class="tablewrap"><table>
+        <tr><th>codex / claude desktop</th><th>platform equivalent</th><th>state</th></tr>
+        <tr><td>the shell binary everyone runs</td><td><code>AppShell</code> + sidebar + inspector + chat surface</td><td>✅ one, deliberately</td></tr>
+        <tr><td>per-account config / servers resolved at runtime</td><td>client bundle + manifest</td><td>⚠️ contract exists; resolved at <b>build</b> time</td></tr>
+        <tr><td>capabilities toggle surfaces on/off</td><td><code>enabled_core_tabs</code> / <code>client_surfaces</code></td><td>❌ declared, validated, <b>read by zero UI code</b> — nav is a hardcoded 3-item array</td></tr>
+        <tr><td>one app store build, many users</td><td>one Cloud Run service <i>per client</i>, each with its own SA, data prefix, secret (lanes registry)</td><td>by design: per-service isolation <i>is</i> the stated tenancy model</td></tr>
+      </table></div>
+      <p style="color:var(--muted);margin-top:10px">That last row is the real decision hiding in the aspiration: making the client a runtime value contradicts the written security thesis that "partner A cannot touch partner B's data" should be an IAM policy, not app-layer trust. Runtime clients vs per-service isolation is a <b>security-posture choice</b>, not a refactor. (Middle path exists: keep one service per client but resolve the slug from the lane's env at <i>runtime</i>, killing the build-time bake without weakening isolation.)</p>
+    </section>
+
+    <section class="block">
+      <h2>where the monorepo pressure actually is</h2>
+      <div class="grid2">
+        <article class="card gap"><div class="k">loudest pain</div><h2>The fai-x import ritual</h2><p>Upstream chat engine is copied in as reviewed source snapshots with a hand-maintained divergence ledger — three imports in two weeks, and one refused because upstream moved to pnpm. This is a package boundary emulated by a human with a changelog.</p></article>
+        <article class="card gap"><div class="k">data path</div><h2>Client repos synced by script</h2><p>Each client pipeline is its own repo; a sync script commits ~5MB of JSON into the app repo. Bundles are the reusability seam, but the seam crosses repos by hand.</p></article>
+        <article class="card done"><div class="k">ready to split</div><h2>Packages already visible</h2><p><code>src/lib/{bundle, chat, query, engine, log}</code> and <code>components/legos</code> are cohesive, tested units — <code>packages/*</code> waiting on a <code>git mv</code>. Only one path alias today (<code>@/*</code>).</p></article>
+        <article class="card done"><div class="k">tooling</div><h2>Scripts pre-factored</h2><p>Seed/sync/verify CLIs already split pure lib from CLI entry, run with type-stripping, no build step — a tooling package in embryo.</p></article>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>cheapest-first sequence (candidate, pre-Rob-alignment)</h2>
+      <ol>
+        <li><b>Collapse the six slug reads</b> into one resolver in a bundle package; drop the Docker <code>ARG</code> in favor of runtime env. Smallest change, kills the most duplication.</li>
+        <li><b>Bring the chat engine inside the wall</b> as a package; delete the divergence ledger. The import ritual becomes an import statement.</li>
+        <li><b>Make <code>enabled_core_tabs</code> drive the nav</b> — the shell only truly hosts many clients when the manifest controls the surfaces.</li>
+        <li><b>Then</b> decide the runtime-client question with the security thesis on the table.</li>
+      </ol>
+      <p style="color:var(--muted)">Steps 1–3 are all compatible with either answer to step 4 — no regret moves.</p>
+    </section>
+
+    <section class="checks">
+      <div class="k" style="color:var(--lime)">Durable record</div>
+      <div class="check"><span class="dot">1</span><div><b>The shell already converged.</b><br>TECH-728 deleted the four-variant dispatch; platform learned "don't fork the shell" empirically, like Codex/Claude desktop shipping one harness.</div></div>
+      <div class="check"><span class="dot">2</span><div><b>Many-clients is deploy-time today.</b><br>Slug baked into the image; one Cloud Run lane per client with per-lane SA/prefix/secret as the tenancy model.</div></div>
+      <div class="check"><span class="dot">3</span><div><b>The bundle contract is the asset.</b><br>Manifest + zod loaders + fail-closed defaults; every data path is already slug-parameterized — runtime clients are plumbing, not redesign.</div></div>
+      <div class="check"><span class="dot">4</span><div><b>Two seams are faked by hand.</b><br>The upstream chat-engine snapshot ledger and script-synced client JSON — both are exactly what a monorepo retires.</div></div>
+    </section>
+
+    <footer>
+      <a href="https://linear.app/nomad-code/issue/TODO-301/dha-ingest-monorepo">TODO-301 ↗</a>
+      <span>2026-07-27 · ccr</span>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BTS Jakarta tickets — gift check</title>
+  <style>
+    :root{--ink:#173b35;--muted:#60736f;--paper:#f5f7f1;--card:#fff;--accent:#8dbb39;--warn:#fff4d6}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,sans-serif}
+    main{max-width:820px;margin:0 auto;padding:48px 24px 64px}.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#579c8d;font-weight:700}
+    h1{font-size:clamp(32px,6vw,58px);line-height:1.02;margin:16px 0 30px;letter-spacing:-.04em}.card{background:var(--card);border-radius:22px;padding:28px;margin:16px 0;box-shadow:0 8px 30px #173b3512}
+    .answer{font-size:25px;font-weight:750}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{padding:18px;border:1px solid #dce7df;border-radius:14px}.label{display:block;color:var(--muted);font-size:13px}.value{font-size:20px;font-weight:750}
+    .warn{background:var(--warn);border-left:5px solid #d4a62a}.muted{color:var(--muted)}a{color:#237f74}footer{margin-top:24px;color:var(--muted);font-size:13px}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}.card{padding:22px}}
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">Gift planning · verified 20 July 2026 UTC</div>
+  <h1>BTS Jakarta<br>ticket check</h1>
+  <section class="card"><div class="answer">Cheapest face-value ticket: IDR 1,800,000.</div><p class="muted">That was the published starting price for the ARIRANG Jakarta shows. It is not a currently available purchase price.</p></section>
+  <section class="card grid">
+    <div class="metric"><span class="label">Shows</span><span class="value">26, 27, 29 Dec 2026</span></div>
+    <div class="metric"><span class="label">Venue</span><span class="value">GBK Main Stadium</span></div>
+    <div class="metric"><span class="label">Status</span><span class="value">Sold out</span></div>
+  </section>
+  <section class="card warn"><strong>Gift-buying guidance</strong><p>Do not buy from an unverified private seller. Watch <a href="https://www.tiket.com/">Tiket.com</a>, <a href="https://weverse.io/bts/notice/36777">BIGHIT/Weverse</a>, and <a href="https://ime.co/">iMe Indonesia</a> for an official release or transfer process. Confirm that any ticket is transferable before paying.</p></section>
+  <section class="card"><strong>Sources</strong><p><a href="https://www.indonesia.travel/id/id/events/event-detail/bts-world-tour-2026">Indonesia Travel event listing</a> — dates, starting price, and sold-out status.<br><a href="https://weverse.io/bts/notice/36777">BIGHIT Music notice</a> — official additional Jakarta date and ticket vendor.</p></section>
+  <footer>Prepared as a gift-planning reference; prices and availability can change.</footer>
+</main></body></html>

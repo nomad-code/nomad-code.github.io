@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-195 &middot; golf-sgt-round &middot; Gauntlet R2 · Shadow Ridge Country Club</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  main { max-width: 940px; margin: 0 auto; padding: 26px 26px 60px; }
+  .meta { color: var(--muted); font-size: .85rem; }
+  h1 { margin: 6px 0 2px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  .pos { color: var(--forest); } .neg { color: var(--warn); }
+  .na { color: var(--faint); }
+  .kpis { grid-template-columns: repeat(5, 1fr); }
+  .kpi-n { white-space: nowrap; }
+  .kpi-n .u { font-size: 13px; }
+
+  /* SG category split — diverging from a zero midline */
+  .split { margin-top: 16px; }
+  .srow { display: flex; align-items: center; gap: 12px; margin: 7px 0; }
+  .slbl { flex: 0 0 130px; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: .05em; color: var(--ink); }
+  .slbl .sname { color: var(--muted); margin-left: 7px; text-transform: none;
+    letter-spacing: 0; font-family: var(--font-ui); font-size: 11.5px; }
+  .strack { flex: 1 1 auto; position: relative; height: 14px;
+    background: var(--well); border-radius: 4px; overflow: hidden; }
+  .strack i { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; }
+  .strack i.pos { background: var(--forest); }
+  .strack i.neg { background: var(--warn); }
+  .strack .zero { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+    background: var(--faint); }
+  .sval { flex: 0 0 52px; text-align: right; font-family: var(--font-mono);
+    font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+  /* 18-hole strip */
+  .strip { display: grid; grid-template-columns: repeat(18, 1fr); gap: 4px;
+    margin-top: 14px; }
+  .cell { border: 1px solid var(--line); border-radius: 7px; background: var(--card);
+    text-align: center; padding: 5px 0 6px; }
+  .cell .hn { display: block; font-size: 9px; color: var(--faint);
+    font-family: var(--font-mono); }
+  .cell .sc { display: block; font-size: 14px; font-weight: 700;
+    font-variant-numeric: tabular-nums; }
+  .cell.birdie { background: var(--g-lime); border-color: var(--forest); }
+  .cell.bogey  { background: var(--amber-bg); border-color: var(--amber-bd); }
+  .cell.dbl    { background: var(--warn-bg); border-color: var(--warn-bd); }
+  .cell.np .sc { color: var(--faint); }
+  .striplegend { margin-top: 8px; color: var(--muted); font-size: .78rem;
+    font-family: var(--font-mono); letter-spacing: .03em; }
+  .striplegend i { display: inline-block; width: 10px; height: 10px;
+    border-radius: 3px; vertical-align: -1px; margin: 0 4px 0 10px;
+    border: 1px solid var(--line); }
+
+  /* stroke ledger */
+  .hole h3 { font-size: .98rem; margin: 26px 0 6px; }
+  .hole h3 span { color: var(--muted); font-weight: 400; font-size: .85rem;
+    margin-left: 8px; }
+  .tablewrap { overflow-x: auto; }
+  /* joined tables are wide by nature: scroll inside the wrap, never crush
+     (grove's mobile table{max-width:100%} would word-break every cell) */
+  .tablewrap.joined table.dt { min-width: 700px; max-width: none; }
+  .tablewrap.joined td, .tablewrap.joined th { white-space: nowrap; }
+  table.dt td.n { color: var(--faint); width: 30px; }
+  table.dt td, table.dt th { padding: 8px 10px; }
+  td.note { color: var(--muted); font-style: italic; font-family: var(--font-ui); }
+  .chip { display: inline-block; border-radius: var(--r-chip); padding: 1px 8px;
+    font-size: .68rem; font-weight: 640; letter-spacing: .03em;
+    font-family: var(--font-ui); border: 1px solid var(--line); color: var(--muted); }
+  .chip.ott  { color: var(--forest-d); background: var(--g-lime); border-color: var(--forest); }
+  .chip.app  { color: var(--found-d); background: var(--found-bg); border-color: var(--found-bd); }
+  .chip.arg  { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-bd); }
+  .chip.putt { color: var(--ink); background: var(--well); }
+  .chip.unattr { color: var(--warn); background: var(--warn-bg); border-color: var(--warn-bd); }
+  tr.omit td { color: var(--muted); }
+  .card h2 { margin: 0 0 10px; font-size: 1.05rem; }
+  section.block { margin-top: 26px; }
+  .notes li { margin: 6px 0; color: var(--body); }
+  .foot { color: var(--faint); font-size: .8rem; margin-top: 36px;
+    border-top: 1px solid var(--line); padding-top: 14px; }
+  .chip, table.dt td.pos, table.dt td.neg, table.dt td.na { white-space: nowrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 18px; }
+  .chips .chip { font-size: .78rem; padding: 3px 11px; border-radius: var(--r-pill); }
+  .chips .chip.hl { color: var(--forest-d); border-color: var(--forest); }
+  tr.phantom td { opacity: .55; }
+  .inh { display: inline-block; font-size: .64rem; color: var(--muted);
+    border: 1px dashed var(--line); border-radius: 6px; padding: 0 5px;
+    margin-left: 5px; vertical-align: 1px; }
+  td.vid { text-align: left; }
+  td.vid a { color: var(--forest); text-decoration: none; font-size: .74rem;
+    margin-right: 5px; }
+  td.vid a:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .strip { grid-template-columns: repeat(9, 1fr); }
+    .slbl { flex-basis: 96px; } .slbl .sname { display: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="meta">TODO-195 &middot; generated 2026-07-13 04:02 UTC &middot;
+    SGT scorecard 61665/45847 &middot; round 2 on the card</p>
+  <h1>Gauntlet R2 · Shadow Ridge Country Club</h1>
+  <p class="sub">Strokes gained vs the PGA-Tour (Broadie) baseline, with SwingNerds launch-monitor reads joined per stroke &mdash; the full pipeline, run from the cloud.</p>
+<div class="chips"><span class="chip hl">Shadow_Ridge_gsp</span><span class="chip">SN rounds 60</span><span class="chip">units: meters (auto)</span><span class="chip">match 90.6% &middot; median 0.09 yd</span><span class="chip">sequence + geometry, no timestamps</span></div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">79 <span class="u">+7</span></div>
+      <div class="kpi-l">gross &middot; par 72 &middot; 18 holes</div></div>
+    <div class="kpi"><div class="kpi-n neg">-18.2</div>
+      <div class="kpi-l">SG total vs PGA Tour</div></div>
+    <div class="kpi"><div class="kpi-n">36</div>
+      <div class="kpi-l">putts (from positions)</div></div>
+    <div class="kpi"><div class="kpi-n">13<span class="u">/18</span></div>
+      <div class="kpi-l">greens in regulation</div></div>
+    <div class="kpi"><div class="kpi-n">5<span class="u">/14</span></div>
+      <div class="kpi-l">fairways hit</div></div>
+  </div>
+
+  <section class="block card">
+    <h2>Where the strokes went</h2>
+    <div class="split">
+<div class="srow"><span class="slbl">OTT<span class="sname">off the tee</span></span><span class="strack"><i class="neg" style="right:50%;width:44.7%"></i><b class="zero"></b></span><span class="sval neg">-5.4</span></div>
+<div class="srow"><span class="slbl">APP<span class="sname">approach</span></span><span class="strack"><i class="neg" style="right:50%;width:0.6%"></i><b class="zero"></b></span><span class="sval neg">-0.1</span></div>
+<div class="srow"><span class="slbl">ARG<span class="sname">around green</span></span><span class="strack"><i class="neg" style="right:50%;width:37.6%"></i><b class="zero"></b></span><span class="sval neg">-4.6</span></div>
+<div class="srow"><span class="slbl">PUTT<span class="sname">putting</span></span><span class="strack"><i class="neg" style="right:50%;width:50.0%"></i><b class="zero"></b></span><span class="sval neg">-6.1</span></div>
+<div class="srow"><span class="slbl">UNATTR<span class="sname">unattributed</span></span><span class="strack"><i class="neg" style="right:50%;width:16.4%"></i><b class="zero"></b></span><span class="sval neg">-2.0</span></div>
+    </div>
+    <p class="meta" style="margin:10px 0 0">tee-to-green -10.1 &middot;
+      unattributed = penalties + unpositioned strokes (2 this round)</p>
+  </section>
+
+  <section class="block card">
+    <h2>Scorecard</h2>
+    <div class="strip">
+<div class="cell par" title="H1 par 4 gross 4"><span class="hn">1</span><span class="sc">4</span></div>
+<div class="cell birdie" title="H2 par 5 gross 4"><span class="hn">2</span><span class="sc">4</span></div>
+<div class="cell par" title="H3 par 3 gross 3"><span class="hn">3</span><span class="sc">3</span></div>
+<div class="cell birdie" title="H4 par 4 gross 3"><span class="hn">4</span><span class="sc">3</span></div>
+<div class="cell par" title="H5 par 4 gross 4"><span class="hn">5</span><span class="sc">4</span></div>
+<div class="cell bogey" title="H6 par 4 gross 5"><span class="hn">6</span><span class="sc">5</span></div>
+<div class="cell bogey" title="H7 par 5 gross 6"><span class="hn">7</span><span class="sc">6</span></div>
+<div class="cell par" title="H8 par 3 gross 3"><span class="hn">8</span><span class="sc">3</span></div>
+<div class="cell par" title="H9 par 4 gross 4"><span class="hn">9</span><span class="sc">4</span></div>
+<div class="cell bogey" title="H10 par 4 gross 5"><span class="hn">10</span><span class="sc">5</span></div>
+<div class="cell dbl" title="H11 par 4 gross 6"><span class="hn">11</span><span class="sc">6</span></div>
+<div class="cell par" title="H12 par 5 gross 5"><span class="hn">12</span><span class="sc">5</span></div>
+<div class="cell bogey" title="H13 par 3 gross 4"><span class="hn">13</span><span class="sc">4</span></div>
+<div class="cell bogey" title="H14 par 4 gross 5"><span class="hn">14</span><span class="sc">5</span></div>
+<div class="cell par" title="H15 par 4 gross 4"><span class="hn">15</span><span class="sc">4</span></div>
+<div class="cell dbl" title="H16 par 5 gross 7"><span class="hn">16</span><span class="sc">7</span></div>
+<div class="cell bogey" title="H17 par 3 gross 4"><span class="hn">17</span><span class="sc">4</span></div>
+<div class="cell birdie" title="H18 par 4 gross 3"><span class="hn">18</span><span class="sc">3</span></div>
+    </div>
+    <p class="striplegend">score vs par:<i style="background:var(--g-lime)"></i>birdie+
+      <i style="background:var(--card)"></i>par
+      <i style="background:var(--amber-bg)"></i>bogey
+      <i style="background:var(--warn-bg)"></i>double+</p>
+  </section>
+
+  <h2 style="margin:34px 0 4px">Every stroke, hole by hole</h2>
+  <p class="meta" style="margin:0 0 8px">line = lie + distance before &rarr; after
+    (yd off the green, ft on it) &middot; SG per stroke vs the baseline</p>
+<section class="hole"><h3>H1 <span>par 4 &middot; gross 4 &middot; SG <b class="neg">-0.58</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 257 yd &rarr; fairway 31 yd</td><td>148.1</td><td>226.2</td><td>4361</td><td>9.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_132831_081_dtl_20260710132836_15ea1184.mp4">dtl</a></td><td class="neg">-0.11</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">fairway 31 yd &rarr; green 9 ft</td><td>31.9</td><td>27.9</td><td>3150</td><td>32.7</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_132859_887_dtl_20260710132905_833c60e9.mp4">dtl</a></td><td class="neg">-0.03</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 9 ft &rarr; green 2 ft</td><td>5.1</td><td>3.8</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.45</td></tr>
+<tr class="phantom"><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span> <span class="inh">inherited</span></td><td class="l line">green 2 ft &rarr; hole</td><td>5.1</td><td>0.8</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.01</td></tr>
+</table></div></section>
+<section class="hole"><h3>H2 <span>par 5 &middot; gross 4 &middot; SG <b class="neg">-0.33</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 286 yd &rarr; deeprough 136 yd</td><td>149.1</td><td>149.7</td><td>4052</td><td>7.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_132956_653_dtl_20260710133000_19b07110.mp4">dtl</a></td><td class="neg">-0.77</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">deeprough 136 yd &rarr; fairway 11 yd</td><td>112.1</td><td>126.8</td><td>3545</td><td>18.3</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133055_704_dtl_20260710133058_a0d380e3.mp4">dtl</a></td><td class="pos">+0.23</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">fairway 11 yd &rarr; green 10 ft</td><td>14.3</td><td>7.3</td><td>2040</td><td>32.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133118_450_dtl_20260710133157_291f7dca.mp4">dtl</a></td><td class="neg">-0.41</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 10 ft &rarr; hole</td><td>5.3</td><td>3.4</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133127_468_dtl_20260710133156_c44f0d64.mp4">dtl</a></td><td class="pos">+0.61</td></tr>
+</table></div></section>
+<section class="hole"><h3>H3 <span>par 3 &middot; gross 3 &middot; SG <b class="neg">-0.22</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">tee 94.3 yd &rarr; green 7 ft</td><td>76.8</td><td>92.4</td><td>10173</td><td>26.2</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133208_610_dtl_20260710133212_10ddb0fd.mp4">dtl</a></td><td class="pos">+0.35</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 7 ft &rarr; green 1 ft</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="vid"></td><td class="neg">-0.57</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 1 ft &rarr; hole</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="vid"></td><td class="pos">+0.00</td></tr>
+</table></div></section>
+<section class="hole"><h3>H4 <span>par 4 &middot; gross 3 &middot; SG <b class="pos">+0.34</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 249 yd &rarr; rough 42 yd</td><td>138.5</td><td>207.2</td><td>5827</td><td>9.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133250_409_dtl_20260710133254_5165f38f.mp4">dtl</a></td><td class="neg">-0.46</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">rough 42 yd &rarr; green 7 ft</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="vid"></td><td class="pos">+0.37</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 7 ft &rarr; hole</td><td>49.3</td><td>42.4</td><td>3977</td><td>31.5</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133303_294_dtl_20260710133307_3fd1d5fa.mp4">dtl</a></td><td class="pos">+0.43</td></tr>
+</table></div></section>
+<section class="hole"><h3>H5 <span>par 4 &middot; gross 4 &middot; SG <b class="neg">-0.78</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 232.3 yd &rarr; green 58 ft</td><td>135.6</td><td>213.4</td><td>5436</td><td>10.7</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133337_903_dtl_20260710133341_ac8c8ced.mp4">dtl</a></td><td class="pos">+0.02</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 58 ft &rarr; green 12 ft</td><td>10.1</td><td>15.5</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.48</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 12 ft &rarr; green 6 ft</td><td>4.9</td><td>6.0</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.66</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 6 ft &rarr; hole</td><td>4.3</td><td>2.0</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.34</td></tr>
+</table></div></section>
+<section class="hole"><h3>H6 <span>par 4 &middot; gross 5 &middot; SG <b class="neg">-1.02</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 391 yd &rarr; deeprough 227 yd</td><td>148.1</td><td>164.0</td><td>3522</td><td>9.0</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133505_919_dtl_20260710133509_0ca639b1.mp4">dtl</a></td><td class="neg">-0.89</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">deeprough 227 yd &rarr; green 18 ft</td><td>146.2</td><td>222.3</td><td>4980</td><td>10.5</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_133559_904_dtl_20260710133603_5df7b660.mp4">dtl</a></td><td class="pos">+1.03</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 18 ft &rarr; green 15 ft</td><td>7.0</td><td>10.8</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.95</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 15 ft &rarr; hole</td><td>6.1</td><td>4.9</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.78</td></tr>
+<tr class="omit"><td class="n">&middot;</td><td class="stc"><span class="chip unattr">unattributed</span></td><td class="l line note" colspan="1">1 unpositioned stroke (penalty / mid-hole) &mdash; SG residual -1.00</td><td colspan="5"></td><td class="neg">-1.00</td></tr>
+</table></div></section>
+<section class="hole"><h3>H7 <span>par 5 &middot; gross 6 &middot; SG <b class="neg">-2.29</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 299 yd &rarr; fairway 72 yd</td><td>134.1</td><td>227.1</td><td>4057</td><td>10.6</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_150652_401_dtl_20260710150658_c84b96b1.mp4">dtl</a></td><td class="neg">-0.02</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">fairway 72 yd &rarr; fairway 20 yd</td><td>70.0</td><td>89.2</td><td>3500</td><td>8.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_150727_688_dtl_20260710150730_d5bab175.mp4">dtl</a></td><td class="neg">-0.68</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">fairway 20 yd &rarr; fairway 13 yd</td><td>15.1</td><td>7.1</td><td>2187</td><td>32.1</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_150752_964_dtl_20260710150756_c8d39b2f.mp4">dtl</a></td><td class="neg">-0.85</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">fairway 13 yd &rarr; green 10 ft</td><td>8.2</td><td>13.2</td><td>122</td><td>1.4</td><td class="vid"></td><td class="neg">-0.36</td></tr>
+<tr><td class="n">5</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 10 ft &rarr; green 1 ft</td><td>4.6</td><td>3.7</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.39</td></tr>
+<tr class="phantom"><td class="n">6</td><td class="stc"><span class="chip putt">PUTT</span> <span class="inh">inherited</span></td><td class="l line">green 1 ft &rarr; hole</td><td>4.6</td><td>0.4</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.00</td></tr>
+</table></div></section>
+<section class="hole"><h3>H8 <span>par 3 &middot; gross 3 &middot; SG <b class="neg">-0.01</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">tee 124.3 yd &rarr; green 52 ft</td><td>86.9</td><td>107.0</td><td>6843</td><td>13.6</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_150919_107_dtl_20260710150922_798d2980.mp4">dtl</a></td><td class="neg">-0.17</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 52 ft &rarr; green 8 ft</td><td>10.3</td><td>14.8</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_150926_447_dtl_20260710150929_bd551004.mp4">dtl</a></td><td class="neg">-0.35</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 8 ft &rarr; hole</td><td>4.5</td><td>2.7</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.50</td></tr>
+</table></div></section>
+<section class="hole"><h3>H9 <span>par 4 &middot; gross 4 &middot; SG <b class="neg">-0.79</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 230 yd &rarr; green 45 ft</td><td>132.6</td><td>215.4</td><td>4362</td><td>14.3</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151037_704_dtl_20260710151041_dc05d7b4.mp4">dtl</a></td><td class="pos">+0.11</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 45 ft &rarr; green 8 ft</td><td>9.7</td><td>17.6</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.40</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 8 ft &rarr; green 4 ft</td><td>4.8</td><td>3.9</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.64</td></tr>
+<tr class="phantom"><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span> <span class="inh">inherited</span></td><td class="l line">green 4 ft &rarr; hole</td><td>4.8</td><td>1.4</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.14</td></tr>
+</table></div></section>
+<section class="hole"><h3>H10 <span>par 4 &middot; gross 5 &middot; SG <b class="neg">-1.55</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 260 yd &rarr; fairway 38 yd</td><td>137.1</td><td>221.9</td><td>4296</td><td>6.3</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151152_691_dtl_20260710151157_c41fea6a.mp4">dtl</a></td><td class="neg">-0.13</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">fairway 38 yd &rarr; green 17 ft</td><td>31.8</td><td>32.1</td><td>2374</td><td>21.4</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151230_264_dtl_20260710151233_932c7b3c.mp4">dtl</a></td><td class="neg">-0.23</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 17 ft &rarr; green 15 ft</td><td>6.7</td><td>10.5</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151243_842_dtl_20260710151247_76fbcb82.mp4">dtl</a></td><td class="neg">-0.96</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 15 ft &rarr; green 2 ft</td><td>5.3</td><td>4.6</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.23</td></tr>
+<tr class="phantom"><td class="n">5</td><td class="stc"><span class="chip putt">PUTT</span> <span class="inh">inherited</span></td><td class="l line">green 2 ft &rarr; hole</td><td>5.3</td><td>0.6</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.01</td></tr>
+</table></div></section>
+<section class="hole"><h3>H11 <span>par 4 &middot; gross 6 &middot; SG <b class="neg">-2.83</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 221 yd &rarr; rough 34 yd</td><td>117.1</td><td>186.8</td><td>4454</td><td>13.4</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151345_432_dtl_20260710151348_7716c13a.mp4">dtl</a></td><td class="neg">-0.56</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">rough 34 yd &rarr; fairway 16 yd</td><td>24.4</td><td>18.6</td><td>1932</td><td>34.2</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151413_471_dtl_20260710151417_93f11158.mp4">dtl</a></td><td class="neg">-0.58</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">fairway 16 yd &rarr; rough 5 yd</td><td>11.8</td><td>20.5</td><td>142</td><td>2.2</td><td class="vid"></td><td class="neg">-0.90</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">rough 5 yd &rarr; green 17 ft</td><td>14.5</td><td>10.9</td><td>1189</td><td>22.0</td><td class="vid"></td><td class="neg">-0.60</td></tr>
+<tr><td class="n">5</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 17 ft &rarr; green 2 ft</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="vid"></td><td class="neg">-0.19</td></tr>
+<tr><td class="n">6</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 2 ft &rarr; hole</td><td>4.2</td><td>5.1</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151510_937_dtl_20260710151515_8ae6bac5.mp4">dtl</a></td><td class="pos">+0.01</td></tr>
+</table></div></section>
+<section class="hole"><h3>H12 <span>par 5 &middot; gross 5 &middot; SG <b class="neg">-1.15</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 336 yd &rarr; fairway 123 yd</td><td>127.8</td><td>213.3</td><td>5458</td><td>18.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151559_953_dtl_20260710151603_d14c0642.mp4">dtl</a></td><td class="neg">-0.01</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">fairway 123 yd &rarr; sand 8 yd</td><td>87.2</td><td>117.3</td><td>5927</td><td>29.1</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151625_882_dtl_20260710151629_d30a8ad8.mp4">dtl</a></td><td class="neg">-0.55</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">sand 8 yd &rarr; rough 6 yd</td><td>18.2</td><td>2.9</td><td>1643</td><td>39.4</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151658_552_dtl_20260710151702_70a08417.mp4">dtl</a></td><td class="neg">-0.83</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">rough 6 yd &rarr; green 5 ft</td><td>10.2</td><td>7.1</td><td>776</td><td>38.3</td><td class="vid"></td><td class="pos">-0.00</td></tr>
+<tr class="phantom"><td class="n">5</td><td class="stc"><span class="chip putt">PUTT</span> <span class="inh">inherited</span></td><td class="l line">green 5 ft &rarr; hole</td><td>10.2</td><td>1.6</td><td>776</td><td>38.3</td><td class="vid"></td><td class="pos">+0.24</td></tr>
+</table></div></section>
+<section class="hole"><h3>H13 <span>par 3 &middot; gross 4 &middot; SG <b class="neg">-1.24</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">tee 86.7 yd &rarr; green 11 ft</td><td>69.3</td><td>82.6</td><td>6861</td><td>34.4</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151743_939_dtl_20260710151747_7a283ec2.mp4">dtl</a></td><td class="pos">+0.12</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 11 ft &rarr; green 6 ft</td><td>5.4</td><td>5.8</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151753_258_dtl_20260710151756_40895120.mp4">dtl</a></td><td class="neg">-0.70</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 6 ft &rarr; green 8 ft</td><td>4.3</td><td>4.6</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-1.16</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 8 ft &rarr; hole</td><td>3.6</td><td>2.5</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.50</td></tr>
+</table></div></section>
+<section class="hole"><h3>H14 <span>par 4 &middot; gross 5 &middot; SG <b class="neg">-1.89</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 198 yd &rarr; sand 51 yd</td><td>111.5</td><td>146.7</td><td>6660</td><td>10.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151903_829_dtl_20260710151907_e5fd5652.mp4">dtl</a></td><td class="neg">-0.83</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">sand 51 yd &rarr; green 51 ft</td><td>49.4</td><td>34.0</td><td>4109</td><td>36.1</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_151933_983_dtl_20260710151937_d50c1a80.mp4">dtl</a></td><td class="neg">-0.20</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 51 ft &rarr; green 18 ft</td><td>13.0</td><td>23.1</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.69</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 18 ft &rarr; green 1 ft</td><td>5.7</td><td>6.1</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.17</td></tr>
+<tr class="phantom"><td class="n">5</td><td class="stc"><span class="chip putt">PUTT</span> <span class="inh">inherited</span></td><td class="l line">green 1 ft &rarr; hole</td><td>5.7</td><td>0.3</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.00</td></tr>
+</table></div></section>
+<section class="hole"><h3>H15 <span>par 4 &middot; gross 4 &middot; SG <b class="neg">-0.36</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 279 yd &rarr; deeprough 91 yd</td><td>150.4</td><td>187.8</td><td>3749</td><td>9.7</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152102_980_dtl_20260710152106_09473082.mp4">dtl</a></td><td class="neg">-0.65</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">deeprough 91 yd &rarr; fairway 7 yd</td><td>76.9</td><td>85.3</td><td>2813</td><td>32.5</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152127_267_dtl_20260710152131_85aae9af.mp4">dtl</a></td><td class="pos">+0.18</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">fairway 7 yd &rarr; green 3 ft</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="vid"></td><td class="pos">+0.06</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 3 ft &rarr; hole</td><td>13.3</td><td>6.5</td><td>2195</td><td>32.1</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152155_391_dtl_20260710152200_42b913c5.mp4">dtl</a></td><td class="pos">+0.05</td></tr>
+</table></div></section>
+<section class="hole"><h3>H16 <span>par 5 &middot; gross 7 &middot; SG <b class="neg">-2.91</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 443 yd &rarr; deeprough 290 yd</td><td>143.5</td><td>152.9</td><td>4106</td><td>7.5</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152228_424_dtl_20260710152231_d0930854.mp4">dtl</a></td><td class="neg">-1.08</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">deeprough 290 yd &rarr; fairway 65 yd</td><td>142.2</td><td>231.5</td><td>3469</td><td>12.8</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152311_042_dtl_20260710152314_2786c423.mp4">dtl</a></td><td class="pos">+0.46</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">fairway 65 yd &rarr; green 23 ft</td><td>64.8</td><td>72.3</td><td>6244</td><td>38.5</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152337_652_dtl_20260710152343_ce744a45.mp4">dtl</a></td><td class="neg">-0.19</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 23 ft &rarr; green 11 ft</td><td>6.4</td><td>11.1</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.74</td></tr>
+<tr><td class="n">5</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 11 ft &rarr; green 1 ft</td><td>4.9</td><td>3.9</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="neg">-0.36</td></tr>
+<tr class="phantom"><td class="n">6</td><td class="stc"><span class="chip putt">PUTT</span> <span class="inh">inherited</span></td><td class="l line">green 1 ft &rarr; hole</td><td>4.9</td><td>0.4</td><td>141420</td><td><span class="na">&middot;</span></td><td class="vid"></td><td class="pos">+0.00</td></tr>
+<tr class="omit"><td class="n">&middot;</td><td class="stc"><span class="chip unattr">unattributed</span></td><td class="l line note" colspan="1">1 unpositioned stroke (penalty / mid-hole) &mdash; SG residual -1.00</td><td colspan="5"></td><td class="neg">-1.00</td></tr>
+</table></div></section>
+<section class="hole"><h3>H17 <span>par 3 &middot; gross 4 &middot; SG <b class="neg">-1.08</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">tee 100 yd &rarr; sand 12 yd</td><td>72.5</td><td>87.6</td><td>6872</td><td>35.3</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152435_270_dtl_20260710152438_d7047b6d.mp4">dtl</a></td><td class="neg">-0.53</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">sand 12 yd &rarr; rough 8 yd</td><td>22.1</td><td>4.6</td><td>2353</td><td>34.2</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152457_163_dtl_20260710152501_7073b346.mp4">dtl</a></td><td class="neg">-0.84</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip arg">ARG</span></td><td class="l line">rough 8 yd &rarr; green 4 ft</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="vid"></td><td class="pos">+0.15</td></tr>
+<tr><td class="n">4</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 4 ft &rarr; hole</td><td>14.9</td><td>9.0</td><td>1385</td><td>31.8</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152510_481_dtl_20260710152513_16133bb5.mp4">dtl</a></td><td class="pos">+0.14</td></tr>
+</table></div></section>
+<section class="hole"><h3>H18 <span>par 4 &middot; gross 3 &middot; SG <b class="pos">+0.52</b></span></h3>
+<div class="tablewrap joined"><table class="dt">
+<tr><th>#</th><th class="l">cat</th><th class="l">line</th><th>ball mph</th><th>carry yd</th><th>spin rpm</th><th>launch &deg;</th><th class="l">video</th><th>SG</th></tr>
+<tr><td class="n">1</td><td class="stc"><span class="chip ott">OTT</span></td><td class="l line">tee 267 yd &rarr; fairway 38 yd</td><td>146.4</td><td>229.3</td><td>4629</td><td>11.9</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152551_461_dtl_20260710152556_1c670d15.mp4">dtl</a></td><td class="neg">-0.06</td></tr>
+<tr><td class="n">2</td><td class="stc"><span class="chip app">APP</span></td><td class="l line">fairway 38 yd &rarr; green 5 ft</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="na">&middot;</td><td class="vid"></td><td class="pos">+0.34</td></tr>
+<tr><td class="n">3</td><td class="stc"><span class="chip putt">PUTT</span></td><td class="l line">green 5 ft &rarr; hole</td><td>41.8</td><td>38.1</td><td>4021</td><td>35.2</td><td class="vid"><a href="https://videos.swingnerds.com/videos/bb4f54d1-9e6b-4e19-a063-130b6cd104ee/2026/07/swing_20260710_152614_758_dtl_20260710152618_d2c2b027.mp4">dtl</a></td><td class="pos">+0.24</td></tr>
+</table></div></section>
+
+  <section class="block card notes">
+    <h2>Honest numbers</h2>
+    <ul>
+      <li><b>OTT / round totals are optimistic upper bounds.</b> SGT publishes no
+        hole yardage; tee-to-pin length is reconstructed as travelled + remaining,
+        which is &ge; the true length on offline drives. Putting, approach and
+        around-green use measured distances and are unaffected.</li>
+      <li><b>SwingNerds joined per stroke</b> (env-login pull): order-preserving alignment of post-shot distance-to-pin vs each SGT line&rsquo;s end distance; 6 strokes have no monitor read; dimmed <i>inherited</i> rows are phantom reads marking gimmies/penalties, not swings.</li>
+      <li><b>Quest/gauntlet round</b> &mdash; invisible on public SGT pages; pulled
+        via the logged-in quest dashboard, then the three public scorecard
+        fragments.</li>
+      <li><b>Putt counts re-derived from shot positions</b>; SGT's own putt
+        counters are unreliable.</li>
+      <li><b>This round visits unvalidated baseline tables:</b> deeprough (seeded as rough+0.3) &mdash; those strokes carry the seeded values, not gate-validated ones.</li>
+      <li><b>Baseline:</b> PGA Tour expected-strokes baseline, reconstructed 2026-07-12 (cloud session) from published Broadie tables: tee/fairway/rough/sand/recovery from Broadie 2011 Interfaces 41(4) Table&hellip;</li>
+    </ul>
+  </section>
+
+  <div class="foot">
+    Pipeline: <code>sgt_discover.py</code> (env creds) &rarr;
+    <code>sgt_pull.py 61665 45847</code> &rarr;
+    <code>strokes_gained.py --baseline ref/broadie_baseline.json</code> &rarr; <code>sn_pull.py</code> &rarr; <code>sn_sgt_join.py</code> &rarr;
+    <code>sgt_only_artifact.py</code>.
+    Sources: <code>round_61665_45847.json</code> &middot; <code>strokes_gained_61665_45847.json</code> &middot; <code>joined_61665_45847.json</code> &middot;
+    toolkit <code>bpo/projects/golf-swingnerds</code> &middot; TODO-195.
+  </div>
+</main>
+</body>
+</html>

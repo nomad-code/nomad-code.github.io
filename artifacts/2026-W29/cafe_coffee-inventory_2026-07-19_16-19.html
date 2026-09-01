@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3eee5">
+  <title>Café · coffee inventory</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <style>
+    :root { --coffee:#6b4226; --coffee-soft:#eee1d2; --cream:#f3eee5; --green:#365b4c; }
+    * { box-sizing:border-box; }
+    body { min-height:100vh; background:var(--cream); }
+    main { width:min(1120px, calc(100% - 36px)); margin:0 auto; padding:36px 0 72px; }
+    .eyebrow { color:var(--coffee); font:650 11px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; }
+    h1 { max-width:850px; margin:18px 0 14px; color:var(--ink); font:800 clamp(42px,7vw,78px)/.94 var(--font-display); letter-spacing:-.06em; }
+    h1 em { color:var(--coffee); font-style:normal; }
+    .lede { max-width:760px; color:var(--body); font:450 17px/1.6 var(--font-ui); }
+    .notice { margin:24px 0; padding:15px 17px; border:1px solid #d8c2aa; border-radius:var(--r-panel); background:#f8f1e8; color:#5f4934; font:500 13px/1.55 var(--font-ui); }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:28px 0 14px; }
+    .stat, .panel { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card); box-shadow:var(--shadow-card); }
+    .stat { padding:16px; }
+    .stat b { display:block; color:var(--coffee); font:800 30px/1 var(--font-display); }
+    .stat span { display:block; margin-top:6px; color:var(--muted); font:550 10px/1.3 var(--font-mono); text-transform:uppercase; }
+    .panel { padding:22px; margin-top:14px; }
+    .kicker { color:var(--coffee); font:650 10px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; }
+    h2 { margin:8px 0 8px; color:var(--ink); font:750 27px/1.1 var(--font-display); letter-spacing:-.03em; }
+    .sub { margin:0 0 18px; color:var(--muted); font:450 12.5px/1.5 var(--font-ui); }
+    table { width:100%; border-collapse:collapse; }
+    th { padding:0 10px 9px; border-bottom:1px solid var(--line); color:var(--faint); font:600 9px/1 var(--font-mono); letter-spacing:.06em; text-align:left; text-transform:uppercase; }
+    td { padding:11px 10px; border-bottom:1px solid var(--line); color:var(--body); font:450 12.5px/1.4 var(--font-ui); vertical-align:top; }
+    tr:last-child td { border-bottom:0; }
+    td:first-child { color:var(--ink); font-weight:650; white-space:nowrap; }
+    .tag { display:inline-block; margin:0 5px 5px 0; padding:5px 7px; border-radius:7px; background:var(--coffee-soft); color:var(--coffee); font:600 10px/1.1 var(--font-mono); }
+    .tag.green { background:#e2eee7; color:var(--green); }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    ul { margin:0; padding-left:20px; color:var(--body); font:450 13px/1.55 var(--font-ui); }
+    li + li { margin-top:8px; }
+    .footer { display:flex; justify-content:space-between; gap:18px; margin-top:24px; padding-top:17px; border-top:1px solid var(--line); color:var(--faint); font:500 10px/1.5 var(--font-mono); }
+    @media (max-width:760px) { .stats { grid-template-columns:repeat(2,1fr); } .grid { grid-template-columns:1fr; } main { width:min(100% - 24px,1120px); padding-top:24px; } th:nth-child(3), td:nth-child(3) { display:none; } }
+    @media print { .panel, .stat { box-shadow:none; break-inside:avoid; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">bpo · café · corpus audit · 2026-07-19</div>
+    <h1>Every coffee the corpus can <em>actually prove.</em></h1>
+    <p class="lede">A best-effort inventory from <code>./bpo</code>. The diary is precise from late March 2026 onward; older entries come mainly from photo/timeline filenames. “Visited a coffee place” is kept separate from “drank this exact drink.”</p>
+
+    <div class="notice"><strong>Reading rule:</strong> named brews and drink records are high-confidence. Photo evidence is useful but cannot always prove that the cup was yours, what it contained, or whether several photos represent one serving.</div>
+
+    <section class="stats">
+      <div class="stat"><b>18</b><span>precise brew records</span></div>
+      <div class="stat"><b>2</b><span>named Toni tastings · date unknown</span></div>
+      <div class="stat"><b>5+</b><span>named café drinks / flights</span></div>
+      <div class="stat"><b>2024–26</b><span>photo evidence span</span></div>
+    </section>
+
+    <section class="panel">
+      <div class="kicker">high confidence · brew diary</div>
+      <h2>Named beans, recipes, and preparations</h2>
+      <p class="sub">Dates are drinking dates in WITA where the daily note establishes them. UTC log stamps are converted where relevant.</p>
+      <table>
+        <thead><tr><th>Date / time</th><th>Coffee</th><th>Preparation</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Mar 25–26</td><td>Ribang Gayo Musara · Indonesia</td><td>AeroPress; 11g; 1.4.0 baseline + 1.3.0 adjustment</td><td>Good / clean / subtle fruit</td></tr>
+          <tr><td>Mar 29</td><td>Buka</td><td>AeroPress; 10g</td><td>Not recorded</td></tr>
+          <tr><td>Apr 1</td><td>China Triple Ferment · Basking</td><td>V60; 15g; 2.5.0</td><td>Funky; cedar-like; not smooth</td></tr>
+          <tr><td>Apr 21</td><td>Kona · Vienna Roast</td><td>AeroPress; 11g; 2.7.5</td><td>Not recorded</td></tr>
+          <tr><td>Apr 21</td><td>Strawberry Fields · Space Roastery / Aceh Gayo</td><td>Espresso; 18g; 1.2.9</td><td>Not recorded</td></tr>
+          <tr><td>Apr 22</td><td>REC Ethiopia</td><td>AeroPress; 11g; 1.4.0</td><td>Not recorded</td></tr>
+          <tr><td>Apr 22 · 13:30</td><td>Strawberry Fields</td><td>Espresso; 18g; 1.2.5</td><td>Not recorded</td></tr>
+          <tr><td>Apr 22 · 16:00</td><td>Strawberry Fields</td><td>Flat white with oat milk; 8.2g</td><td>Not recorded</td></tr>
+          <tr><td>Apr 22 · 16:00</td><td>Strawberry Fields</td><td>Flat white with oat milk; 8.1g</td><td>Not recorded</td></tr>
+          <tr><td>Apr 23</td><td>Colombian</td><td>AeroPress inverted; 11g; 96°C; 1:30</td><td>Good; keeper baseline</td></tr>
+          <tr><td>Apr 23 · 15:00</td><td>Aceh Gayo · Hayati / Avatara</td><td>AeroPress inverted; 11g; 1.5.5; ~183g; ~2:30</td><td>Blueberry notes</td></tr>
+          <tr><td>Apr 24 · ~07:00</td><td>Ethiopia Honeydew · Smoking Barrels</td><td>AeroPress inverted; 11g; 1.7.0; ~1:45</td><td>Good; coarser grind improved clarity</td></tr>
+          <tr><td>Apr 25 · ~07:00</td><td>Watermelon Smash · Fugol</td><td>AeroPress inverted; 11g; 1.7.0; 182g; 2:45</td><td>Okay</td></tr>
+          <tr><td>Apr 27 · 10:58</td><td>Panama Kotowa</td><td>AeroPress inverted; 11g; 1.6.0; 195g; 2:51</td><td>Tasting blank</td></tr>
+          <tr><td>Apr 27</td><td>Decaf X-Pack</td><td>2-cup Bialetti moka; 11.3g / 13g in two runs</td><td>Not too bad / okay</td></tr>
+          <tr><td>Apr 28 · 10:00</td><td>Ardent Gedeb · REC · Ethiopia</td><td>AeroPress inverted; 11g; 1.6.0; 10:30 steep</td><td>Flat; retry near 2:00</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="kicker">named tasting · date unresolved</div>
+        <h2>Toni’s coffee omakase</h2>
+        <ul>
+          <li><span class="tag">Strawberry Fields</span> espresso piccolo · 22g · grind 1.2.7</li>
+          <li><span class="tag">Ethiopia Honeydew</span> espresso piccolo · 22g · grind 1.2.0</li>
+          <li>Toni also gave you 100g of Ijen Arabica; the vault does not say when you drank it.</li>
+        </ul>
+      </section>
+      <section class="panel">
+        <div class="kicker">strong photo / timeline evidence</div>
+        <h2>Café drinks and flights</h2>
+        <ul>
+          <li>Dec 20, 2025 · Seniman Renon coffee flight</li>
+          <li>Dec 20, 2025 · Twenty Milli three-espresso flight</li>
+          <li>Dec 25, 2025 · Holy Tree flat white</li>
+          <li>Dec 31, 2025 · Bombolonis espresso</li>
+          <li>Jan 14 and Jan 18, 2026 · BGS flat white with almond milk</li>
+          <li>Jan 29, 2026 · Lonich Fukuoka coffee omakase; exact cups unknown</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="kicker">venue evidence · drink unspecified</div>
+      <h2>Places where coffee activity is documented</h2>
+      <p class="sub">These are not counted as exact drinks unless a beverage is named.</p>
+      <div>
+        <span class="tag green">Kabunku · Nov 27, 2025</span>
+        <span class="tag green">LOMA Seseh · Nov 27, 2025</span>
+        <span class="tag green">Blacklist · Dec 21, 2025</span>
+        <span class="tag green">Loma · Jan 7, 2026</span>
+        <span class="tag green">Missibu · Jan 9, 2026</span>
+        <span class="tag green">Blacklist · Jan 10, 2026</span>
+        <span class="tag green">Coffee County · Jan 30, 2026</span>
+        <span class="tag green">REC · Jan 30, 2026</span>
+        <span class="tag green">Manly · Jan 30, 2026</span>
+        <span class="tag green">ELtren · Jan 30, 2026</span>
+        <span class="tag green">Repeated “Coffee · Medewi” clusters · Dec 19–Jan 5</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="kicker">gaps</div>
+      <h2>What this cannot yet answer</h2>
+      <ul>
+        <li>The Toano blind tasting with Tim R.: date, beans, and cups unknown.</li>
+        <li>Many historical café photos prove presence, not personal consumption.</li>
+        <li>The underlying images are outside this repo; the corpus contains their timeline filenames, not visual confirmation.</li>
+        <li>The diary begins in earnest on Mar 25, 2026. Earlier personal coffee history is incomplete.</li>
+      </ul>
+    </section>
+
+    <div class="footer"><span>source: bpo · dna/cafe, dna/daily, dna/places</span><span>audit date: 2026-07-19 UTC</span></div>
+  </main>
+</body>
+</html>
