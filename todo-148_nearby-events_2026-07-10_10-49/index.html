@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-148 · nearby events — computed → rendered</title>
+
+<!-- bre password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<style>
+  :root {
+    --bg:#0f1110; --panel:#161a18; --line:#262c29;
+    --ink:#e8ece9; --quiet:#97a19c; --faint:#6c766f;
+    --teal:#87CAB7; --teal-dim:#5f8f80; --gold:#d7c58a; --red:#d98a8a;
+    /* category colors, dark-surface variants (validated); product hexes in data */
+    --c-oneday:#A4701C; --c-fourhour:#9E9440; --c-group:#6C8BC9; --c-virtual:#BC8B30;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; }
+  body {
+    background:radial-gradient(120% 80% at 85% -10%, #17201c 0%, var(--bg) 55%);
+    color:var(--ink); font-family:var(--sans); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:1000px; margin:0 auto; padding:56px 24px 96px; }
+  .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--teal-dim); }
+  h1 { font-size:clamp(28px,5vw,44px); line-height:1.08; margin:12px 0 4px;
+    letter-spacing:-.02em; font-weight:650; }
+  h1 .dot { color:var(--teal); }
+  .lede { color:var(--quiet); font-size:17px; max-width:66ch; margin:14px 0 0; }
+  .lede b { color:var(--ink); font-weight:600; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 0; }
+  .chip { font-family:var(--mono); font-size:12px; color:var(--quiet);
+    border:1px solid var(--line); border-radius:999px; padding:5px 11px; white-space:nowrap; }
+  .chip b { color:var(--teal); font-weight:600; }
+  .chip .g { color:var(--gold); font-weight:600; }
+
+  section { margin-top:56px; }
+  h2 { font-size:21px; margin:0 0 4px; font-weight:620; }
+  h2 .n { font-family:var(--mono); font-size:13px; color:var(--teal-dim); margin-right:10px; }
+  .sub { color:var(--faint); font-size:14px; margin:0 0 18px; max-width:70ch; }
+  a { color:var(--teal); text-decoration:none; border-bottom:1px solid transparent; }
+  a:hover { border-bottom-color:var(--teal-dim); }
+  .mono { font-family:var(--mono); font-size:12.5px; color:var(--quiet); }
+
+  /* reveal on scroll */
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.shown { opacity:1; transform:none; }
+
+  /* ---------- the recording: browser chrome ---------- */
+  .browser { background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    overflow:hidden; box-shadow:0 18px 48px rgba(0,0,0,.35); }
+  .titlebar { display:flex; align-items:center; gap:10px; padding:10px 14px;
+    border-bottom:1px solid var(--line); background:#131715; }
+  .lights { display:flex; gap:6px; }
+  .lights span { width:10px; height:10px; border-radius:50%; background:#2c332f; display:block; }
+  .urlpill { flex:1; min-width:0; font-family:var(--mono); font-size:11.5px; color:var(--faint);
+    background:var(--bg); border:1px solid var(--line); border-radius:999px;
+    padding:4px 12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .urlpill b { color:var(--quiet); font-weight:500; }
+  .rec { display:flex; align-items:center; gap:6px; font-family:var(--mono);
+    font-size:11px; color:var(--red); white-space:nowrap; }
+  .rec i { width:8px; height:8px; border-radius:50%; background:var(--red); display:block;
+    animation:recpulse 1.4s ease-in-out infinite; }
+  #player[data-frozen="1"] .rec i { animation:none; opacity:.55; }
+  @keyframes recpulse { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+  .stage { position:relative; background:#101412; }
+  .stage svg.map { display:block; width:100%; height:auto; }
+
+  /* map primitives */
+  .coast { fill:none; stroke:#20302a; stroke-width:1.6; }
+  .landhint { fill:#141a17; opacity:.5; }
+  .grat { stroke:#1a201d; stroke-width:1; }
+  .dot { transition:opacity .5s ease, r .45s cubic-bezier(.34,1.5,.5,1); }
+  .dot circle.body { stroke:#0f1110; stroke-width:1.2; }
+  .dot .glyph { fill:#0f1110; pointer-events:none; }
+  .dot.v { opacity:0; }
+  #player[data-virtual="1"] .dot.v { opacity:1; }
+  .dot.sel circle.body { stroke:#e8ece9; stroke-width:2; }
+  /* pop-in on beat 1 replay */
+  #player[data-beat="1"] .dot:not(.v) circle.body { animation:pop .5s cubic-bezier(.34,1.5,.5,1) backwards; }
+  @keyframes pop { from { transform:scale(0); } to { transform:scale(1); } }
+
+  .pin, .ring, .spoke, .rankb { opacity:0; transition:opacity .5s ease; }
+  #player[data-located="1"] .pin { opacity:1; }
+  #player[data-located="1"] .ring { opacity:1; }
+  #player[data-spokes="1"] .spoke, #player[data-spokes="1"] .rankb { opacity:1; }
+  .ring circle { fill:none; stroke:var(--teal); stroke-width:1.4;
+    animation:ripple 2.6s ease-out infinite; transform-origin:center; transform-box:fill-box; }
+  @keyframes ripple { 0%{transform:scale(.25);opacity:.8} 100%{transform:scale(1.6);opacity:0} }
+  .spoke { stroke:var(--teal-dim); stroke-width:1; stroke-dasharray:3 4; opacity:0; }
+  #player[data-spokes="1"] .spoke { opacity:.65; }
+  .rankb text { font-family:var(--mono); font-size:8.5px; fill:var(--ink); }
+  .rankb circle { fill:#101412; stroke:var(--teal-dim); stroke-width:1; }
+
+  /* legend overlay */
+  .legend { position:absolute; top:10px; left:10px; display:flex; flex-direction:column;
+    gap:5px; background:rgba(16,20,18,.82); border:1px solid var(--line);
+    border-radius:10px; padding:8px 10px; backdrop-filter:blur(2px); }
+  .lchip { display:flex; align-items:center; gap:7px; font-size:11px; color:var(--quiet); }
+  .lchip .sw { width:14px; height:14px; border-radius:50%; display:grid; place-items:center; }
+  .lchip .sw svg { width:9px; height:9px; fill:#0f1110; }
+  .lchip.virtual { opacity:0; transform:translateX(-6px); transition:opacity .5s ease .3s, transform .5s ease .3s; }
+  #player[data-virtual="1"] .lchip.virtual { opacity:1; transform:none; }
+
+  /* code overlay */
+  .codebox { position:absolute; right:10px; top:10px; width:min(342px, 58%);
+    background:rgba(13,16,15,.92); border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; font-family:var(--mono); font-size:10.8px; line-height:1.6;
+    color:var(--quiet); opacity:0; transform:translateY(-8px);
+    transition:opacity .45s ease, transform .45s ease; pointer-events:none; }
+  #player[data-code="before"] .codebox, #player[data-code="after"] .codebox { opacity:1; transform:none; }
+  .codebox .path { color:var(--faint); font-size:9.5px; letter-spacing:.04em; margin-bottom:5px; }
+  .codebox .u { color:var(--gold); font-weight:700; }
+  .codebox .id { color:var(--teal); }
+  .codebox .kw { color:#b8a3d8; }
+  .codebox .cm { color:var(--faint); }
+  .codebox .strike { text-decoration:line-through; text-decoration-color:var(--red); color:var(--faint); }
+  .codebox .b-before, .codebox .b-after { display:none; }
+  #player[data-code="before"] .b-before { display:block; }
+  #player[data-code="after"] .b-after { display:block; }
+  .caret { display:inline-block; width:6px; border-left:1.5px solid var(--teal); margin-left:1px;
+    animation:caret 1s steps(1) infinite; height:11px; vertical-align:-1px; }
+  @keyframes caret { 50% { opacity:0; } }
+  #player:not([data-beat="4"]) .caret { display:none; }
+
+  /* commit chip stamp (beat 4+) */
+  .commitchip { position:absolute; right:10px; bottom:96px; font-family:var(--mono);
+    font-size:10.5px; color:var(--gold); border:1px solid #4a4229; background:rgba(16,20,18,.9);
+    border-radius:999px; padding:4px 10px; opacity:0; transform:scale(.8);
+    transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.5,.5,1); }
+  #player[data-commit="1"] .commitchip { opacity:1; transform:none; }
+
+  /* TODO strike line (beat 5) */
+  .todoline { position:absolute; left:10px; bottom:96px; font-family:var(--mono);
+    font-size:10.5px; color:var(--faint); background:rgba(16,20,18,.9);
+    border:1px solid var(--line); border-radius:8px; padding:4px 10px;
+    opacity:0; transition:opacity .4s ease, transform .8s ease 1.4s; }
+  #player[data-beat="5"] .todoline { opacity:1; text-decoration:line-through;
+    text-decoration-color:var(--red); transform:translateX(-14px); }
+
+  /* flow rows (beat 3): computed list flying to nowhere */
+  .flowrow { position:absolute; right:80px; top:120px; width:110px; height:9px;
+    border-radius:4px; background:var(--teal-dim); opacity:0; }
+  #player[data-beat="3"] .flowrow { animation:flyfade 2.1s ease-in forwards; }
+  @keyframes flyfade {
+    0% { opacity:0; transform:translate(0,0); }
+    18% { opacity:.85; }
+    100% { opacity:0; transform:translate(-120px,178px) scale(.82); }
+  }
+
+  /* strip zone */
+  .stripzone { position:relative; height:96px; border-top:1px solid var(--line);
+    background:#121614; overflow:hidden; }
+  .voidstamp { position:absolute; inset:0; display:grid; place-items:center;
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; color:var(--faint);
+    text-transform:uppercase; opacity:0; transition:opacity .6s ease .9s; }
+  #player[data-dead="1"] .voidstamp { opacity:1; }
+  .strip { position:absolute; inset:0; display:flex; gap:10px; align-items:center;
+    padding:0 14px; overflow-x:auto; scrollbar-width:thin;
+    opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s cubic-bezier(.22,.61,.36,1); }
+  .strip::-webkit-scrollbar { height:6px; }
+  .strip::-webkit-scrollbar-thumb { background:var(--line); border-radius:3px; }
+  #player[data-strip="1"] .strip { opacity:1; transform:none; }
+  .card { flex:0 0 148px; border-radius:8px; border:1px solid var(--line);
+    padding:8px 10px; cursor:pointer; background:var(--panel);
+    transition:transform .2s ease, border-color .2s ease; }
+  .card:hover, .card:focus-visible { transform:translateY(-2px); outline:none; }
+  .card:focus-visible { border-color:var(--teal); }
+  .card.sel { border-color:var(--ink); }
+  .card h5 { margin:0; font-size:11.5px; font-weight:600; color:var(--ink);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .card .meta { display:flex; align-items:center; gap:5px; margin-top:3px;
+    font-family:var(--mono); font-size:9.5px; color:var(--quiet); }
+  .card .meta .rk { color:var(--teal); font-weight:700; }
+  .card .meta svg { width:9px; height:9px; flex:none; }
+  .card .km { margin-top:2px; font-family:var(--mono); font-size:10px; color:var(--quiet); }
+  #player[data-strip="1"] .card { animation:cardin .45s cubic-bezier(.22,.61,.36,1) backwards; }
+
+  @keyframes cardin { from { opacity:0; transform:translateY(10px); } to { opacity:1; } }
+
+  /* fake cursor */
+  .cursor { position:absolute; width:16px; height:16px; z-index:5; pointer-events:none;
+    opacity:0; transition:opacity .3s ease, left 1.6s cubic-bezier(.22,.61,.36,1), top 1.6s cubic-bezier(.22,.61,.36,1); }
+  #player[data-cursor="1"] .cursor { opacity:1; }
+  .cursor svg { filter:drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+
+  /* status ribbon (beat 8) */
+  .ribbon { position:absolute; left:50%; bottom:106px; transform:translate(-50%,8px);
+    font-family:var(--mono); font-size:11px; color:var(--quiet);
+    background:rgba(16,20,18,.94); border:1px solid var(--teal-dim); border-radius:999px;
+    padding:6px 14px; max-width:92%; text-align:center; opacity:0; transition:opacity .5s ease .4s, transform .5s ease .4s; }
+  .ribbon b { color:var(--teal); font-weight:600; }
+  #player[data-ribbon="1"] .ribbon { opacity:1; transform:translate(-50%,0); }
+
+  /* transport + caption */
+  .deck { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:14px; }
+  .transport { display:flex; gap:6px; }
+  .tbtn { font-family:var(--mono); font-size:13px; color:var(--ink); background:var(--panel);
+    border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer; }
+  .tbtn:hover { border-color:var(--teal-dim); }
+  .tbtn:focus-visible { outline:2px solid var(--teal); outline-offset:1px; }
+  .stepper { display:flex; flex-wrap:wrap; align-items:center; gap:5px; }
+  .sdot { width:22px; height:22px; border-radius:50%; border:1px solid var(--line);
+    background:transparent; color:var(--faint); font-family:var(--mono); font-size:10px;
+    cursor:pointer; display:grid; place-items:center; padding:0; }
+  .sdot[aria-current="true"] { border-color:var(--teal); color:var(--teal); }
+  .sdot:focus-visible { outline:2px solid var(--teal); outline-offset:1px; }
+  .chlabel { font-family:var(--mono); font-size:10px; color:var(--faint);
+    letter-spacing:.1em; text-transform:uppercase; margin:0 4px 0 10px; }
+  .caption { margin-top:12px; min-height:44px; font-size:15px; color:var(--quiet); max-width:76ch; }
+  .caption b { color:var(--ink); font-weight:600; }
+  .caption .mono { color:var(--gold); }
+
+  /* ---------- pattern cards ---------- */
+  .patterns { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  @media (max-width:760px) { .patterns { grid-template-columns:minmax(0,1fr); } }
+  .pat { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; min-width:0; }
+  .pat .k { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--teal-dim); }
+  .pat h3 { margin:6px 0 6px; font-size:16px; font-weight:620; }
+  .pat p { margin:0; font-size:13.5px; color:var(--quiet); }
+  .pat .rail { margin-top:10px; font-family:var(--mono); font-size:10.5px; color:var(--faint);
+    overflow-x:auto; white-space:nowrap; }
+  .pat .rail b { color:var(--teal); font-weight:600; }
+  .pat .watch { display:inline-block; margin-top:12px; font-family:var(--mono); font-size:11.5px;
+    color:var(--teal); background:none; border:none; cursor:pointer; padding:0; }
+  .pat .watch:hover { text-decoration:underline; }
+  .pat .watch:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+
+  /* ---------- haversine live panel ---------- */
+  .havgrid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+  @media (max-width:860px) { .havgrid { grid-template-columns:minmax(0,1fr); } }
+  .havleft, .havright { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; min-width:0; }
+  .havleft svg { display:block; width:100%; height:auto; }
+  .formula { font-family:var(--mono); font-size:11.5px; line-height:2; color:var(--quiet);
+    margin-top:8px; overflow-x:auto; white-space:nowrap; }
+  .formula b { color:var(--teal); font-weight:600; }
+  .formula .val { color:var(--gold); }
+  .havnote { margin-top:10px; font-family:var(--mono); font-size:10.5px; color:var(--faint); }
+  .rows { display:flex; flex-direction:column; gap:4px; }
+  .row { display:flex; align-items:center; gap:9px; padding:6px 8px; border-radius:8px;
+    border:1px solid transparent; background:none; width:100%; text-align:left; cursor:pointer;
+    font-family:var(--mono); font-size:12px; color:var(--quiet); }
+  .row:hover { background:rgba(255,255,255,.02); }
+  .row[aria-current="true"] { border-color:var(--teal-dim); background:rgba(135,202,183,.05); }
+  .row:focus-visible { outline:2px solid var(--teal); outline-offset:1px; }
+  .row .rk { width:20px; color:var(--teal); font-weight:700; flex:none; }
+  .row .sw { width:13px; height:13px; border-radius:50%; display:grid; place-items:center; flex:none; }
+  .row .sw svg { width:8px; height:8px; fill:#0f1110; }
+  .row .nm { color:var(--ink); font-family:var(--sans); font-size:13px; flex:1; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .row .d { color:var(--quiet); flex:none; }
+  .arc-line { fill:none; stroke:var(--teal); stroke-width:1.6; stroke-dasharray:4 3; }
+  .arc-label { font-family:var(--mono); font-size:12px; fill:var(--gold); }
+  .arc-sub { font-family:var(--mono); font-size:9.5px; fill:var(--faint); }
+
+  /* ---------- diff panel ---------- */
+  .diff { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .dgroup { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--teal-dim); margin:14px 0 8px; }
+  .dgroup:first-child { margin-top:0; }
+  .frow { display:grid; grid-template-columns:minmax(0,1fr) 92px 130px; gap:12px;
+    align-items:center; padding:7px 0; border-bottom:1px solid var(--line); }
+  .frow:last-of-type { border-bottom:0; }
+  .frow .fp { font-family:var(--mono); font-size:11.5px; color:var(--quiet);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .frow .fp .r87 { color:var(--gold); border:1px solid #4a4229; border-radius:999px;
+    padding:1px 7px; font-size:9.5px; margin-left:6px; white-space:nowrap; }
+  .frow .pm { font-family:var(--mono); font-size:11px; text-align:right; white-space:nowrap; }
+  .frow .pm .p { color:var(--teal); } .frow .pm .m { color:var(--red); }
+  .bars { display:flex; gap:3px; align-items:center; height:10px; }
+  .bars i { display:block; height:4px; border-radius:2px; }
+  .bars .add { background:var(--teal); }
+  .bars .del { background:var(--red); }
+  .notes { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .note { font-family:var(--mono); font-size:11px; color:var(--gold); border:1px solid #4a4229;
+    border-radius:999px; padding:4px 11px; }
+  .note b { color:var(--teal); font-weight:600; }
+  .struck { font-family:var(--mono); font-size:11.5px; color:var(--faint); margin-top:14px;
+    text-decoration:line-through; text-decoration-color:var(--red); }
+
+  /* ---------- gate to done ---------- */
+  .gatecard { background:linear-gradient(180deg,#17201c,var(--panel)); border:1px solid var(--teal-dim);
+    border-left:3px solid var(--teal); border-radius:12px; padding:18px 20px; }
+  .gatecard .k { font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--teal); }
+  .gatecard p { margin:6px 0 0; font-size:15.5px; color:var(--ink); }
+  .gatecard b { color:var(--gold); font-weight:600; }
+  .path { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px;
+    font-family:var(--mono); font-size:11.5px; color:var(--quiet); }
+  .path .st { border:1px solid var(--line); border-radius:999px; padding:4px 11px; }
+  .path .st.done { color:var(--teal); border-color:var(--teal-dim); }
+  .path .arrow { color:var(--faint); }
+
+  footer { margin-top:56px; border-top:1px solid var(--line); padding-top:22px;
+    display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:var(--faint); }
+  footer a { font-family:var(--mono); font-size:12.5px; }
+  .stamp { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.001s !important; transition-duration:.001s !important; }
+    .reveal { opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.4"/>
+      <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <line x1="12" y1="1.6" x2="12" y2="4.6"/><line x1="12" y1="19.4" x2="12" y2="22.4"/>
+        <line x1="1.6" y1="12" x2="4.6" y2="12"/><line x1="19.4" y1="12" x2="22.4" y2="12"/>
+        <line x1="4.7" y1="4.7" x2="6.8" y2="6.8"/><line x1="17.2" y1="17.2" x2="19.3" y2="19.3"/>
+        <line x1="4.7" y1="19.3" x2="6.8" y2="17.2"/><line x1="17.2" y1="6.8" x2="19.3" y2="4.7"/>
+      </g>
+    </symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24">
+      <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 5h-2v6l4.6 2.6 1-1.7-3.6-2V7z"/>
+    </symbol>
+    <symbol id="ic-people" viewBox="0 0 24 24">
+      <circle cx="8.5" cy="8" r="3.6"/><circle cx="16.5" cy="9" r="2.8"/>
+      <path d="M2.5 19c0-3.2 2.7-5.4 6-5.4s6 2.2 6 5.4v1h-12v-1z"/>
+      <path d="M15.4 19.9v-.9c0-1.7-.7-3.2-1.8-4.3.9-.4 1.9-.6 2.9-.6 2.8 0 5 1.8 5 4.4v1.4h-6.1z"/>
+    </symbol>
+    <symbol id="ic-camera" viewBox="0 0 24 24">
+      <rect x="2" y="6.5" width="13" height="11" rx="2.4"/>
+      <path d="M16.5 10.5 22 7v10l-5.5-3.5v-3z"/>
+    </symbol>
+    <symbol id="ic-pin" viewBox="0 0 24 24">
+      <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/>
+    </symbol>
+    <symbol id="ic-cursor" viewBox="0 0 24 24">
+      <path d="M4 2l16 11.5-7.2 1.2 4 7.3-3 1.6-4-7.4L4 21V2z" fill="#e8ece9" stroke="#0f1110" stroke-width="1.4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <div class="eyebrow">TODO-148 · dhamma.org portal-v2 · PR #488</div>
+  <h1>The strip was always computed. Now it renders<span class="dot">.</span></h1>
+  <p class="lede"><b>ClosestEvents</b> ranked the nearest ten on every interaction — and threw
+    them away. One rename and eight lines of JSX turned dead work into the
+    <b>nearby-events</b> strip. Proven below, live.</p>
+  <div class="chips">
+    <span class="chip"><b>22a8f68e</b></span>
+    <span class="chip"><b>+34 −28</b> · 3 files</span>
+    <span class="chip">rename <b>R87</b></span>
+    <span class="chip">categories <b>3 → 4</b></span>
+    <span class="chip">CI ✓ <b>420</b> tests</span>
+    <span class="chip"><span class="g">2 review notes</span> → <b>addressed</b></span>
+  </div>
+
+  <!-- 01 · the recording -->
+  <section id="recording" class="reveal">
+    <h2><span class="n">01</span>The recording</h2>
+    <p class="sub">A scripted replay of the migration — eight beats, three chapters.
+      Every distance on screen is computed by the shipped haversine, in this page, as you watch.</p>
+
+    <div id="player" data-beat="0" data-located="0" data-spokes="0" data-code="none"
+         data-dead="0" data-virtual="0" data-strip="0" data-commit="0" data-cursor="0"
+         data-ribbon="0" data-frozen="0">
+      <div class="browser">
+        <div class="titlebar">
+          <div class="lights"><span></span><span></span><span></span></div>
+          <div class="urlpill">🔒 <b>portal-v2</b> · /en/os/locations/events</div>
+          <div class="rec"><i></i><span id="rectime">REC 00:00</span></div>
+        </div>
+        <div class="stage">
+          <svg class="map" viewBox="0 0 720 400" role="img"
+               aria-label="Mock events map: 31 event markers in four categories, a user location pin, and the ten nearest highlighted">
+            <g id="grat"></g>
+            <path class="landhint" d="M-10,390 C90,340 170,350 240,310 C300,282 300,240 356,236 C420,230 430,180 500,170 C560,160 590,140 640,110 C670,90 700,80 730,70 L730,-10 L-10,-10 Z"/>
+            <path class="coast" d="M-10,390 C90,340 170,350 240,310 C300,282 300,240 356,236 C420,230 430,180 500,170 C560,160 590,140 640,110 C670,90 700,80 730,70"/>
+            <g id="spokes"></g>
+            <g id="dots"></g>
+            <g id="rankbadges"></g>
+            <g id="userpin"></g>
+          </svg>
+
+          <div class="legend" id="legend" aria-label="Map legend"></div>
+
+          <div class="codebox" aria-hidden="true">
+            <div class="path">map-group-sittings.tsx</div>
+            <div class="b-before">
+              <span class="kw">const</span> [<span class="u">_</span><span class="id">closestEvents</span>, setClosestEvents] =<br>
+              &nbsp;&nbsp;useState&lt;GroupSittingEvent[]&gt;([]);<br>
+              <span class="cm">// two producers, every interaction:</span><br>
+              setClosestEvents(sortedEvents);
+            </div>
+            <div class="b-after">
+              <span class="kw">const</span> [<span class="id" id="typed">nearbyEvents</span><span class="caret"></span>, setNearbyEvents] =<br>
+              &nbsp;&nbsp;useState&lt;GroupSittingEvent[]&gt;([]);<br>
+              <span class="cm">// …and finally, below the map:</span><br>
+              {nearbyEvents.length &gt; 0 &amp;&amp; &lt;<span class="id">NearbyEvents</span> … /&gt;}
+            </div>
+          </div>
+
+          <div class="commitchip">22a8f68e · +34 −28</div>
+          <div class="todoline">// TODO: Maps V3 - do something with virtual sits</div>
+
+          <div class="flowrow" style="animation-delay:.1s"></div>
+          <div class="flowrow" style="animation-delay:.35s; top:132px"></div>
+          <div class="flowrow" style="animation-delay:.6s; top:144px"></div>
+          <div class="flowrow" style="animation-delay:.85s; top:156px"></div>
+          <div class="flowrow" style="animation-delay:1.1s; top:168px"></div>
+
+          <div class="ribbon">PR <b>#488</b> · Draft — on purpose · CI <b>✓</b> lint · types · 420 tests</div>
+          <div class="cursor" id="cursor"><svg width="16" height="16"><use href="#ic-cursor"/></svg></div>
+        </div>
+        <div class="stripzone">
+          <div class="voidstamp">never read · never rendered</div>
+          <div class="strip" id="strip" aria-label="Nearby events strip"></div>
+        </div>
+      </div>
+
+      <div class="deck">
+        <div class="transport">
+          <button class="tbtn" id="prev" aria-label="Previous beat">←</button>
+          <button class="tbtn" id="playbtn" aria-label="Play or pause">▶</button>
+          <button class="tbtn" id="next" aria-label="Next beat">→</button>
+        </div>
+        <div class="stepper" id="stepper" role="group" aria-label="Beats"></div>
+      </div>
+      <p class="caption" id="caption" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- 02 · three patterns -->
+  <section class="reveal">
+    <h2><span class="n">02</span>Three patterns</h2>
+    <p class="sub">The whole migration in three moves.</p>
+    <div class="patterns">
+      <div class="pat">
+        <div class="k">pattern 01</div>
+        <h3>Dead computation</h3>
+        <p>The state was named <span class="mono">_closestEvents</span> — the underscore is
+          Biome's mark for <i>deliberately unused</i>. Two producers kept it fresh; nothing read it.</p>
+        <div class="rail"><b>31</b> events → haversine ×31 → sort ↑ → slice(0,<b>10</b>) → <span style="color:var(--red)">void</span></div>
+        <button class="watch" data-goto="1">▸ watch this pattern</button>
+      </div>
+      <div class="pat">
+        <div class="k">pattern 02</div>
+        <h3>The migration</h3>
+        <p>Commit <span class="mono">22a8f68e</span>: rename component, stylesheet, and state —
+          the file survives as a git rename at 87% similarity — then render what was already there.</p>
+        <div class="rail">closest-events.tsx → <b>nearby-events.tsx</b> · <b>+34 −28</b> · 3 files</div>
+        <button class="watch" data-goto="3">▸ watch this pattern</button>
+      </div>
+      <div class="pat">
+        <div class="k">pattern 03</div>
+        <h3>Live pipeline</h3>
+        <p>Geolocate → rank → strip below the map; picking any marker re-ranks around it.
+          Markers scale 24→36 px on selection.</p>
+        <div class="rail">rank ×<b>10</b> → 200px cards → hover <b>−2px</b> · size = base × clamp(zoom/10, .4, 1.5)</div>
+        <button class="watch" data-goto="5">▸ watch this pattern</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · the math, live -->
+  <section class="reveal">
+    <h2><span class="n">03</span>The math, live</h2>
+    <p class="sub">This page runs the shipped <span class="mono">getDistance()</span> verbatim —
+      hover or focus a row and watch the formula re-substitute. Open DevTools and call it yourself.</p>
+    <div class="havgrid">
+      <div class="havleft">
+        <svg id="arcsvg" viewBox="0 0 340 150" role="img" aria-label="Great-circle arc from the user pin to the selected event">
+          <g id="arcg"></g>
+        </svg>
+        <div class="formula" id="formula"></div>
+        <div class="havnote">apps/portal/app/components/maps/utils.tsx · getDistance() · R = 6371 km</div>
+      </div>
+      <div class="havright">
+        <div class="rows" id="havrows"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · the diff -->
+  <section class="reveal">
+    <h2><span class="n">04</span>The diff</h2>
+    <p class="sub">Small on purpose. The feature existed — it just needed to be shown.</p>
+    <div class="diff">
+      <div class="dgroup">22a8f68e · migrate + render</div>
+      <div class="frow">
+        <div class="fp">…/events/components/map-group-sittings.tsx</div>
+        <div class="pm"><span class="p">+19</span> <span class="m">−13</span></div>
+        <div class="bars"><i class="add" style="width:57px"></i><i class="del" style="width:39px"></i></div>
+      </div>
+      <div class="frow">
+        <div class="fp">closest-events.module.scss → nearby-events.module.scss</div>
+        <div class="pm"><span class="p">+11</span> <span class="m">−11</span></div>
+        <div class="bars"><i class="add" style="width:33px"></i><i class="del" style="width:33px"></i></div>
+      </div>
+      <div class="frow">
+        <div class="fp">closest-events.tsx → nearby-events.tsx<span class="r87">R87</span></div>
+        <div class="pm"><span class="p">+4</span> <span class="m">−4</span></div>
+        <div class="bars"><i class="add" style="width:12px"></i><i class="del" style="width:12px"></i></div>
+      </div>
+
+      <div class="dgroup" style="margin-top:18px">self-review · both notes addressed</div>
+      <div class="frow">
+        <div class="fp">nearby-events.tsx · keyboard access on cards</div>
+        <div class="pm"><span class="p">+13</span> <span class="m">−3</span></div>
+        <div class="bars"><i class="add" style="width:39px"></i><i class="del" style="width:9px"></i></div>
+      </div>
+      <div class="frow">
+        <div class="fp">map-content.tsx · single category lookup</div>
+        <div class="pm"><span class="p">+9</span> <span class="m">−22</span></div>
+        <div class="bars"><i class="add" style="width:27px"></i><i class="del" style="width:66px"></i></div>
+      </div>
+
+      <div class="struck">// TODO: Maps V3 - do something with virtual sits</div>
+      <div class="notes">
+        <span class="note">a11y: card keyboard access — <b>addressed · 97c2e396</b></span>
+        <span class="note">nit: duplicate category lookup — <b>addressed · 997b1c00</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · gate to done -->
+  <section class="reveal">
+    <h2><span class="n">05</span>Gate to Done</h2>
+    <div class="gatecard">
+      <div class="k">where this stands</div>
+      <p>PR <b>#488</b> is open and CI-green — left <b>Draft on purpose</b>; a human flips it
+        to Ready. The engineering, the review notes, and this proof are done.</p>
+      <div class="path">
+        <span class="st done">ship</span><span class="arrow">→</span>
+        <span class="st done">self-review</span><span class="arrow">→</span>
+        <span class="st done">notes addressed</span><span class="arrow">→</span>
+        <span class="st">team review</span><span class="arrow">→</span>
+        <span class="st">merge</span><span class="arrow">→</span>
+        <span class="st">close i50</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://github.com/dhammaorg/portal-v2/pull/488">PR #488</a>
+    <a href="https://github.com/dhammaorg/portal-v2/pull/488#pullrequestreview-4664375428">self-review</a>
+    <a href="https://github.com/dhammaorg/portal-v2-issues/issues/50">i50</a>
+    <a href="https://linear.app/nomad-code/issue/TODO-148">TODO-148</a>
+  </footer>
+  <div class="stamp">bre · private · TODO-148 nearby events · 2026-07-10 10-49 Z</div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ================= data ================= */
+
+// getDistance — copied verbatim from portal-v2
+// apps/portal/app/components/maps/utils.tsx (types elided)
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// cat ids mirror groupSittingEventTypeIds: 5=1-Day, 25=4-Hour, 32=Group Sitting, 33=Virtual
+const CATS = {
+  5:  { name: "1-Day",           color: "var(--c-oneday)",   icon: "ic-sun" },
+  25: { name: "4-Hour",          color: "var(--c-fourhour)", icon: "ic-clock" },
+  32: { name: "Group Sitting",   color: "var(--c-group)",    icon: "ic-people" },
+  33: { name: "Virtual",         color: "var(--c-virtual)",  icon: "ic-camera" },
+};
+const USER = { lat: 42.3, lng: -71.0 };
+const EVENTS = [
+  { id:"a1", name:"Harborview", cc:"US", cat:32, lat:42.36, lng:-70.93 },
+  { id:"a2", name:"Saltmarsh", cc:"US", cat:32, lat:42.19, lng:-71.09 },
+  { id:"a3", name:"Cedar Point", cc:"US", cat:5, lat:42.46, lng:-71.18 },
+  { id:"a4", name:"Westcove", cc:"US", cat:32, lat:42.13, lng:-70.79 },
+  { id:"a5", name:"Pine Hollow", cc:"US", cat:25, lat:42.56, lng:-70.90 },
+  { id:"a6", name:"Graniteside", cc:"US", cat:32, lat:42.20, lng:-71.37 },
+  { id:"a7", name:"North Bluff", cc:"US", cat:5, lat:42.62, lng:-71.15 },
+  { id:"a8", name:"Milldale", cc:"US", cat:32, lat:41.93, lng:-70.88 },
+  { id:"a9", name:"Fernbrook", cc:"US", cat:32, lat:42.93, lng:-71.00 },
+  { id:"a10", name:"Otter Creek", cc:"US", cat:25, lat:42.35, lng:-71.90 },
+  { id:"a11", name:"Stonewharf", cc:"US", cat:5, lat:41.52, lng:-72.18 },
+  { id:"b1", name:"Easthaven", cc:"US", cat:32, lat:42.86, lng:-68.95 },
+  { id:"b2", name:"Gullwing", cc:"US", cat:32, lat:42.99, lng:-68.73 },
+  { id:"b3", name:"Larkspur", cc:"US", cat:5, lat:42.66, lng:-68.70 },
+  { id:"b4", name:"Brinepool", cc:"US", cat:32, lat:43.04, lng:-69.15 },
+  { id:"b5", name:"Copperline", cc:"US", cat:25, lat:42.83, lng:-69.31 },
+  { id:"b6", name:"Windrow", cc:"US", cat:32, lat:43.22, lng:-68.75 },
+  { id:"b7", name:"Tidegate", cc:"US", cat:5, lat:42.58, lng:-68.90 },
+  { id:"b8", name:"Foxglove", cc:"US", cat:32, lat:43.00, lng:-69.35 },
+  { id:"s1", name:"Alder Bay", cc:"CA", cat:32, lat:43.24, lng:-72.90 },
+  { id:"s2", name:"Quarry Hill", cc:"US", cat:5, lat:41.70, lng:-72.60 },
+  { id:"s3", name:"Longstrand", cc:"CA", cat:5, lat:43.22, lng:-70.60 },
+  { id:"s4", name:"Mosswood", cc:"US", cat:32, lat:41.72, lng:-69.62 },
+  { id:"s5", name:"Kestrel Isle", cc:"US", cat:5, lat:41.95, lng:-68.60 },
+  { id:"s6", name:"Bellreach", cc:"CA", cat:25, lat:43.18, lng:-71.75 },
+  { id:"s7", name:"Drybarrow", cc:"US", cat:32, lat:41.58, lng:-70.22 },
+  { id:"s8", name:"Willowmere", cc:"US", cat:32, lat:41.66, lng:-68.98 },
+  { id:"v1", name:"Harborview VGS", cc:"US", cat:33, lat:42.39, lng:-70.96 },
+  { id:"v2", name:"Graniteside VGS", cc:"US", cat:33, lat:42.00, lng:-71.10 },
+  { id:"v3", name:"Easthaven VGS", cc:"US", cat:33, lat:42.87, lng:-68.96 },
+  { id:"v4", name:"Brinepool VGS", cc:"US", cat:33, lat:43.06, lng:-69.16 },
+];
+const byId = Object.fromEntries(EVENTS.map(e => [e.id, e]));
+
+// the two shipped producers, distilled: map → sort ↑ → slice(0, 10)
+function rankFrom(anchor, opts) {
+  const o = opts || {};
+  return EVENTS
+    .filter(e => (o.includeVirtual || e.cat !== 33) && e.id !== o.excludeId)
+    .map(e => ({ ev: e, d: getDistance(anchor.lat, anchor.lng, e.lat, e.lng) }))
+    .sort((x, y) => x.d - y.d)
+    .slice(0, 10);
+}
+// getDistanceFromUserLocation, distilled: whole km, "km away", from the USER
+function kmAway(e) {
+  return getDistance(USER.lat, USER.lng, e.lat, e.lng).toFixed(0) + " km away";
+}
+
+/* ============ projection (equirectangular, cos-corrected) ============ */
+const LAT0 = 41.6, LNG0 = -73.2, K = 182.4, COSL = Math.cos((42.4 * Math.PI) / 180);
+const px = lng => 30 + (lng - LNG0) * COSL * K;
+const py = lat => 346 - (lat - LAT0) * K;
+
+/* ================= svg build ================= */
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) {
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+
+function buildMap() {
+  const grat = document.getElementById("grat");
+  for (let x = 60; x < 720; x += 90) el("line", { class:"grat", x1:x, y1:0, x2:x, y2:400 }, grat);
+  for (let y = 50; y < 400; y += 90) el("line", { class:"grat", x1:0, y1:y, x2:720, y2:y }, grat);
+
+  const dots = document.getElementById("dots");
+  EVENTS.forEach((e, i) => {
+    const g = el("g", { class: "dot" + (e.cat === 33 ? " v" : ""), id: "dot-" + e.id }, dots);
+    const cx = px(e.lng), cy = py(e.lat);
+    const body = el("circle", { class:"body", cx, cy, r:5.5, fill:CATS[e.cat].color }, g);
+    body.style.animationDelay = (i * 0.045) + "s";
+    body.style.transformOrigin = cx + "px " + cy + "px";
+    const u = el("use", { href:"#" + CATS[e.cat].icon, x:cx-3, y:cy-3, width:6, height:6, class:"glyph" }, g);
+    u.style.color = "#0f1110";
+    g.style.cursor = "pointer";
+    g.addEventListener("click", () => selectEvent(e.id));
+  });
+
+  const up = document.getElementById("userpin");
+  const ux = px(USER.lng), uy = py(USER.lat);
+  const ring = el("g", { class:"ring" }, up);
+  el("circle", { cx:ux, cy:uy, r:16 }, ring);
+  const pin = el("g", { class:"pin" }, up);
+  const use = el("use", { href:"#ic-pin", x:ux-8, y:uy-15, width:16, height:16 }, pin);
+  use.style.fill = "var(--teal)";
+  el("circle", { cx:ux, cy:uy, r:2.2, fill:"#0f1110" }, pin);
+
+  const legend = document.getElementById("legend");
+  [5, 25, 32, 33].forEach(cat => {
+    const c = CATS[cat];
+    const chip = document.createElement("div");
+    chip.className = "lchip" + (cat === 33 ? " virtual" : "");
+    chip.innerHTML = '<span class="sw" style="background:' + c.color + '">' +
+      '<svg><use href="#' + c.icon + '"/></svg></span>' + c.name;
+    legend.appendChild(chip);
+  });
+}
+
+// spokes + rank badges for the current anchor/pool
+function drawRanks(ranked, anchor) {
+  const sp = document.getElementById("spokes");
+  const rb = document.getElementById("rankbadges");
+  sp.textContent = ""; rb.textContent = "";
+  const ax = px(anchor.lng), ay = py(anchor.lat);
+  ranked.forEach((r, i) => {
+    const x = px(r.ev.lng), y = py(r.ev.lat);
+    el("line", { class:"spoke", x1:ax, y1:ay, x2:x, y2:y }, sp);
+    const g = el("g", { class:"rankb" }, rb);
+    el("circle", { cx:x+9, cy:y-9, r:6.5 }, g);
+    const t = el("text", { x:x+9, y:y-6.3, "text-anchor":"middle" }, g);
+    t.textContent = i + 1;
+  });
+}
+
+function markSelected(id) {
+  document.querySelectorAll(".dot.sel").forEach(d => {
+    d.classList.remove("sel");
+    d.querySelector(".body").setAttribute("r", 5.5);
+  });
+  if (!id) return;
+  const g = document.getElementById("dot-" + id);
+  if (g) {
+    g.classList.add("sel");
+    g.querySelector(".body").setAttribute("r", 8.2); // 24 → 36px, at map scale
+  }
+}
+
+/* ================= strip ================= */
+function renderStrip(ranked, selectedId) {
+  const strip = document.getElementById("strip");
+  strip.textContent = "";
+  ranked.forEach((r, i) => {
+    const c = CATS[r.ev.cat];
+    const card = document.createElement("div");
+    card.className = "card" + (r.ev.id === selectedId ? " sel" : "");
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.style.animationDelay = (i * 0.06) + "s";
+    // shipped card: category tint at 0.3 over the panel
+    card.style.background = "color-mix(in srgb, " + c.color + " 24%, var(--panel))";
+    card.innerHTML =
+      '<h5>' + r.ev.name + '</h5>' +
+      '<div class="meta"><span class="rk">#' + (i + 1) + '</span>' +
+      '<svg style="color:var(--ink)" fill="currentColor"><use href="#' + c.icon + '"/></svg>' +
+      '<span>' + r.ev.cc + ' · ' + c.name + '</span></div>' +
+      '<div class="km">' + kmAway(r.ev) + '</div>';
+    const act = () => { selectEvent(r.ev.id); strip.scrollTo({ left: 0, behavior: "smooth" }); };
+    card.addEventListener("click", act);
+    card.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); }
+    });
+    strip.appendChild(card);
+  });
+}
+
+// the selection producer, live: re-rank around the picked event, excluding it
+function selectEvent(id) {
+  const st = BEATS[cur].state;
+  if (st.strip !== 1) return; // strip not on screen yet
+  pause();
+  const anchor = byId[id];
+  const ranked = rankFrom(anchor, { includeVirtual: player.dataset.virtual === "1", excludeId: id });
+  drawRanks(ranked, anchor);
+  markSelected(id);
+  renderStrip(ranked, id);
+}
+
+/* ================= beats ================= */
+const CAP = {
+  1: '<b>Before</b> — the group-sittings map. Three categories, business as usual.',
+  2: '<b>Geolocate fires.</b> Haversine to every event, sort ascending, slice(0, 10) — into <span class="mono">_closestEvents</span>.',
+  3: 'The underscore is Biome’s <b>“deliberately unused.”</b> Computed on every location and selection change. Never read. Never rendered.',
+  4: '<b>Commit <span class="mono">22a8f68e</span></b> — rename, rewire, render. +34 − 28 across 3 files; the component survives as a git rename at 87% similarity.',
+  5: '<b>The TODO filter goes.</b> Virtual group sittings surface with their own legend chip — categories 3 → 4. Watch two of them enter the top ten.',
+  6: '<b>Same computation — now it renders.</b> The ten nearest slide in below the map; the first card auto-selects, its marker grows 24 → 36 px.',
+  7: '<b>Pick any marker</b> — the strip re-ranks around it, excluding itself. Ordered from Easthaven; distances still read from you. Try it: the cards are live.',
+  8: '<b>Draft on purpose.</b> CI green. Gate to Done: team review → merge → close i50.',
+};
+const BEATS = [
+  { ch:"before", dwell:4600, state:{ located:0, spokes:0, code:"none", dead:0, virtual:0, strip:0, commit:0, cursor:0, ribbon:0, anchor:null, sel:null } },
+  { ch:"before", dwell:5600, state:{ located:1, spokes:1, code:"before", dead:0, virtual:0, strip:0, commit:0, cursor:0, ribbon:0, anchor:"user", sel:null } },
+  { ch:"before", dwell:5200, state:{ located:1, spokes:1, code:"before", dead:1, virtual:0, strip:0, commit:0, cursor:0, ribbon:0, anchor:"user", sel:null } },
+  { ch:"migration", dwell:5200, state:{ located:1, spokes:0, code:"after", dead:0, virtual:0, strip:0, commit:1, cursor:0, ribbon:0, anchor:null, sel:null, type:1 } },
+  { ch:"migration", dwell:5000, state:{ located:1, spokes:0, code:"after", dead:0, virtual:1, strip:0, commit:1, cursor:0, ribbon:0, anchor:null, sel:null } },
+  { ch:"live", dwell:5800, state:{ located:1, spokes:1, code:"none", dead:0, virtual:1, strip:1, commit:0, cursor:0, ribbon:0, anchor:"user", sel:"a1" } },
+  { ch:"live", dwell:5800, state:{ located:1, spokes:1, code:"none", dead:0, virtual:1, strip:1, commit:0, cursor:1, ribbon:0, anchor:"b1", sel:"b1" } },
+  { ch:"live", dwell:4600, state:{ located:1, spokes:1, code:"none", dead:0, virtual:1, strip:1, commit:0, cursor:0, ribbon:1, anchor:"b1", sel:"b1" } },
+];
+
+const player = document.getElementById("player");
+const caption = document.getElementById("caption");
+const rectime = document.getElementById("rectime");
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let cur = 0, playing = false, timer = null, recTimer = null, typeTimer = null;
+
+function fmt(s) { return "REC 00:" + String(Math.min(59, Math.round(s))).padStart(2, "0"); }
+const starts = BEATS.reduce((acc, b, i) => { acc.push(i ? acc[i-1] + BEATS[i-1].dwell : 0); return acc; }, []);
+const TOTAL = starts[starts.length-1] + BEATS[BEATS.length-1].dwell;
+
+function setRec(ms, frozen) {
+  rectime.textContent = fmt(ms / 1000);
+  player.dataset.frozen = frozen ? "1" : "0";
+}
+
+function typewrite() {
+  const t = document.getElementById("typed");
+  clearInterval(typeTimer);
+  if (reduced) { t.textContent = "nearbyEvents"; return; }
+  const word = "nearbyEvents";
+  let i = 0;
+  t.textContent = "";
+  typeTimer = setInterval(() => {
+    t.textContent = word.slice(0, ++i);
+    if (i >= word.length) clearInterval(typeTimer);
+  }, 90);
+}
+
+function go(i) {
+  cur = Math.max(0, Math.min(BEATS.length - 1, i));
+  const b = BEATS[cur], st = b.state;
+  player.dataset.beat = cur + 1;
+  player.dataset.located = st.located;
+  player.dataset.spokes = st.spokes;
+  player.dataset.code = st.code;
+  player.dataset.dead = st.dead;
+  player.dataset.virtual = st.virtual;
+  player.dataset.strip = st.strip;
+  player.dataset.commit = st.commit;
+  player.dataset.cursor = st.cursor;
+  player.dataset.ribbon = st.ribbon;
+
+  clearInterval(typeTimer);
+  if (st.code === "after") {
+    if (st.type && !reduced) typewrite();
+    else document.getElementById("typed").textContent = "nearbyEvents";
+  }
+
+  // ranks: which anchor, which pool
+  if (st.anchor) {
+    const anchor = st.anchor === "user" ? USER : byId[st.anchor];
+    const ranked = rankFrom(anchor, {
+      includeVirtual: !!st.virtual,
+      excludeId: st.anchor === "user" ? undefined : st.anchor,
+    });
+    drawRanks(ranked, anchor);
+    if (st.strip) renderStrip(ranked, st.sel);
+  } else {
+    drawRanks([], USER);
+  }
+  markSelected(st.sel);
+
+  // fake cursor glide toward the selected dot (beat 7)
+  const cursor = document.getElementById("cursor");
+  if (st.cursor && st.sel) {
+    const e = byId[st.sel];
+    const svg = document.querySelector(".stage svg.map");
+    const r = svg.getBoundingClientRect();
+    const sx = r.width / 720;
+    cursor.style.left = "40%"; cursor.style.top = "80%";
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      cursor.style.left = (px(e.lng) * sx + 4) + "px";
+      cursor.style.top = (py(e.lat) * (r.height / 400) + 4) + "px";
+    }));
+  }
+
+  caption.innerHTML = CAP[cur + 1];
+  document.querySelectorAll(".sdot").forEach((d, j) =>
+    d.setAttribute("aria-current", j === cur ? "true" : "false"));
+  setRec(starts[cur], cur === BEATS.length - 1 && !playing);
+}
+
+function tickRec() {
+  clearInterval(recTimer);
+  const t0 = performance.now(), base = starts[cur];
+  recTimer = setInterval(() => setRec(base + (performance.now() - t0), false), 500);
+}
+
+function play() {
+  if (playing) return pause();
+  playing = true;
+  document.getElementById("playbtn").textContent = "❚❚";
+  if (cur === BEATS.length - 1) go(0);
+  tickRec();
+  const step = () => {
+    timer = setTimeout(() => {
+      if (cur < BEATS.length - 1) { go(cur + 1); tickRec(); step(); }
+      else pause();
+    }, BEATS[cur].dwell);
+  };
+  step();
+}
+function pause() {
+  playing = false;
+  clearTimeout(timer); clearInterval(recTimer);
+  document.getElementById("playbtn").textContent = "▶";
+  if (cur === BEATS.length - 1) setRec(TOTAL, true);
+}
+
+function buildStepper() {
+  const st = document.getElementById("stepper");
+  let lastCh = "";
+  BEATS.forEach((b, i) => {
+    if (b.ch !== lastCh) {
+      lastCh = b.ch;
+      const l = document.createElement("span");
+      l.className = "chlabel"; l.textContent = b.ch;
+      st.appendChild(l);
+    }
+    const d = document.createElement("button");
+    d.className = "sdot"; d.textContent = i + 1;
+    d.setAttribute("aria-label", "Beat " + (i + 1));
+    d.addEventListener("click", () => { pause(); go(i); });
+    st.appendChild(d);
+  });
+}
+
+/* ================= haversine panel ================= */
+function fmtN(x, digits) { return Number(x.toPrecision(digits || 4)); }
+function showFormula(e) {
+  const dLat = ((e.lat - USER.lat) * Math.PI) / 180;
+  const dLon = ((e.lng - USER.lng) * Math.PI) / 180;
+  const a = Math.sin(dLat/2) ** 2 +
+    Math.cos(USER.lat * Math.PI / 180) * Math.cos(e.lat * Math.PI / 180) * Math.sin(dLon/2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = 6371 * c;
+  document.getElementById("formula").innerHTML =
+    'dLat = <span class="val">' + fmtN(dLat, 3) + '</span> &nbsp; dLon = <span class="val">' + fmtN(dLon, 3) + '</span><br>' +
+    'a = sin²(dLat/2) + cos lat₁ · cos lat₂ · sin²(dLon/2) = <span class="val">' + fmtN(a, 3) + '</span><br>' +
+    'c = 2 · atan2(√a, √(1−a)) = <span class="val">' + fmtN(c, 3) + '</span><br>' +
+    'd = 6371 · c = <b>' + d.toFixed(1) + ' km</b> → “<b>' + d.toFixed(0) + ' km away</b>”';
+
+  const g = document.getElementById("arcg");
+  g.textContent = "";
+  const x1 = 40, y1 = 110, x2 = 300, y2 = 110;
+  const lift = 34 + Math.min(46, d / 5);
+  el("path", { class:"arc-line", d:`M${x1},${y1} Q${(x1+x2)/2},${y1-lift} ${x2},${y2}` }, g);
+  const pinUse = el("use", { href:"#ic-pin", x:x1-8, y:y1-6, width:16, height:16 }, g);
+  pinUse.style.fill = "var(--teal)";
+  el("circle", { cx:x2, cy:y2, r:6, fill:CATS[e.cat].color, stroke:"#0f1110", "stroke-width":1.2 }, g);
+  const lbl = el("text", { class:"arc-label", x:(x1+x2)/2, y:y1-lift-8, "text-anchor":"middle" }, g);
+  lbl.textContent = d.toFixed(1) + " km";
+  const s1 = el("text", { class:"arc-sub", x:x1, y:y1+24, "text-anchor":"start" }, g);
+  s1.textContent = "you · " + USER.lat.toFixed(2) + ", " + USER.lng.toFixed(2);
+  const s2 = el("text", { class:"arc-sub", x:x2, y:y2+24, "text-anchor":"end" }, g);
+  s2.textContent = e.name + " · " + e.lat.toFixed(2) + ", " + e.lng.toFixed(2);
+}
+
+function buildHavPanel() {
+  const ranked = rankFrom(USER, { includeVirtual: true });
+  const wrap = document.getElementById("havrows");
+  ranked.forEach((r, i) => {
+    const c = CATS[r.ev.cat];
+    const btn = document.createElement("button");
+    btn.className = "row";
+    btn.innerHTML =
+      '<span class="rk">' + (i + 1) + '</span>' +
+      '<span class="sw" style="background:' + c.color + '"><svg><use href="#' + c.icon + '"/></svg></span>' +
+      '<span class="nm">' + r.ev.name + '</span>' +
+      '<span class="d">' + r.d.toFixed(0) + ' km</span>';
+    const sel = () => {
+      document.querySelectorAll(".row").forEach(x => x.setAttribute("aria-current", "false"));
+      btn.setAttribute("aria-current", "true");
+      showFormula(r.ev);
+    };
+    btn.addEventListener("mouseenter", sel);
+    btn.addEventListener("focus", sel);
+    btn.addEventListener("click", sel);
+    wrap.appendChild(btn);
+    if (i === 0) { btn.setAttribute("aria-current", "true"); showFormula(r.ev); }
+  });
+}
+
+/* ================= boot ================= */
+let booted = false, autoplayed = false;
+function init() {
+  if (booted) return;
+  booted = true;
+  buildMap();
+  buildStepper();
+  buildHavPanel();
+
+  document.getElementById("prev").addEventListener("click", () => { pause(); go(cur - 1); });
+  document.getElementById("next").addEventListener("click", () => { pause(); go(cur + 1); });
+  document.getElementById("playbtn").addEventListener("click", play);
+  document.querySelectorAll(".watch").forEach(btn =>
+    btn.addEventListener("click", () => {
+      pause(); go(+btn.dataset.goto);
+      document.getElementById("recording").scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+    }));
+
+  // scroll reveals
+  const ro = new IntersectionObserver(es => es.forEach(x => {
+    if (x.isIntersecting) x.target.classList.add("shown");
+  }), { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(s => ro.observe(s));
+
+  if (reduced) { go(BEATS.length - 1); setRec(TOTAL, true); return; }
+  go(0);
+  // autostart when the player scrolls into view (also defers past the gate:
+  // a display:none stage never intersects)
+  const io = new IntersectionObserver(es => es.forEach(x => {
+    if (x.isIntersecting && !autoplayed) { autoplayed = true; play(); io.disconnect(); }
+  }), { threshold: 0.35 });
+  io.observe(player);
+}
+
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+else init();
+// gate.js fires this after unlock; layout was hidden until now, so restart clean
+window.addEventListener("found:unlock", () => {
+  // belt & braces for older gate.js copies that leave a duplicate hide style
+  document.querySelectorAll("#__pw_gate_hide__").forEach(s => s.remove());
+  if (!booted) init();
+  pause(); autoplayed = false; go(0);
+  const io = new IntersectionObserver(es => es.forEach(x => {
+    if (x.isIntersecting && !autoplayed) { autoplayed = true; if (!reduced) play(); io.disconnect(); }
+  }), { threshold: 0.35 });
+  io.observe(player);
+});
+</script>
+</body>
+</html>

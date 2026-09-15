@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-132 · wisper-init · Elite-with-Whisper Playbook</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .pmap { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .pmap th { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+             letter-spacing: .08em; color: var(--muted); text-align: left;
+             padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .pmap td { padding: 10px 12px; border-bottom: 1px solid var(--line); color: var(--body);
+             vertical-align: top; }
+  .pmap td:first-child { font-family: var(--font-mono); color: var(--forest); font-weight: 500; white-space: nowrap; }
+  .week { display: grid; grid-template-columns: 92px 1fr; gap: 0 14px; padding: 9px 0;
+          border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--body); }
+  .week:last-child { border-bottom: 0; }
+  .week b { font-family: var(--font-mono); font-size: 12px; color: var(--forest-d); font-weight: 500; }
+  .tag-no { color: var(--warn); font-family: var(--font-mono); font-size: 12px; }
+  .stack-pick { border-left: 3px solid var(--lime); padding-left: 12px; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand">bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx">TODO-132 · wisper-init</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-05 · Medewi block Jul 11–25</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">voice as the primary prompt channel</div>
+    <h1>Elite with Whisper</h1>
+    <p class="hero-sub">Feet route intent. Hands stay on context. Voice carries the payload.
+    The TODO-105 pedal blueprint already reserved Lane 4 · CC 23 for push-to-talk → whisper
+    stream — this playbook fills in the missing layer (the live dictation engine) and the
+    two-week deliberate-practice block while the Chocolate Plus is under the desk in Medewi.</p>
+    <div class="hero-chips">
+      <span class="hchip">superwhisper + Parakeet v3 · local</span>
+      <span class="hchip">offline-first (Bali)</span>
+      <span class="hchip">M-Vave Chocolate Plus · MIDI</span>
+      <span class="hchip">TECH-409 journal loop</span>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">150<span style="font-size:.5em"> wpm</span></div><div class="kpi-l">practiced dictation vs ~70 typing</div></div>
+    <div class="kpi"><div class="kpi-n">≥80%</div><div class="kpi-l">of Claude prompts voiced — north-star metric</div></div>
+    <div class="kpi"><div class="kpi-n">&lt;20%</div><div class="kpi-l">correction rate target by day 14</div></div>
+    <div class="kpi"><div class="kpi-n">4</div><div class="kpi-l">pedal switches — all given to dictation for the block</div></div>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">01</span><span class="sec-kick">the stack</span></div>
+  <div class="grid3">
+    <div class="card stack-pick">
+      <h3>Primary · superwhisper</h3>
+      <p>Lifetime license, <b>Parakeet TDT v3 local</b> (≈2–6% WER, ~10× faster on the Neural
+      Engine; large-v3-turbo as noisy fallback). Custom Modes = per-context STT + AI reformat +
+      few-shot examples. <b>URL scheme is the pedal hook:</b> <code>superwhisper://record</code>,
+      <code>superwhisper://mode?key=…</code>.</p>
+    </div>
+    <div class="card">
+      <h3>Complement · Claude Code /voice</h3>
+      <p>Native PTT (hold Space / <code>meta+k</code> rebind), coding-tuned, auto-injects repo +
+      branch as hints. <b>Cloud-only</b> — good-internet convenience layer, never the Medewi
+      primary. Hedge: VoiceInk ($40, GPL-3, local whisper.cpp/Parakeet).</p>
+    </div>
+    <div class="card">
+      <h3><span class="tag-no">Skip</span> · Wispr Flow, Aqua, Talon</h3>
+      <p>Wispr Flow + Aqua Voice: best UX, cloud-only at every tier — disqualified by Bali
+      internet. Talon: command grammar for hands-free coding, not long-form prompt prose.
+      And don't rebuild whisperx — transcribe-local stays batch.</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">02</span><span class="sec-kick">three modes, built day 1</span></div>
+  <div class="grid3">
+    <div class="card"><h3>prompt</h3><p>Spoken ramble → precise agent instruction. Identifiers
+    verbatim (paths, TODO-NNN), requirements bulleted, no preamble. Few-shot from your own
+    archived prompts.</p></div>
+    <div class="card"><h3>journal</h3><p>First person, keep the voice, fix grammar only. For
+    Linear journal comments and dna/ notes.</p></div>
+    <div class="card"><h3>commit</h3><p>Conventional format, ≤72-char imperative subject.
+    Target: 100% of commit messages voiced by day 4.</p></div>
+  </div>
+  <p class="note">Vocabulary before model size: seed 30–50 proper nouns (bpo, Medewi, KITAS,
+  pedald, tmux, Qdrant, grove, Hyrox…) + 10 replacement rules. Kept in git at
+  <code>projects/wisper/vocab.md</code>.</p>
+
+  <div class="sec-head"><span class="sec-n">03</span><span class="sec-kick">pedal map · chocolate plus (MIDI, not HID — mido router, not Karabiner)</span></div>
+  <div class="card">
+    <table class="pmap">
+      <tr><th>switch</th><th>action</th><th>route</th></tr>
+      <tr><td>1 · PTT latch</td><td>press to talk, press to stop — LED solid while hot (Lane 4 of the TODO-105 blueprint)</td><td><code>open superwhisper://record</code></td></tr>
+      <tr><td>2 · scrap &amp; retry</td><td>clear the input line, immediately re-arm recording — the "no, again" pedal</td><td><code>tmux send-keys C-u</code> → record</td></tr>
+      <tr><td>3 · send</td><td>ship the prompt to Claude, eyes stay on output</td><td><code>Enter</code> to active pane</td></tr>
+      <tr><td>4 · mode cycle</td><td>prompt → journal → commit</td><td><code>superwhisper://mode?key=…</code></td></tr>
+    </table>
+  </div>
+  <p class="note">Day-0 (pedal still in J&amp;T transit): same loop from a rare key (F13 / hyper).
+  The pedal replaces the key; the skill doesn't wait for customs. Vector-search lanes return
+  with the MIDI Captain upgrade (trigger: bank-flipping &gt;5×/hour).</p>
+
+  <div class="sec-head"><span class="sec-n">04</span><span class="sec-kick">the medewi block · jul 11–25</span></div>
+  <div class="card">
+    <div class="week"><b>days 1–2</b><span><b style="color:var(--ink)">Rig, not skill.</b> Install, build 3 modes with real few-shot examples, seed vocab, pedal switch 1 end-to-end into a terminal = day-1 done-when. Drill: read existing prose aloud 10 min.</span></div>
+    <div class="week"><b>days 3–4</b><span><b style="color:var(--ink)">Verbatim tier.</b> Voice everything you'd type verbatim: Linear comments, commits. Drill: same 60-word paragraph 10×, watch corrections drop.</span></div>
+    <div class="week"><b>days 5–7</b><span><b style="color:var(--ink)">Prompt tier.</b> Every Claude prompt under 3 sentences must be voiced. Re-speak yesterday's typed prompts, diff quality. <b>The quit-zone</b> — fix is lower stakes (journal dumps), not pushing harder.</span></div>
+    <div class="week"><b>days 8–10</b><span><b style="color:var(--ink)">Long-form tier.</b> All prompts voiced unless heavy literal code. The elite loop: speak whole thought → ≤10s keyboard touch-up → pedal-3 send. Edit by keyboard, never by voice.</span></div>
+    <div class="week"><b>days 11–12</b><span><b style="color:var(--ink)">Offline stress test.</b> Kill wifi half a day: local Parakeet only, no /voice, no cloud reformat. Tune vocab from the error log.</span></div>
+    <div class="week"><b>days 13–14</b><span><b style="color:var(--ink)">Consolidate + measure.</b> ≥120 effective WPM · &lt;20% corrections · ≥80% prompts voiced · PTT unconscious. Distill conventions into dna/ — the skill survives in git, not muscle memory.</span></div>
+  </div>
+  <p class="note">Off-season Jul 25 → Dec: keyboard PTT keeps voice the default channel; % voiced
+  below ~50% triggers a 3-day refresher. Dec 2026 / Jan 2027 re-entry: pedals return → pedald v1
+  (the ~200-line mido router), profiles.toml as truth. Realistic ceiling: 2 weeks buys
+  fluency-with-touch-ups (~2× prompt throughput); 130–150 WPM at 95% accuracy is a ~6-month asymptote.</p>
+
+  <div class="foot">bpo · TODO-132 wisper-init · full playbook at projects/wisper/PLAYBOOK.md · 2026-07-05 UTC</div>
+</div>
+</body>
+</html>

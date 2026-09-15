@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-105 · foot-pedal · Hands-Free HID→MIDI Routing Blueprint</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  main { padding: 30px 40px 120px; max-width: 1180px; margin: 0 auto; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  h3 { font-size: 16px; font-weight: 760; letter-spacing: -.02em; margin: 0 0 8px; }
+  .card p { font-size: 13.5px; line-height: 1.6; color: var(--body); }
+  .card p b { color: var(--ink); }
+
+  /* comparison / spec tables */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase;
+            letter-spacing: .07em; color: var(--muted); text-align: left;
+            padding: 10px 12px; border-bottom: 1px solid var(--line); font-weight: 500; }
+  .tbl td { padding: 11px 12px; border-bottom: 1px solid #eef0ea; color: var(--body);
+            vertical-align: top; line-height: 1.5; }
+  .tbl td:first-child { font-weight: 640; color: var(--ink); white-space: nowrap; }
+  .tbl tr:last-child td { border-bottom: 0; }
+  .tbl .win { color: var(--forest-d); font-weight: 600; }
+  .tbl .lose { color: var(--warn); }
+  .tbl code, .cell-mono { font-family: var(--font-mono); font-size: 12px; }
+
+  /* bank-math formula */
+  .math { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 4px; }
+  .math .m { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel); padding: 16px 18px; }
+  .math .m .eq { font-family: var(--font-mono); font-size: 13px; color: var(--forest); font-weight: 500; }
+  .math .m .big { font-size: 30px; font-weight: 840; letter-spacing: -.03em; color: var(--ink); margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
+  .math .m .cap { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+  /* architecture flow map */
+  .flow { display: flex; flex-direction: column; gap: 10px; }
+  .flowrow { display: grid; grid-template-columns: 132px 1fr; gap: 14px; align-items: stretch; }
+  .flowrow .stage { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase;
+                    letter-spacing: .06em; color: var(--forest-d); display: flex; align-items: center; }
+  .nodes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .node { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-tile);
+          padding: 9px 13px; font-size: 12.5px; color: var(--ink); font-weight: 560; }
+  .node small { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .node.a { border-color: var(--found-bd); background: linear-gradient(180deg,#fff,#f6fafb); }
+  .node.b { border-color: #bcd9bf; background: linear-gradient(180deg,#fff,#f6fbf6); }
+  .node.core { border-color: var(--forest); background: var(--g-lime); }
+  .flowsep { text-align: center; color: var(--faint); font-family: var(--font-mono); font-size: 15px; margin: 2px 0; }
+
+  /* state machine chips */
+  .states { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .st { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono);
+        font-size: 12px; padding: 6px 12px; border-radius: var(--r-pill); border: 1px solid var(--line); background: var(--card); }
+  .st .d { width: 9px; height: 9px; border-radius: 50%; }
+  .st.idle .d { background: #c7c7bd; } .st.armed .d { background: var(--lime); }
+  .st.busy .d { background: var(--amber); } .st.ok .d { background: var(--forest); }
+  .st.err .d { background: var(--warn); }
+  .arrow { color: var(--faint); font-family: var(--font-mono); }
+
+  /* code block */
+  pre.code { background: #10201c; color: #d8e6df; border-radius: var(--r-panel); padding: 18px 20px;
+             font-family: var(--font-mono); font-size: 12px; line-height: 1.65; overflow-x: auto; margin: 0; }
+  pre.code .c { color: #6f8a80; } pre.code .k { color: #9bd457; } pre.code .s { color: #7fc8bd; }
+
+  /* build order */
+  .steps { counter-reset: s; display: flex; flex-direction: column; gap: 10px; }
+  .step { display: grid; grid-template-columns: 30px 1fr; gap: 14px; align-items: start; }
+  .step::before { counter-increment: s; content: counter(s); width: 28px; height: 28px; border-radius: 50%;
+    background: var(--forest); color: #fff; font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center; }
+  .step div { font-size: 13.5px; line-height: 1.55; color: var(--body); padding-top: 3px; }
+  .step div b { color: var(--ink); }
+
+  /* ---------------- LIVE BOARD DEMO ---------------- */
+  .board { background: #0e1c19; border-radius: var(--r-hero); padding: 22px; box-shadow: var(--shadow-hero); }
+  .board-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+  .board-title { color: #eaf3ee; font-weight: 720; font-size: 14px; letter-spacing: -.01em; }
+  .bankpick { display: flex; gap: 6px; margin-left: auto; }
+  .bankbtn { font-family: var(--font-mono); font-size: 12px; color: #9fb4ac; background: #17302a;
+             border: 1px solid #24463e; border-radius: var(--r-chip); padding: 6px 13px; cursor: pointer; transition: all .18s; }
+  .bankbtn.on { color: #0e1c19; background: var(--lime-b); border-color: var(--lime-b); font-weight: 600; }
+  .bankdesc { font-family: var(--font-mono); font-size: 11px; color: #7f978e; width: 100%; }
+  .switches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .sw { background: #17302a; border: 1px solid #274b42; border-radius: var(--r-tile); padding: 12px 10px 11px;
+        cursor: pointer; user-select: none; position: relative; transition: transform .08s, background .15s, border-color .15s; text-align: left; }
+  .sw:active { transform: translateY(1px); }
+  .sw.on { background: #1d4b3f; border-color: var(--lime-b); }
+  .sw.flash { background: #2a5f4f; }
+  .sw .led { width: 10px; height: 10px; border-radius: 50%; background: #2c5248; position: absolute; top: 11px; right: 11px; transition: background .15s, box-shadow .15s; }
+  .sw.on .led { background: var(--lime-b); box-shadow: 0 0 10px 1px rgba(155,212,87,.7); }
+  .sw.busy .led { background: var(--amber); box-shadow: 0 0 10px 1px rgba(154,122,31,.7); }
+  .sw.ok .led { background: #2fbf9f; box-shadow: 0 0 10px 1px rgba(47,191,159,.6); }
+  .sw .key { font-family: var(--font-mono); font-size: 10px; color: #7f978e; }
+  .sw .lbl { color: #eaf3ee; font-size: 12px; font-weight: 560; line-height: 1.25; margin-top: 5px; }
+  .sw .cc { font-family: var(--font-mono); font-size: 9.5px; color: #6f8a80; margin-top: 5px; }
+  .sw .mtag { position: absolute; bottom: 9px; right: 10px; font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .04em; color: #5f7a70; text-transform: uppercase; }
+  .expr { display: grid; grid-template-columns: 120px 1fr 74px; gap: 14px; align-items: center; margin-top: 14px;
+          background: #17302a; border: 1px solid #274b42; border-radius: var(--r-tile); padding: 12px 16px; }
+  .expr label { font-family: var(--font-mono); font-size: 11px; color: #9fb4ac; }
+  .expr input[type=range] { width: 100%; accent-color: var(--lime-b); }
+  .expr .val { font-family: var(--font-mono); font-size: 15px; color: var(--lime-b); text-align: right; font-variant-numeric: tabular-nums; }
+  .logwrap { margin-top: 14px; }
+  .logwrap .lh { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: #6f8a80; margin-bottom: 6px; display: flex; }
+  .logwrap .lh .armed { margin-left: auto; color: #9fb4ac; }
+  .log { background: #0a1512; border: 1px solid #1d3a33; border-radius: var(--r-tile); height: 158px; overflow-y: auto;
+         font-family: var(--font-mono); font-size: 11.5px; line-height: 1.75; padding: 10px 14px; color: #cfe0d8; }
+  .log .t { color: #5f7a70; } .log .rb { color: #9bd457; } .log .ra { color: #6fc0d4; } .log .cc2 { color: #d8b45a; }
+  .demo-help { font-family: var(--font-mono); font-size: 11px; color: #7f978e; margin-top: 12px; line-height: 1.6; }
+  .demo-help kbd { background: #17302a; border: 1px solid #2a5045; border-radius: 5px; padding: 1px 6px; color: #cfe0d8; font-size: 10.5px; }
+
+  @media (max-width: 860px) {
+    .grid2, .grid3, .math { grid-template-columns: 1fr; }
+    .switches { grid-template-columns: repeat(2, 1fr); }
+    .flowrow { grid-template-columns: 1fr; }
+    main { padding: 22px 18px 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand">bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx">TODO-105 · foot-pedal</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-05 UTC · HID→MIDI routing</span>
+  </div>
+
+  <main>
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>feet route intent · hands stay on context</div>
+      <h1>Hands-free <span class="em">HID→MIDI</span> routing layer</h1>
+      <p class="hero-sub">A physical foot-pedal array that replaces keyboard shortcuts for
+      <b>intent routing, context switching, and orchestration</b> — with a parallel audio graph on
+      the same controller. The trick is <b>banks × MIDI CC</b>: a 10-switch board addresses hundreds
+      of independent logical channels without a single keybinding collision.</p>
+      <div class="hero-chips">
+        <span class="hchip v">300+ logical channels</span>
+        <span class="hchip v">≤5&nbsp;ms press→action</span>
+        <span class="hchip q">class-compliant · driverless</span>
+        <span class="hchip q">nomad form factor</span>
+      </div>
+    </div>
+    <div class="bignum">
+      <div class="n">1,920<span class="u"></span></div>
+      <div class="cap"><b>CC address space</b> — 16 MIDI channels × 120 usable CC numbers. A 10-switch
+      board over 30 banks needs only 300 of them.</div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">10<span class="u">×30</span></div><div class="kpi-l">switches × banks = 300+ addresses</div></div>
+    <div class="kpi"><div class="kpi-n">2</div><div class="kpi-l">routes: A audio graph · B model gateways</div></div>
+    <div class="kpi"><div class="kpi-n">≤5<span class="u">ms</span></div><div class="kpi-l">press→action latency budget</div></div>
+    <div class="kpi"><div class="kpi-n">0</div><div class="kpi-l">drivers — class-compliant USB / BLE MIDI</div></div>
+  </div>
+
+  <!-- 01 -->
+  <div class="sec-head"><span class="sec-kick">01 · hardware paradigm</span><span class="sec-n">HID vs MIDI CC</span></div>
+  <p class="lede">Basic USB-HID pedals emulate keystrokes — dead simple, but they scale like keybindings:
+  every action needs a unique chord, and the OS can't tell two pedals apart. <b>MIDI Continuous
+  Controller</b> signals carry a channel + CC number + 0–127 value, so <b>banks</b> re-map the same
+  physical switch to a fresh logical address on demand. That's the difference between 10 actions and 300.</p>
+  <div class="tw" style="margin-top:16px">
+    <table class="tbl">
+      <tr><th>dimension</th><th>USB-HID (keyboard emulation)</th><th>MIDI CC (controller)</th></tr>
+      <tr><td>Addressing</td><td class="lose">1 switch = 1 fixed keystroke; collisions with real typing</td><td class="win">channel × CC × value — 1,920 addresses, none shared with the keyboard</td></tr>
+      <tr><td>Scaling</td><td>add switches or chord modifiers; ceiling ≈ dozens</td><td class="win">banks multiply a fixed board: 10 sw × 30 banks = 300+</td></tr>
+      <tr><td>State back-channel</td><td class="lose">none — pedal can't show status</td><td class="win">MIDI OUT drives per-switch LEDs = a live state contract</td></tr>
+      <tr><td>Continuous input</td><td>no</td><td class="win">expression pedal = CC 11 sweep (gain, top-k, mix)</td></tr>
+      <tr><td>Drivers</td><td class="win">class-compliant HID, driverless</td><td class="win">class-compliant USB-MIDI / BLE-MIDI, driverless</td></tr>
+      <tr><td>Best for</td><td>1–4 pedals, one static macro each</td><td class="win">a routing <i>layer</i> — many lanes, profiles, feedback</td></tr>
+    </table>
+  </div>
+
+  <h3 style="margin:26px 0 10px">Bank math — why 10 switches is plenty</h3>
+  <div class="math">
+    <div class="m"><div class="eq">16 ch × 120 CC</div><div class="big">1,920</div><div class="cap">total addressable CC slots on one MIDI link</div></div>
+    <div class="m"><div class="eq">10 sw × 30 banks</div><div class="big">300+</div><div class="cap">logical channels a 10-switch board reaches by re-banking</div></div>
+    <div class="m"><div class="eq">used ÷ available</div><div class="big">16%</div><div class="cap">of the address space — headroom for a lifetime of profiles</div></div>
+  </div>
+
+  <h3 style="margin:26px 0 10px">Controller matrix</h3>
+  <div class="tw">
+    <table class="tbl">
+      <tr><th>controller</th><th>switches</th><th>class</th><th>why / why not</th></tr>
+      <tr><td>Behringer FCB1010</td><td>10 + 2 exp</td><td>USB-MIDI (mod)</td><td>Cheap, tank-built, but heavy and needs the EurekaPROM mod for sane banking. Desk-anchor, not nomad.</td></tr>
+      <tr><td class="win">M-Vave Chocolate Plus</td><td>4</td><td>BLE + USB-C MIDI</td><td class="win"><b>The ordered unit.</b> Palm-size, rechargeable, Note/CC over Bluetooth — the travel default. 4 switches is the day-0 lane budget.</td></tr>
+      <tr><td>MIDI Captain (10-sw)</td><td>10</td><td>USB-MIDI</td><td>Color screen, scriptable, per-switch LEDs. The desk-rig upgrade when bank-flipping exceeds ~5×/hour.</td></tr>
+      <tr><td>Morningstar MC8 Pro</td><td>8</td><td>USB-MIDI</td><td>Pro ceiling — conditional logic, message stacks on-device. Overkill until profiles get truly branchy.</td></tr>
+    </table>
+  </div>
+
+  <!-- 02 -->
+  <div class="sec-head"><span class="sec-kick">02 · OS routing & emulation layer</span><span class="sec-n">signal → action</span></div>
+  <p class="lede">A pedal press is a class-compliant MIDI event. A small userspace daemon — <b>pedald</b> —
+  subscribes to the MIDI sequencer, resolves <code>(channel, CC, bank)</code> against a profile, and
+  fans out to two routes: <b>A</b> the audio graph, <b>B</b> the model / context layer. Nothing touches
+  the keyboard event stream, so it never collides with typing.</p>
+  <div class="card" style="margin-top:16px">
+    <div class="flow">
+      <div class="flowrow"><div class="stage">pedal</div><div class="nodes">
+        <div class="node core">footswitch press / expression sweep<small>Chocolate Plus · MIDI Captain · FCB1010</small></div></div></div>
+      <div class="flowsep">↓</div>
+      <div class="flowrow"><div class="stage">transport</div><div class="nodes">
+        <div class="node">class-compliant USB / BLE MIDI<small>no driver, no kext</small></div></div></div>
+      <div class="flowsep">↓</div>
+      <div class="flowrow"><div class="stage">seq layer</div><div class="nodes">
+        <div class="node">Linux · ALSA-seq → PipeWire<small>pw-link / wpctl graph</small></div>
+        <div class="node">macOS · CoreMIDI + Hammerspoon<small>hs.midi callback</small></div></div></div>
+      <div class="flowsep">↓</div>
+      <div class="flowrow"><div class="stage">router</div><div class="nodes">
+        <div class="node core">pedald — resolve (ch, CC, bank) → action<small>~200-line mido / rtmidi daemon · profiles.toml</small></div></div></div>
+      <div class="flowsep">↓</div>
+      <div class="flowrow"><div class="stage">route A · audio</div><div class="nodes">
+        <div class="node a">toggle inputs / outputs<small>wpctl · pw-link</small></div>
+        <div class="node a">micro-gain stages<small>CC 11 → gain</small></div>
+        <div class="node a">RME TotalMix DSP<small>CC straight into hardware</small></div></div></div>
+      <div class="flowrow"><div class="stage">route B · model</div><div class="nodes">
+        <div class="node b">model gateways<small>opus / haiku switch</small></div>
+        <div class="node b">tmux lane send<small>send-keys to pane</small></div>
+        <div class="node b">context-graph inject<small>vector-db / repo grep</small></div></div></div>
+    </div>
+    <p class="note"><b>Route A</b> can bypass software entirely on an RME interface — a CC sweep drives the
+    TotalMix hardware DSP directly, so gain and monitor mixes survive even if <code>pedald</code> is down.
+    <b>Route B</b> is where the intent lives: each press is an orchestration verb, not a keystroke.</p>
+  </div>
+
+  <h3 style="margin:26px 0 10px"><code>profiles.toml</code> — the routing table as truth</h3>
+  <pre class="code"><span class="c"># pedald resolves (channel, cc, bank) → action. Git is the source of truth;</span>
+<span class="c"># dragging a lane between banks is a text edit, not a re-solder.</span>
+[bank.orchestration]  <span class="c"># channel 1 — Route B</span>
+sw1 = { cc = <span class="s">20</span>, route = <span class="k">"B"</span>, do = <span class="k">"vector.qdrant --local"</span> }
+sw4 = { cc = <span class="s">23</span>, route = <span class="k">"B"</span>, mode = <span class="k">"latch"</span>, do = <span class="k">"ptt.whisper"</span> }
+sw5 = { cc = <span class="s">24</span>, route = <span class="k">"B"</span>, do = <span class="k">"exec.send --pane active"</span> }
+
+[bank.audio]          <span class="c"># channel 2 — Route A</span>
+sw1 = { cc = <span class="s">40</span>, route = <span class="k">"A"</span>, mode = <span class="k">"latch"</span>, do = <span class="k">"mic.mute"</span> }
+exp = { cc = <span class="s">11</span>, route = <span class="k">"A"</span>, do = <span class="k">"gain.armed --range -inf..+6dB"</span> }</pre>
+
+  <!-- 03 -->
+  <div class="sec-head"><span class="sec-kick">03 · model-per-pedal architecture</span><span class="sec-n">lanes & state</span></div>
+  <p class="lede">Assign independent pedals to independent models or tasks by making each pedal a
+  <b>named tmux session</b> — a "lane" — with its own state machine. The pedal press <i>arms</i> the lane;
+  the lane's LED, driven back over MIDI OUT, <b>is</b> the state contract. Expression CC then acts on
+  whichever lane is armed (gain on an audio lane, top-k on a vector lane).</p>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card">
+      <h3>Lane state machine</h3>
+      <p>Each lane is one of five states; the LED colour is the contract, so status is glanceable without
+      looking at a screen.</p>
+      <div class="states">
+        <span class="st idle"><span class="d"></span>idle</span><span class="arrow">→</span>
+        <span class="st armed"><span class="d"></span>armed</span><span class="arrow">→</span>
+        <span class="st busy"><span class="d"></span>busy</span><span class="arrow">→</span>
+        <span class="st ok"><span class="d"></span>ok</span>
+        <span class="arrow">/</span><span class="st err"><span class="d"></span>err</span>
+      </div>
+      <p class="note">Lanes 1–3 → local vector-DB searches · Lane 4 → audio-to-text (PTT whisper, CC 23) ·
+      Lane 5 → execution routing. LEDs unlit = idle; lime = armed; amber pulse = busy; green = ok; red = err.</p>
+    </div>
+    <div class="card">
+      <h3>Expression axis</h3>
+      <p>The expression pedal emits <b>CC 11</b> continuously, mapped onto the <b>armed</b> lane:</p>
+      <table class="tbl" style="margin-top:6px">
+        <tr><th>armed lane</th><th>CC 11 controls</th></tr>
+        <tr><td>audio</td><td>gain stage, −∞…+6 dB</td></tr>
+        <tr><td>vector search</td><td>top-k (1…40 results)</td></tr>
+        <tr><td>model gateway</td><td>temperature / thinking budget</td></tr>
+      </table>
+      <p class="note">One physical sweep means three different things depending on which lane holds the arm —
+      that's the whole economy of the design.</p>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="sec-head"><span class="sec-kick">04 · prototype spec</span><span class="sec-n">two rigs, one budget</span></div>
+  <div class="rails" style="margin-top:16px">
+    <div class="rail-card rec">
+      <div class="rc-h"><span class="rc-tag rec">desk rig</span><b>the anchor</b></div>
+      <p class="rc-p"><b>MIDI Captain (10-sw)</b> + <b>RME Babyface Pro FS</b>. Ten labelled switches with
+      colour LEDs, hardware DSP mixing so Route A never depends on software. The bank-flipping ceiling
+      before you want this: ~5 flips/hour.</p>
+      <div class="rc-m">latency budget · <b>≤3 ms</b> press→action on native CoreMIDI/ALSA</div>
+    </div>
+    <div class="rail-card prev">
+      <div class="rc-h"><span class="rc-tag prev">nomad rig</span><b>the carry</b></div>
+      <p class="rc-p"><b>M-Vave Chocolate Plus</b> (or Nano 4 / Ampero Control) + <b>MOTU M2</b>. Palm-size,
+      BLE + USB-C, rechargeable — fits a packing cube. Four lanes is the travel budget; the rest live in
+      banks. This is the unit already ordered.</p>
+      <div class="rc-m">latency budget · <b>≤5 ms</b> incl. BLE-MIDI jitter</div>
+    </div>
+  </div>
+
+  <h3 style="margin:26px 0 10px">Latency budget — press to action</h3>
+  <div class="tw">
+    <table class="tbl">
+      <tr><th>stage</th><th>wired USB</th><th>BLE-MIDI</th><th>note</th></tr>
+      <tr><td>switch debounce</td><td class="cell-mono">~1 ms</td><td class="cell-mono">~1 ms</td><td>firmware</td></tr>
+      <tr><td>transport</td><td class="cell-mono">&lt;1 ms</td><td class="cell-mono">~3 ms</td><td>BLE connection interval dominates</td></tr>
+      <tr><td>seq → pedald</td><td class="cell-mono">&lt;1 ms</td><td class="cell-mono">&lt;1 ms</td><td>ALSA-seq / CoreMIDI callback</td></tr>
+      <tr><td>action dispatch</td><td class="cell-mono">~1 ms</td><td class="cell-mono">~1 ms</td><td>tmux send-keys / wpctl</td></tr>
+      <tr><td>total</td><td class="cell-mono win">~3 ms</td><td class="cell-mono win">~5 ms</td><td>imperceptible; well under a keystroke round-trip</td></tr>
+    </table>
+  </div>
+
+  <h3 style="margin:26px 0 10px">Build order</h3>
+  <div class="steps card">
+    <div class="step"><div><b>Class-compliant in.</b> Plug the Chocolate Plus, confirm raw MIDI in <code>aseqdump</code> / MIDI Monitor. No drivers.</div></div>
+    <div class="step"><div><b>pedald v0.</b> ~200-line mido / python-rtmidi listener: map notes 60/62/64/65 → four macros. Runs before anything is elegant.</div></div>
+    <div class="step"><div><b>profiles.toml.</b> Lift the hard-coded map into a TOML routing table; banks become sections. Git holds truth.</div></div>
+    <div class="step"><div><b>State back-channel.</b> Wire lane state → MIDI OUT → LEDs. The board now shows idle/armed/busy/ok/err.</div></div>
+    <div class="step"><div><b>Expression + Route A.</b> Add CC 11 → gain/top-k on the armed lane; patch Route A into PipeWire / TotalMix.</div></div>
+  </div>
+
+  <!-- 05 -->
+  <div class="sec-head"><span class="sec-kick">05 · live board</span><span class="sec-n">10 switches × 3 banks</span></div>
+  <p class="lede">A working simulator of the routing layer. Flip banks, fire switches, sweep the expression
+  axis — every event lands in the <code>pedald</code>-style routed-CC log exactly as the daemon would emit it.
+  Latching lanes hold their LED; momentary lanes flash ok. Drive it from the keyboard or click.</p>
+  <div class="board" style="margin-top:16px">
+    <div class="board-top">
+      <span class="board-title">pedald · live simulator</span>
+      <div class="bankpick" id="bankpick"></div>
+      <div class="bankdesc" id="bankdesc"></div>
+    </div>
+    <div class="switches" id="switches"></div>
+    <div class="expr">
+      <label>exp · CC 11</label>
+      <input type="range" id="expr" min="0" max="127" value="64">
+      <span class="val" id="exprval">64</span>
+    </div>
+    <div class="logwrap">
+      <div class="lh"><span>routed-CC log</span><span class="armed" id="armedlabel">armed: —</span></div>
+      <div class="log" id="log"></div>
+    </div>
+    <div class="demo-help">keys <kbd>1</kbd>–<kbd>0</kbd> fire switches · <kbd>[</kbd> <kbd>]</kbd> flip banks · <kbd>↑</kbd> <kbd>↓</kbd> sweep expression</div>
+  </div>
+
+  <!-- procurement -->
+  <div class="sec-head"><span class="sec-kick">day-0 · procurement</span><span class="sec-n">iteration 2</span></div>
+  <p class="lede">Hardware decision folded in: <b>M-Vave Chocolate Plus ordered</b> (Note/CC over BLE + USB-C,
+  the travel default). Denpasar procurement while the parcel clears customs — the filtering rule skips the
+  cheap HID-only lookalikes.</p>
+  <div class="tw" style="margin-top:16px">
+    <table class="tbl">
+      <tr><th>item</th><th>role</th><th>price (Rp)</th><th>status</th></tr>
+      <tr><td class="win">M-Vave Chocolate Plus</td><td>nomad MIDI board · 4 sw BLE/USB-C</td><td class="cell-mono">385–485k</td><td class="win">ordered ✓</td></tr>
+      <tr><td>Elgato Stream Deck Pedal</td><td>3-sw HID hedge (driverless)</td><td class="cell-mono">1,799k</td><td>backup</td></tr>
+      <tr><td>FS23-P dual footswitch</td><td>sustain-style, TS jack</td><td class="cell-mono">700–850k</td><td>optional</td></tr>
+      <tr><td>Baseus USB-A→C adapter</td><td>connect to the laptop</td><td class="cell-mono">~50k</td><td>add to cart</td></tr>
+      <tr><td class="lose">Rockbros / Promend / Flamma / Joyo</td><td>HID-only or guitar-FX — no raw CC</td><td class="cell-mono">—</td><td class="lose">skip</td></tr>
+    </table>
+  </div>
+  <p class="note"><b>Day-0 listener</b> — <code>scripts/listen.py</code>, a runnable mido v0: Chocolate's notes
+  <code>60 / 62 / 64 / 65</code> → vector search · prompt commit · mic mute · context flush. <code>python3
+  listen.py --list</code> works before the parcel clears Denpasar. The pedal replaces a rare key (F13 / hyper);
+  the skill doesn't wait for customs.</p>
+
+  <div class="foot">bpo · TODO-105 foot-pedal · Hands-Free HID→MIDI Routing Blueprint · four dimensions + live board · 2026-07-05 UTC · grove</div>
+  </main>
+</div>
+
+<script>
+(function () {
+  var BANKS = [
+    { id: 'A', name: 'orchestration · Route B — models + context (ch 1)', chan: 1, base: 20, route: 'B',
+      sw: [
+        { lbl: 'vector · qdrant', mode: 'latch' }, { lbl: 'vector · web', mode: 'latch' },
+        { lbl: 'repo grep', mode: 'mom' }, { lbl: 'PTT · whisper', mode: 'latch' },
+        { lbl: 'exec · send pane', mode: 'mom' }, { lbl: 'context flush', mode: 'mom' },
+        { lbl: 'model · opus', mode: 'latch' }, { lbl: 'model · haiku', mode: 'latch' },
+        { lbl: 'lane prev', mode: 'mom' }, { lbl: 'lane next', mode: 'mom' }
+      ] },
+    { id: 'B', name: 'audio · Route A — graph + gain (ch 2)', chan: 2, base: 40, route: 'A',
+      sw: [
+        { lbl: 'mic mute', mode: 'latch' }, { lbl: 'monitor A/B', mode: 'latch' },
+        { lbl: 'input · guitar', mode: 'latch' }, { lbl: 'input · synth', mode: 'latch' },
+        { lbl: 'loopback rec', mode: 'latch' }, { lbl: 'talkback', mode: 'mom' },
+        { lbl: 'gain −3', mode: 'mom' }, { lbl: 'gain +3', mode: 'mom' },
+        { lbl: 'mute all', mode: 'latch' }, { lbl: 'tuner', mode: 'mom' }
+      ] },
+    { id: 'C', name: 'scenes · profile recall (ch 3)', chan: 3, base: 70, route: 'B',
+      sw: [
+        { lbl: 'scene · code', mode: 'latch' }, { lbl: 'scene · call', mode: 'latch' },
+        { lbl: 'scene · record', mode: 'latch' }, { lbl: 'scene · travel', mode: 'latch' },
+        { lbl: 'scene · focus', mode: 'latch' }, { lbl: 'recall 6', mode: 'mom' },
+        { lbl: 'recall 7', mode: 'mom' }, { lbl: 'recall 8', mode: 'mom' },
+        { lbl: 'store', mode: 'mom' }, { lbl: 'panic reset', mode: 'mom' }
+      ] }
+  ];
+  var KEYS = ['1','2','3','4','5','6','7','8','9','0'];
+  var bank = 0;
+  var latched = BANKS.map(function () { return {}; }); // per-bank latch state
+  var armed = null; // {bank, idx}
+
+  var elSwitches = document.getElementById('switches');
+  var elBankpick = document.getElementById('bankpick');
+  var elBankdesc = document.getElementById('bankdesc');
+  var elLog = document.getElementById('log');
+  var elArmed = document.getElementById('armedlabel');
+  var elExpr = document.getElementById('expr');
+  var elExprVal = document.getElementById('exprval');
+
+  function pad(n, w) { n = '' + n; while (n.length < w) n = '0' + n; return n; }
+  function stamp() {
+    var d = new Date();
+    return pad(d.getHours(), 2) + ':' + pad(d.getMinutes(), 2) + ':' + pad(d.getSeconds(), 2) + '.' + pad(d.getMilliseconds(), 3);
+  }
+  function cc(idx) { return BANKS[bank].base + idx; }
+
+  function logLine(html) {
+    var div = document.createElement('div');
+    div.innerHTML = html;
+    elLog.appendChild(div);
+    elLog.scrollTop = elLog.scrollHeight;
+    while (elLog.children.length > 120) elLog.removeChild(elLog.firstChild);
+  }
+
+  function renderBanks() {
+    elBankpick.innerHTML = '';
+    BANKS.forEach(function (b, i) {
+      var btn = document.createElement('button');
+      btn.className = 'bankbtn' + (i === bank ? ' on' : '');
+      btn.textContent = 'bank ' + b.id;
+      btn.onclick = function () { bank = i; renderBanks(); renderSwitches(); };
+      elBankpick.appendChild(btn);
+    });
+    elBankdesc.textContent = BANKS[bank].name;
+  }
+
+  function renderSwitches() {
+    elSwitches.innerHTML = '';
+    var b = BANKS[bank];
+    b.sw.forEach(function (s, i) {
+      var on = !!latched[bank][i];
+      var el = document.createElement('div');
+      el.className = 'sw' + (on ? ' on' : '');
+      el.id = 'sw' + i;
+      el.innerHTML = '<span class="led"></span>' +
+        '<div class="key">key ' + KEYS[i] + ' · CC ' + cc(i) + '</div>' +
+        '<div class="lbl">' + s.lbl + '</div>' +
+        '<div class="cc">ch ' + b.chan + ' · Route ' + b.route + '</div>' +
+        '<span class="mtag">' + (s.mode === 'latch' ? 'latch' : 'mom') + '</span>';
+      el.onclick = function () { fire(i); };
+      elSwitches.appendChild(el);
+    });
+  }
+
+  function setArmed(idx) {
+    armed = { bank: bank, idx: idx };
+    var s = BANKS[bank].sw[idx];
+    elArmed.textContent = 'armed: bank ' + BANKS[bank].id + ' · ' + s.lbl;
+  }
+
+  function fire(idx) {
+    var b = BANKS[bank];
+    var s = b.sw[idx];
+    var el = document.getElementById('sw' + idx);
+    var val;
+
+    if (s.mode === 'latch') {
+      latched[bank][idx] = !latched[bank][idx];
+      val = latched[bank][idx] ? 127 : 0;
+      el.classList.toggle('on', latched[bank][idx]);
+    } else {
+      val = 127;
+      el.classList.add('flash', 'busy');
+      setTimeout(function () { el.classList.remove('busy'); el.classList.add('ok'); }, 160);
+      setTimeout(function () { el.classList.remove('flash', 'ok'); }, 520);
+    }
+
+    setArmed(idx);
+    var rc = b.route === 'B' ? 'rb' : 'ra';
+    logLine('<span class="t">' + stamp() + '</span>  ch' + b.chan +
+      ' <span class="cc2">CC ' + cc(idx) + ' ' + pad(val, 3) + '</span>  ' +
+      'bank ' + b.id + '·sw' + (idx + 1) + '  → <span class="' + rc + '">Route ' + b.route + ': ' + s.lbl +
+      (s.mode === 'latch' ? (val ? ' [on]' : ' [off]') : '') + '</span>');
+  }
+
+  function sweep(v) {
+    elExpr.value = v;
+    elExprVal.textContent = v;
+    var target = armed ? ('bank ' + BANKS[armed.bank].id + '·' + BANKS[armed.bank].sw[armed.idx].lbl) : 'no armed lane';
+    logLine('<span class="t">' + stamp() + '</span>  ch1 <span class="cc2">CC 011 ' + pad(v, 3) +
+      '</span>  exp  → <span class="ra">gain/top-k · ' + target + '</span>');
+  }
+
+  elExpr.addEventListener('input', function () { sweep(parseInt(elExpr.value, 10)); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.target && e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+    var k = e.key;
+    var ki = KEYS.indexOf(k);
+    if (ki >= 0) { fire(ki); e.preventDefault(); return; }
+    if (k === '[') { bank = (bank + BANKS.length - 1) % BANKS.length; renderBanks(); renderSwitches(); e.preventDefault(); return; }
+    if (k === ']') { bank = (bank + 1) % BANKS.length; renderBanks(); renderSwitches(); e.preventDefault(); return; }
+    if (k === 'ArrowUp') { sweep(Math.min(127, parseInt(elExpr.value, 10) + 8)); e.preventDefault(); return; }
+    if (k === 'ArrowDown') { sweep(Math.max(0, parseInt(elExpr.value, 10) - 8)); e.preventDefault(); return; }
+  });
+
+  renderBanks();
+  renderSwitches();
+  logLine('<span class="t">' + stamp() + '</span>  pedald ready · bank A · 3 banks × 10 switches loaded');
+})();
+</script>
+</body>
+</html>

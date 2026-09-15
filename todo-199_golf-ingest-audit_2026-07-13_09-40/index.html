@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-199 · golf-ingest-flow-audit · Can you see Mammoth Dunes?</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  main { max-width: 960px; margin: 0 auto; padding: 26px 26px 60px; }
+  .verdict { border: 1px solid var(--accent, #7fb069); border-radius: 10px;
+    padding: 16px 18px; margin: 20px 0; background: rgba(127,176,105,0.07); }
+  .verdict h2 { margin: 0 0 6px; }
+  .chain { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0; }
+  .chain .node { border: 1px solid var(--line, #3a4a3f); border-radius: 8px;
+    padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; }
+  .chain .node.gap { border-color: var(--warn, #d9a441); font-weight: 600; }
+  .chain .node.fix { border-color: var(--accent, #7fb069); font-weight: 600; }
+  .chain .arrow { opacity: 0.5; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line, #2c3a31); font-size: 0.9rem; vertical-align: top; }
+  th { opacity: 0.65; font-weight: 600; }
+  code, pre { font-size: 0.85rem; }
+  pre { padding: 12px 14px; border: 1px solid var(--line, #2c3a31); border-radius: 8px; overflow-x: auto; }
+  .ok { color: var(--good, #7fb069); }
+  .warn { color: var(--warn, #d9a441); }
+  .no { color: var(--bad, #cc6666); }
+  h2 { margin-top: 40px; }
+  .meta { opacity: 0.6; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="meta">TODO-199 · generated 2026-07-13 09:40 UTC · revised 2026-07-13 (parser fix: 9-hole cards) · bpo/projects/golf-swingnerds</p>
+  <h1>Golf ingest flow — audit &amp; launchd fix</h1>
+  <p>You made your own SGT league and played the back nine at Mammoth
+  Dunes, and asked: <em>can the ingest see that?</em> Short answer below;
+  the audit also found — and fixed — why the nightly job would never have
+  seen it on its own.</p>
+
+  <div class="verdict">
+    <h2 class="ok">Yes — it's in the registry now.</h2>
+    <p>Discovery found <strong>&ldquo;Mammoth Dune Back 9&rdquo;</strong>
+    — scorecard <code>62922/45847</code>, 9 holes (10&ndash;18), 38 shots,
+    player <code>brendobrien</code>. It's pulled and registered, and
+    strokes-gained now computes: <strong>SG total &minus;4.03</strong>
+    (off-tee &minus;1.62 · approach &minus;1.99 · around-green +0.51 ·
+    putting &minus;0.92). One real caveat remains: SwingNerds didn&rsquo;t
+    capture this round, so there&rsquo;s no per-shot swing join.</p>
+    <p style="margin:8px 0 0"><strong>Correction (you were right).</strong>
+    My first pass called SG &ldquo;degenerate &mdash; no par/gross.&rdquo;
+    Wrong: the scorecard <em>does</em> ship par, gross, <em>and</em> per-shot
+    lie/distance. The bug was ours &mdash; <code>parse_scorecard</code>
+    hard-coded an 18-hole grid, so this back-nine card parsed empty and every
+    hole was flagged <code>not_played</code>. Fixed below.</p>
+  </div>
+
+  <h2>The nightly chain — and the gap</h2>
+  <div class="chain">
+    <span class="node">sn_pull</span><span class="arrow">→</span>
+    <span class="node">tag ingest</span><span class="arrow">→</span>
+    <span class="node">video mirror</span><span class="arrow">→</span>
+    <span class="node gap">sgt_discover</span><span class="arrow">→</span>
+    <span class="node">registry re-pull</span><span class="arrow">→</span>
+    <span class="node">strokes gained</span><span class="arrow">→</span>
+    <span class="node">per-shot join</span><span class="arrow">→</span>
+    <span class="node">unsynced check</span><span class="arrow">→</span>
+    <span class="node">reports</span><span class="arrow">→</span>
+    <span class="node">artifact</span><span class="arrow">→</span>
+    <span class="node">deploy + ping</span>
+  </div>
+
+  <h2>Root cause: the scheduled path never had credentials</h2>
+  <p>The creds are in <code>~/.config/zsh/secrets.zsh</code>
+  (<code>SGT_EMAIL/SGT_PASSWORD/SN_EMAIL/SN_PASSWORD</code>) — but
+  <strong>launchd runs with a bare environment</strong> and never sources
+  that file. So every night <code>sgt_discover.py</code> found no creds,
+  exited 3, and skipped discovery silently. Interactive runs worked
+  (your shell has the env); the 22:07 job was effectively blind. There is
+  no <code>secrets.sh</code> — <code>secrets.zsh</code> is the file, and
+  it's the single source of truth.</p>
+
+  <h2>The fix — a wrapper that sources the secrets</h2>
+  <pre>#!/bin/zsh                       # refresh_cron.sh
+source ~/.config/zsh/secrets.zsh              # the missing link
+exec /usr/bin/python3 .../refresh.py --quiet "$@"</pre>
+  <p>The launchd plist <code>ProgramArguments</code> now points at
+  <code>/bin/zsh refresh_cron.sh</code> instead of python directly. No
+  <code>credentials.json</code>, no plaintext in the plist — creds stay
+  in <code>secrets.zsh</code> only.</p>
+
+  <h2>Mammoth Dunes round — what the pull shows</h2>
+  <table>
+    <tr><th>field</th><th>value</th></tr>
+    <tr><td>course / round</td><td>Mammoth Dune Back 9 · <code>62922/45847</code></td></tr>
+    <tr><td>discovered?</td><td class="ok">yes — surfaced by sgt_discover sweep</td></tr>
+    <tr><td>holes / shots</td><td>9 (holes 10&ndash;18) · 38 shots parsed</td></tr>
+    <tr><td>par / gross</td><td class="ok">read — PAR 37, GROSS 38 (was mis-parsed as null; fixed)</td></tr>
+    <tr><td>strokes gained</td><td class="ok">−4.03 total · OTT −1.62 · APP −1.99 · ARG +0.51 · PUTT −0.92 (telescopes exactly)</td></tr>
+    <tr><td>SwingNerds join</td><td class="no">none — no LM/video capture for this round</td></tr>
+    <tr><td>registry</td><td class="ok">present, last_pulled 2026-07-13</td></tr>
+  </table>
+
+  <h2>Verified this session</h2>
+  <table>
+    <tr><th>check</th><th>result</th></tr>
+    <tr><td>live discovery (interactive)</td><td class="ok">login OK, 13 scorecard pairs incl. 62922/45847</td></tr>
+    <tr><td>full refresh, existing data</td><td class="ok">exit 0, 14 rounds registered, joins 0.91&ndash;0.95</td></tr>
+    <tr><td>creds sourced under stripped env</td><td class="ok">env -i + source secrets.zsh → SGT+SN exported</td></tr>
+    <tr><td>plist validity + reload</td><td class="ok">plutil OK, unload/load clean, listed</td></tr>
+    <tr><td>launchd kickstart runs wrapper</td><td class="ok">/bin/zsh → refresh_cron.sh → refresh.py, chain executing</td></tr>
+  </table>
+
+  <h2>The parser fix — the real gap</h2>
+  <p><code>parse_scorecard</code> matched a scorecard row only when it was
+  followed by <em>18&ndash;25</em> numbers and then indexed values by
+  <code>hole&nbsp;&minus;&nbsp;1</code> &mdash; both assumptions bake in an
+  18-hole card. A back-nine league round is 9 holes with just IN/TOT
+  subtotals (11 numbers), so the row never matched: the grid parsed empty,
+  <code>reconcile</code> saw no gross, and flagged all nine holes
+  <code>not_played</code> &rarr; <code>strokes_gained</code> had zero holes
+  to score &rarr; +0.0.</p>
+  <pre># before: 18-hole only          # after: read the HOLE header row
+re.search(rf"\b{label}\b"          mh = re.search(r"\bHOLE\b((?:\s+"
+  r"((?:\s+(?:-|\d+)){18,25})")       r"(?:\d+|OUT|IN|TOT))+)", seg)
+gross[hole - 1]                    # cols -> {hole_number: value}, drop OUT/IN/TOT
+                                   gross.get(hole)   # keyed by real hole #</pre>
+  <p>Now 9-hole (front <em>or</em> back nine) and 18-hole cards parse the
+  same. Regression: the full 18-hole rounds (61665 R1/R2 = 68/79, hole 6
+  skip preserved) are byte-for-byte unchanged; the re-pull of all 14
+  registry rounds is clean.</p>
+
+  <h2>Honest edges</h2>
+  <p>The one true limit on this round: <strong>SwingNerds didn&rsquo;t
+  record it</strong>, so there&rsquo;s no per-shot swing join &mdash; the
+  SGT positional data computes SG on its own, but launch-monitor / video
+  needs SN capturing during play. The unsynced ping still guards that side:
+  Portrush #58 remains flagged, un-joined by design. And the standing rule
+  from the prior session &mdash; <strong>almost every chat gets a Linear
+  ticket carrying its prompt, a compact response, and an artifact</strong>
+  &mdash; holds here too.</p>
+</main>
+</body>
+</html>

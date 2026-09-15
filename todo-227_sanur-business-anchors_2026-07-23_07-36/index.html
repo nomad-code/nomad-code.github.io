@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>Sanur as a Business Base · PT PMA</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <style>
+    :root {
+      --c-cheap:  #c4501f;  --c-cheap-bg:#f6e3da;  --c-cheap-bd:#e3b9a6;
+      --c-mid:    #0d8f7f;  --c-mid-bg:  #d9ece7;  --c-mid-bd:#b9d9d0;
+      --c-trophy: #a07c15;  --c-trophy-bg:#f3ead2; --c-trophy-bd:#e3d3a0;
+      --c-blue:   #3a92ba;
+    }
+    body { min-height:100vh; overflow-x:hidden; }
+    main { max-width:960px; margin:0 auto; padding:34px 24px 90px; }
+
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.08em; text-transform:uppercase; color:var(--c-mid); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-mid); }
+    h1 { font:800 clamp(32px,5vw,52px)/1.03 var(--font-display); letter-spacing:-.03em;
+      color:var(--ink); margin:16px 0 8px; }
+    h1 em { font-style:normal; color:var(--c-mid); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 12px; }
+    .sub a { color:var(--forest-d); }
+    .lede { max-width:70ch; font:400 17px/1.62 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:660; }
+
+    section { margin-top:52px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:14px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(21px,3vw,27px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+
+    /* verdict cards */
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    @media (max-width:720px){ .cards{ grid-template-columns:1fr; } }
+    .card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-card); padding:18px 18px 20px; position:relative; overflow:hidden; }
+    .card::before { content:""; position:absolute; inset:0 auto 0 0; width:4px; }
+    .card.cheap::before  { background:var(--c-cheap); }
+    .card.mid::before    { background:var(--c-mid); }
+    .card.trophy::before { background:var(--c-trophy); }
+    .card .tag { font:600 11px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); display:inline-block; margin-bottom:10px; }
+    .card.cheap .tag  { color:var(--c-cheap);  background:var(--c-cheap-bg);  border:1px solid var(--c-cheap-bd); }
+    .card.mid .tag    { color:var(--c-mid);    background:var(--c-mid-bg);    border:1px solid var(--c-mid-bd); }
+    .card.trophy .tag { color:var(--c-trophy); background:var(--c-trophy-bg); border:1px solid var(--c-trophy-bd); }
+    .card h3 { font:700 17px/1.2 var(--font-display); color:var(--ink); margin:0 0 4px; }
+    .card .price { font:500 12px/1 var(--font-mono); color:var(--muted); margin-bottom:10px; }
+    .card p { font:400 14px/1.55 var(--font-ui); color:var(--body); margin:0; }
+    .card .verdict { margin-top:12px; font:600 13px/1.4 var(--font-ui); }
+    .card.cheap .verdict  { color:var(--c-cheap); }
+    .card.trophy .verdict { color:var(--c-trophy); }
+    .card.mid .verdict    { color:var(--c-mid); }
+    .card.mid { box-shadow:0 0 0 2px var(--c-mid-bd), var(--shadow-hero); }
+
+    .blurb { max-width:72ch; font:400 15px/1.62 var(--font-ui); color:var(--body); }
+    .blurb b { color:var(--ink); font-weight:640; }
+
+    /* play checklist */
+    ul.play { list-style:none; padding:0; margin:16px 0 0; display:grid; gap:9px; max-width:66ch; }
+    ul.play li { display:flex; gap:11px; align-items:flex-start; font:400 15px/1.5 var(--font-ui); color:var(--body); }
+    ul.play li b { color:var(--ink); font-weight:640; }
+    ul.play li::before { content:"→"; color:var(--c-mid); font-weight:700; flex:0 0 auto; }
+
+    /* anchors */
+    .anchors { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:6px; }
+    @media (max-width:680px){ .anchors{ grid-template-columns:1fr; } }
+    .anchor { display:flex; gap:13px; align-items:flex-start; border:1px solid var(--line);
+      border-radius:var(--r-panel); background:var(--card); padding:14px 15px; text-decoration:none; }
+    .anchor:hover { border-color:var(--faint); }
+    .anchor .ic { font-size:22px; line-height:1; flex:0 0 auto; }
+    .anchor .t { font:640 15px/1.25 var(--font-ui); color:var(--ink); }
+    .anchor .t .star { color:var(--c-trophy); }
+    .anchor .d { font:400 13px/1.45 var(--font-ui); color:var(--muted); margin-top:2px; }
+    .anchor.kek { box-shadow:0 0 0 2px var(--c-mid-bd) inset; }
+
+    .note { margin-top:14px; font:400 13.5px/1.6 var(--font-ui); color:var(--muted); max-width:70ch; }
+    .note b { color:var(--body); }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      font:500 12px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.03em; }
+    footer a { color:var(--forest-d); }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow"><span class="mo-dot"></span> TODO-227 · pt pma · sanur</p>
+  <h1>Sanur as a <em>business base</em>,<br>not a home</h1>
+  <p class="sub">PT NOMAD CODE COLLECTIVE · KBLI 68111 (real estate) · <a href="https://linear.app/nomad-code/issue/TODO-227">TODO-227</a></p>
+  <p class="lede">Buying property in Sanur "as my business" is a <b>PT PMA asset decision</b> — so the target is neither <b>cheapest</b> nor <b>best/trophy</b>. It's <b>best risk-adjusted net yield + a clean HGB title + a real exit</b>, and that lands squarely mid-market.</p>
+
+  <section>
+    <div class="k"><span class="n">01</span><h2>Cheapest vs. best — both extremes lose</h2></div>
+    <div class="cards">
+      <div class="card cheap">
+        <span class="tag">Cheapest</span>
+        <h3>Leasehold trap</h3>
+        <div class="price">sub-$150k entry</div>
+        <p>Short-term leasehold, off-pitch, capex-heavy. Spends the PMA's one real edge — holding HGB — on a wasting title.</p>
+        <div class="verdict">✗ Yield evaporates</div>
+      </div>
+      <div class="card mid">
+        <span class="tag">Mid-market ✓</span>
+        <h3>HGB yield play</h3>
+        <div class="price">~$250k × 2</div>
+        <p>≥8% net, long-term rentals, HGB via the PMA. Location over finish. Two assets over one — more yield, more exit.</p>
+        <div class="verdict">✓ The play</div>
+      </div>
+      <div class="card trophy">
+        <span class="tag">Best / trophy</span>
+        <h3>Dead yield</h3>
+        <div class="price">$471k median → up</div>
+        <p>More capital in one prestige villa = lower yield %, smaller resale pool. Concentration risk with worse returns.</p>
+        <div class="verdict">✗ Thin exit</div>
+      </div>
+    </div>
+    <p class="blurb" style="margin-top:18px;">Sanur's edge is <b>stability, not top yield</b>: ~<b>8–10% net</b> on <b>long-term</b> rentals (families, medical tourism, long-stay expats) — defensible demand vs. Canggu's boom-bust short-stay (10–12% but volatile). Buy <b>into</b> that stability, don't buy the cheapest thing near it.</p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">02</span><h2>The play + two pre-checks</h2></div>
+    <ul class="play">
+      <li><b>Yield floor</b> — ≥8% <b>net</b> (after mgmt, tax, maintenance, vacancy — not broker gross).</li>
+      <li><b>Title first</b> — HGB via PMA (30+20+renewals), or convert SHM→HGB at notary/BPN. Walk short leasehold.</li>
+      <li><b>Location &gt; finish</b> — walkable to beach/clinics/schools beats a lavish villa on a bad lane.</li>
+      <li><b>Cap concentration</b> — two ~$250k assets beat one $500k trophy.</li>
+      <li><b>PMA capital</b> — min paid-up ~<b>IDR 2.5B (~$150k)</b>, BKPM No.5/2025; capital-statement letter at registration.</li>
+      <li><b>KBLI scope</b> — 68111 already covers real estate; confirm it covers villa <b>rental</b> before funding. Verify with a Bali notary.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">03</span><h2>Why Sanur fits me — the anchors</h2></div>
+    <div class="anchors">
+      <a class="anchor kek" href="https://maps.app.goo.gl/Ye3EQmfdU8JNyVV8A">
+        <span class="ic">🏥</span>
+        <span><span class="t"><span class="star">★</span> Bali International Hospital</span>
+        <span class="d">Medical-maxxing · Found AI health plan. In the Sanur KEK — the SEZ that anchors the whole thesis.</span></span></a>
+      <a class="anchor" href="https://maps.app.goo.gl/CNwzwwcFe6ni17q57">
+        <span class="ic">✈️</span>
+        <span><span class="t"><span class="star">★</span> Ngurah Rai Airport (DPS)</span>
+        <span class="d">Close for frequent travel abroad.</span></span></a>
+      <a class="anchor" href="https://maps.app.goo.gl/PyFwpPYxf7NZgxSeA">
+        <span class="ic">☕</span>
+        <span><span class="t"><span class="star">★</span> Series Coffee Roasters</span>
+        <span class="d">Barista friend — Ken.</span></span></a>
+      <a class="anchor" href="https://maps.app.goo.gl/S8yuatZAL5MzyeJB8">
+        <span class="ic">🧘</span>
+        <span><span class="t"><span class="star">★</span> Rona Manis Sanur</span>
+        <span class="d">Barista friend — Rona (yoga).</span></span></a>
+      <a class="anchor" href="https://maps.app.goo.gl/pXKRZ4VGSERgp3Wv7">
+        <span class="ic">🏄</span>
+        <span><span class="t"><span class="star">★</span> Arthamas Express Fast Boat</span>
+        <span class="d">To Nusa Lembongan — surf + freediving.</span></span></a>
+      <a class="anchor" href="https://maps.app.goo.gl/VgHJQsYCFdTZ1MaQ9">
+        <span class="ic">🍣</span>
+        <span><span class="t"><span class="star">★</span> Azu Sushi (omakase)</span>
+        <span class="d">Best sushi in Bali.</span></span></a>
+      <a class="anchor" href="https://maps.app.goo.gl/s9arakgvPzKg95VS6">
+        <span class="ic">🎬</span>
+        <span><span class="t">Cinema XXI ICON BALI</span>
+        <span class="d">IMAX · Icon Bali Mall.</span></span></a>
+      <a class="anchor" href="https://maps.app.goo.gl/E5f4CbzXKv2GuPoi8">
+        <span class="ic">🛵</span>
+        <span><span class="t">Jasa Samsat Bali</span>
+        <span class="d">Registration for the two scooters.</span></span></a>
+    </div>
+    <p class="note">Anchors cluster tight — hospital, airport, surf boat, sushi, two barista friends within reach. The <b>"15-minute life"</b> case for basing the PMA in Sanur, all in Sanur Kaja/Kauh, Denpasar Selatan.</p>
+  </section>
+
+  <footer>
+    bpo · private · 2026-07-23 07:36 Z · figures are 2026 web sources — verify capital thresholds &amp; KBLI with a Bali notary before committing · <a href="https://linear.app/nomad-code/issue/TODO-227">TODO-227</a>
+  </footer>
+</main>
+</body>
+</html>

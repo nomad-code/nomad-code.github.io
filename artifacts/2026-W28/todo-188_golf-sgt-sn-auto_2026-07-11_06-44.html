@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-188 · golf-sgt-sn-auto · Fully Automated Round Sync</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  main { max-width: 960px; margin: 0 auto; padding: 26px 26px 60px; }
+  .chain { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0; }
+  .chain .node { border: 1px solid var(--line, #3a4a3f); border-radius: 8px;
+    padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; }
+  .chain .node.new { border-color: var(--accent, #7fb069); font-weight: 600; }
+  .chain .arrow { opacity: 0.5; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line, #2c3a31); font-size: 0.9rem; }
+  th { opacity: 0.65; font-weight: 600; }
+  code, pre { font-size: 0.85rem; }
+  pre { padding: 12px 14px; border: 1px solid var(--line, #2c3a31); border-radius: 8px; overflow-x: auto; }
+  .ok { color: var(--good, #7fb069); }
+  .warn { color: var(--warn, #d9a441); }
+  h2 { margin-top: 40px; }
+  .meta { opacity: 0.6; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="meta">TODO-188 · generated 2026-07-11 06:44 UTC · bpo/projects/golf-swingnerds</p>
+  <h1>Fully automated round sync</h1>
+  <p>Play the round, record the swings — the nightly refresh
+  (launchd <code>com.bpo.golf-refresh</code>, 22:07) now finds new SGT
+  scorecards itself, runs the whole TODO-186/187 chain, publishes the
+  round artifact, and pings a macOS notification with the URL.
+  If discovery can't find a scorecard for a round you clearly played,
+  it pings once asking for the URL instead of staying silent.</p>
+
+  <h2>The nightly chain</h2>
+  <div class="chain">
+    <span class="node">sn_pull</span><span class="arrow">→</span>
+    <span class="node">tag ingest</span><span class="arrow">→</span>
+    <span class="node">video mirror</span><span class="arrow">→</span>
+    <span class="node new">sgt_discover</span><span class="arrow">→</span>
+    <span class="node">registry re-pull</span><span class="arrow">→</span>
+    <span class="node">strokes gained</span><span class="arrow">→</span>
+    <span class="node">per-shot join</span><span class="arrow">→</span>
+    <span class="node new">unsynced check</span><span class="arrow">→</span>
+    <span class="node">reports</span><span class="arrow">→</span>
+    <span class="node">artifact</span><span class="arrow">→</span>
+    <span class="node new">deploy + ping</span>
+  </div>
+
+  <h2>What was built</h2>
+  <table>
+    <tr><th>piece</th><th>what it does</th></tr>
+    <tr><td><code>sgt_discover.py</code></td>
+      <td>Logs into simulatorgolftour.com — the login is a plain
+      csrf+POST (<code>uname</code>/<code>pwd</code>, no captcha, remember-me
+      cookie) — keeps the session in <code>~/ark/golf/sgt/session.cookies</code>,
+      sweeps the quest dashboard + profile round tables + one level of
+      <code>data-load/detail-url</code> fragments, and prints any
+      <code>scorecard/(tid)/(rid)</code> pair not already in the registry.</td></tr>
+    <tr><td>discover step in <code>refresh.py</code></td>
+      <td>Feeds discovered pairs straight into the registry pull. Exit 3
+      (no credentials) skips quietly; exit 2 (login failed) pings an
+      action notification; the rest of the chain always continues.</td></tr>
+    <tr><td>unsynced check</td>
+      <td>Every GSPro <code>roundId</code> in SwingNerds
+      <code>courseData</code> (≥8 shots) must be covered by a
+      <code>joined_*.json</code> match. A round with no SGT join pings
+      <em>once</em> — "paste the scorecard URL" —
+      de-duped via <code>unsynced_seen.json</code>. Caught the known gap
+      immediately: <span class="warn">Portrush_GM_GSP #58, 114 shots, no
+      scorecard pulled</span>.</td></tr>
+    <tr><td>deploy + ping</td>
+      <td>When new data renders an artifact, <code>refresh.py</code> runs
+      <code>scripts/artifact-deploy.sh</code> (commit → push → Pages) and the
+      notification carries the public URL. Priority:
+      failure &gt; action-needed &gt; new-data+URL.</td></tr>
+  </table>
+
+  <h2>One-time setup (the only manual step left)</h2>
+  <pre>cat &gt; ~/ark/golf/sgt/credentials.json &lt;&lt;'EOF'
+{"email": "YOUR-SGT-EMAIL", "password": "YOUR-SGT-PASSWORD"}
+EOF
+chmod 600 ~/ark/golf/sgt/credentials.json</pre>
+  <p>Until this exists the discover step skips and the unsynced check
+  is the safety net — you still get pinged when a round needs its URL.</p>
+
+  <h2>Verified tonight</h2>
+  <table>
+    <tr><th>check</th><th>result</th></tr>
+    <tr><td>full chain, live SwingNerds pull</td><td class="ok">exit 0, 436 shots, 2/2 rounds re-pulled, joins 0.91–0.95</td></tr>
+    <tr><td>discover without credentials</td><td class="ok">exit 3, quiet skip</td></tr>
+    <tr><td>unsynced detection</td><td class="ok">flags Portrush #58, ignores 5-shot aborts and roundId −1</td></tr>
+    <tr><td>ping de-dup</td><td class="ok">second run: no repeat ACTION</td></tr>
+    <tr><td>deploy URL parse</td><td class="ok">real push → <code>nomad-code.github.io/todo-187_…_06-40</code> parsed</td></tr>
+    <tr><td>launchd job</td><td class="ok">bootstrapped, plist in sync, last exit 0</td></tr>
+  </table>
+
+  <h2>Honest edges</h2>
+  <p>Quest-mode rounds show <em>zero</em> on the public profile tables, so
+  discovery leans on the logged-in quest dashboard — its scorecard-link
+  shape is unvalidated until the next round posts with credentials in
+  place. If it misses, the unsynced ping is the guaranteed fallback, so
+  the loop can't silently drop a round. SwingNerds JWT expiry still
+  needs one app-open (existing notification covers it). M5/tailscale
+  migration deliberately deferred — the brief says M3 first.</p>
+</main>
+</body>
+</html>

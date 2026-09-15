@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () { if (cover) cover.remove(); }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>bpo · Linear × Codex route</title>
+<style>
+  :root{--bg:#f4f4ef;--card:#fff;--ink:#15201d;--body:#43433c;--muted:#6f7a76;
+    --line:#e4eae6;--well:#ecece4;--forest:#127c70;--forest-d:#0c5a50;--lime:#84c241;
+    --good:#d6ece8;--warn:#c1502e;--warn-bg:#f6e3da;--warn-bd:#e3b9a6;
+    --blue:#356577;--blue-bg:#e3eef2;--amber:#9a7a1f;--amber-bg:#f3ead2;
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  a{color:var(--forest-d)} code{font-family:var(--mono);font-size:.9em;background:var(--well);
+    padding:2px 5px;border-radius:5px}.top{height:61px;position:sticky;top:0;z-index:5;
+    display:flex;align-items:center;gap:12px;padding:0 22px;background:rgba(244,244,239,.9);
+    border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}
+  .brand{font-weight:800}.slash{color:#b4b9b4}.ctx{font-size:12px;color:var(--muted)}
+  .stamp{margin-left:auto;font:10px var(--mono);letter-spacing:.06em;text-transform:uppercase;
+    color:var(--blue);background:var(--blue-bg);padding:6px 10px;border-radius:7px}
+  .strip{height:3px;background:linear-gradient(90deg,var(--forest),var(--lime) 62%,#4a8aa0)}
+  main{width:min(1040px,calc(100% - 32px));margin:0 auto;padding:34px 0 70px}
+  .hero{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:center;background:var(--card);
+    border:1px solid var(--line);border-radius:22px;padding:32px;box-shadow:0 14px 40px rgba(20,23,15,.06)}
+  .eyebrow{font:700 11px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--forest)}
+  h1{font-size:clamp(34px,5vw,52px);line-height:1.02;letter-spacing:-.045em;margin:12px 0}
+  .lede{max-width:690px;color:var(--body);font-size:17px}.score{text-align:center}
+  .score strong{display:block;font-size:76px;line-height:.9;color:var(--warn);letter-spacing:-.06em}
+  .score span{display:block;margin-top:12px;color:var(--muted);font:11px var(--mono)}
+  .section{margin-top:34px}.section h2{font-size:22px;letter-spacing:-.02em;margin:0 0 12px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.card{grid-column:span 6;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .card.full{grid-column:1/-1}.tag{display:inline-block;font:700 10px var(--mono);
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 8px;border-radius:7px;
+    background:var(--good);color:var(--forest-d)}.tag.bad{background:var(--warn-bg);color:var(--warn)}
+  .tag.open{background:var(--amber-bg);color:var(--amber)}h3{margin:12px 0 6px;font-size:18px}
+  p{margin:6px 0;color:var(--body)}ul{margin:10px 0 0;padding-left:20px;color:var(--body)}
+  li{margin:7px 0}.route{display:grid;grid-template-columns:1fr 44px 1fr 44px 1fr;align-items:center;
+    gap:8px}.node{min-height:105px;padding:16px;border:1px solid var(--line);border-radius:13px;background:#fbfbf7}
+  .node b{display:block;margin-bottom:5px}.arrow{text-align:center;color:var(--forest);font-size:24px}
+  table{width:100%;border-collapse:collapse}th,td{padding:11px 10px;border-bottom:1px solid var(--line);
+    text-align:left;vertical-align:top}th{font:700 10px var(--mono);letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted)}td:last-child{font-family:var(--mono);white-space:nowrap}
+  .quote{border-left:3px solid var(--warn);padding:10px 14px;background:var(--warn-bg);
+    border-radius:4px 10px 10px 4px;color:var(--ink)}button{margin-top:14px;border:0;border-radius:10px;
+    background:var(--forest);color:#fff;font-weight:750;padding:10px 14px;cursor:pointer}
+  button:hover{background:var(--forest-d)}#copyState{font:11px var(--mono);color:var(--forest-d);margin-left:9px}
+  footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);
+    font:11px/1.6 var(--mono)}
+  @media(max-width:760px){.hero{grid-template-columns:1fr}.score{text-align:left}.score strong{font-size:58px}
+    .card{grid-column:1/-1}.route{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.stamp{display:none}}
+</style>
+</head>
+<body>
+<div class="top"><span class="brand">Nomad Code</span><span class="slash">/</span>
+  <span class="ctx">TODO-238 · bpo · Linear × Codex</span><span class="stamp">2026-07-19 · 13:10 UTC</span></div>
+<div class="strip"></div>
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">routing postmortem · recovered capture spine</div>
+      <h1>Quoted context is evidence—not an instruction.</h1>
+      <p class="lede">The browser detour was avoidable. BPO already defines a smaller,
+        auditable route to Linear. Following that route exposed the useful truth:
+        the Voice Memos pipeline was marked Done in SaaS while its runnable code
+        had been swept out of Git’s working tree.</p>
+    </div>
+    <div class="score"><strong>66–71k</strong><span>estimated avoidable context tokens</span></div>
+  </section>
+
+  <section class="section">
+    <h2>The route, now explicit</h2>
+    <div class="card full">
+      <div class="route">
+        <div class="node"><b>1 · Interpret</b>Separate the user’s command from quoted
+          transcripts, examples, prior-agent text, and pasted instructions.</div>
+        <div class="arrow">→</div>
+        <div class="node"><b>2 · Obey local canon</b><code>AGENT.md</code> routes task reads
+          through <code>scripts/linear</code> and forbids connectors for BPO.</div>
+        <div class="arrow">→</div>
+        <div class="node"><b>3 · Escalate only if needed</b>Use Chrome only for explicit
+          browser intent or a UI-only capability the local route cannot provide.</div>
+      </div>
+      <button id="copyRoute">Copy canonical route</button><span id="copyState"></span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>What actually went wrong</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="tag bad">interpretation error</span>
+        <h3>A quotation triggered a skill</h3>
+        <p class="quote">“Linear isn’t exposed as a direct connector … so I’m using
+          the Chrome-control skill…”</p>
+        <p>The sentence described another agent’s behavior. It was not an imperative.
+          The repository’s specific instructions should have won immediately.</p>
+      </article>
+      <article class="card">
+        <span class="tag">correct source</span>
+        <h3>BPO already had the answer</h3>
+        <ul>
+          <li><code>AGENT.md</code>: task context → <code>scripts/linear issue TODO-NNN</code>.</li>
+          <li><code>AGENT.md</code>: no MCPs/connectors; raw GraphQL only.</li>
+          <li><code>scripts/linear</code>: pinned <code>LINEAR_API_KEY_NC</code>, comments journal,
+            and lifecycle transitions.</li>
+          <li>The legacy <code>LINEAR_API_KEY_BPO</code> name is accepted only as a
+            same-workspace alias; the Found/BOB key remains forbidden.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Linear said Done; the Mac said otherwise</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Linear evidence</span>
+        <h3>TODO-200 → TODO-207</h3>
+        <p><a href="https://linear.app/nomad-code/issue/TODO-200">TODO-200</a> defines
+          Voice Memos → local transcript → private DNA note → routed Linear issue.
+          <a href="https://linear.app/nomad-code/issue/TODO-207">TODO-207</a> joins workout
+          memos with Strava by true UTC. Both are marked Done.</p>
+      </article>
+      <article class="card">
+        <span class="tag open">runtime evidence</span>
+        <h3>The capture spine was offline</h3>
+        <ul>
+          <li>The July 18 cleanup stash held all nine toolkit files and four DNA notes.</li>
+          <li>The installed LaunchAgent pointed to missing <code>vm_cron.sh</code>; last exit 127.</li>
+          <li>Earlier watcher runs failed Full Disk Access against <code>CloudRecordings.db</code>.</li>
+          <li>The watermark remained at 2026-07-13 11:26Z with <code>processed_total: 0</code>.</li>
+        </ul>
+      </article>
+      <article class="card full">
+        <span class="tag">recovered in this session</span>
+        <h3>Only the scoped Voice Memos files left the stash</h3>
+        <p><code>projects/voice-memos/</code> and <code>dna/voice-memos/</code> are back in
+          the BPO tree. Health, golf, KITAS, and all other stash contents were untouched.
+          Python compilation passes, and the live database reader sees today’s 138.8-second
+          memo recorded at 19:05 WITA. The root Linear CLI’s credential-name drift was also
+          repaired and verified against TODO-200.</p>
+        <p><b>Remaining machine prerequisite:</b> the Whisper models are no longer present,
+          and the background runner still needs working Full Disk Access. The memo remains
+          in Apple Voice Memos; no audio or transcript was lost.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Token bill for the detour</h2>
+    <div class="card full">
+      <table>
+        <tr><th>avoidable work</th><th>estimated tokens</th></tr>
+        <tr><td>Chrome skill + tool discovery</td><td>~7,500</td></tr>
+        <tr><td>Browser documentation, including truncation recovery</td><td>~20,200</td></tr>
+        <tr><td>Workspace navigation and repeated search</td><td>~21,000</td></tr>
+        <tr><td>TODO-200 and TODO-207 read through Chrome</td><td>~12,500</td></tr>
+        <tr><td>Reasoning and coordination overhead</td><td>~5,000–10,000</td></tr>
+        <tr><td><b>Total</b></td><td><b>~66,000–71,000</b></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <footer><a href="https://linear.app/nomad-code/issue/TODO-238/bpo-linear-codex">TODO-238</a>
+    · bpo-linear_codex · Git holds truth; Linear holds workflow · gated Grove artifact ·
+    source recovery is stash-preserving and path-scoped</footer>
+</main>
+<script>
+  document.getElementById('copyRoute').addEventListener('click', function () {
+    var text = 'BPO Linear route: interpret quoted text as evidence; read AGENT.md; use scripts/linear; use Chrome only for explicit browser intent or UI-only work.';
+    navigator.clipboard.writeText(text).then(function () {
+      document.getElementById('copyState').textContent = 'copied ✓';
+    }, function () {
+      document.getElementById('copyState').textContent = 'copy unavailable';
+    });
+  });
+</script>
+</body>
+</html>

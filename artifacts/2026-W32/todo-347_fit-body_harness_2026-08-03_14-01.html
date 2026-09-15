@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3f1e8">
+  <title>TODO-347 · Body Harness</title>
+  <meta name="description" content="Brendan's no-days-off Body Harness: daily capacity floors, fixed-HR reviews, current state, and 22 declared starts.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f1e8;--ink:#18231f;--muted:#69736d;--forest:#174a38;--mint:#b9ee7c;--coral:#e77759;--amber:#f0c94a;--card:#fffdf8;--line:#d5dad3;--ice:#dceff0;--track:#e6e8e1}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 28px,1120px);margin:auto;padding:46px 0 72px}.mono,.eyebrow,.badge,.floor strong,.metric b,.date,footer{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .eyebrow{color:var(--forest);font-size:12px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}h1{max-width:970px;margin:13px 0 18px;font:850 clamp(48px,9vw,96px)/.89 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.078em}h1 span{color:var(--coral)}
+    .lede{max-width:850px;margin:0;color:var(--muted);font-size:21px}.constitution{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:30px}.panel,.floor,.metric,.review,.race,.note{border:1px solid var(--line);border-radius:18px;background:var(--card)}.panel{padding:24px}.panel.dark{border-color:var(--forest);background:var(--forest);color:white}.panel h2,.panel h3{margin:0 0 9px;font:800 25px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.045em}.panel p{margin:0;color:var(--muted)}.panel.dark p{color:#dbe7e0}.law{margin:21px 0 10px;color:var(--mint);font:900 32px/1.05 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.055em}
+    h2.section{margin:50px 0 10px;font:820 35px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.05em}.section-lede{max-width:830px;margin:0 0 18px;color:var(--muted)}
+    .floors{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.floor{position:relative;overflow:hidden;padding:18px}.floor::before{position:absolute;inset:0 auto 0 0;width:5px;background:var(--mint);content:""}.floor:nth-child(2)::before,.floor:nth-child(4)::before{background:var(--amber)}.floor:nth-child(3)::before,.floor:nth-child(5)::before{background:var(--coral)}.floor span{color:var(--muted);font-size:12px}.floor strong{display:block;margin:8px 0 4px;color:var(--forest);font-size:28px;line-height:1;letter-spacing:-.06em}.floor small{color:var(--muted)}
+    .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.review{padding:20px}.review h3{margin:0 0 13px;font-size:19px}.checks{display:grid;gap:8px}.check{display:flex;gap:10px;align-items:flex-start;padding:10px 11px;border-radius:11px;background:#f1f2ec;color:var(--muted);cursor:pointer}.check:has(input:checked){background:#e2efdd;color:var(--ink)}.check input{margin-top:4px;accent-color:var(--forest)}.review-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;color:var(--muted);font-size:12px}button{border:0;border-radius:10px;padding:8px 11px;background:var(--forest);color:#fff;font-weight:750;cursor:pointer}.count{color:var(--forest);font:850 22px ui-monospace,SFMono-Regular,Menlo,monospace}
+    .hr{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hr .panel{position:relative;overflow:hidden}.hr .panel::after{position:absolute;right:-25px;bottom:-40px;width:130px;height:130px;border:22px solid #ffffff18;border-radius:50%;content:""}.target{margin:17px 0 9px;color:var(--forest);font:900 46px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.07em}.dark .target{color:var(--mint)}.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:var(--ice);color:#285c61;font-size:10px;font-weight:850;text-transform:uppercase}.dark .badge{background:#ffffff18;color:var(--mint)}
+    .state{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.metric{padding:17px}.metric span{display:block;color:var(--muted);font-size:12px}.metric b{display:block;margin:7px 0 3px;color:var(--forest);font-size:29px;line-height:1;letter-spacing:-.055em}.bar{height:7px;margin-top:12px;border-radius:8px;background:var(--track);overflow:hidden}.bar i{display:block;height:100%;border-radius:inherit;background:var(--coral)}.metric small{color:var(--muted)}
+    .races{display:grid;gap:8px}.race{display:grid;grid-template-columns:115px 1.35fr 1fr 1fr;align-items:center;gap:14px;padding:13px 15px}.date{color:var(--forest);font-weight:850}.race b{display:block}.race span{color:var(--muted);font-size:13px}.race.cluster{border-color:#e5b7a7;background:#fff7f1}.year{margin:22px 0 7px;color:var(--muted);font:850 13px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.08em}.note{margin-top:13px;padding:18px;border-color:#e4c981;background:#fff9de;color:#685817}.note strong{color:#4d4212}
+    .model{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:9px;align-items:stretch}.model .panel{padding:18px}.arrow{display:grid;place-items:center;color:var(--forest);font-size:26px}.model h3{font-size:17px}.model p{font-size:13px}.rule{margin-top:14px;padding:19px;border-radius:18px;background:var(--ice);color:#31595e}.rule strong{color:#174a4f}
+    footer{display:flex;justify-content:space-between;gap:20px;margin-top:48px;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}footer a{color:inherit}
+    @media(max-width:900px){.floors{grid-template-columns:repeat(3,1fr)}.state{grid-template-columns:repeat(2,1fr)}.race{grid-template-columns:100px 1fr 1fr}.race .where{grid-column:2/-1}.model{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+    @media(max-width:680px){.constitution,.review-grid,.hr{grid-template-columns:1fr}.floors{grid-template-columns:1fr 1fr}.race{grid-template-columns:1fr}.race .where{grid-column:auto}.lede{font-size:18px}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / TODO-347 · body harness</div>
+  <h1>No days off.<br><span>Capacity compounds.</span></h1>
+  <p class="lede">A WaniKani-like review system for the body: daily practice never disappears, ordinary-day capacity stays visible, races become loaded calibrations, and tapering remains locked until sub-60 is genuinely probable.</p>
+
+  <section class="constitution" aria-label="Body Harness constitution">
+    <article class="panel dark"><h2>The invariant</h2><div class="law">intensity changes.<br>practice does not.</div><p>Recovery, rehabilitation, yoga, and injury-compatible engine work are real assignments. Medical unavailability is not a failed review.</p></article>
+    <article class="panel"><h2>The taper lock</h2><p>Train through by default. Unlock a taper only for an exact HYROX format with recent trustworthy touchstones, medical availability, complete decisive evidence, and at least an <strong>80% modeled probability</strong> of sub-60.</p></article>
+  </section>
+
+  <h2 class="section">Always-available strength</h2>
+  <p class="section-lede">Declared Aug 3 as ordinary-day floors—not fresh maximums. The corrected squat is 90 kg × 6; voice transcription is explicitly non-authoritative until confirmed.</p>
+  <section class="floors" aria-label="Strength floors">
+    <article class="floor"><span>strict pull-up</span><strong>≥20</strong><small>unbroken</small></article>
+    <article class="floor"><span>strict press</span><strong>45 × 5</strong><small>kilograms</small></article>
+    <article class="floor"><span>back squat</span><strong>90 × 5</strong><small>floor · 90 × 6 corrected</small></article>
+    <article class="floor"><span>push-up</span><strong>≥50</strong><small>unbroken</small></article>
+    <article class="floor"><span>deadlift</span><strong>125 × 5</strong><small>kilograms</small></article>
+  </section>
+  <div class="note"><strong>Open reviews:</strong> establish directly observed load × reps for thrusters, ground-to-overhead, and walking lunges. Fix technique standards before comparisons. Lunges remain toe-gated.</div>
+
+  <h2 class="section">Today’s review queue</h2>
+  <p class="section-lede">Completion persists in this browser for the day. A clean failed review is better evidence than repeating until success.</p>
+  <section class="review-grid">
+    <article class="review"><h3>Daily chain</h3><div class="checks" id="dailyChecks">
+      <label class="check"><input type="checkbox" value="state">Body state logged: sleep, soreness, pain, readiness</label>
+      <label class="check"><input type="checkbox" value="strength">Due strength floors reviewed with RPE and form</label>
+      <label class="check"><input type="checkbox" value="engine">Engine assignment completed</label>
+      <label class="check"><input type="checkbox" value="mobility">Mobility, yoga, rehabilitation, or movement quality</label>
+      <label class="check"><input type="checkbox" value="evidence">Device evidence plus human confirmation saved</label>
+    </div><div class="review-foot"><span><span class="count" id="count">0/5</span> reviews</span><button type="button" id="reset">Reset</button></div></article>
+    <article class="review"><h3>Review law</h3><div class="checks">
+      <div class="check">Same movement standard, equipment, and units.</div>
+      <div class="check">One honest attempt; no manufactured pass.</div>
+      <div class="check">Record reps, load, RPE, pain, and form deviation.</div>
+      <div class="check">Daily floors should remain submaximal—guide: RPE 7–8 or easier.</div>
+      <div class="check">A medical gate changes the assignment, never the chain.</div>
+    </div></article>
+  </section>
+
+  <h2 class="section">Heart-rate harness</h2>
+  <section class="hr">
+    <article class="panel dark"><span class="badge">available now</span><h3 style="margin-top:15px">Non-impact engine</h3><div class="target">133–138</div><p>bpm for a standardized 30-minute SkiErg/row block. Score watts or pace, HR drift, RPE, conditions, and toe response. Never convert modality output directly into running pace.</p></article>
+    <article class="panel"><span class="badge">after medical clearance</span><h3 style="margin-top:15px">Fixed-HR treadmill</h3><div class="target">135 bpm</div><p>1% incline, standardized 30-minute block after warm-up. Change speed to hold HR. Score pace at 135, drift, RPE, conditions, and toe response. This is not the 10 mph near-max test.</p></article>
+  </section>
+
+  <h2 class="section">Current state</h2>
+  <p class="section-lede">The streak exists; the stimulus is near a personal-year low. Seven-day activity frequency and rolling load are telling different stories.</p>
+  <section class="state" aria-label="Current training state">
+    <article class="metric"><span>run interruption</span><b>12 days</b><small>complete days through Aug 2</small><div class="bar"><i style="width:78%"></i></div></article>
+    <article class="metric"><span>7d exercise minutes</span><b>336</b><small>4.2nd percentile</small><div class="bar"><i style="width:4.2%"></i></div></article>
+    <article class="metric"><span>28d exercise minutes</span><b>1,818</b><small>1.2nd percentile</small><div class="bar"><i style="width:1.2%"></i></div></article>
+    <article class="metric"><span>90d steps</span><b>1.115m</b><small>0.4th percentile · rolling low</small><div class="bar"><i style="width:.4%"></i></div></article>
+    <article class="metric"><span>7d cross-training</span><b>258.5m</b><small>HIIT · row · cycling</small><div class="bar"><i style="width:65%"></i></div></article>
+    <article class="metric"><span>7d workout days</span><b>7/7</b><small>31 recorded sessions</small><div class="bar"><i style="width:100%;background:var(--mint)"></i></div></article>
+    <article class="metric"><span>Health export</span><b>65 MB</b><small>1.59 GB listed · 424 entries</small><div class="bar"><i style="width:100%;background:var(--forest)"></i></div></article>
+    <article class="metric"><span>strength status</span><b>intact</b><small>daily floors declared today</small><div class="bar"><i style="width:88%;background:var(--mint)"></i></div></article>
+  </section>
+
+  <h2 class="section">Declared race calendar</h2>
+  <p class="section-lede">22 unique planned starts: 14 doubles, seven individual, one relay. Every result later receives official time/splits, division, partner work, prior load, HR, conditions, and injury state.</p>
+  <div class="year">2026 · 14 starts</div>
+  <section class="races" aria-label="2026 races">
+    <article class="race cluster"><span class="date">Aug 7 · 12:50</span><b>HYROX Chiba</b><span>Doubles Men · Haruka Ihara</span><span class="where">Chiba, Japan</span></article>
+    <article class="race cluster"><span class="date">Aug 9 · 08:00</span><b>HYROX Chiba</b><span>Doubles Mixed · Grayson W</span><span class="where">Chiba, Japan</span></article>
+    <article class="race"><span class="date">Sep 5 · 14:00</span><b>HYROX Tenerife</b><span>Singles Open</span><span class="where">Tenerife, Spain</span></article>
+    <article class="race cluster"><span class="date">Sep 25 · 13:10</span><b>HYROX Oslo</b><span>Doubles Men · Sam S</span><span class="where">Lillestrøm, Norway</span></article>
+    <article class="race cluster"><span class="date">Sep 25 · 17:50</span><b>HYROX Oslo</b><span>Doubles Mixed · Grayson W</span><span class="where">Lillestrøm, Norway</span></article>
+    <article class="race"><span class="date">Oct 2 · 13:20</span><b>HYROX Toronto</b><span>Doubles Men · Sean O</span><span class="where">Toronto, Canada</span></article>
+    <article class="race cluster"><span class="date">Oct 8 · 09:50</span><b>HYROX Boston</b><span>Doubles Men · Kevin O</span><span class="where">Boston, USA</span></article>
+    <article class="race cluster"><span class="date">Oct 9 · 19:30</span><b>HYROX Boston</b><span>O'Brien Relay</span><span class="where">Boston, USA</span></article>
+    <article class="race"><span class="date">Oct 30 · 19:00</span><b>HYROX Mexico City</b><span>Singles Pro</span><span class="where">Mexico City, Mexico</span></article>
+    <article class="race"><span class="date">Nov 12 · 10:00</span><b>HYROX Denver</b><span>Doubles · Jack G</span><span class="where">Denver, USA</span></article>
+    <article class="race cluster"><span class="date">Nov 18 · 10:00</span><b>HYROX Dallas</b><span>Doubles · Tim R</span><span class="where">Dallas, USA</span></article>
+    <article class="race cluster"><span class="date">Nov 18 · 11:30</span><b>HYROX Dallas</b><span>Doubles · Connor B</span><span class="where">Dallas, USA</span></article>
+    <article class="race cluster"><span class="date">Nov 22 · 17:30</span><b>HYROX Dallas</b><span>Doubles · Uncle Dan O</span><span class="where">Dallas, USA</span></article>
+    <article class="race"><span class="date">Dec 13 · 17:00</span><b>HYROX Kuala Lumpur</b><span>Doubles Men · Bhanu P</span><span class="where">Kuala Lumpur, Malaysia</span></article>
+  </section>
+  <div class="year">2027 · 8 starts</div>
+  <section class="races" aria-label="2027 races">
+    <article class="race cluster"><span class="date">Jan 22 · 14:00</span><b>HYROX Amsterdam*</b><span>Singles Open</span><span class="where">Supplied venue: Manchester</span></article>
+    <article class="race cluster"><span class="date">Jan 24 · 14:00</span><b>ATHX London</b><span>Pro</span><span class="where">London, England</span></article>
+    <article class="race cluster"><span class="date">Jan 27 · 14:00</span><b>HYROX Manchester</b><span>Singles Pro</span><span class="where">Manchester, England</span></article>
+    <article class="race cluster"><span class="date">Jan 29 · 18:00</span><b>HYROX Verona</b><span>Doubles · Grayson W</span><span class="where">Verona, Italy</span></article>
+    <article class="race"><span class="date">Feb 11 · 12:00</span><b>HYROX Chicago</b><span>Doubles · Sean O</span><span class="where">Chicago, USA</span></article>
+    <article class="race"><span class="date">Mar 12 · 08:00</span><b>HYROX Taipei</b><span>Doubles · Justin P</span><span class="where">Taipei, Taiwan</span></article>
+    <article class="race"><span class="date">Apr 16 · 08:00</span><b>HYROX Nagoya</b><span>Singles Open</span><span class="where">Nagoya, Japan</span></article>
+    <article class="race"><span class="date">May 14 · 17:00</span><b>HYROX Icheon/Incheon*</b><span>Singles Pro</span><span class="where">Songdo Convensia, Incheon</span></article>
+  </section>
+  <div class="note"><strong>Reconcile before calling the calendar verified:</strong> Hakura/Haruka; Chiba mixed roster/division; Boston relay copied details; Amsterdam/Manchester mismatch; Nagoya timezone; Verona timezone; Icheon/Incheon; exact divisions for generic doubles. Taipei duplicate was removed.</div>
+
+  <h2 class="section">Prediction loop</h2>
+  <section class="model">
+    <article class="panel"><h3>Touchstone</h3><p>Observed race, lift, timed piece, or repeatable session anchors durable capacity.</p></article><div class="arrow">→</div>
+    <article class="panel"><h3>Daily state</h3><p>Training, transfer, specificity decay, fatigue, injury, and conditions update readiness.</p></article><div class="arrow">→</div>
+    <article class="panel"><h3>Current range</h3><p>Exact-format prediction with uncertainty—normally under training load, never fictional precision.</p></article>
+  </section>
+  <div class="rule"><strong>Ownership rule:</strong> local raw archive + structured corrections are truth. Apple Health and Strava are inputs; Omar is the nukeable family-visible mirror. Voice transcription is provisional. Inferences never overwrite observations.</div>
+
+  <footer><span><a href="https://linear.app/nomad-code/issue/TODO-347/fit-strava-omar-canary">TODO-347 · fit-strava_omar_canary</a></span><span>2026-08-03 14:01 UTC · BPO private</span></footer>
+</main>
+<script>
+(function(){
+  var key='body-harness::'+new Date().toLocaleDateString('en-CA'), boxes=[].slice.call(document.querySelectorAll('#dailyChecks input')), count=document.getElementById('count');
+  function load(){try{var saved=JSON.parse(localStorage.getItem(key)||'[]');boxes.forEach(function(b){b.checked=saved.indexOf(b.value)>=0})}catch(e){}render()}
+  function render(){var done=boxes.filter(function(b){return b.checked}).map(function(b){return b.value});count.textContent=done.length+'/'+boxes.length;try{localStorage.setItem(key,JSON.stringify(done))}catch(e){}}
+  boxes.forEach(function(b){b.addEventListener('change',render)});
+  document.getElementById('reset').addEventListener('click',function(){boxes.forEach(function(b){b.checked=false});render()});load();
+})();
+</script>
+</body>
+</html>

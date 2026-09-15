@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>TODO_255-bpo-linear_replacement</title>
+  <style>
+    :root {
+      --bg:#f4f4ef; --card:#fff; --ink:#15201d; --body:#43433c;
+      --muted:#6f7a76; --faint:#a7a79c; --line:#e4eae6; --well:#ecece4;
+      --forest:#127c70; --forest-d:#0c5a50; --lime:#84c241;
+      --green-bg:#d6ece8; --blue:#356577; --blue-bg:#e3eef2;
+      --amber:#9a7a1f; --amber-bg:#f3ead2; --warn:#c1502e; --warn-bg:#f6e3da;
+      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    * { box-sizing:border-box }
+    html { scroll-behavior:smooth }
+    body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 var(--sans) }
+    a { color:var(--forest-d) }
+    button { font:inherit }
+    .topbar { position:sticky; top:0; z-index:10; height:61px; display:flex; align-items:center;
+      gap:12px; padding:0 22px; background:rgba(244,244,239,.92); border-bottom:1px solid var(--line);
+      backdrop-filter:blur(16px) }
+    .mark { width:18px; height:18px; border-radius:5px; background:var(--forest); position:relative }
+    .mark::after { content:""; position:absolute; right:2px; bottom:2px; width:6px; height:6px;
+      border-radius:2px; background:var(--lime) }
+    .brand { font-weight:800 }
+    .sep { color:#b7bcb7 }
+    .context { color:var(--muted); font-size:12px }
+    .stamp { margin-left:auto; font:10px var(--mono); letter-spacing:.07em; text-transform:uppercase;
+      padding:6px 10px; border-radius:8px; color:var(--blue); background:var(--blue-bg) }
+    .strip { height:3px; background:linear-gradient(90deg,var(--forest),var(--lime) 62%,#4a8aa0) }
+    main { width:min(1080px,calc(100% - 32px)); margin:0 auto; padding:34px 0 72px }
+    .hero { display:grid; grid-template-columns:1.2fr .8fr; gap:32px; align-items:center; padding:34px;
+      background:linear-gradient(180deg,#fff,#fbfbf7); border:1px solid var(--line); border-radius:22px;
+      box-shadow:0 14px 40px rgba(20,23,15,.06) }
+    .eyebrow { font:700 11px var(--mono); letter-spacing:.09em; text-transform:uppercase; color:var(--forest) }
+    h1 { margin:12px 0; font-size:clamp(36px,5vw,56px); line-height:1.02; letter-spacing:-.048em }
+    .lede { max-width:650px; margin:0; color:var(--body); font-size:17px }
+    .verdict { display:inline-flex; align-items:center; gap:8px; margin-top:20px; padding:7px 12px;
+      border-radius:999px; color:var(--forest-d); background:var(--green-bg); font-weight:750; font-size:12px }
+    .verdict i { width:8px; height:8px; border-radius:50%; background:var(--forest) }
+    .clock { text-align:center }
+    .clock strong { display:block; color:var(--forest); font-size:104px; line-height:.86; letter-spacing:-.07em }
+    .clock span { display:block; margin-top:14px; color:var(--muted); font:11px var(--mono) }
+    .clock small { display:block; margin-top:7px; color:var(--warn); font-weight:700 }
+    section { margin-top:36px }
+    .section-head { display:flex; align-items:baseline; gap:12px; margin-bottom:13px }
+    h2 { margin:0; font-size:23px; letter-spacing:-.025em }
+    .section-head span { margin-left:auto; color:var(--faint); font:10px var(--mono) }
+    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:12px }
+    .card { grid-column:span 4; padding:21px; background:var(--card); border:1px solid var(--line);
+      border-radius:16px; box-shadow:0 8px 24px rgba(20,23,15,.035) }
+    .card.wide { grid-column:span 6 }
+    .card.full { grid-column:1/-1 }
+    .tag { display:inline-block; padding:5px 8px; border-radius:7px; background:var(--green-bg);
+      color:var(--forest-d); font:700 9.5px var(--mono); letter-spacing:.07em; text-transform:uppercase }
+    .tag.blue { background:var(--blue-bg); color:var(--blue) }
+    .tag.amber { background:var(--amber-bg); color:var(--amber) }
+    h3 { margin:12px 0 6px; font-size:18px; letter-spacing:-.015em }
+    p { margin:6px 0; color:var(--body) }
+    ul { margin:10px 0 0; padding-left:19px; color:var(--body) }
+    li { margin:7px 0 }
+    code { padding:2px 5px; border-radius:5px; background:var(--well); font:12px var(--mono) }
+    .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px }
+    .metric { padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--card) }
+    .metric b { display:block; font-size:29px; letter-spacing:-.035em }
+    .metric span { color:var(--muted); font:10px/1.4 var(--mono); text-transform:uppercase; letter-spacing:.05em }
+    .timeline { display:grid; grid-template-columns:repeat(4,1fr); gap:10px }
+    .phase { position:relative; min-height:148px; padding:18px; background:var(--card); border:1px solid var(--line);
+      border-radius:14px }
+    .phase::after { content:"→"; position:absolute; right:-9px; top:50%; z-index:2; color:var(--forest);
+      width:18px; height:18px; display:grid; place-items:center; border-radius:50%; background:var(--bg) }
+    .phase:last-child::after { display:none }
+    .phase time { color:var(--forest); font:700 10px var(--mono); text-transform:uppercase }
+    .phase h3 { font-size:16px }
+    .phase p { font-size:13px }
+    .contract { display:grid; grid-template-columns:1fr 1fr; gap:14px }
+    .contract .panel { padding:20px; border-radius:14px; border:1px solid var(--line); background:#fbfbf7 }
+    .contract .no { border-color:#e3b9a6; background:var(--warn-bg) }
+    .contract .no h3 { color:var(--warn) }
+    .checklist { display:grid; gap:9px; margin-top:4px }
+    .check { display:flex; gap:11px; align-items:flex-start; padding:12px 13px; border:1px solid var(--line);
+      border-radius:11px; background:#fbfbf7; cursor:pointer }
+    .check input { margin-top:4px; accent-color:var(--forest) }
+    .check.done span { color:var(--muted); text-decoration:line-through }
+    .progress { height:9px; margin:16px 0 8px; overflow:hidden; background:var(--well); border-radius:999px }
+    .progress i { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--forest),var(--lime)); transition:width .3s }
+    .progress-label { color:var(--muted); font:10px var(--mono) }
+    .actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:15px }
+    .btn { border:0; border-radius:10px; padding:10px 14px; background:var(--forest); color:#fff;
+      font-weight:750; cursor:pointer }
+    .btn.secondary { background:var(--well); color:var(--ink) }
+    .btn:hover { filter:brightness(.94) }
+    #copyState { align-self:center; color:var(--forest-d); font:11px var(--mono) }
+    footer { margin-top:38px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted);
+      font:11px/1.7 var(--mono) }
+    @media(max-width:780px) {
+      .hero { grid-template-columns:1fr }
+      .clock { text-align:left }
+      .clock strong { font-size:72px }
+      .card,.card.wide { grid-column:1/-1 }
+      .metrics,.timeline,.contract { grid-template-columns:1fr }
+      .phase::after { display:none }
+      .stamp { display:none }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <span class="mark" aria-hidden="true"></span><span class="brand">Nomad Code</span><span class="sep">/</span>
+    <span class="context">TODO_255-bpo-linear_replacement</span><span class="stamp">decision · 2026-07-20 16:03 UTC</span>
+  </header>
+  <div class="strip"></div>
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">decision record · constrained go</div>
+        <h1>Replace the workflow.<br>Do not clone Linear.</h1>
+        <p class="lede">The Business trial is a 30-day migration runway for a private, BPO-specific issue ledger. The target is command compatibility and durable journal history—not feature parity or visual imitation.</p>
+        <div class="verdict"><i></i> GO · narrow replacement</div>
+      </div>
+      <div class="clock" aria-live="polite">
+        <strong id="days">30</strong>
+        <span>days until trial boundary</span>
+        <small>Cut over by 12 Aug · trial ends 19 Aug 2026</small>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>Why the scope fits</h2><span>inspection snapshot</span></div>
+      <div class="metrics">
+        <div class="metric"><b>246</b><span>unarchived issues</span></div>
+        <div class="metric"><b>535</b><span>journal comments</span></div>
+        <div class="metric"><b>379 KB</b><span>comment text</span></div>
+        <div class="metric"><b>12</b><span>attachments</span></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>The world boundary</h2><span>routing contract</span></div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">replace</span>
+          <h3>BPO → issue ledger</h3>
+          <p>Private personal planning, the <code>TODO-NNN</code> lifecycle, prompt/response journals, artifact URLs, and restoreable history.</p>
+        </article>
+        <article class="card">
+          <span class="tag blue">unchanged</span>
+          <h3>BOB → Found AI Linear</h3>
+          <p>Company-visible work retains Found’s shared Linear workspace, team workflow, and existing <code>TECH-NNN</code> conventions.</p>
+        </article>
+        <article class="card">
+          <span class="tag amber">public tier</span>
+          <h3>BRE → Dhamma GitHub</h3>
+          <p>Public-ready team work belongs in Dhamma Org GitHub Projects. Private deliberation remains on the private BPO side of the boundary.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>Thirty-day cutover</h2><span>rollback preserved</span></div>
+      <div class="timeline">
+        <article class="phase"><time>20–24 Jul</time><h3>Snapshot</h3><p>Export issues, comments, projects, states, and attachment links. Prove import and restore.</p></article>
+        <article class="phase"><time>25–31 Jul</time><h3>Command parity</h3><p>Implement the existing BPO CLI contract without changing agent behavior.</p></article>
+        <article class="phase"><time>1–7 Aug</time><h3>Dual-write</h3><p>Add the minimal list, issue, board, and search surfaces. Compare every mutation.</p></article>
+        <article class="phase"><time>8–12 Aug</time><h3>Cut over</h3><p>Make the ledger primary, test recovery, and retain seven days of trial rollback.</p></article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>V1 contract</h2><span>scope is the schedule</span></div>
+      <div class="contract">
+        <div class="panel">
+          <span class="tag">must ship</span>
+          <h3>Workflow compatibility</h3>
+          <ul>
+            <li>Preserved <code>TODO-NNN</code> identifiers</li>
+            <li><code>issue</code>, <code>comments</code>, <code>comment</code>, <code>start</code>, <code>respond</code></li>
+            <li><code>done</code>, <code>state</code>, <code>describe</code>, and <code>log</code></li>
+            <li>Append-only journal, full-text search, artifacts, backup and restore</li>
+          </ul>
+        </div>
+        <div class="panel no">
+          <span class="tag amber">explicitly excluded</span>
+          <h3>Clone-shaped work</h3>
+          <ul>
+            <li>Organizations, membership, permissions, guests, or private-team logic</li>
+            <li>Cycles, initiatives, insights, automations, or rich editing</li>
+            <li>Linear UI imitation or dependency on Business-only features</li>
+            <li>BOB migration or public/private BRE policy changes</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>Cutover gates</h2><span>saved in this browser</span></div>
+      <div class="card full">
+        <div class="checklist" id="checks">
+          <label class="check"><input type="checkbox" data-key="snapshot"><span>Complete API snapshot and independently readable export exist.</span></label>
+          <label class="check"><input type="checkbox" data-key="parity"><span>Every existing BPO journal-loop command passes compatibility tests.</span></label>
+          <label class="check"><input type="checkbox" data-key="dual"><span>Seven days of dual-write show no missing or divergent mutations.</span></label>
+          <label class="check"><input type="checkbox" data-key="access"><span>Every agent environment that writes BPO work can reach the ledger.</span></label>
+          <label class="check"><input type="checkbox" data-key="restore"><span>A clean restore succeeds within fifteen minutes.</span></label>
+        </div>
+        <div class="progress"><i id="progress"></i></div>
+        <div class="progress-label" id="progressLabel">0 of 5 cutover gates</div>
+        <div class="actions">
+          <button class="btn" id="copyBrief">Copy implementation brief</button>
+          <button class="btn secondary" id="resetChecks">Reset gates</button>
+          <span id="copyState"></span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <a href="https://linear.app/nomad-code/issue/TODO-255/bpo-linear-replacement">TODO_255-bpo-linear_replacement</a><br>
+      Business trial = runway, not architecture · target cutover 2026-08-12 · trial boundary 2026-08-19
+    </footer>
+  </main>
+  <script>
+    (function () {
+      var cutoff = Date.parse('2026-08-19T23:59:59+08:00');
+      var remaining = Math.max(0, Math.ceil((cutoff - Date.now()) / 86400000));
+      document.getElementById('days').textContent = remaining;
+
+      var storageKey = 'todo-255-cutover-gates';
+      var checks = Array.prototype.slice.call(document.querySelectorAll('#checks input'));
+      var saved = {};
+      try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch (e) {}
+
+      function render() {
+        var done = 0;
+        checks.forEach(function (box) {
+          box.checked = !!saved[box.dataset.key];
+          box.closest('.check').classList.toggle('done', box.checked);
+          if (box.checked) done += 1;
+        });
+        document.getElementById('progress').style.width = (done / checks.length * 100) + '%';
+        document.getElementById('progressLabel').textContent = done + ' of ' + checks.length + ' cutover gates';
+        try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch (e) {}
+      }
+
+      checks.forEach(function (box) {
+        box.addEventListener('change', function () { saved[box.dataset.key] = box.checked; render(); });
+      });
+      document.getElementById('resetChecks').addEventListener('click', function () { saved = {}; render(); });
+      document.getElementById('copyBrief').addEventListener('click', function () {
+        var text = 'TODO_255-bpo-linear_replacement: replace BPO Linear with a narrow private ledger. Preserve TODO identifiers and issue/comments/comment/start/respond/done/state/describe/log semantics; import full journal history; provide search and tested backup/restore; dual-write for seven days; cut over by 2026-08-12. BOB stays on Found Linear. Public-ready BRE work stays on Dhamma GitHub. No Linear clone features.';
+        navigator.clipboard.writeText(text).then(function () {
+          document.getElementById('copyState').textContent = 'copied ✓';
+        }, function () { document.getElementById('copyState').textContent = 'copy unavailable'; });
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

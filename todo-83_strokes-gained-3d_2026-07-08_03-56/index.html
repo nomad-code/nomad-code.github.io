@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-83 · golf-spica-3 · Strokes Gained, in 3D</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  main { max-width: 1180px; margin: 0 auto; padding: 26px 26px 60px; }
+  .divider { margin: 40px 0; }
+  .hero { grid-template-columns: 1fr; gap: 0; }
+  .hero-sub { max-width: 68ch; }
+
+  /* ---- stage ---- */
+  .stage-card { padding: 0; overflow: hidden; position: relative; }
+  .stage-head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+    padding: 16px 20px 12px; border-bottom: 1px solid var(--line); }
+  .stage-head .st-t { font: 700 15px/1.2 var(--font-display); color: var(--ink); }
+  .stage-head .st-s { font: 400 12.5px/1.4 var(--font-ui); color: var(--muted); }
+  .canvas-wrap { position: relative; background:
+      radial-gradient(120% 90% at 50% 8%, #ffffff, #f6faf7 55%, #eef4ef); touch-action: none; }
+  canvas.field { display:block; width:100%; height:470px; cursor: grab; }
+  canvas.field:active { cursor: grabbing; }
+  .hint { position:absolute; left:16px; bottom:14px; font: 500 11px/1 var(--font-mono);
+    letter-spacing:.05em; text-transform:uppercase; color: var(--faint);
+    display:flex; align-items:center; gap:7px; pointer-events:none;
+    transition: opacity .5s var(--ease); }
+  .hint .rr { width:13px; height:13px; border:1.6px solid var(--faint); border-radius:50%;
+    border-top-color: transparent; animation: spin 2.4s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .tip { position:absolute; z-index:6; pointer-events:none; opacity:0;
+    transform: translate(-50%, -118%); transition: opacity .12s ease;
+    background: rgba(21,32,29,.94); color:#fff; border-radius: 9px; padding:8px 11px;
+    font: 500 11.5px/1.45 var(--font-ui); white-space:nowrap; box-shadow: var(--shadow-lift); }
+  .tip b { font-variant-numeric: tabular-nums; }
+  .tip .tg { color: var(--lime-b); } .tip .tl { color: #f0a58c; }
+
+  /* ---- controls ---- */
+  .ctl { display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding: 12px 18px; border-top:1px solid var(--line); background: #fbfcfb; }
+  .ctl .grp { display:flex; align-items:center; gap:7px; }
+  .ctl .lab { font: 600 10.5px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase;
+    color: var(--faint); }
+  .seg { display:inline-flex; gap:4px; background: var(--well); padding:4px; border-radius: var(--r-chip); }
+  .seg button { border:0; background:transparent; cursor:pointer; font: 640 12px/1 var(--font-ui);
+    color: var(--muted); padding:7px 11px; border-radius: 6px; transition: all .18s var(--ease);
+    font-variant-numeric: tabular-nums; }
+  .seg button:hover { color: var(--ink); }
+  .seg button.on { background: var(--card); color: var(--forest); box-shadow: 0 1px 3px rgba(20,23,15,.1); }
+  .tgl { border:1px solid var(--line); background: var(--card); cursor:pointer; border-radius: var(--r-chip);
+    font: 640 12px/1 var(--font-ui); color: var(--body); padding:8px 13px; transition: all .18s var(--ease);
+    display:inline-flex; align-items:center; gap:7px; }
+  .tgl:hover { border-color:#cdd8d1; color: var(--ink); }
+  .tgl.on { background: var(--g-lime); border-color:#bcd9bf; color: var(--forest-d); }
+  .tgl .d { width:8px; height:8px; border-radius:50%; background: var(--faint); }
+  .tgl.on .d { background: var(--forest); }
+  .ctl .spacer { flex:1; }
+
+  /* ---- readout ---- */
+  .readout { margin-top: 16px; display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ro-card { background: var(--card); border:1px solid var(--line); border-radius: var(--r-card);
+    padding: 20px 22px; box-shadow: var(--shadow-card); }
+  .ro-card h3 { font: 700 15px/1.2 var(--font-display); color: var(--ink); margin:0 0 4px;
+    display:flex; align-items:center; gap:9px; }
+  .ro-card h3 .code { font: 600 10.5px/1 var(--font-mono); letter-spacing:.04em; color:#fff;
+    background: var(--forest); padding:4px 7px; border-radius: 5px; }
+  .ro-card .sg-big { font: 800 34px/1 var(--font-display); letter-spacing:-.02em;
+    font-variant-numeric: tabular-nums; margin: 12px 0 2px; }
+  .ro-card .sg-big.pos { color: var(--forest); } .ro-card .sg-big.neg { color: var(--warn); }
+  .ro-card .sg-sub { font: 400 12.5px/1.5 var(--font-ui); color: var(--muted); }
+  .ro-card p { font: 400 13.5px/1.6 var(--font-ui); color: var(--body); margin: 12px 0 0; }
+  .ro-card p b { color: var(--ink); }
+  .ro-list { list-style:none; margin: 10px 0 0; padding:0; }
+  .ro-list li { font: 400 12.8px/1.5 var(--font-ui); color: var(--body); padding: 7px 0 7px 20px;
+    position:relative; border-top:1px solid var(--line); }
+  .ro-list li:first-child { border-top:0; }
+  .ro-list li::before { content:''; position:absolute; left:2px; top:13px; width:8px; height:8px;
+    border-radius:2px; background: var(--warn); }
+  .ro-list li.up::before { background: var(--forest); }
+
+  .note { font: 400 12.5px/1.6 var(--font-ui); color: var(--muted); margin: 10px 0 0; }
+  .note b { color: var(--body); }
+  .sample-tag { display:inline-flex; align-items:center; gap:7px; font: 600 10.5px/1 var(--font-mono);
+    letter-spacing:.05em; text-transform:uppercase; color: var(--amber); background: var(--amber-bg);
+    border:1px solid var(--amber-bd); padding:6px 10px; border-radius: var(--r-pill); }
+  .vh { position:absolute!important; width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap; }
+  @media (max-width: 720px){ .readout { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx"><span class="dot"></span>TODO-83 · golf-spica-3</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">strokes gained · 3D</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow"><span class="d"></span>the biggest lever, finally drawn</div>
+      <h1>See where the strokes hide — <span class="em">in 3D</span>.</h1>
+      <p class="hero-sub">Your Spica scores every shot, and that per-shot score <b>is</b> strokes
+      gained. Flatten a round into a table and it's numbers; stand it up in 3D and the leak becomes
+      a <b>shape</b> you can walk around. Bars rise <b>above</b> the plane where you beat the field
+      (forest) and sink <b>below</b> it where you bled strokes (red). Drag to orbit. Step through
+      the sessions and watch the surface heal.</p>
+      <div class="hero-chips">
+        <span class="hchip v">above = gained</span>
+        <span class="hchip q">below = lost</span>
+        <span class="hchip q">distance × stratum</span>
+        <span class="hchip q">6 sim sessions</span>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-n" id="k-total">–</div><div class="kpi-l">total strokes gained · latest round vs the field</div></div>
+      <div class="kpi"><div class="kpi-n" id="k-worst">–</div><div class="kpi-l">deepest leak — the lane to point practice at</div></div>
+      <div class="kpi"><div class="kpi-n" id="k-best">–</div><div class="kpi-l">strongest lane — protect it, don't grind it</div></div>
+      <div class="kpi"><div class="kpi-n" id="k-delta">–</div><div class="kpi-l">gained since session 1 — the loop compounding</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sec-head"><span class="sec-kick">the field · drag to orbit</span><span class="sec-n">01 / the shape of a round</span></div>
+
+    <div class="card stage-card">
+      <div class="stage-head">
+        <span class="st-t" id="stage-title">Session 6 · strokes gained by distance × stratum</span>
+        <span class="st-s" id="stage-sub"></span>
+      </div>
+      <div class="canvas-wrap">
+        <canvas class="field" id="field" role="img"
+          aria-label="A 3D bar field of strokes gained. The x-axis is carry-distance bins, the z-axis is the four strokes-gained strata (off the tee, approach, around the green, putting), and bar height is strokes gained — above the zero plane in green where you beat the field, below it in red where you lost strokes. Approach from long range is the deepest red lane."></canvas>
+        <div class="hint" id="hint"><span class="rr"></span>drag to orbit · hover a bar</div>
+        <div class="tip" id="tip"></div>
+      </div>
+      <div class="ctl">
+        <div class="grp"><span class="lab">session</span>
+          <div class="seg" id="sessions"></div>
+        </div>
+        <div class="spacer"></div>
+        <button class="tgl on" id="rot"><span class="d"></span>auto-orbit</button>
+        <button class="tgl" id="ghost"><span class="d"></span>accumulate ▸</button>
+        <button class="tgl" id="reset">reset view</button>
+      </div>
+    </div>
+
+    <div class="vz-leg" style="margin-top:14px">
+      <span class="claim"><i></i>strokes gained (above)</span>
+      <span class="leak"><i></i>strokes lost (below)</span>
+      <span class="found"><i></i>best cell this round</span>
+    </div>
+
+    <div class="readout">
+      <div class="ro-card" id="ro-main">
+        <h3><span class="code" id="ro-code">SG:APP</span><span id="ro-name">Approach</span></h3>
+        <div class="sg-big neg" id="ro-sg">–</div>
+        <div class="sg-sub" id="ro-sub">strokes gained across this lane, latest round</div>
+        <p id="ro-fix"></p>
+      </div>
+      <div class="ro-card">
+        <h3>reading the surface</h3>
+        <ul class="ro-list" id="ro-read">
+          <li><b>Approach</b> is the deepest valley — ~40% of the gap to scratch lives here, and it gets worse the longer the shot. That's the lane the flick fix pays off in.</li>
+          <li class="up"><b>Off the tee</b> pokes above the plane on the two longest bins — face control, not distance, is holding up.</li>
+          <li><b>Around the green</b> sits just under the plane on the short bins — quiet hands turn these red cells green fast.</li>
+          <li class="up"><b>Putting</b> hovers at the plane — the smallest lever. Don't let a flat lane steal time from the approach valley.</li>
+        </ul>
+        <p class="note" style="margin-top:14px"><b>Click a bar</b> to load its stratum here. <b>Step the sessions</b> to watch the valley fill in as you drill one fault at a time.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:18px"><span class="sample-tag">◆ sample sim rounds</span></p>
+    <p class="note" style="margin-top:10px">This is illustrative data shaped like a real Spica log —
+    six weekly sim sessions on one GSPro course, strokes gained bucketed by carry distance and by
+    stratum. <b>Replace the <code>SESSIONS</code> array with your own per-shot SG</b> (start-to-hole
+    baseline minus finish-to-hole minus one, bucketed) and the surface becomes <em>yours</em>. The
+    story it's built to tell is the population prior from Broadie's <em>Every Shot Counts</em>: about
+    two-thirds of the gap to scratch is the long game, and approach is the single deepest lane.</p>
+
+    <table class="vh" id="datatable" aria-label="Strokes gained by stratum, latest session"><tbody></tbody></table>
+
+    <div class="foot">
+      TODO-83 · golf-spica-3 &nbsp;·&nbsp; <code>bpo · Medewi Manor</code> &nbsp;·&nbsp;
+      strokes gained, in 3D &nbsp;·&nbsp; hand-rolled canvas · zero libraries &nbsp;·&nbsp; 2026-07-08 03:56Z
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var reduced = false;
+  try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+  // ============================================================
+  // Sample data — six weekly sim sessions. Replace with real Spica SG.
+  // strata: 0 OTT, 1 APP, 2 ARG, 3 PUTT ; bins: carry-distance buckets.
+  // ============================================================
+  var BINS = ['<50', '50–100', '100–150', '150–200', '200–250', '250+'];
+  var STRATA = [
+    { code: 'SG:OTT', name: 'Off the Tee',
+      fix: 'A repeatable tee swing beats a longer wild one. Face control off the tee is worth more than +10 yds of carry — fixing the flick shows up here first.' },
+    { code: 'SG:APP', name: 'Approach',
+      fix: 'Your #1 leverage point. Grip and shaft-lean-at-impact control face and low-point — the two things approach proximity depends on. Drill approach clubs on GolfJoy range mode.' },
+    { code: 'SG:ARG', name: 'Around the Green',
+      fix: 'Quiet hands, handle leads, weight forward. The same anti-flick fix that steadies the full swing rescues the short game. Low-hanging strokes.' },
+    { code: 'SG:PUTT', name: 'Putting',
+      fix: 'Smallest lever of the four. Lag distance control (avoid the 3-putt) beats grinding 6-footers. Don\'t let it steal time from approach.' }
+  ];
+
+  function seeded(a, b) { var s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return (s - Math.floor(s)) * 2 - 1; }
+  function baseSG(bin, strat) {
+    if (strat === 0) return bin >= 4 ? 0.09 - (bin - 4) * 0.01 : (bin === 3 ? 0.00 : -0.04);   // OTT strong on the long bins
+    if (strat === 1) return -0.11 - Math.max(0, bin - 1) * 0.09;                                // APP the deep valley, worse w/ distance
+    if (strat === 2) return bin <= 1 ? -0.10 : -0.045;                                          // ARG just under the plane
+    return bin <= 1 ? -0.01 : 0.005;                                                            // PUTT hovers at the plane
+  }
+  function nFor(bin, strat) { return Math.round(3 + Math.abs(seeded(bin + 1, strat + 2)) * 6); }
+
+  var SESSIONS = [];
+  for (var t = 0; t < 6; t++) {
+    var cells = [];
+    for (var s = 0; s < 4; s++) for (var b = 0; b < 6; b++) {
+      var imp = (s === 3 ? 0.008 : 0.034) * t;   // the loop pays off in the long game; putting stays flat
+      var sg = baseSG(b, s) + imp + 0.02 * seeded(b + s * 6, t);
+      // OTT only meaningful on long bins; APP not on <50; PUTT only short — dampen the rest
+      var rel = 1;
+      if (s === 0 && b < 3) rel = 0.35;
+      if (s === 1 && b === 0) rel = 0.3;
+      if (s === 3 && b > 2) rel = 0.25;
+      if (s === 2 && b > 4) rel = 0.4;
+      cells.push({ bin: b, strat: s, sg: sg, n: Math.round(nFor(b, s) * rel + 1), rel: rel });
+    }
+    SESSIONS.push({ id: 'S' + (t + 1), cells: cells });
+  }
+  function cellAt(sess, bin, strat) { return sess.cells[strat * 6 + bin]; }
+
+  // ============================================================
+  // Camera3D v1 — keep in sync with shot-traces-3d
+  // ============================================================
+  function makeCamera() {
+    var yaw = 0.52, pitch = -0.60, focal = 920, camDist = 415, cx = 0, cy = 0;
+    return {
+      yaw: yaw, pitch: pitch,
+      setSize: function (w, h) { cx = w * 0.5; cy = h * 0.60; },
+      rot: function (p) {
+        var cyw = Math.cos(this.yaw), syw = Math.sin(this.yaw);
+        var x1 = p.x * cyw + p.z * syw, z1 = -p.x * syw + p.z * cyw;
+        var cpi = Math.cos(this.pitch), spi = Math.sin(this.pitch);
+        var y2 = p.y * cpi - z1 * spi, z2 = p.y * spi + z1 * cpi;
+        return { x: x1, y: y2, z: z2 };
+      },
+      project: function (p) {
+        var r = this.rot(p);
+        var f = focal / (focal + r.z + camDist);
+        return { x: cx + r.x * f, y: cy - r.y * f, f: f, depth: r.z };
+      }
+    };
+  }
+  var cam = makeCamera();
+  var LIGHT = (function () { var v = { x: -0.42, y: 0.82, z: -0.38 }; var m = Math.hypot(v.x, v.y, v.z); return { x: v.x / m, y: v.y / m, z: v.z / m }; })();
+
+  var canvas = document.getElementById('field');
+  var ctx = canvas.getContext('2d');
+  var LOGW = 900, LOGH = 470, DPR = 1;
+  function resize() {
+    var cssW = canvas.clientWidth || 900;
+    DPR = Math.min(window.devicePixelRatio || 1, 1.6);
+    LOGW = cssW; LOGH = 470;
+    canvas.width = Math.round(cssW * DPR); canvas.height = Math.round(LOGH * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    cam.setSize(LOGW, LOGH);
+  }
+
+  // scene geometry
+  var SX = 66, SZ = 98, HW = 23, HZ = 31, YS = 250;
+  function bx(bin) { return (bin - 2.5) * SX; }
+  function bz(strat) { return (strat - 1.5) * SZ; }
+
+  // display state (interpolated sg per cell)
+  var sessionIndex = 5;
+  var disp = SESSIONS[sessionIndex].cells.map(function (c) { return c.sg; });
+  var tween = null; // {from:[], to:[], t}
+  var ghostOn = false, autoRot = true, resumeAt = 0, hover = -1, locked = 1;
+
+  function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+
+  function mix(c1, c2, t) { return [c1[0] + (c2[0] - c1[0]) * t, c1[1] + (c2[1] - c1[1]) * t, c1[2] + (c2[2] - c1[2]) * t]; }
+  var FOREST = [18, 124, 112], WARN = [193, 80, 46], LIME = [132, 194, 65];
+  function rgb(c, k) { return 'rgb(' + Math.round(c[0] * k) + ',' + Math.round(c[1] * k) + ',' + Math.round(c[2] * k) + ')'; }
+
+  function faceNormal(a, b, c) {
+    var ux = b.x - a.x, uy = b.y - a.y, uz = b.z - a.z;
+    var vx = c.x - a.x, vy = c.y - a.y, vz = c.z - a.z;
+    var nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    var m = Math.hypot(nx, ny, nz) || 1; return { x: nx / m, y: ny / m, z: nz / m };
+  }
+
+  var pickQuads = []; // {sx[],sy[], idx}
+
+  function draw() {
+    ctx.clearRect(0, 0, LOGW, LOGH);
+    var i, c;
+
+    // --- floor: zero-plane fill + grid ---
+    var gx0 = bx(0) - SX / 2, gx1 = bx(5) + SX / 2, gz0 = bz(0) - SZ / 2, gz1 = bz(3) + SZ / 2;
+    function P(x, y, z) { return cam.project({ x: x, y: y, z: z }); }
+    var p00 = P(gx0, 0, gz0), p10 = P(gx1, 0, gz0), p11 = P(gx1, 0, gz1), p01 = P(gx0, 0, gz1);
+    ctx.beginPath(); ctx.moveTo(p00.x, p00.y); ctx.lineTo(p10.x, p10.y); ctx.lineTo(p11.x, p11.y); ctx.lineTo(p01.x, p01.y); ctx.closePath();
+    ctx.fillStyle = 'rgba(18,124,112,.055)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(122,138,130,.5)'; ctx.lineWidth = 1;
+    for (i = 0; i <= 6; i++) { var x = gx0 + (gx1 - gx0) * i / 6; var a = P(x, 0, gz0), bb = P(x, 0, gz1); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(bb.x, bb.y); ctx.stroke(); }
+    for (i = 0; i <= 4; i++) { var z = gz0 + (gz1 - gz0) * i / 4; var a2 = P(gx0, 0, z), b2 = P(gx1, 0, z); ctx.beginPath(); ctx.moveTo(a2.x, a2.y); ctx.lineTo(b2.x, b2.y); ctx.stroke(); }
+
+    // --- ghost: running-mean surface up to sessionIndex ---
+    var ghost = null;
+    if (ghostOn) {
+      ghost = []; for (i = 0; i < 24; i++) { var sum = 0; for (var tt = 0; tt <= sessionIndex; tt++) sum += SESSIONS[tt].cells[i].sg; ghost.push(sum / (sessionIndex + 1)); }
+    }
+
+    // --- find best (max positive) cell for the lime moment ---
+    var bestIdx = -1, bestVal = -1e9;
+    for (i = 0; i < 24; i++) if (disp[i] > bestVal) { bestVal = disp[i]; bestIdx = i; }
+
+    // --- build bar faces ---
+    var faces = []; pickQuads = [];
+    for (i = 0; i < 24; i++) {
+      c = SESSIONS[sessionIndex].cells[i];
+      var h = disp[i] * YS;
+      var cxw = bx(c.bin), czw = bz(c.strat);
+      var x0 = cxw - HW, x1b = cxw + HW, z0 = czw - HZ, z1b = czw + HZ;
+      var yTop = h, yBot = 0;
+      var pos = disp[i] >= 0;
+      var base = pos ? FOREST : WARN;
+      if (i === bestIdx && bestVal > 0.02) base = LIME;
+      // 8 corners
+      var C = {
+        a: { x: x0, y: yBot, z: z0 }, b: { x: x1b, y: yBot, z: z0 }, c: { x: x1b, y: yBot, z: z1b }, d: { x: x0, y: yBot, z: z1b },
+        e: { x: x0, y: yTop, z: z0 }, f: { x: x1b, y: yTop, z: z0 }, g: { x: x1b, y: yTop, z: z1b }, h: { x: x0, y: yTop, z: z1b }
+      };
+      var quads = [
+        [C.e, C.f, C.g, C.h, 1.0],   // cap
+        [C.a, C.b, C.f, C.e, 0.78],  // north (-z)
+        [C.b, C.c, C.g, C.f, 0.9],   // east (+x)
+        [C.c, C.d, C.h, C.g, 0.66],  // south (+z)
+        [C.d, C.a, C.e, C.h, 0.72]   // west (-x)
+      ];
+      for (var q = 0; q < quads.length; q++) {
+        var qd = quads[q];
+        var r0 = cam.rot(qd[0]), r1 = cam.rot(qd[1]), r2 = cam.rot(qd[2]), r3 = cam.rot(qd[3]);
+        var depth = (r0.z + r1.z + r2.z + r3.z) / 4;
+        // world-space normal for lighting
+        var nrm = faceNormal(qd[0], qd[1], qd[2]);
+        var lit = 0.62 + 0.38 * Math.max(0, nrm.x * LIGHT.x + nrm.y * LIGHT.y + nrm.z * LIGHT.z);
+        lit *= qd[4] === 1.0 ? 1.06 : qd[4];
+        var pj = [cam.project(qd[0]), cam.project(qd[1]), cam.project(qd[2]), cam.project(qd[3])];
+        var isCap = q === 0;
+        faces.push({ pj: pj, depth: depth, color: rgb(base, Math.min(1.12, lit)), cap: isCap, idx: i, hovered: (i === hover) });
+        if (isCap) pickQuads.push({ pj: pj, idx: i });
+      }
+    }
+    faces.sort(function (A, B) { return B.depth - A.depth; });
+    for (var fi = 0; fi < faces.length; fi++) {
+      var F = faces[fi], pj = F.pj;
+      ctx.beginPath(); ctx.moveTo(pj[0].x, pj[0].y); ctx.lineTo(pj[1].x, pj[1].y); ctx.lineTo(pj[2].x, pj[2].y); ctx.lineTo(pj[3].x, pj[3].y); ctx.closePath();
+      ctx.fillStyle = F.color; ctx.fill();
+      if (F.cap) { ctx.strokeStyle = F.hovered ? 'rgba(255,255,255,.95)' : 'rgba(255,255,255,.32)'; ctx.lineWidth = F.hovered ? 2 : 1; ctx.stroke(); }
+    }
+
+    // --- ghost caps (thin translucent squares at running-mean height) ---
+    if (ghost) {
+      ctx.save();
+      for (i = 0; i < 24; i++) {
+        c = SESSIONS[sessionIndex].cells[i]; var gh = ghost[i] * YS; var cxw2 = bx(c.bin), czw2 = bz(c.strat);
+        var g0 = P(cxw2 - HW, gh, czw2 - HZ), g1 = P(cxw2 + HW, gh, czw2 - HZ), g2 = P(cxw2 + HW, gh, czw2 + HZ), g3 = P(cxw2 - HW, gh, czw2 + HZ);
+        ctx.beginPath(); ctx.moveTo(g0.x, g0.y); ctx.lineTo(g1.x, g1.y); ctx.lineTo(g2.x, g2.y); ctx.lineTo(g3.x, g3.y); ctx.closePath();
+        ctx.strokeStyle = 'rgba(53,101,119,.7)'; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.2; ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // --- axis labels (with white halo for legibility over bars) ---
+    ctx.setLineDash([]);
+    ctx.font = '600 10.5px "DM Mono", monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+    function label(txt, x, y, z, col) {
+      var p = cam.project({ x: x, y: y, z: z });
+      ctx.lineWidth = 3.4; ctx.strokeStyle = 'rgba(250,250,246,.9)'; ctx.strokeText(txt, p.x, p.y);
+      ctx.fillStyle = col; ctx.fillText(txt, p.x, p.y);
+    }
+    for (i = 0; i < 6; i++) label(BINS[i], bx(i), 0, gz1 + 30, 'rgba(111,122,118,1)');
+    for (i = 0; i < 4; i++) label(STRATA[i].code, gx0 - 40, 0, bz(i), i === 1 ? 'rgba(193,80,46,1)' : 'rgba(90,101,97,1)');
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  // ---- interaction ----
+  function pick(px, py) {
+    for (var i = pickQuads.length - 1; i >= 0; i--) {
+      var q = pickQuads[i].pj;
+      if (pointInQuad(px, py, q)) return pickQuads[i].idx;
+    }
+    return -1;
+  }
+  function pointInQuad(px, py, q) {
+    return pointInTri(px, py, q[0], q[1], q[2]) || pointInTri(px, py, q[0], q[2], q[3]);
+  }
+  function sign(px, py, a, b) { return (px - b.x) * (a.y - b.y) - (a.x - b.x) * (py - b.y); }
+  function pointInTri(px, py, a, b, c) {
+    var d1 = sign(px, py, a, b), d2 = sign(px, py, b, c), d3 = sign(px, py, c, a);
+    var neg = (d1 < 0) || (d2 < 0) || (d3 < 0), pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+    return !(neg && pos);
+  }
+  function toLocal(e) {
+    var r = canvas.getBoundingClientRect();
+    return { x: (e.clientX - r.left) / r.width * LOGW, y: (e.clientY - r.top) / r.height * LOGH };
+  }
+
+  var tip = document.getElementById('tip'), hintEl = document.getElementById('hint');
+  var dragging = false, lastX = 0, lastY = 0, moved = false;
+  canvas.addEventListener('pointerdown', function (e) {
+    dragging = true; moved = false; lastX = e.clientX; lastY = e.clientY; autoRot = false;
+    document.getElementById('rot').classList.remove('on');
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', function (e) {
+    var lp = toLocal(e);
+    if (dragging) {
+      var dx = e.clientX - lastX, dy = e.clientY - lastY; lastX = e.clientX; lastY = e.clientY;
+      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      cam.yaw += dx * 0.008; cam.pitch = Math.max(-1.15, Math.min(-0.12, cam.pitch + dy * 0.006));
+      if (hintEl) hintEl.style.opacity = '0';
+      if (!ticking) draw();
+      return;
+    }
+    var hit = pick(lp.x, lp.y);
+    if (hit !== hover) { hover = hit; if (!ticking) draw(); }
+    if (hit >= 0) {
+      var c = SESSIONS[sessionIndex].cells[hit]; var v = disp[hit];
+      tip.innerHTML = '<b>' + STRATA[c.strat].code + '</b> · ' + BINS[c.bin] + ' yd<br>SG <b class="' + (v >= 0 ? 'tg' : 'tl') + '">' + fmt(v) + '</b> · ' + c.n + ' shots';
+      tip.style.left = lp.x + 'px'; tip.style.top = lp.y + 'px'; tip.style.opacity = '1';
+      canvas.style.cursor = 'pointer';
+    } else { tip.style.opacity = '0'; canvas.style.cursor = 'grab'; }
+  });
+  function endDrag(e) {
+    if (!dragging) return; dragging = false;
+    if (!moved) { var lp = toLocal(e); var hit = pick(lp.x, lp.y); if (hit >= 0) { locked = SESSIONS[sessionIndex].cells[hit].strat; renderReadout(); } }
+    resumeAt = Date.now() + 4000;
+  }
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointerleave', function () { tip.style.opacity = '0'; if (hover !== -1) { hover = -1; if (!ticking) draw(); } });
+
+  // ---- session strip ----
+  var segEl = document.getElementById('sessions');
+  SESSIONS.forEach(function (s, i) {
+    var b = document.createElement('button'); b.textContent = s.id; if (i === sessionIndex) b.className = 'on';
+    b.addEventListener('click', function () {
+      Array.prototype.forEach.call(segEl.children, function (c) { c.classList.remove('on'); });
+      b.classList.add('on'); setSession(i);
+    });
+    segEl.appendChild(b);
+  });
+  function setSession(i) {
+    var from = disp.slice(), to = SESSIONS[i].cells.map(function (c) { return c.sg; });
+    sessionIndex = i;
+    document.getElementById('stage-title').textContent = 'Session ' + (i + 1) + ' · strokes gained by distance × stratum';
+    if (reduced) { disp = to; afterChange(); return; }
+    tween = { from: from, to: to, t: 0 };
+  }
+  function afterChange() { updateKPIs(); renderReadout(); updateStageSub(); if (!ticking) draw(); }
+
+  document.getElementById('rot').addEventListener('click', function () { autoRot = !autoRot; this.classList.toggle('on', autoRot); resumeAt = 0; });
+  document.getElementById('ghost').addEventListener('click', function () { ghostOn = !ghostOn; this.classList.toggle('on', ghostOn); if (!ticking) draw(); });
+  document.getElementById('reset').addEventListener('click', function () { cam.yaw = 0.52; cam.pitch = -0.60; if (!ticking) draw(); });
+
+  // ---- readout + KPIs ----
+  function laneSG(sess, strat) { var sum = 0; for (var b = 0; b < 6; b++) sum += cellAt(sess, b, strat).sg * (cellAt(sess, b, strat).rel); return sum; }
+  function laneSGdisp(strat) { var sum = 0; for (var b = 0; b < 6; b++) { var c = cellAt(SESSIONS[sessionIndex], b, strat); sum += disp[strat * 6 + b] * c.rel; } return sum; }
+  function renderReadout() {
+    var st = STRATA[locked]; var v = laneSGdisp(locked);
+    document.getElementById('ro-code').textContent = st.code;
+    document.getElementById('ro-name').textContent = st.name;
+    var big = document.getElementById('ro-sg'); big.textContent = fmt(v); big.className = 'sg-big ' + (v >= 0 ? 'pos' : 'neg');
+    document.getElementById('ro-code').style.background = v >= 0 ? 'var(--forest)' : 'var(--warn)';
+    document.getElementById('ro-fix').innerHTML = st.fix;
+  }
+  function updateStageSub() {
+    var tot = 0; for (var i = 0; i < 24; i++) tot += disp[i] * SESSIONS[sessionIndex].cells[i].rel;
+    document.getElementById('stage-sub').textContent = 'net ' + fmt(tot) + ' strokes vs the field';
+  }
+  function updateKPIs() {
+    var sess = SESSIONS[sessionIndex];
+    var lanes = [0, 1, 2, 3].map(function (s) { return { s: s, v: laneSG(sess, s) }; });
+    var tot = lanes.reduce(function (a, l) { return a + l.v; }, 0);
+    var worst = lanes.slice().sort(function (a, b) { return a.v - b.v; })[0];
+    var best = lanes.slice().sort(function (a, b) { return b.v - a.v; })[0];
+    var s1tot = [0, 1, 2, 3].reduce(function (a, s) { return a + laneSG(SESSIONS[0], s); }, 0);
+    document.getElementById('k-total').textContent = fmt(tot);
+    document.getElementById('k-total').style.color = tot >= 0 ? 'var(--forest)' : 'var(--warn)';
+    document.getElementById('k-worst').innerHTML = STRATA[worst.s].code + '<span class="u"> ' + fmt(worst.v) + '</span>';
+    document.getElementById('k-best').innerHTML = STRATA[best.s].code + '<span class="u"> ' + fmt(best.v) + '</span>';
+    var d = tot - s1tot; document.getElementById('k-delta').innerHTML = (d >= 0 ? '+' : '') + d.toFixed(2);
+    document.getElementById('k-delta').style.color = d >= 0 ? 'var(--forest)' : 'var(--warn)';
+    // hidden data table
+    var tb = document.querySelector('#datatable tbody');
+    tb.innerHTML = lanes.map(function (l) { return '<tr><td>' + STRATA[l.s].code + '</td><td>' + fmt(l.v) + '</td></tr>'; }).join('');
+  }
+
+  // ---- loop ----
+  var ticking = false;
+  function frame() {
+    if (tween) {
+      tween.t += 0.045; var e = tween.t >= 1 ? 1 : (1 - Math.pow(1 - tween.t, 3));
+      for (var i = 0; i < 24; i++) disp[i] = tween.from[i] + (tween.to[i] - tween.from[i]) * e;
+      if (tween.t >= 1) { tween = null; disp = SESSIONS[sessionIndex].cells.map(function (c) { return c.sg; }); }
+      updateKPIs(); updateStageSub();
+      if (locked >= 0) renderReadout();
+    }
+    if (autoRot && !dragging && Date.now() >= resumeAt) cam.yaw += 0.0045;
+    if (autoRot && resumeAt && Date.now() >= resumeAt) { document.getElementById('rot').classList.add('on'); }
+    draw();
+    requestAnimationFrame(frame);
+  }
+
+  // ---- boot ----
+  function boot() {
+    resize(); updateKPIs(); renderReadout(); updateStageSub(); draw();
+    if (reduced) { if (hintEl) hintEl.style.opacity = '0'; return; }
+    ticking = true; requestAnimationFrame(frame);
+    setTimeout(function () { if (hintEl) hintEl.style.opacity = '0'; }, 5200);
+  }
+  window.addEventListener('resize', function () { resize(); draw(); });
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { resize(); draw(); }); }
+  boot();
+})();
+</script>
+</body>
+</html>

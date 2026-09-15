@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-207 · workouts × voice-memos · The full picture</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --lane: #b8873a; }
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; overflow-x:hidden; background:var(--bg); }
+    main { max-width:1040px; margin:0 auto; padding:26px 24px 72px; }
+
+    .eyebrow { display:flex; align-items:center; gap:9px; font:600 12px/1 var(--font-mono); letter-spacing:.06em; color:var(--lane); text-transform:uppercase; }
+    .eyebrow .d { width:8px; height:8px; border-radius:50%; background:var(--lane); box-shadow:0 0 0 4px rgba(184,135,58,.18); }
+    h1 { font:700 40px/1.04 var(--font-display); letter-spacing:-.02em; margin:15px 0 10px; color:var(--ink); }
+    h1 em { font-style:normal; color:var(--forest); }
+    .lede { max-width:68ch; font:400 16px/1.55 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:600; }
+
+    .callout { margin:22px 0 4px; border:1px solid #e5cfa6; background:#faf3e6; border-radius:var(--r-tile); padding:15px 18px; }
+    .callout.ok { border-color:#bcd9bc; background:#eef6ee; }
+    .callout h3 { font:700 14px/1.2 var(--font-display); color:#8a6520; margin:0 0 5px; display:flex; gap:8px; align-items:center; }
+    .callout.ok h3 { color:var(--forest-d); }
+    .callout p { font:400 13.5px/1.55 var(--font-ui); color:var(--body); margin:0; }
+    .callout code { font:500 12.5px var(--font-mono); color:#8a6520; background:rgba(138,101,32,.09); padding:1px 6px; border-radius:5px; }
+
+    .kpis { display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 6px; }
+    .kpi { flex:1 1 128px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-tile); padding:14px 16px; }
+    .kpi-n { font:700 26px/1 var(--font-display); color:var(--ink); }
+    .kpi-n small { font:600 13px/1 var(--font-mono); color:var(--muted); margin-left:2px; }
+    .kpi-l { font:500 11px/1.3 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:6px; }
+
+    section.grp { margin-top:34px; }
+    .grp-head { display:flex; align-items:baseline; gap:10px; border-bottom:2px solid var(--line); padding-bottom:8px; margin-bottom:16px; }
+    .grp-head h2 { font:700 21px/1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .grp-head .ji { font-size:19px; letter-spacing:2px; }
+    .grp-head .sub { font:500 12px/1 var(--font-mono); color:var(--muted); margin-left:auto; }
+    .grp-head .sub a { color:var(--forest-d); text-decoration:none; }
+
+    .cols { display:grid; grid-template-columns:1.05fr 1fr; gap:14px; }
+    @media (max-width:720px){ .cols { grid-template-columns:1fr; } }
+    .panel { background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:16px 18px; }
+    .panel h3 { font:700 14px/1.2 var(--font-display); color:var(--forest); margin:0 0 10px; text-transform:uppercase; letter-spacing:.03em; font-size:12.5px; }
+
+    table.mods { width:100%; border-collapse:collapse; font:400 13.5px/1.4 var(--font-ui); }
+    table.mods td { padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:baseline; }
+    table.mods td.mv { font:600 13px var(--font-ui); color:var(--ink); }
+    table.mods td.rp { font:600 13px var(--font-mono); color:var(--forest-d); white-space:nowrap; text-align:right; width:34px; }
+    table.mods td.ld { font:500 12.5px var(--font-mono); color:var(--muted); white-space:nowrap; text-align:right; }
+    table.mods tr:last-child td { border-bottom:none; }
+    table.mods tr.card td { color:var(--muted); }
+
+    .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .chip { display:inline-block; font:600 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:.03em; padding:5px 9px; border-radius:var(--r-pill); border:1px solid var(--line); color:var(--body); background:var(--card); }
+    .chip.load { color:var(--forest-d); border-color:#bcd9bc; background:#eef6ee; }
+    .chip.dist { color:#2f6c8f; border-color:#b8d3e2; background:#eaf3f8; }
+    .chip.kit  { color:#7a5cab; border-color:#cfc0e6; background:#f2edf9; }
+    .chip.flag { color:var(--warn); border-color:var(--warn-bd,#e3b9a6); background:var(--warn-bg,#f6e3da); }
+
+    .metrics { display:flex; flex-wrap:wrap; gap:9px; }
+    .metric { flex:1 1 78px; }
+    .metric .m-n { font:700 18px/1 var(--font-display); color:var(--ink); }
+    .metric .m-l { font:500 10.5px/1.2 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-top:4px; }
+    .pending { font:400 13px/1.55 var(--font-ui); color:var(--muted); }
+    .pending b { color:#8a6520; }
+
+    details.tx { margin-top:12px; border-top:1px dashed var(--line); padding-top:10px; }
+    details.tx summary { font:600 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:.04em; color:var(--muted); cursor:pointer; }
+    details.tx p { font:400 13.5px/1.6 var(--font-ui); color:var(--body); margin:9px 0 0; }
+
+    section.method { margin-top:40px; }
+    .flow { display:flex; flex-wrap:wrap; align-items:stretch; gap:8px; margin-top:4px; }
+    .step { flex:1 1 155px; background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:12px 14px; }
+    .step .n { font:600 10.5px/1 var(--font-mono); color:var(--lane); text-transform:uppercase; letter-spacing:.05em; }
+    .step .t { font:700 14px/1.2 var(--font-display); color:var(--ink); margin:6px 0 4px; }
+    .step .d { font:400 12px/1.45 var(--font-ui); color:var(--muted); }
+    .step code { font:500 11.5px var(--font-mono); color:var(--forest-d); }
+
+    footer { margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font:400 12.5px/1.6 var(--font-mono); color:var(--muted); }
+    footer b { color:var(--body); }
+
+    /* lifetime archive band */
+    .band { margin:26px 0 6px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-tile); padding:18px 20px; }
+    .band-head { display:flex; align-items:baseline; gap:10px; margin-bottom:14px; }
+    .band-head h2 { font:700 18px/1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .band-head .sub { font:500 11.5px/1 var(--font-mono); color:var(--muted); margin-left:auto; }
+    .band .kpis { margin:0 0 16px; }
+    .band .kpi { background:var(--well); }
+    .bar { display:flex; height:16px; border-radius:6px; overflow:hidden; border:1px solid var(--line); }
+    .bar .seg { height:100%; }
+    .legend { display:flex; flex-wrap:wrap; gap:5px 14px; margin-top:12px; }
+    .legend span { display:inline-flex; align-items:center; gap:6px; font:500 11.5px/1 var(--font-mono); color:var(--body); }
+    .legend i { width:9px; height:9px; border-radius:2px; display:inline-block; }
+    .legend b { color:var(--muted); font-weight:500; }
+
+    /* nukeable seed (the Omar proof) */
+    section.seed { margin-top:38px; }
+    .seed-flow { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:6px 0 14px; }
+    .node { flex:1 1 190px; background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:13px 15px; }
+    .node.truth { border-color:#bcd9bc; background:#eef6ee; }
+    .node.target { border-color:#e5cfa6; background:#faf3e6; }
+    .node .t { font:700 14px/1.2 var(--font-display); color:var(--ink); }
+    .node .d { font:400 12px/1.45 var(--font-ui); color:var(--muted); margin-top:4px; }
+    .node code { font:500 11px var(--font-mono); color:var(--forest-d); }
+    .arrow { flex:0 0 auto; font:700 18px var(--font-mono); color:var(--lane); }
+    @media (max-width:720px){ .arrow { transform:rotate(90deg); align-self:center; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow"><span class="d"></span> TODO-207 · workouts × voice-memos</div>
+  <h1>The full picture of <em>every workout</em></h1>
+  <p class="lede">Strava knows I ran and <b>where</b>. Only the voice memo knows it
+  was a 5K <b>plus</b> a weight-vest circuit, then strict press, squats and
+  deadlifts at a second gym — and that I <b>forgot to end the workout</b>. Fused
+  by time, the spoken record and the sensor record become one honest log.</p>
+
+  <div class="callout ok"><h3>✓ Strava fused &amp; written back</h3><p>App <code>164335</code> is active again (scope <code>activity:read_all,activity:write</code>). 2 of 2 workouts matched by true-UTC time, and the spoken narrative is pushed live into each activity description — append-only, guarded by a <code>voice-memo:</code> marker so re-runs are idempotent.</p></div>
+
+  
+  <div class="band">
+    <div class="band-head"><h2>The whole history</h2>
+      <span class="sub">every activity ever · 2018-06-17 → 2026-07-13</span></div>
+    <div class="kpis"><div class="kpi"><div class="kpi-n">1,286</div><div class="kpi-l">activities</div></div><div class="kpi"><div class="kpi-n">4,431<small>lifetime</small></div><div class="kpi-l">km</div></div><div class="kpi"><div class="kpi-n">899<small>moving+paused</small></div><div class="kpi-l">hours</div></div><div class="kpi"><div class="kpi-n">2018<small>2018-06-17</small></div><div class="kpi-l">since</div></div><div class="kpi"><div class="kpi-n">14</div><div class="kpi-l">sports</div></div></div>
+    <div class="bar"><div class="seg" style="width:35.459%;background:#b8873a" title="Run · 456"></div><div class="seg" style="width:25.661%;background:#5a7d4f" title="Workout · 330"></div><div class="seg" style="width:13.608%;background:#2f6c8f" title="Surfing · 175"></div><div class="seg" style="width:7.543%;background:#7a5cab" title="Ride · 97"></div><div class="seg" style="width:6.843%;background:#c08a2e" title="Yoga · 88"></div><div class="seg" style="width:3.421%;background:#8a9a7b" title="Walk · 44"></div><div class="seg" style="width:3.188%;background:#3f8fb0" title="Swim · 41"></div><div class="seg" style="width:1.322%;background:#4a9db0" title="WaterSport · 17"></div><div class="seg" style="width:1.244%;background:#6b8e3d" title="Golf · 16"></div><div class="seg" style="width:0.933%;background:#9a6b3f" title="Hike · 12"></div><div class="seg" style="width:0.467%;background:#3d8e8e" title="Kayaking · 6"></div><div class="seg" style="width:0.156%;background:#a05a7a" title="StairStepper · 2"></div><div class="seg" style="width:0.078%;background:#6a7aa0" title="Snowboard · 1"></div><div class="seg" style="width:0.078%;background:#4a8e6a" title="Rowing · 1"></div></div>
+    <div class="legend"><span><i style="background:#b8873a"></i>Run <b>456</b></span><span><i style="background:#5a7d4f"></i>Workout <b>330</b></span><span><i style="background:#2f6c8f"></i>Surfing <b>175</b></span><span><i style="background:#7a5cab"></i>Ride <b>97</b></span><span><i style="background:#c08a2e"></i>Yoga <b>88</b></span><span><i style="background:#8a9a7b"></i>Walk <b>44</b></span><span><i style="background:#3f8fb0"></i>Swim <b>41</b></span><span><i style="background:#4a9db0"></i>WaterSport <b>17</b></span><span><i style="background:#6b8e3d"></i>Golf <b>16</b></span><span><i style="background:#9a6b3f"></i>Hike <b>12</b></span><span><i style="background:#3d8e8e"></i>Kayaking <b>6</b></span><span><i style="background:#a05a7a"></i>StairStepper <b>2</b></span><span><i style="background:#6a7aa0"></i>Snowboard <b>1</b></span><span><i style="background:#4a8e6a"></i>Rowing <b>1</b></span></div>
+  </div>
+
+  <div class="grp-head" style="margin-top:34px"><h2>The two fused so far</h2>
+    <span class="sub">memo × Strava · one honest log</span></div>
+  <div class="kpis"><div class="kpi"><div class="kpi-n">2</div><div class="kpi-l">workouts</div></div><div class="kpi"><div class="kpi-n">13</div><div class="kpi-l">efforts logged</div></div><div class="kpi"><div class="kpi-n">2190<small>lifted</small></div><div class="kpi-l">kg total load</div></div><div class="kpi"><div class="kpi-n">5K</div><div class="kpi-l">distance</div></div><div class="kpi"><div class="kpi-n">11</div><div class="kpi-l">movements</div></div><div class="kpi"><div class="kpi-n">2/2<small>matched</small></div><div class="kpi-l">on strava</div></div></div>
+
+  
+  <section class="grp">
+    <div class="grp-head">
+      <span class="ji">🏋️ 🏋️🏄</span>
+      <h2>2026-07-13 14:40</h2>
+      <span class="sub"><a href="https://linear.app/nomad-code/issue/TODO-205">TODO-205</a> · memo 6435A8F0 · 11s</span>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <h3>What I did — from the memo</h3>
+        <table class="mods"><tr class="card"><td class="mv">surf</td><td class="rp"></td><td class="ld">—</td></tr></table>
+        <div class="chips"><span class="chip flag">⚠ forgot-to-end</span></div>
+      </div>
+      <div class="panel">
+        <h3>Strava — the metrics</h3>
+        <p style="font:600 13px var(--font-ui);color:var(--ink);margin:0 0 8px">Afternoon Ride · Ride · <a href="https://www.strava.com/activities/19296721118" style="color:var(--forest-d);text-decoration:none">↗ strava</a></p><div class="metrics"><div class="metric"><div class="m-n">2.59<small>km</small></div><div class="m-l">distance</div></div><div class="metric"><div class="m-n">28<small>min</small></div><div class="m-l">elapsed</div></div><div class="metric"><div class="m-n">113.7<small></small></div><div class="m-l">avg hr</div></div><div class="metric"><div class="m-n">+0.2<small>m</small></div><div class="m-l">memo offset</div></div></div>
+        <details class="tx"><summary>full transcript</summary><p>All right, when I surfed, I forgot to end the workout. So it was about 18 minutes till I dropped the board off. For the next 10 minutes, we&#x27;re kind of just getting back home.</p></details>
+      </div>
+    </div>
+  </section>
+  <section class="grp">
+    <div class="grp-head">
+      <span class="ji">🏋️ 🏋️🏃 🏋️🧊</span>
+      <h2>2026-07-13 13:59</h2>
+      <span class="sub"><a href="https://linear.app/nomad-code/issue/TODO-204">TODO-204</a> · memo 8596D5AF · 77s</span>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <h3>What I did — from the memo</h3>
+        <table class="mods"><tr class="card"><td class="mv">run</td><td class="rp"></td><td class="ld">—</td></tr><tr class=""><td class="mv">pull-up</td><td class="rp">8</td><td class="ld">bw</td></tr><tr class=""><td class="mv">dip</td><td class="rp">8</td><td class="ld">bw</td></tr><tr class=""><td class="mv">thruster</td><td class="rp">10</td><td class="ld">5 kg</td></tr><tr class=""><td class="mv">walking-lunge</td><td class="rp">25</td><td class="ld">bw</td></tr><tr class="card"><td class="mv">ice-bath</td><td class="rp"></td><td class="ld">5 minutes</td></tr><tr class=""><td class="mv">strict-press</td><td class="rp">7</td><td class="ld">40 kg</td></tr><tr class=""><td class="mv">strict-press</td><td class="rp">5</td><td class="ld">40 kg</td></tr><tr class=""><td class="mv">squat</td><td class="rp">7</td><td class="ld">80 kg</td></tr><tr class=""><td class="mv">push-up</td><td class="rp">30</td><td class="ld">bw</td></tr><tr class=""><td class="mv">squat</td><td class="rp">5</td><td class="ld">80 kg</td></tr><tr class=""><td class="mv">deadlift</td><td class="rp">7</td><td class="ld">100 kg</td></tr></table>
+        <div class="chips"><span class="chip load">2190 kg total load</span><span class="chip dist">5K</span><span class="chip kit">20lb weight vest</span><span class="chip flag">⚠ forgot-to-end</span></div>
+      </div>
+      <div class="panel">
+        <h3>Strava — the metrics</h3>
+        <p style="font:600 13px var(--font-ui);color:var(--ink);margin:0 0 8px">Afternoon HIIT · Workout · <a href="https://www.strava.com/activities/19296720903" style="color:var(--forest-d);text-decoration:none">↗ strava</a></p><div class="metrics"><div class="metric"><div class="m-n">0.0<small>km</small></div><div class="m-l">distance</div></div><div class="metric"><div class="m-n">13<small>min</small></div><div class="m-l">elapsed</div></div><div class="metric"><div class="m-n">112.7<small></small></div><div class="m-l">avg hr</div></div><div class="metric"><div class="m-n">+0.9<small>m</small></div><div class="m-l">memo offset</div></div></div><p style="font:600 13px var(--font-ui);color:var(--ink);margin:0 0 8px">Afternoon Workout · Workout · <a href="https://www.strava.com/activities/19296720722" style="color:var(--forest-d);text-decoration:none">↗ strava</a></p><div class="metrics"><div class="metric"><div class="m-n">0.0<small>km</small></div><div class="m-l">distance</div></div><div class="metric"><div class="m-n">20<small>min</small></div><div class="m-l">elapsed</div></div><div class="metric"><div class="m-n">73.6<small></small></div><div class="m-l">avg hr</div></div><div class="metric"><div class="m-n">+33.1<small>m</small></div><div class="m-l">memo offset</div></div></div><p style="font:600 13px var(--font-ui);color:var(--ink);margin:0 0 8px">Lunch HIIT · Workout · <a href="https://www.strava.com/activities/19296720899" style="color:var(--forest-d);text-decoration:none">↗ strava</a></p><div class="metrics"><div class="metric"><div class="m-n">0.0<small>km</small></div><div class="m-l">distance</div></div><div class="metric"><div class="m-n">10<small>min</small></div><div class="m-l">elapsed</div></div><div class="metric"><div class="m-n">132.6<small></small></div><div class="m-l">avg hr</div></div><div class="metric"><div class="m-n">+64.6<small>m</small></div><div class="m-l">memo offset</div></div></div><p style="font:600 13px var(--font-ui);color:var(--ink);margin:0 0 8px">Lunch Run · Run · <a href="https://www.strava.com/activities/19296721007" style="color:var(--forest-d);text-decoration:none">↗ strava</a></p><div class="metrics"><div class="metric"><div class="m-n">6.82<small>km</small></div><div class="m-l">distance</div></div><div class="metric"><div class="m-n">35<small>min</small></div><div class="m-l">elapsed</div></div><div class="metric"><div class="m-n">144.9<small></small></div><div class="m-l">avg hr</div></div><div class="metric"><div class="m-n">+75.1<small>m</small></div><div class="m-l">memo offset</div></div></div>
+        <details class="tx"><summary>full transcript</summary><p>So I did my normal flow of running from Midewi Manor and doing a fast 5K. And then with a 20-pound weight vest, eight pull-ups, eight dips, 10 thrusters with 2X5 kg. And then walking lunges, 25. Just the weight vest, no, nothing else. And then drove and ordered chicken and then drove and did the ice bath for five minutes. Magnesium for five. Note, I forgot to end the workout, so that one&#x27;s a bit long. So fix that. T-O-D-O, fix that. Then I had the chicken and then I drove to Man Overboard and did seven strict press, 40 kg, ROX, then five strict press, 40 kg, then seven squats, 80 kg, 30 push-ups, then five squats, 80 kg, and then seven deadlifts, 100 kg. KG.</p></details>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="seed">
+    <div class="grp-head"><h2>Nukeable by design</h2>
+      <span class="sub">strava-nix thesis · account = deploy target, not truth</span></div>
+    <p class="lede" style="margin-bottom:6px">The archive on disk is the source of
+    truth. Any Strava account is a <b>disposable target</b> — deploy rebuilds it
+    from the archive, so it can be nuked and restored, identical, at will.
+    <b>Omar</b> (<code style="font:500 12.5px var(--font-mono);color:var(--forest-d)">omarali80361</code>)
+    is the sandbox that proves it.</p>
+    <div class="seed-flow">
+      <div class="node truth"><div class="t">~/.strava-archive</div>
+        <div class="d">source of truth · git-backable · <code>archive --profile brendan</code></div></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="t">deploy (idempotent)</div>
+        <div class="d">fingerprint-guarded · re-run skips what already landed</div></div>
+      <div class="arrow">→</div>
+      <div class="node target"><div class="t">Omar · disposable</div>
+        <div class="d">own app 202565 · nuke → redeploy → identical</div></div>
+    </div>
+    <p class="pending" style="color:var(--muted)">Status: dry-run deploy <b>25/25 ready, 0 already done</b>
+    — mechanism confirmed. Full history is <b>1,286 activities</b>; the full-stream
+    pull is rate-limited (~13 h) and runs in the background. First live write to
+    Omar is user-gated (verify write-token on one activity, then bulk). See
+    <code style="font:500 12px var(--font-mono)">projects/workouts/SEED.md</code>.</p>
+  </section>
+
+  <section class="method">
+    <div class="grp-head"><h2>How it fuses</h2><span class="sub">bpo owns the join · strava-nix is the adapter</span></div>
+    <div class="flow"><div class="step"><div class="n">01 · capture</div><div class="t">Voice memo</div><div class="d">spoken after training — TODO-200 transcribes it to a dna note</div></div><div class="step"><div class="n">02 · extract</div><div class="t">signals.py</div><div class="d">clause parse → sets · reps · load · distance · flags</div></div><div class="step"><div class="n">03 · match</div><div class="t">join.py</div><div class="d">nearest Strava activity in a true-UTC window (−15/+120 min)</div></div><div class="step"><div class="n">04 · record</div><div class="t">dna/workouts/</div><div class="d">one durable fused note per memo, git-versioned</div></div><div class="step"><div class="n">05 · write-back</div><div class="t">Strava desc</div><div class="d">append the narrative, guarded by a voice-memo: marker</div></div></div>
+  </section>
+
+  <footer>
+    <b>Source of truth:</b> dna/voice-memos (spoken) + Strava (sensed) → dna/workouts (fused).
+    Match key is <b>start_date</b> in true UTC; window −15 / +120 min because memos
+    are recorded after finishing. Write-back is append-only, idempotent on a
+    <b>voice-memo:</b> marker. Generated 2026-07-14_08-25 · TODO-207.
+  </footer>
+</main>
+</body>
+</html>

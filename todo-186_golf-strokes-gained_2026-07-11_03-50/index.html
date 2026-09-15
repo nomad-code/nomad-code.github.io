@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strokes Gained · SGT rounds</title>
+<style>
+  :root {
+    --bg:#f6f6f3; --card:#fffffe; --ink:#191a17; --muted:#6d6f66; --line:#e4e5dd;
+    --accent:#0a7d5f; --loss:#c1440e; --gain:#0a7d5f; --grid:#d9dad2;
+    --mono:"SF Mono",ui-monospace,"Menlo","Consolas",monospace;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root { --bg:#14150f; --card:#1d1f18; --ink:#ecece4; --muted:#9a9c8f; --line:#32342a;
+      --accent:#3fbf94; --loss:#e8734a; --gain:#3fbf94; --grid:#33352a; }
+  }
+  :root[data-theme="light"] {
+    --bg:#f6f6f3; --card:#fffffe; --ink:#191a17; --muted:#6d6f66; --line:#e4e5dd;
+    --accent:#0a7d5f; --loss:#c1440e; --gain:#0a7d5f; --grid:#d9dad2; }
+  :root[data-theme="dark"] {
+    --bg:#14150f; --card:#1d1f18; --ink:#ecece4; --muted:#9a9c8f; --line:#32342a;
+    --accent:#3fbf94; --loss:#e8734a; --gain:#3fbf94; --grid:#33352a; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  main { max-width:780px; margin:0 auto; padding:26px 16px 72px; }
+  h1 { font-size:1.55rem; margin:0 0 4px; letter-spacing:-.01em; text-wrap:balance; }
+  h2 { font-size:1.02rem; margin:34px 0 12px; }
+  .sub { color:var(--muted); margin:0 0 16px; font-size:.94rem; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; margin:12px 0 24px; }
+  .chip { background:var(--card); border:1px solid var(--line); border-radius:999px;
+    padding:3px 12px; font-size:.8rem; color:var(--muted); white-space:nowrap; }
+  .chip.hl { color:var(--accent); border-color:var(--accent); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px; margin-bottom:14px; }
+  .mono { font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  .neg { color:var(--loss); } .pos { color:var(--gain); }
+  .muted { color:var(--muted); font-size:.85rem; }
+  .hero { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:6px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .stat .r { font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  .stat .big { font-family:var(--mono); font-size:1.9rem; font-weight:700; line-height:1.05; margin-top:4px; }
+  .stat .gr { font-family:var(--mono); color:var(--muted); font-size:.82rem; margin-top:2px; }
+  @media (max-width:640px) { .hero { grid-template-columns:1fr 1fr; } }
+  .event .ehead { font-weight:700; font-size:.82rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--accent); margin-bottom:14px; }
+  .round + .round { margin-top:22px; padding-top:20px; border-top:1px solid var(--line); }
+  .round .rhead { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:13px; }
+  .rtag { font-weight:700; } .rmeta { color:var(--muted); font-size:.85rem; margin-left:8px; }
+  .rtot { text-align:right; }
+  .rtot .sgval { font-family:var(--mono); font-size:1.35rem; font-weight:700; }
+  .rtotl { display:block; font-size:.66rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  .sgchart { display:flex; flex-direction:column; gap:8px; }
+  .sgrow { display:grid; grid-template-columns:96px 1fr 44px; align-items:center; gap:10px; }
+  .sglabel { font-size:.84rem; }
+  .track { position:relative; height:19px; background:var(--grid); border-radius:4px; }
+  .zero { position:absolute; top:-3px; bottom:-3px; width:1.5px; background:var(--muted); opacity:.55; }
+  .fill { position:absolute; top:0; bottom:0; border-radius:4px; }
+  .fill.loss { background:var(--loss); } .fill.gain { background:var(--gain); }
+  .sgval { font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:.88rem; text-align:right; font-weight:600; }
+  .sgread { margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:.86rem; color:var(--muted); }
+  .legend { display:flex; gap:16px; font-size:.8rem; color:var(--muted); margin:2px 0 16px; }
+  .legend span::before { content:""; display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; }
+  .legend .l::before { background:var(--loss); } .legend .g::before { background:var(--gain); }
+  .tablewrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:.86rem; }
+  th,td { text-align:right; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap;
+    font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  th { font-family:inherit; color:var(--muted); font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.04em; }
+  td.dist, th:first-child { text-align:left; font-family:inherit; }
+  .flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-family:var(--mono); font-size:.8rem; }
+  .node { background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:6px 10px; }
+  .arrow { color:var(--muted); }
+  code { font-family:var(--mono); background:var(--bg); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:.85em; }
+  .foot { color:var(--muted); font-size:.8rem; margin-top:34px; border-top:1px solid var(--line); padding-top:14px; }
+  em { font-style:italic; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Strokes Gained &mdash; every round, finally measured</h1>
+  <p class="sub">Simulator Golf Tour records where every shot finished but never
+    computes strokes gained. This does &mdash; 3 rounds across
+    2 events, against the PGA&nbsp;Tour (Broadie) baseline, broken down
+    by where the strokes actually went.</p>
+  <div class="chips">
+    <span class="chip hl">3 rounds</span>
+    <span class="chip">gross 68 / 79 / 110</span>
+    <span class="chip">vs PGA Tour (Broadie)</span>
+    <span class="chip">SGT · reverse-engineered</span>
+  </div>
+
+  <div class="hero">
+    <div class="stat"><div class="r">Quest 2026 R1</div><div class="big neg">-11.5</div><div class="gr">gross 68</div></div><div class="stat"><div class="r">Quest 2026 R2</div><div class="big neg">-18.2</div><div class="gr">gross 79</div></div><div class="stat"><div class="r">Blue Ridge Open</div><div class="big neg">-36.3</div><div class="gr">gross 110</div></div>
+  </div>
+  <p class="muted" style="margin:10px 2px 0">Strokes gained is always <em>relative</em>:
+    these are strokes vs a Tour pro, so negative is expected for an amateur. The signal
+    isn&rsquo;t the sign &mdash; it&rsquo;s <strong>which bar is longest</strong>. Across
+    all 3 rounds, the biggest leak is <strong>putting</strong>
+    (-20).</p>
+
+  <h2>Where the strokes went</h2>
+  <div class="legend"><span class="l">strokes lost</span><span class="g">strokes gained</span>
+    <span style="margin-left:auto">shared scale across all rounds</span></div>
+  <div class="card event"><div class="ehead">Quest 2026 · Week 28 · Shadow Ridge CC</div>
+    <div class="round">
+      <div class="rhead">
+        <div><span class="rtag">Round 1</span>
+          <span class="rmeta">17 holes · gross 68</span></div>
+        <div class="rtot"><span class="sgval neg">-11.5</span>
+          <span class="rtotl">SG total</span></div>
+      </div>
+      <div class="sgchart"><div class="sgrow"><div class="sglabel">Off the tee</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:63.90%;width:22.10%"></span></div><div class="sgval neg">-3.2</div></div><div class="sgrow"><div class="sglabel">Approach</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:71.23%;width:14.78%"></span></div><div class="sgval neg">-2.1</div></div><div class="sgrow"><div class="sglabel">Around green</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:66.48%;width:19.53%"></span></div><div class="sgval neg">-2.8</div></div><div class="sgrow"><div class="sglabel">Putting</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:68.71%;width:17.30%"></span></div><div class="sgval neg">-2.5</div></div></div>
+      <div class="sgread">Tee-to-green -8.1 · putting
+        -2.5, -1 penalty.</div>
+    </div>
+    <div class="round">
+      <div class="rhead">
+        <div><span class="rtag">Round 2</span>
+          <span class="rmeta">18 holes · gross 79</span></div>
+        <div class="rtot"><span class="sgval neg">-18.2</span>
+          <span class="rtotl">SG total</span></div>
+      </div>
+      <div class="sgchart"><div class="sgrow"><div class="sglabel">Off the tee</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:49.37%;width:36.64%"></span></div><div class="sgval neg">-5.2</div></div><div class="sgrow"><div class="sglabel">Approach</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:83.84%;width:2.17%"></span></div><div class="sgval neg">-0.3</div></div><div class="sgrow"><div class="sglabel">Around green</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:53.97%;width:32.03%"></span></div><div class="sgval neg">-4.6</div></div><div class="sgrow"><div class="sglabel">Putting</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:43.46%;width:42.54%"></span></div><div class="sgval neg">-6.1</div></div></div>
+      <div class="sgread">Tee-to-green -10.1 · putting
+        -6.1, -2 penalty.</div>
+    </div></div><div class="card event"><div class="ehead">Blue Ridge Open</div>
+    <div class="round">
+      <div class="rhead">
+        <div><span class="rtag">Round</span>
+          <span class="rmeta">18 holes · gross 110</span></div>
+        <div class="rtot"><span class="sgval neg">-36.3</span>
+          <span class="rtotl">SG total</span></div>
+      </div>
+      <div class="sgchart"><div class="sgrow"><div class="sglabel">Off the tee</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:50.48%;width:35.52%"></span></div><div class="sgval neg">-5.1</div></div><div class="sgrow"><div class="sglabel">Approach</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:8.17%;width:77.83%"></span></div><div class="sgval neg">-11.1</div></div><div class="sgrow"><div class="sglabel">Around green</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill gain" style="left:86.01%;width:1.32%"></span></div><div class="sgval pos">+0.2</div></div><div class="sgrow"><div class="sglabel">Putting</div><div class="track"><span class="zero" style="left:86.01%"></span><span class="fill loss" style="left:7.00%;width:79.01%"></span></div><div class="sgval neg">-11.3</div></div></div>
+      <div class="sgread">Tee-to-green -16.0 · putting
+        -11.3, -9 penalty.</div>
+    </div></div>
+
+  <h2>Shot quality &mdash; 436 swings owned</h2>
+  <p class="muted" style="margin:-4px 2px 14px">Pulled from SwingNerds
+    (10 sessions). This is the launch-monitor half &mdash;
+    it has no shot positions, so it can&rsquo;t produce strokes gained, but it shows
+    how the ball actually flew.</p>
+  <div class="card tablewrap">
+    <table>
+      <thead><tr><th>Distance</th><th>Shots</th><th>Ball&nbsp;spd</th><th>Carry</th>
+        <th>Apex</th><th>Backspin</th><th>Launch</th><th>Lateral</th></tr></thead>
+      <tbody><tr><td class="dist">0-30y (short game)</td><td>2</td><td>46.1</td><td>18.0</td><td>0.1</td><td>—</td><td>15.0</td><td>—</td></tr><tr><td class="dist">30-75y (wedge)</td><td>22</td><td>43.4</td><td>63.5</td><td>11.2</td><td>4768</td><td>23.1</td><td>8.4</td></tr><tr><td class="dist">75-125y</td><td>73</td><td>56.5</td><td>103.4</td><td>11.1</td><td>6283</td><td>20.2</td><td>8.3</td></tr><tr><td class="dist">125-175y</td><td>41</td><td>57.1</td><td>154.1</td><td>20.0</td><td>4472</td><td>14.1</td><td>17.4</td></tr><tr><td class="dist">175-225y</td><td>79</td><td>73.2</td><td>198.7</td><td>22.1</td><td>3799</td><td>12.6</td><td>21.6</td></tr><tr><td class="dist">225y+ (driver)</td><td>3</td><td>97.3</td><td>230.9</td><td>15.3</td><td>3238</td><td>9.2</td><td>32.8</td></tr></tbody>
+    </table>
+  </div>
+
+  <h2>How the data got here</h2>
+  <div class="card">
+    <p style="margin:0 0 14px">SGT&rsquo;s scorecard is a JavaScript app that shows
+      scores but hides the shot data. Capturing the page&rsquo;s network traffic
+      surfaced three <em>public, unauthenticated</em> endpoints &mdash; the shot
+      fragment carries every lie and distance-to-hole:</p>
+    <div class="flow">
+      <span class="node">/scorecard/&hellip;/indv</span><span class="arrow">&middot;</span>
+      <span class="node">/indv/stats</span><span class="arrow">&middot;</span>
+      <span class="node">/indv/shots &larr; positions</span>
+    </div>
+    <p style="margin:14px 0 0">From positions, strokes gained falls out of one
+      identity: per-shot SG telescopes, so each hole&rsquo;s total is exactly
+      <code>E(tee, length) &minus; score</code>. That holds even when SGT drops a
+      stroke &mdash; penalties surface as a labelled residual (the Blue Ridge round
+      had 9), and the engine asserts the identity on every hole.</p>
+  </div>
+
+  <div class="foot">
+    <strong>Method honesty.</strong> Baseline: Broadie 2011 (<em>Interfaces</em>
+    Table&nbsp;9) + <em>Putts&nbsp;Gained</em>, PGA Tour ShotLink. Putting, approach and
+    around-green use measured distances. Off-the-tee &amp; round totals are optimistic
+    upper bounds &mdash; SGT gives no hole yardage, so tee-to-pin length is reconstructed
+    as travelled&nbsp;+&nbsp;remaining (&ge; true length on offline drives). SGT&rsquo;s own
+    putt counts are unreliable and were re-derived from shot positions.
+    <br><br>Toolkit: <code>bpo/projects/golf-swingnerds</code> &middot; data in
+    <code>~/ark/golf</code> &middot; TODO-186.
+  </div>
+</main>
+</body>
+</html>

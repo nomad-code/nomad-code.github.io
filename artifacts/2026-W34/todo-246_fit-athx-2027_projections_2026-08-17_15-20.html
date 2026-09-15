@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mild buys one place · 2027 projections · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--base:#8a949c;--mild:#a9863f;--solid:#176b78;--agg:#b85339}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1020px,calc(100% - 36px));margin:auto;padding:40px 0 58px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(38px,6.4vw,68px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:15ch;margin:16px 0}
+h1 em{color:var(--agg);font-weight:400}
+.lede{max-width:72ch;font-size:17px;line-height:1.62;color:#43534a}
+.method{border-left:4px solid #c59a45;padding:14px 17px;background:#f8f1df;border-radius:0 12px 12px 0;line-height:1.55;margin:22px 0;font-size:14px}
+.paths{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0}
+.p{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.p:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
+.p.b{--c:var(--base)}.p.m{--c:var(--mild)}.p.s{--c:var(--solid)}.p.a{--c:var(--agg)}
+.pn{font:700 10px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.place{font:750 40px/1 Georgia,serif;letter-spacing:-.03em;margin:8px 0 2px}
+.pts{font:700 11px ui-monospace,monospace;color:var(--muted)}
+.pd{color:var(--muted);font-size:12.5px;line-height:1.55;margin-top:9px;border-top:1px solid var(--line);padding-top:9px}
+h2{font:700 25px/1.1 Georgia,serif;margin:36px 0 12px}
+.note{color:var(--muted);margin:-6px 0 15px;max-width:76ch;line-height:1.5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font-size:13px;font-weight:700}
+td{font:700 15px Georgia,serif}
+td.mild{color:var(--mild)}td.solid{color:var(--solid)}td.agg{color:var(--agg)}td.now{color:var(--muted)}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:24px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ul{margin:0;padding-left:18px;line-height:1.65;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+@media(max-width:820px){.paths{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.paths{grid-template-columns:1fr}}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · projections to CPH 2027 · ~11.5 months</div>
+<h1>Mild buys<br><em>one place.</em></h1>
+<p class="lede">Three paths from Copenhagen 2026 (13th of 16, 41 points) to Copenhagen 2027 at the same venue. Each one is dropped into the real 2026 ATHX Pro · Male pair fields — 210 pair-event rows, 10 events — and re-ranked the way the site scores it.</p>
+<div class="method"><b>Why trust it:</b> fed our actual CPH scores, the simulator returns the actual result — 41 points, 13th of 16, Strength 16/16 · Endurance 11/17 · MetCon X 14/17. The projections use the same machinery.</div>
+<section class="paths">
+<article class="p b"><div class="pn">As raced · Aug 2026</div><div class="place">13<span style="font-size:19px;color:#65736b">/16</span></div><div class="pts">41 PTS · 17th in a season-median field</div><div class="pd">649 KG · 9.837 KM · 20:28</div></article>
+<article class="p m"><div class="pn">Mild · keep showing up</div><div class="place">12<span style="font-size:19px;color:#65736b">/16</span></div><div class="pts">37 PTS · 15th season-median</div><div class="pd">721 KG · 10.040 KM · 19:28<br>+1.3 KG/mo on squat &amp; deadlift</div></article>
+<article class="p s"><div class="pn">Solid · a real strength block</div><div class="place">10<span style="font-size:19px;color:#65736b">/16</span></div><div class="pts">29 PTS · 9th season-median</div><div class="pd">808 KG · 10.260 KM · 17:58<br>+3.0 KG/mo on squat &amp; deadlift</div></article>
+<article class="p a"><div class="pn">Aggressive · strength is the job</div><div class="place">5<span style="font-size:19px;color:#65736b">/16</span></div><div class="pts">20 PTS · 4th season-median</div><div class="pd">897 KG · 10.550 KM · 15:58<br>+4.8 KG/mo on squat &amp; deadlift</div></article>
+</section>
+<h2>What each path asks of each of you</h2>
+<p class="note">Brendan / Chris. Endurance moves stay small on purpose — the run is already the only above-median score, so the row takes the larger share.</p>
+<div class="panel"><table><thead><tr><th>Block</th><th>Now</th><th>Mild</th><th>Solid</th><th>Aggressive</th></tr></thead><tbody>
+<tr><th>1RM strict press</th><td class="now">57 / 72</td><td class="mild">63 / 78</td><td class="solid">69 / 84</td><td class="agg">77 / 90</td></tr>
+<tr><th>3RM back squat</th><td class="now">110 / 110</td><td class="mild">125 / 125</td><td class="solid">145 / 145</td><td class="agg">165 / 160</td></tr>
+<tr><th>5RM deadlift</th><td class="now">145 / 155</td><td class="mild">160 / 170</td><td class="solid">180 / 185</td><td class="agg">200 / 205</td></tr>
+<tr><th>Endurance run</th><td class="now">2.421 / 2.000</td><td class="mild">2.47 / 2.04</td><td class="solid">2.52 / 2.08</td><td class="agg">2.59 / 2.14</td></tr>
+<tr><th>Endurance row</th><td class="now">2.552 / 2.864</td><td class="mild">2.62 / 2.91</td><td class="solid">2.68 / 2.98</td><td class="agg">2.76 / 3.06</td></tr>
+<tr><th>MetCon X (team)</th><td class="now">20:28</td><td class="mild">19:28</td><td class="solid">17:58</td><td class="agg">15:58</td></tr>
+</tbody></table></div>
+<h2>The price of a rank</h2>
+<p class="note">Team totals across all 2026 Pro · Male pairs (n=209). Not a prediction — the toll booth.</p>
+<div class="panel"><table><thead><tr><th>Metric</th><th>Ours</th><th>Top half</th><th>Top third</th><th>Top quarter</th></tr></thead><tbody>
+<tr><th>Strength total</th><td class="agg">649 KG</td><td>803 KG</td><td>843 KG</td><td>860 KG</td></tr>
+<tr><th>3RM back squat</th><td class="agg">220 KG</td><td>290 KG</td><td>310 KG</td><td>320 KG</td></tr>
+<tr><th>5RM deadlift</th><td class="agg">300 KG</td><td>356 KG</td><td>370 KG</td><td>380 KG</td></tr>
+<tr><th>1RM strict press</th><td class="agg">129 KG</td><td>154 KG</td><td>160 KG</td><td>165 KG</td></tr>
+<tr><th>Endurance total</th><td class="solid">9.837 KM</td><td>9.828 KM</td><td>10.092 KM</td><td>10.211 KM</td></tr>
+<tr><th>MetCon X</th><td class="agg">20:28</td><td>17:18</td><td>15:46</td><td>15:12</td></tr>
+</tbody></table></div>
+<div class="rules"><h3>The four things this says</h3><ul>
+<li><b>Endurance is already top-half.</b> 9.837 KM against a 9.828 line. Strength needs +154 KG to stand on the same line — that gap is the season.</li>
+<li><b>Incremental strength is wasted work.</b> The field is dense: +72 KG (mild) moves the strength rank 16th → 15th and the finish 13th → 12th.</li>
+<li><b>Solid is the honest target.</b> +3 KG/month on squat and deadlift — one focused block per quarter — is 10th of 16 and top-half of a season-median field.</li>
+<li><b>Aggressive doubles = median singles.</b> Brendan at 77 / 165 / 200 is exactly the singles Pro 34-&amp;-under median; today's 57 / 110 / 145 is bottom 5% of that board (185th, 182nd, 182nd of 190).</li>
+</ul></div>
+<footer>Fields: 2026 ATHX Pro · Male pairs, 210 pair-event rows / 10 events · singles board: 190 Pro · Male · 34 &amp; under rows · record: <code>projects/fit-athx/projections-2027.md</code> · sim validated against the real CPH 2026 result</footer>
+</main></body></html>
