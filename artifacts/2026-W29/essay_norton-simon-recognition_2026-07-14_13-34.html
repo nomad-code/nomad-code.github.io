@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>Seeking Recognition · Norton Simon Museum</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    /* Chart-scope palette — grove hues chroma-snapped to pass the six checks
+       (validated in the exemplar: L-band ✓ · chroma ✓ · protan ΔE 40.8 ✓ · contrast ✓) */
+    :root {
+      --c-obj:    #0d8f7f;  /* the objects / "art speaks for itself"   (forest, snapped) */
+      --c-obj-bg: #d9ece7;
+      --c-simon:  #c4501f;  /* Simon's inward founding vision · 1974   (warn, snapped)   */
+      --c-simon-bg:#f6e3da;
+      --c-aud:    #3a92ba;  /* the audience / community / experience   (found, snapped)  */
+      --c-aud-bg: #e3eef2;
+      --c-era:    #a07c15;  /* time / anniversary accents              (amber, snapped)  */
+      --c-era-bg: #f3ead2;
+      --c-lime:   #84c241;  /* ONE moment: recognition granted / the label              */
+    }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    main { max-width: 1060px; margin: 0 auto; padding: 30px 24px 80px; }
+
+    /* ---------- header ---------- */
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--c-simon); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-simon); }
+    h1 { font:800 clamp(34px, 5.4vw, 54px)/1.02 var(--font-display); letter-spacing:-.025em;
+      color:var(--ink); margin:16px 0 6px; }
+    h1 em { font-style:normal; color:var(--c-simon); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 14px; }
+    .sub a { color: var(--forest-d); text-decoration-color: var(--line); }
+    .lede { max-width:70ch; font:400 16.5px/1.6 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:640; }
+
+    .pullquote { margin:26px 0 6px; padding:18px 22px; border-left:3px solid var(--c-simon);
+      background:var(--card); border-radius: 0 var(--r-panel) var(--r-panel) 0;
+      box-shadow: var(--shadow-card); }
+    .pullquote p { font:500 clamp(17px, 2.2vw, 21px)/1.45 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .pullquote cite { display:block; margin-top:8px; font:500 11.5px/1 var(--font-mono);
+      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 58px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(22px,3vw,28px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .k h2 em { font-style: normal; color: var(--forest-d); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:18px; }
+    .blurb b { color:var(--ink); font-weight:620; }
+
+    /* ---------- legend ---------- */
+    .lgd { display:flex; gap:16px 22px; flex-wrap:wrap; margin:14px 2px 0;
+      font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+    .lgd span { display:inline-flex; align-items:center; gap:8px; }
+    .lgd i { width:11px; height:11px; border-radius:50%; }
+
+    /* ---------- shared figure chrome ---------- */
+    .fig { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); overflow:hidden; }
+    .fig svg { display:block; width:100%; height:auto; }
+    .fig-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:11px 18px 14px; border-top:1px solid var(--line); }
+    .fig-cap b { color:var(--forest-d); font-weight:600; }
+    .hx { font:500 10.5px var(--font-mono); letter-spacing:.06em; text-transform:uppercase; fill:var(--muted); }
+    .hx.strong { fill:var(--ink); font-weight:600; }
+
+    /* ---------- hero toggle ---------- */
+    .hero-card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-hero); overflow:hidden; }
+    .era-bar { display:flex; align-items:center; gap:10px; padding:14px 16px 0; flex-wrap:wrap; }
+    .era-btn { font:600 12px/1 var(--font-mono); letter-spacing:.04em; padding:9px 14px;
+      border-radius:var(--r-pill); border:1px solid var(--line); background:var(--bg);
+      color:var(--muted); cursor:pointer; transition:all .35s var(--ease); }
+    .era-btn:hover { border-color:var(--faint); color:var(--ink); }
+    .era-btn[aria-pressed="true"] { color:#fff; }
+    #btn-simon[aria-pressed="true"] { background:var(--c-simon); border-color:var(--c-simon); }
+    #btn-triad[aria-pressed="true"] { background:var(--c-aud); border-color:var(--c-aud); }
+    .era-note { flex:1 1 300px; min-width:240px; position:relative; height:34px; }
+    .era-note p { position:absolute; inset:0; display:flex; align-items:center;
+      font:400 13px/1.35 var(--font-ui); color:var(--muted); opacity:0;
+      transition:opacity .7s var(--ease); }
+    .era-note p b { color:var(--ink); font-weight:620; margin-right:5px; }
+    [data-model="simon"] .n-sim, [data-model="triad"] .n-tri { opacity:1; }
+
+    #gSimon, #gTriad { transition: opacity 1s var(--ease); }
+    [data-model="triad"] #gSimon { opacity:.1; }
+    [data-model="simon"] #gTriad { opacity:.1; }
+    .hero-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:12px 18px 15px; border-top:1px solid var(--line); }
+    .hero-cap b { color:var(--forest-d); font-weight:600; }
+
+    /* ---------- stat tiles ---------- */
+    .tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:12px; margin-top:16px; }
+    .tile { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px 14px; box-shadow:var(--shadow-card); position:relative; overflow:hidden;
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease), border-color .3s; }
+    .tile:hover { transform:translateY(-3px); box-shadow:var(--shadow-lift); border-color:#d6ddd7; }
+    .tile::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tc,var(--forest)); }
+    .tile .v { font:800 34px/1 var(--font-display); letter-spacing:-.03em; color:var(--ink);
+      font-variant-numeric:tabular-nums; }
+    .tile .v .pre { font:700 20px/1 var(--font-display); color:var(--tc,var(--forest)); margin-right:1px; }
+    .tile .v small { font:700 17px/1 var(--font-display); color:var(--tc,var(--forest)); margin-left:2px; }
+    .tile .l { margin-top:6px; font:500 11px/1.45 var(--font-mono); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- ICOM split bar ---------- */
+    .split { margin-top:16px; }
+    .split .bar { display:flex; gap:2px; height:34px; border-radius:8px; overflow:hidden; }
+    .split .seg { display:flex; align-items:center; padding:0 14px; font:700 12px var(--font-mono);
+      color:#fff; letter-spacing:.03em; min-width:0; white-space:nowrap; }
+    .split .seg.simon { background:var(--c-simon); flex:5; }
+    .split .seg.aud  { background:var(--c-aud);  flex:4; }
+    .split .cap { display:flex; justify-content:space-between; gap:10px; margin-top:8px;
+      font:500 11px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- operations ledger ---------- */
+    .ops { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+    .op { grid-column: span 2; background:var(--card); border:1.5px solid var(--oc-bd);
+      border-radius:var(--r-tile); padding:14px 15px; position:relative; outline:none;
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease); }
+    .op:hover, .op:focus-visible { transform:translateY(-3px); box-shadow:var(--shadow-lift); z-index:3; }
+    .op .nm { font:700 15px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--ink); }
+    .op .vc { display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+      font:600 9.5px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--oc); background:var(--oc-bg); border:1px solid var(--oc-bd);
+      padding:5px 8px; border-radius:var(--r-chip); }
+    .op .vc i { width:7px; height:7px; border-radius:50%; background:var(--oc); }
+    .op p { margin-top:9px; font:400 12px/1.5 var(--font-ui); color:var(--body); }
+    .op p b { color:var(--ink); font-weight:620; }
+    .op p i { color:var(--muted); }
+    .op.obj  { --oc:var(--c-obj);   --oc-bg:var(--c-obj-bg);   --oc-bd:#b9d9d0; }
+    .op.aud  { --oc:var(--c-aud);   --oc-bg:var(--c-aud-bg);   --oc-bd:#cfe1e7; }
+    .op.rec  { --oc:#5a8a1e;        --oc-bg:#e8f3d8;           --oc-bd:#bcd9a0; }
+
+    /* ---------- draw-in ---------- */
+    .draw { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); }
+    .shown .draw { animation: drawin 2.2s var(--ease) forwards; animation-delay: var(--d,0ms); }
+    @keyframes drawin { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .draw { stroke-dasharray:none; stroke-dashoffset:0; } }
+
+    /* ---------- scholars / witnesses ---------- */
+    .chorus { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px; }
+    .voice { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:9px; }
+    .voice .who { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .voice .who b { font:700 14.5px/1.1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .voice .role { font:600 9.5px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); color:var(--vr); background:var(--vr-bg); flex:none; }
+    .voice q { font:400 13.5px/1.55 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .voice q::before, .voice q::after { color:var(--vr); font-weight:700; }
+    .voice .note { font:400 11.5px/1.5 var(--font-ui); color:var(--muted); margin-top:auto; }
+    .voice.field    { --vr:var(--c-aud);   --vr-bg:var(--c-aud-bg); }
+    .voice.house    { --vr:var(--c-simon); --vr-bg:var(--c-simon-bg); }
+    .voice.object   { --vr:var(--c-obj);   --vr-bg:var(--c-obj-bg); }
+    .voice.path     { --vr:#5a8a1e; --vr-bg:#e8f3d8; }
+
+    /* ---------- table ---------- */
+    details.tbl { margin-top:18px; border:1px solid var(--line); border-radius:var(--r-panel);
+      background:var(--card); overflow:hidden; }
+    details.tbl summary { cursor:pointer; padding:13px 18px; font:600 12.5px var(--font-mono);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--forest-d); list-style:none; }
+    details.tbl summary::-webkit-details-marker { display:none; }
+    details.tbl summary::before { content:"▸ "; }
+    details.tbl[open] summary::before { content:"▾ "; }
+    details.tbl table { width:100%; border-collapse:collapse; font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    details.tbl th, details.tbl td { text-align:left; padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+    details.tbl th { font:600 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+    details.tbl td:first-child { font-family:var(--font-mono); font-weight:500; color:var(--ink); white-space:nowrap; }
+
+    /* ---------- closing ---------- */
+    .close-quote { margin:22px 0 0; padding:20px 24px; border-radius:var(--r-card);
+      background:linear-gradient(150deg,#15201d,#0c5a50 130%); color:#eef3ef;
+      box-shadow:var(--shadow-hero); }
+    .close-quote p { font:500 clamp(16px,2.1vw,20px)/1.5 var(--font-display); letter-spacing:-.01em; }
+    .close-quote p em { font-style:normal; color:var(--lime-b); }
+    .close-quote cite { display:block; margin-top:10px; font:500 11px var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:#9fb5ac; font-style:normal; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      font:400 11.5px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.02em; }
+    footer a { color:var(--muted); text-decoration-color:var(--line); }
+
+    /* ---------- tooltip ---------- */
+    .tip { position:fixed; z-index:60; max-width:290px; background:var(--ink); color:#f0f4f1;
+      font:400 12.5px/1.5 var(--font-ui); padding:10px 13px; border-radius:10px;
+      box-shadow:var(--shadow-lift); pointer-events:none; opacity:0;
+      transform:translateY(5px); transition:opacity .18s var(--ease), transform .18s var(--ease); }
+    .tip.on { opacity:1; transform:none; }
+    .tip b { color:#fff; font-weight:640; }
+
+    @media (max-width: 720px) {
+      .ops { grid-template-columns:repeat(2,1fr); }
+      .op { grid-column: span 1 !important; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ================= header ================= -->
+  <header class="mo-reveal">
+    <div class="eyebrow"><span class="mo-dot"></span> essay reading · look sharp! · nolan patrick · 2025-12-07</div>
+    <h1>Seeking <em>recognition</em></h1>
+    <p class="sub">The Norton Simon Museum at fifty — how it uses its own history to raise its profile. The essay's argument, drawn.
+      Source: <a href="https://nolanpatrick.substack.com/p/seeking-recognition-at-the-norton">nolanpatrick.substack.com</a></p>
+    <p class="lede">Half a century after Norton Simon took the helm of the failing Pasadena Art Museum, his institution
+      still <b>can't shake the feeling it's being overlooked</b>. Its restored tile exterior was unveiled as a
+      “reintroduction”; people, its own VP admits, drive past without recognizing it. Patrick's essay argues the
+      50th-anniversary wall labels — new “meta-annotations” documenting how the museum <b>acquires, curates, exhibits,
+      conserves, researches, and programs</b> — are the reconciliation of Simon's founding faith (that art speaks for
+      itself) with a museum world now measured by <b>audience and experience</b>.</p>
+    <div class="pullquote">
+      <p>“The thing people often drive by without recognizing is the museum itself.”</p>
+      <cite>Leslie Denk · VP, External Affairs — the recognition problem</cite>
+    </div>
+    <div class="lgd" role="list">
+      <span role="listitem"><i style="background:var(--c-obj)"></i> the objects · “art speaks for itself”</span>
+      <span role="listitem"><i style="background:var(--c-simon)"></i> Simon's inward vision · 1974</span>
+      <span role="listitem"><i style="background:var(--c-aud)"></i> audience &amp; experience · 2022</span>
+      <span role="listitem"><i style="background:var(--c-lime)"></i> recognition granted <em style="font-style:normal;color:var(--faint)">(once)</em></span>
+    </div>
+  </header>
+
+  <!-- ================= 01 · the museum you drive past ================= -->
+  <section id="overlooked">
+    <div class="k mo-reveal"><span class="n">01</span><h2>The museum you <em>drive past</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">In 1999 the <i>New York Times</i> found passersby on Colorado Boulevard
+      could “hardly see the <b>low-profile, tile-clad walls for the trees</b>.” Twenty-five years on, the diagnosis holds:
+      a museum with an encyclopedic collection and no marquee, screened by its own landscaping. The anniversary tile
+      restoration was framed not as maintenance but as a <b>reintroduction</b> — a bid to be seen. Watch the attention
+      stream past.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="passObserve">
+      <svg viewBox="0 0 960 300" role="img"
+        aria-label="A long, low, tile-clad museum building set behind a row of trees along a boulevard. A stream of attention flows left to right along the road; most of it passes by, only a couple of marks peel off toward the entrance. One band of restored tiles glints — the reintroduction.">
+        <!-- restored tile band label -->
+        <text class="hx strong" x="120" y="118" fill="var(--forest-d)">restored tile exterior · the “reintroduction”, 2025</text>
+
+        <!-- the building: long, low, tile-clad -->
+        <rect x="120" y="126" width="720" height="86" rx="4" fill="#fff" stroke="var(--ink)" stroke-width="1.85" opacity=".9"/>
+        <!-- restored (lime) top course -->
+        <rect x="120" y="126" width="720" height="18" fill="var(--c-lime)" opacity=".22"/>
+        <!-- tile grid -->
+        <g stroke="var(--vz-faint)" stroke-width="1">
+          <line x1="120" y1="144" x2="840" y2="144"/>
+          <line x1="120" y1="162" x2="840" y2="162"/>
+          <line x1="120" y1="180" x2="840" y2="180"/>
+          <line x1="120" y1="196" x2="840" y2="196"/>
+          <line x1="156" y1="126" x2="156" y2="212"/><line x1="192" y1="126" x2="192" y2="212"/>
+          <line x1="228" y1="126" x2="228" y2="212"/><line x1="264" y1="126" x2="264" y2="212"/>
+          <line x1="300" y1="126" x2="300" y2="212"/><line x1="336" y1="126" x2="336" y2="212"/>
+          <line x1="372" y1="126" x2="372" y2="212"/><line x1="408" y1="126" x2="408" y2="212"/>
+          <line x1="444" y1="126" x2="444" y2="212"/><line x1="516" y1="126" x2="516" y2="212"/>
+          <line x1="552" y1="126" x2="552" y2="212"/><line x1="588" y1="126" x2="588" y2="212"/>
+          <line x1="624" y1="126" x2="624" y2="212"/><line x1="660" y1="126" x2="660" y2="212"/>
+          <line x1="696" y1="126" x2="696" y2="212"/><line x1="732" y1="126" x2="732" y2="212"/>
+          <line x1="768" y1="126" x2="768" y2="212"/><line x1="804" y1="126" x2="804" y2="212"/>
+        </g>
+        <!-- entrance gap -->
+        <rect x="456" y="170" width="48" height="42" fill="var(--c-obj)" opacity=".1"/>
+        <line x1="456" y1="170" x2="456" y2="212" stroke="var(--c-obj)" stroke-width="1.85"/>
+        <line x1="504" y1="170" x2="504" y2="212" stroke="var(--c-obj)" stroke-width="1.85"/>
+        <line x1="456" y1="170" x2="504" y2="170" stroke="var(--c-obj)" stroke-width="1.85"/>
+        <text class="hx" x="480" y="230" text-anchor="middle" fill="var(--forest-d)">entrance</text>
+
+        <!-- the screening trees -->
+        <g>
+          <g><line x1="180" y1="212" x2="180" y2="150" stroke="var(--c-obj)" stroke-width="2.4" stroke-linecap="round"/>
+             <circle cx="180" cy="132" r="30" fill="var(--c-obj)" opacity=".16"/><circle cx="180" cy="132" r="30" fill="none" stroke="var(--c-obj)" stroke-width="1.85" opacity=".55"/></g>
+          <g><line x1="300" y1="212" x2="300" y2="150" stroke="var(--c-obj)" stroke-width="2.4" stroke-linecap="round"/>
+             <circle cx="300" cy="130" r="32" fill="var(--c-obj)" opacity=".16"/><circle cx="300" cy="130" r="32" fill="none" stroke="var(--c-obj)" stroke-width="1.85" opacity=".55"/></g>
+          <g><line x1="620" y1="212" x2="620" y2="150" stroke="var(--c-obj)" stroke-width="2.4" stroke-linecap="round"/>
+             <circle cx="620" cy="128" r="33" fill="var(--c-obj)" opacity=".16"/><circle cx="620" cy="128" r="33" fill="none" stroke="var(--c-obj)" stroke-width="1.85" opacity=".55"/></g>
+          <g><line x1="740" y1="212" x2="740" y2="150" stroke="var(--c-obj)" stroke-width="2.4" stroke-linecap="round"/>
+             <circle cx="740" cy="132" r="30" fill="var(--c-obj)" opacity=".16"/><circle cx="740" cy="132" r="30" fill="none" stroke="var(--c-obj)" stroke-width="1.85" opacity=".55"/></g>
+        </g>
+
+        <!-- the boulevard -->
+        <line class="vz-gridline" x1="30" y1="262" x2="930" y2="262"/>
+        <path class="vz-path flow" style="--vz-c:var(--faint);--vz-dash:24" stroke-dasharray="14 12" d="M40,262 L920,262"/>
+        <text class="hx" x="40" y="284">colorado boulevard — the attention stream</text>
+
+        <!-- attention flowing past (ink motes) -->
+        <circle class="vz-mote" r="3.4" style="--vz-c:var(--ink);--mote-path:path('M40,262 L920,262');--d:0s"/>
+        <circle class="vz-mote" r="3.4" style="--vz-c:var(--ink);--mote-path:path('M40,262 L920,262');--d:-2.2s"/>
+        <circle class="vz-mote" r="3.4" style="--vz-c:var(--ink);--mote-path:path('M40,262 L920,262');--d:-4.4s"/>
+        <circle class="vz-mote" r="3.4" style="--vz-c:var(--ink);--mote-path:path('M40,262 L920,262');--d:-6.6s"/>
+        <circle class="vz-mote" r="2.6" style="--vz-c:var(--ink);--mote-path:path('M40,262 L920,262');--d:-1.1s"/>
+        <!-- the few that peel off toward the entrance -->
+        <path class="vz-path" style="--vz-c:var(--c-obj)" stroke-dasharray="2 7" d="M470,258 L480,232"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-obj);--mote-path:path('M470,262 C476,246 480,240 480,232');--d:-1.6s"/>
+      </svg>
+      <div class="fig-cap"><b>Qualitative by design:</b> the essay reports a felt condition — a museum overlooked despite
+        its holdings — not a footfall count. The trees and low walls are literal (the 1999 <i>Times</i>); the drifting
+        attention is the essay's argument, drawn.</div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:60ms">
+        <div class="v"><span data-count="50">0</span><small>+ yrs</small></div>
+        <div class="l">since Simon took the helm · the anniversary</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-obj); --d:140ms">
+        <div class="v"><span class="pre">$</span><span data-count="4.2">0</span><small> M</small></div>
+        <div class="l">Dieric Bouts' <i>Resurrection</i>, acquired 1980</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-aud); --d:220ms">
+        <div class="v"><span data-count="6">0</span></div>
+        <div class="l">operations the new labels document</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-simon); --d:300ms">
+        <div class="v"><span data-count="0">0</span></div>
+        <div class="l">“Mission” pages on the site — only fidelity to its namesake's vision</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · two ways to be a museum ================= -->
+  <section id="models">
+    <div class="k mo-reveal"><span class="n">02</span><h2>Two ways to <em>be a museum</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Simon believed in art's self-evidence — that objects convey their own
+      meaning. Taking over in 1975, he <b>canceled community outreach and docent programs</b>; the museum still vows
+      fidelity to “its namesake's vision.” But the field moved. ICOM's <b>2022</b> redefinition added the “participation
+      of communities” and “varied experiences” to a mandate that, in <b>1974</b>, was only to acquire, conserve,
+      research, communicate and exhibit. Toggle the two models; watch who the museum lets into the room.</p>
+
+    <div class="hero-card mo-reveal" style="--d:140ms" data-model="simon" id="heroCard">
+      <div class="era-bar">
+        <button class="era-btn" id="btn-simon" aria-pressed="true">1975 · art speaks for itself</button>
+        <button class="era-btn" id="btn-triad" aria-pressed="false">2025 · the museum speaks too</button>
+        <div class="era-note" aria-live="polite">
+          <p class="n-sim"><b>Self-evidence.</b> The object radiates meaning to a lone viewer; the museum steps back, outreach cancelled.</p>
+          <p class="n-tri"><b>The triad.</b> A label lights the museum up — museum, visitor and object now in a two-way relationship.</p>
+        </div>
+      </div>
+      <figure aria-hidden="false" role="img"
+        aria-label="Two models. Model one, Simon 1975: a glowing artwork radiates meaning to a single visitor while the museum is drawn faint and stepped back. Model two, 2025: the museum, visitor and object form a triangle with two-way connections, and a lime label sits at the centre making the relationship visible.">
+        <svg viewBox="0 0 960 380">
+          <line class="vz-gridline" x1="40" y1="322" x2="920" y2="322"/>
+
+          <!-- ============ MODEL: Simon, art speaks for itself ============ -->
+          <g id="gSimon">
+            <!-- object, radiant -->
+            <g stroke="var(--c-obj)" stroke-width="1.85" stroke-linecap="round" opacity=".5">
+              <line x1="480" y1="66" x2="480" y2="44"/>
+              <line x1="526" y1="80" x2="550" y2="64"/>
+              <line x1="434" y1="80" x2="410" y2="64"/>
+              <line x1="536" y1="120" x2="562" y2="120"/>
+              <line x1="424" y1="120" x2="398" y2="120"/>
+            </g>
+            <rect x="436" y="78" width="88" height="84" rx="5" fill="#fff" stroke="var(--c-obj)" stroke-width="1.85"/>
+            <rect x="447" y="89" width="66" height="62" fill="var(--c-obj)" opacity=".09"/>
+            <path d="M451,149 L472,120 L487,134 L502,111 L509,149 Z" fill="var(--c-obj)" opacity=".22"/>
+            <path d="M451,149 L472,120 L487,134 L502,111 L509,149" fill="none" stroke="var(--c-obj)" stroke-width="1.6" stroke-linejoin="round"/>
+            <text class="hx strong" x="480" y="182" text-anchor="middle">the object</text>
+
+            <!-- one-way arrow object -> visitor -->
+            <path class="vz-path flow draw" style="--vz-c:var(--c-obj);--vz-dash:14;--len:360" d="M528,142 C624,152 694,192 756,236"/>
+            <polyline points="742,224 762,242 738,246" fill="none" stroke="var(--c-obj)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-obj);--mote-path:path('M528,142 C624,152 694,192 756,236');--d:0s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-obj);--mote-path:path('M528,142 C624,152 694,192 756,236');--d:-3s"/>
+
+            <!-- visitor -->
+            <circle cx="792" cy="238" r="12" fill="none" stroke="var(--ink)" stroke-width="1.85"/>
+            <path d="M768,292 Q792,256 816,292" fill="none" stroke="var(--ink)" stroke-width="1.85" stroke-linecap="round"/>
+            <text class="hx strong" x="792" y="312" text-anchor="middle">the visitor</text>
+
+            <!-- museum, stepped back / faint -->
+            <g opacity=".32">
+              <polyline points="120,238 172,212 224,238" fill="none" stroke="var(--c-simon)" stroke-width="1.85" stroke-dasharray="3 6" stroke-linejoin="round"/>
+              <g stroke="var(--c-simon)" stroke-width="1.85" stroke-dasharray="3 6" stroke-linecap="round">
+                <line x1="134" y1="238" x2="134" y2="290"/><line x1="153" y1="238" x2="153" y2="290"/>
+                <line x1="172" y1="238" x2="172" y2="290"/><line x1="191" y1="238" x2="191" y2="290"/>
+                <line x1="210" y1="238" x2="210" y2="290"/><line x1="116" y1="292" x2="228" y2="292"/>
+              </g>
+              <text class="hx" x="172" y="312" text-anchor="middle" fill="var(--c-simon)">the museum, stepped back</text>
+            </g>
+          </g>
+
+          <!-- ============ MODEL: the triad ============ -->
+          <g id="gTriad">
+            <!-- edges, two-way flow -->
+            <path class="vz-path flow draw" style="--vz-c:var(--c-aud);--vz-dash:14;--len:300;--d:200ms" d="M212,222 C300,172 384,150 448,138"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-aud);--vz-dash:14;--len:300;--d:320ms" d="M512,138 C588,150 676,178 748,224"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-aud);--vz-dash:14;--len:540;--d:440ms" d="M220,268 L742,268"/>
+            <!-- motes both directions -->
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-aud);--mote-path:path('M212,222 C300,172 384,150 448,138');--d:-0.6s"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-aud);--mote-path:path('M748,224 C676,178 588,150 512,138');--d:-2.4s"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-aud);--mote-path:path('M742,268 L220,268');--d:-1.5s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-aud);--mote-path:path('M220,268 L742,268');--d:-4.1s"/>
+
+            <!-- museum (solid) -->
+            <polyline points="120,238 172,212 224,238" fill="none" stroke="var(--forest-d)" stroke-width="1.85" stroke-linejoin="round"/>
+            <g stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round">
+              <line x1="134" y1="238" x2="134" y2="290"/><line x1="153" y1="238" x2="153" y2="290"/>
+              <line x1="172" y1="238" x2="172" y2="290"/><line x1="191" y1="238" x2="191" y2="290"/>
+              <line x1="210" y1="238" x2="210" y2="290"/><line x1="116" y1="292" x2="228" y2="292"/>
+            </g>
+            <text class="hx strong" x="172" y="312" text-anchor="middle">the museum</text>
+
+            <!-- object (solid) -->
+            <rect x="436" y="78" width="88" height="84" rx="5" fill="#fff" stroke="var(--c-obj)" stroke-width="1.85"/>
+            <rect x="447" y="89" width="66" height="62" fill="var(--c-obj)" opacity=".09"/>
+            <path d="M451,149 L472,120 L487,134 L502,111 L509,149" fill="none" stroke="var(--c-obj)" stroke-width="1.6" stroke-linejoin="round"/>
+            <text class="hx strong" x="480" y="72" text-anchor="middle">the object</text>
+
+            <!-- visitor (solid) -->
+            <circle cx="792" cy="238" r="12" fill="none" stroke="var(--ink)" stroke-width="1.85"/>
+            <path d="M768,292 Q792,256 816,292" fill="none" stroke="var(--ink)" stroke-width="1.85" stroke-linecap="round"/>
+            <text class="hx strong" x="792" y="312" text-anchor="middle">the visitor</text>
+
+            <!-- the lime label at the centre: the meta-annotation making the triad visible -->
+            <g>
+              <path d="M480,214 L250,232" stroke="var(--c-lime)" stroke-width="1.4" stroke-dasharray="2 6" opacity=".75"/>
+              <path d="M480,214 L480,166" stroke="var(--c-lime)" stroke-width="1.4" stroke-dasharray="2 6" opacity=".75"/>
+              <path d="M480,214 L720,232" stroke="var(--c-lime)" stroke-width="1.4" stroke-dasharray="2 6" opacity=".75"/>
+              <circle class="vz-ring orbit" cx="480" cy="214" r="16" style="--vz-c:var(--c-lime)"/>
+              <circle class="vz-dot breathe" cx="480" cy="214" r="6" style="--vz-c:var(--c-lime)"/>
+              <text class="hx strong" x="480" y="256" text-anchor="middle" fill="var(--forest-d)">the label</text>
+            </g>
+          </g>
+        </svg>
+      </figure>
+      <div class="hero-cap"><b>What the labels change:</b> not the building, not the collection — the <i>relationship</i>.
+        Simon's museum let the art carry the whole burden of meaning; the anniversary meta-annotations add the museum's
+        own voice, disclosing the decisions behind what hangs where.</div>
+    </div>
+
+    <div class="split mo-reveal" style="--d:80ms" role="img"
+      aria-label="A split bar comparing the 1974 ICOM museum definition, under which Simon's museum was born, with the 2022 redefinition it is now catching up to. Weights are illustrative, not measured.">
+      <div class="bar">
+        <div class="seg simon">1974 · acquire · conserve · research · communicate · exhibit</div>
+        <div class="seg aud">2022 · + community participation · + varied experiences</div>
+      </div>
+      <div class="cap"><span>the definition the museum was born under</span><span>the one it is catching up to</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · six things a museum does ================= -->
+  <section id="ledger">
+    <div class="k mo-reveal"><span class="n">03</span><h2>Six things <em>a museum does</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The new labels are a working ledger: each documents a real operation with a
+      real object. Five of the six still point <b>inward, at the object</b> — how it was bought, hung, shown, cleaned,
+      studied. Only the last turns fully <b>outward, toward people</b>. Hover an operation for its case.</p>
+
+    <div class="ops">
+      <div class="op obj mo-reveal" tabindex="0" style="--d:60ms" data-tip="&lt;b&gt;Acquisition.&lt;/b&gt; Dieric Bouts' &lt;i&gt;Resurrection&lt;/i&gt; bought for $4.2M in 1980; a 19th-century Delhi chess set marked the 1971 South Asian turn; van Gogh's &lt;i&gt;Portrait of a Peasant&lt;/i&gt; came with the 1975 founding.">
+        <div class="nm">Acquisition</div>
+        <span class="vc"><i></i>object-facing</span>
+        <p>Bouts' <b><i>Resurrection</i></b>, $4.2M · 1980. <i>van Gogh &amp; a Delhi chess set.</i></p>
+      </div>
+      <div class="op aud mo-reveal" tabindex="0" style="--d:120ms" data-tip="&lt;b&gt;Curation.&lt;/b&gt; The Bodhisattva Maitreya set in a dramatically lit niche (1999); a 2013 video; a 2019 map installation; a frame change for Modigliani's portrait of Jeanne Hébuterne.">
+        <div class="nm">Curation</div>
+        <span class="vc"><i></i>audience-facing</span>
+        <p>Maitreya <b>dramatically lit</b> · 1999. <i>Modigliani's new frame.</i></p>
+      </div>
+      <div class="op aud mo-reveal" tabindex="0" style="--d:180ms" data-tip="&lt;b&gt;Exhibition.&lt;/b&gt; Renoir's &lt;i&gt;The Pont des Arts&lt;/i&gt; loaned to the Musée d'Orsay for its 2015 'love locks' show; Monet's &lt;i&gt;The Artist's Garden at Vétheuil&lt;/i&gt; reunited with the National Gallery of Art in 2018.">
+        <div class="nm">Exhibition</div>
+        <span class="vc"><i></i>audience-facing</span>
+        <p>Renoir to the <b>Musée d'Orsay</b> · 2015. <i>Monet reunion, 2018.</i></p>
+      </div>
+      <div class="op obj mo-reveal" tabindex="0" style="--d:240ms" data-tip="&lt;b&gt;Conservation.&lt;/b&gt; Zurbarán treated in 2008, Isack van Ostade in 2015, and Cranach's &lt;i&gt;Adam and Eve&lt;/i&gt; in 2024 — the labels open the lab to view.">
+        <div class="nm">Conservation</div>
+        <span class="vc"><i></i>object-facing</span>
+        <p>Cranach's <b><i>Adam and Eve</i></b> · 2024. <i>Zurbarán '08, van Ostade '15.</i></p>
+      </div>
+      <div class="op obj mo-reveal" tabindex="0" style="--d:300ms" data-tip="&lt;b&gt;Research.&lt;/b&gt; A 2010 Matisse lecture; a 2021 technical analysis of Watteau's &lt;i&gt;Reclining Nude&lt;/i&gt; — scholarship surfaced onto the wall.">
+        <div class="nm">Research</div>
+        <span class="vc"><i></i>object-facing</span>
+        <p>Watteau's <b><i>Reclining Nude</i></b> analysed · 2021. <i>Matisse lecture, 2010.</i></p>
+      </div>
+      <div class="op rec mo-reveal" tabindex="0" style="--d:360ms" data-tip="&lt;b&gt;Public programming — the outward turn.&lt;/b&gt; Mount St. Mary's nursing students studied Dujardin's &lt;i&gt;Denial of Peter&lt;/i&gt; (2019–20); a Covid meditation on Buddha Shakyamuni (2020); and Ross Duffin's 2018 viral resemblance to van Bijlert's &lt;i&gt;Mars Vigilant&lt;/i&gt;.">
+        <div class="nm">Public programming</div>
+        <span class="vc"><i></i>people-facing · the turn</span>
+        <p>Nursing students &amp; <b>Dujardin</b> · a viral resemblance · a meditation.</p>
+      </div>
+    </div>
+
+    <p class="note mo-reveal" style="--d:420ms; font:400 12.5px/1.55 var(--font-ui); color:var(--muted); margin-top:14px;">
+      The structure underneath is unchanged: Western chronology upstairs, the South Asian collection for comparison
+      downstairs. The labels don't rearrange the rooms — they narrate the work.</p>
+  </section>
+
+  <!-- ================= 04 · the witnesses ================= -->
+  <section id="chorus">
+    <div class="k mo-reveal"><span class="n">04</span><h2>The <em>witnesses</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick assembles the case from the museum's own people, the press, the
+      field's governing body, and the visitors who wandered in — a documentary chorus for an institution learning to
+      speak.</p>
+    <div class="chorus">
+      <div class="voice house mo-reveal" style="--d:60ms">
+        <div class="who"><b>Leslie Denk</b><span class="role">the museum</span></div>
+        <q>The thing people often drive by without recognizing is the museum itself.</q>
+        <div class="note">VP of External Affairs, framing the tile restoration as a “reintroduction.”</div>
+      </div>
+      <div class="voice house mo-reveal" style="--d:120ms">
+        <div class="who"><b>New York Times, 1999</b><span class="role">the press</span></div>
+        <q>…the low-profile, tile-clad walls, hardly seen for the trees.</q>
+        <div class="note">Joseph Giovannini — the overlooked-ness is a quarter-century old, and structural.</div>
+      </div>
+      <div class="voice field mo-reveal" style="--d:180ms">
+        <div class="who"><b>ICOM, 2022</b><span class="role">the field</span></div>
+        <q>…the participation of communities, offering varied experiences.</q>
+        <div class="note">Martina Lehmannová's redefinition — what a museum is now expected to be, beyond the 1974 mandate.</div>
+      </div>
+      <div class="voice object mo-reveal" style="--d:240ms">
+        <div class="who"><b>Pratapaditya Pal</b><span class="role">the collection</span></div>
+        <q>…the South Asian turn that a museum of Simon's era did not have to make.</q>
+        <div class="note">Research fellow behind the 1971 acquisitions the labels now foreground.</div>
+      </div>
+      <div class="voice object mo-reveal" style="--d:300ms">
+        <div class="who"><b>Ross Duffin</b><span class="role">the visitor</span></div>
+        <q>…his own face, staring back from van Bijlert's <i>Mars Vigilant</i>.</q>
+        <div class="note">A 2018 visitor whose resemblance to the painting went viral — the museum's most-recognized moment came from a person, not the art.</div>
+      </div>
+      <div class="voice path mo-reveal" style="--d:360ms">
+        <div class="who"><b>Nolan Patrick</b><span class="role">the argument</span></div>
+        <q>At fifty, the museum no longer relies on the art to speak for itself.</q>
+        <div class="note">The labels reveal a triadic, interactive relationship — and, he argues, a museum harder to overlook.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · no longer speaking for itself ================= -->
+  <section id="triad">
+    <div class="k mo-reveal"><span class="n">05</span><h2>No longer <em>speaking for itself</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Simon's faith was that the object alone could carry meaning. The
+      anniversary labels quietly retire that faith. They don't restructure the museum; they make its daily
+      decision-making visible, and in doing so bind three parties into one continuous loop — <b>museum, visitor,
+      object</b>. The way to stop being overlooked, the essay concludes, is to be seen <i>working</i>.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="loopObserve">
+      <svg viewBox="0 0 960 300" role="img"
+        aria-label="The three parties — object at top, museum lower left, visitor lower right — held in one continuous interactive loop. A lime label node sits on the loop, the meta-annotation that ties them together. Marks travel the loop in both directions.">
+        <line class="vz-gridline" x1="30" y1="266" x2="930" y2="266"/>
+
+        <!-- the continuous interactive loop -->
+        <path id="loopPath" class="vz-path flow draw" style="--vz-c:var(--c-aud);--vz-dash:14;--len:1180;opacity:.6"
+              d="M480,58 C300,58 214,150 250,206 C288,264 430,246 480,246 C532,246 674,264 712,206 C748,150 662,58 480,58 Z"/>
+
+        <!-- object (top) -->
+        <rect x="446" y="40" width="72" height="70" rx="5" fill="#fff" stroke="var(--c-obj)" stroke-width="1.85"/>
+        <rect x="455" y="49" width="54" height="52" fill="var(--c-obj)" opacity=".09"/>
+        <path d="M459,99 L476,74 L489,86 L502,66 L507,99" fill="none" stroke="var(--c-obj)" stroke-width="1.6" stroke-linejoin="round"/>
+        <text class="hx strong" x="482" y="34" text-anchor="middle">the object</text>
+
+        <!-- museum (lower left) -->
+        <polyline points="182,238 232,214 282,238" fill="none" stroke="var(--forest-d)" stroke-width="1.85" stroke-linejoin="round"/>
+        <g stroke="var(--forest-d)" stroke-width="1.85" stroke-linecap="round">
+          <line x1="196" y1="238" x2="196" y2="256"/><line x1="214" y1="238" x2="214" y2="256"/>
+          <line x1="232" y1="238" x2="232" y2="256"/><line x1="250" y1="238" x2="250" y2="256"/>
+          <line x1="268" y1="238" x2="268" y2="256"/>
+        </g>
+        <text class="hx strong" x="232" y="284" text-anchor="middle">the museum</text>
+
+        <!-- visitor (lower right) -->
+        <circle cx="712" cy="224" r="12" fill="none" stroke="var(--ink)" stroke-width="1.85"/>
+        <path d="M688,258 Q712,226 736,258" fill="none" stroke="var(--ink)" stroke-width="1.85" stroke-linecap="round"/>
+        <text class="hx strong" x="712" y="284" text-anchor="middle">the visitor</text>
+
+        <!-- travelling marks, both directions -->
+        <circle class="vz-mote" r="3.2" style="--vz-c:var(--c-aud);--mote-path:path('M480,58 C300,58 214,150 250,206 C288,264 430,246 480,246 C532,246 674,264 712,206 C748,150 662,58 480,58');--d:0s"/>
+        <circle class="vz-mote" r="3.2" style="--vz-c:var(--c-obj);--mote-path:path('M480,58 C662,58 748,150 712,206 C674,264 532,246 480,246 C430,246 288,264 250,206 C214,150 300,58 480,58');--d:-3.4s"/>
+        <circle class="vz-mote" r="2.6" style="--vz-c:var(--c-aud);--mote-path:path('M480,58 C300,58 214,150 250,206 C288,264 430,246 480,246 C532,246 674,264 712,206 C748,150 662,58 480,58');--d:-6.1s"/>
+
+        <!-- the single lime moment: the label on the loop -->
+        <g>
+          <circle class="vz-ring orbit" cx="480" cy="246" r="16" style="--vz-c:var(--c-lime)"/>
+          <circle class="vz-dot breathe" cx="480" cy="246" r="6.5" style="--vz-c:var(--c-lime)"/>
+          <text class="hx strong" x="480" y="292" text-anchor="middle" fill="var(--forest-d)">the label · what ties them</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>The resolution:</b> the meta-annotation isn't a new wing or a rehang — it's the connective
+        tissue. Naming its own work is how the museum enters the relationship it had left to the objects.</div>
+    </div>
+
+    <div class="close-quote mo-reveal" style="--d:220ms">
+      <p>At fifty, the museum <em>no longer relies on the art to speak for itself</em> — the labels reveal a
+        <em>triadic, interactive relationship between museum, visitor, and object</em>, and only through that
+        connection does it become harder to overlook.</p>
+      <cite>Nolan Patrick · Look Sharp! · conclusion (condensed)</cite>
+    </div>
+
+    <details class="tbl mo-reveal" style="--d:280ms">
+      <summary>data table · the meta-annotation ledger &amp; the recognition timeline</summary>
+      <table>
+        <thead><tr><th>Operation</th><th>Object / case</th><th>Year</th><th>Faces</th></tr></thead>
+        <tbody>
+          <tr><td>Acquisition</td><td>Dieric Bouts, <i>The Resurrection</i> ($4.2M)</td><td>1980</td><td>object</td></tr>
+          <tr><td>Acquisition</td><td>van Gogh, <i>Portrait of a Peasant</i> · Delhi chess set (1971)</td><td>1975</td><td>object</td></tr>
+          <tr><td>Curation</td><td>Bodhisattva Maitreya, dramatically lit niche · Modigliani reframe</td><td>1999</td><td>audience</td></tr>
+          <tr><td>Exhibition</td><td>Renoir, <i>The Pont des Arts</i> → Musée d'Orsay “love locks”</td><td>2015</td><td>audience</td></tr>
+          <tr><td>Exhibition</td><td>Monet, <i>The Artist's Garden at Vétheuil</i> → National Gallery reunion</td><td>2018</td><td>audience</td></tr>
+          <tr><td>Conservation</td><td>Cranach, <i>Adam and Eve</i> · Zurbarán (2008) · van Ostade (2015)</td><td>2024</td><td>object</td></tr>
+          <tr><td>Research</td><td>Watteau, <i>Reclining Nude</i> analysis · Matisse lecture (2010)</td><td>2021</td><td>object</td></tr>
+          <tr><td>Public programming</td><td>Mount St. Mary's nursing students &amp; Dujardin, <i>Denial of Peter</i></td><td>2019–20</td><td>people</td></tr>
+          <tr><td>Public programming</td><td>Ross Duffin's viral resemblance to van Bijlert, <i>Mars Vigilant</i></td><td>2018</td><td>people</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Year</th><th>Recognition milestone (per the essay)</th></tr></thead>
+        <tbody>
+          <tr><td>1974</td><td>ICOM definition: acquire, conserve, research, communicate, exhibit — for education, study, enjoyment</td></tr>
+          <tr><td>1975</td><td>Simon takes over the Pasadena Art Museum; outreach &amp; docent programs cancelled; van Gogh acquired</td></tr>
+          <tr><td>1980</td><td>Bouts' <i>Resurrection</i> acquired for $4.2M</td></tr>
+          <tr><td>1999</td><td><i>NYT</i>: “low-profile, tile-clad walls,” hardly seen for the trees</td></tr>
+          <tr><td>2022</td><td>ICOM redefinition adds community participation &amp; varied experiences</td></tr>
+          <tr><td>2025</td><td>50th anniversary: tile “reintroduction” + new meta-annotation wall labels</td></tr>
+          <tr><td>Dec 2025</td><td>Patrick's essay: the labels reconcile Simon's vision with the audience turn</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    <span>bpo · essay reading · norton simon museum, seeking recognition</span>
+    <span><a href="https://nolanpatrick.substack.com/p/seeking-recognition-at-the-norton">source essay</a> · built 2026-07-14 13:34 utc</span>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- staggered reveals ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.mo-reveal').forEach(function (el) { io.observe(el); });
+  if (reduce) document.querySelectorAll('.mo-reveal').forEach(function (el) { el.classList.add('shown'); });
+
+  /* ---- count-up tiles (integer + one-decimal) ---- */
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, raw = el.getAttribute('data-count');
+      var target = parseFloat(raw), dec = (raw.indexOf('.') >= 0) ? 1 : 0;
+      if (reduce) { el.textContent = target.toFixed(dec); return; }
+      var t0 = null, dur = 1300;
+      function step(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = (target * ease).toFixed(dec);
+        if (p < 1) requestAnimationFrame(step); else el.textContent = target.toFixed(dec);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+
+  /* ---- model toggle: auto-alternate until the reader takes over ---- */
+  var card = document.getElementById('heroCard');
+  var bSim = document.getElementById('btn-simon');
+  var bTri = document.getElementById('btn-triad');
+  var userDrove = false, timer = null;
+  function setModel(m) {
+    card.setAttribute('data-model', m);
+    bSim.setAttribute('aria-pressed', m === 'simon');
+    bTri.setAttribute('aria-pressed', m === 'triad');
+  }
+  bSim.addEventListener('click', function () { userDrove = true; clearInterval(timer); setModel('simon'); });
+  bTri.addEventListener('click', function () { userDrove = true; clearInterval(timer); setModel('triad'); });
+  if (!reduce) {
+    timer = setInterval(function () {
+      if (userDrove) return clearInterval(timer);
+      setModel(card.getAttribute('data-model') === 'simon' ? 'triad' : 'simon');
+    }, 5500);
+  }
+
+  /* ---- one tooltip for all [data-tip] ---- */
+  var tip = document.getElementById('tip');
+  function showTip(el) {
+    tip.innerHTML = el.getAttribute('data-tip');
+    tip.classList.add('on');
+    tip.setAttribute('aria-hidden', 'false');
+    var r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+    var x = r.left + r.width / 2 - tr.width / 2;
+    x = Math.max(10, Math.min(x, window.innerWidth - tr.width - 10));
+    var y = r.top - tr.height - 12;
+    if (y < 8) y = r.bottom + 12;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.classList.remove('on'); tip.setAttribute('aria-hidden', 'true'); }
+  document.querySelectorAll('[data-tip]').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { showTip(el); });
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('focus', function () { showTip(el); });
+    el.addEventListener('blur', hideTip);
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

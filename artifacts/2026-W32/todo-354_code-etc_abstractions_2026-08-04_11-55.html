@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3f0e7">
+  <title>TODO-354 · Context Routing Architecture</title>
+  <meta name="description" content="Architecture audit connecting Git/BPO semantic routing, Linear workflow identity, Codex runtime identity, and artifacts as human-readable projections.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <style>
+    :root{
+      --paper:#f3f0e7;--ink:#17211d;--muted:#68736d;--line:#cfd6d0;
+      --forest:#174a38;--forest2:#0d3025;--mint:#b9ee7c;--lime:#dcff9e;
+      --coral:#e77759;--amber:#f0c94a;--sky:#b9dfe5;--white:#fffdf8;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.48 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 28px,1160px);margin:auto;padding:44px 0 64px}.mono,.eyebrow,.badge,.ref,.layer b,.truth b,.finding strong,footer{font-family:var(--mono)}
+    .eyebrow{display:flex;align-items:center;gap:10px;color:var(--forest);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.eyebrow::before{width:22px;height:6px;border-radius:9px;background:var(--mint);content:""}
+    h1{max-width:1050px;margin:16px 0 18px;font:900 clamp(46px,8vw,90px)/.9 var(--mono);letter-spacing:-.075em}h1 span{color:var(--coral)}
+    .lede{max-width:880px;margin:0;color:var(--muted);font-size:21px}.status-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.badge{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--white);font-size:11px;font-weight:850}.badge.green{border-color:var(--forest);background:var(--forest);color:white}.badge.green i{color:var(--mint);font-style:normal}
+    .section{margin-top:52px}.section h2{margin:0 0 8px;font:850 34px/1 var(--mono);letter-spacing:-.05em}.section>.intro{max-width:830px;margin:0 0 20px;color:var(--muted)}
+    .truths{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.truth{min-height:210px;padding:20px;border:1px solid var(--line);border-radius:20px;background:var(--white);position:relative;overflow:hidden}.truth::after{position:absolute;right:-30px;bottom:-45px;width:120px;height:120px;border:20px solid #00000008;border-radius:50%;content:""}.truth:nth-child(1){background:var(--forest);color:white;border-color:var(--forest)}.truth:nth-child(1) p{color:#dce8e1}.truth:nth-child(2){border-top:7px solid var(--amber)}.truth:nth-child(3){border-top:7px solid var(--coral)}.truth:nth-child(4){border-top:7px solid var(--sky)}.truth .num{color:var(--muted);font:900 11px var(--mono);letter-spacing:.08em}.truth:nth-child(1) .num{color:var(--mint)}.truth b{display:block;margin:18px 0 8px;font-size:22px;letter-spacing:-.04em}.truth p{margin:0;color:var(--muted);font-size:14px}.truth small{display:block;margin-top:20px;color:var(--muted);font:750 11px var(--mono)}.truth:nth-child(1) small{color:#bcd0c4}
+    .route-shell{display:grid;grid-template-columns:1fr 60px 1.05fr;gap:12px;align-items:stretch}.address,.resolution{padding:22px;border:1px solid var(--line);border-radius:20px;background:var(--white)}.address{display:grid;align-content:center;background:var(--forest2);color:white}.address .ref{font-size:clamp(21px,3.3vw,37px);font-weight:900;letter-spacing:-.055em}.address .ref span{color:var(--mint)}.address p{margin:13px 0 0;color:#c9d8d0}.arrow{display:grid;place-items:center;color:var(--forest);font:900 32px var(--mono)}
+    .fields{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.field{padding:10px 12px;border-radius:12px;background:#eef0e9}.field span{display:block;color:var(--muted);font:750 10px var(--mono);text-transform:uppercase;letter-spacing:.08em}.field b{font:850 15px var(--mono)}.field.wide{grid-column:1/-1;background:#e4f1df}.field.wide b{color:var(--forest)}
+    .stack{padding:18px;border-radius:22px;background:var(--forest2);color:white}.envelope{margin-bottom:12px;padding:13px 16px;border:1px dashed var(--mint);border-radius:14px;background:#ffffff0a;color:var(--lime);font:850 13px var(--mono)}.layers{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.layer{min-height:174px;padding:17px;border-radius:15px;background:#ffffff0d;border:1px solid #ffffff18}.layer:nth-child(2){background:#ffffff16}.layer:nth-child(3){background:#ffffff20}.layer:nth-child(4){background:var(--white);color:var(--ink)}.layer .n{color:var(--mint);font:900 11px var(--mono)}.layer:nth-child(4) .n{color:var(--coral)}.layer b{display:block;margin:12px 0 8px;font-size:18px;line-height:1.05}.layer p{margin:0;color:#cbdad2;font-size:13px}.layer:nth-child(4) p{color:var(--muted)}
+    .findings{display:grid;grid-template-columns:1fr 1fr;gap:10px}.finding{display:grid;grid-template-columns:auto 1fr;gap:13px;padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--white)}.sev{width:35px;height:35px;display:grid;place-items:center;border-radius:10px;background:#ffe1d7;color:#8c301e;font:900 11px var(--mono)}.finding:nth-child(n+3) .sev{background:#fff0b7;color:#6c5100}.finding strong{display:block;margin:1px 0 5px;font-size:15px}.finding p{margin:0;color:var(--muted);font-size:13px}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.code,.decision{padding:20px;border-radius:20px}.code{background:#111b17;color:#dce8e1;overflow:auto}.code pre{margin:0;font:13px/1.6 var(--mono);white-space:pre-wrap}.code .k{color:var(--mint)}.code .s{color:#f3b89f}.decision{border:1px solid var(--line);background:var(--white)}.decision h3{margin:0 0 13px;font:850 20px var(--mono);letter-spacing:-.04em}.rule{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.rule:first-of-type{border-top:0}.dot{flex:0 0 25px;height:25px;display:grid;place-items:center;border-radius:50%;background:var(--forest);color:var(--mint);font:900 10px var(--mono)}.rule p{margin:1px 0 0;color:var(--muted);font-size:13px}
+    .final{padding:25px;border-radius:22px;background:var(--coral);color:#26140f}.final .quote{max-width:950px;margin:0;font:900 clamp(26px,4vw,46px)/1.04 var(--mono);letter-spacing:-.055em}.final p{max-width:840px;margin:14px 0 0;color:#5f2d21}
+    footer{display:flex;justify-content:space-between;gap:16px;margin-top:44px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}footer a{color:var(--forest);text-decoration:none}
+    @media(max-width:900px){.truths,.layers{grid-template-columns:1fr 1fr}.route-shell{grid-template-columns:1fr}.arrow{transform:rotate(90deg);min-height:32px}.findings,.split{grid-template-columns:1fr}}
+    @media(max-width:580px){main{width:min(100% - 20px,1160px);padding-top:28px}.lede{font-size:17px}.truths,.layers{grid-template-columns:1fr}.truth{min-height:0}.section{margin-top:38px}.section h2{font-size:28px}.fields{grid-template-columns:1fr}.field.wide{grid-column:auto}.status-row{gap:6px}.badge{font-size:10px}.final{padding:20px}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / TODO-354 · architecture audit</div>
+  <h1>One route.<br><span>Four truths.</span></h1>
+  <p class="lede">A clean boundary between Git-backed personal context, Linear workflow, Codex execution, and the artifact a human actually reads—wrapped around a provider-neutral capability stack.</p>
+  <div class="status-row">
+    <span class="badge green"><i>●</i> read-only audit complete</span>
+    <span class="badge">world · BPO</span><span class="badge">area · CODE</span>
+    <span class="badge">context · etc/abstractions</span><span class="badge">mode · RIFF</span>
+  </div>
+
+  <section class="section">
+    <h2>The four truth surfaces</h2>
+    <p class="intro">Each system owns one kind of identity. The architecture fails when a convenient title, URL, or folder is allowed to impersonate another system’s truth.</p>
+    <div class="truths">
+      <article class="truth"><span class="num">01 · SEMANTIC</span><b>Git / BPO</b><p>Ontology, durable context, source relationships, routing records, provenance.</p><small>MUST NOT OWN · live task state</small></article>
+      <article class="truth"><span class="num">02 · WORKFLOW</span><b>Linear</b><p>Issue identity, lifecycle, journal, project and initiative membership.</p><small>MUST NOT OWN · runtime host</small></article>
+      <article class="truth"><span class="num">03 · EXECUTION</span><b>Codex</b><p>Running task ID, host, approvals, tools, environment, execution state.</p><small>MUST NOT OWN · durable semantics</small></article>
+      <article class="truth"><span class="num">04 · PROJECTION</span><b>Artifact</b><p>Human-readable snapshot with audience, source references, timestamp and renderer.</p><small>MUST NOT OWN · canonical state</small></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Resolve an address into typed context</h2>
+    <p class="intro">The slug is a compact query. It should resolve into fields; it should not become the only place those dimensions exist.</p>
+    <div class="route-shell">
+      <article class="address"><div class="ref"><span>CODE</span>/etc-abstractions</div><p>riff-strava-m5-i17pm</p></article>
+      <div class="arrow">→</div>
+      <article class="resolution"><div class="fields">
+        <div class="field"><span>world</span><b>bpo</b></div><div class="field"><span>area</span><b>code</b></div>
+        <div class="field"><span>context</span><b>etc</b></div><div class="field"><span>topic</span><b>abstractions</b></div>
+        <div class="field"><span>mode</span><b>riff</b></div><div class="field"><span>host subject</span><b>m5 · i17pm</b></div>
+        <div class="field wide"><span>intent</span><b>audit context routing and provider boundaries</b></div>
+      </div></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Four execution layers, one route envelope</h2>
+    <p class="intro">Semantic resolution happens before the workflow chooses tools. The provider stack stays portable because it receives typed context rather than parsing personal shorthand itself.</p>
+    <div class="stack">
+      <div class="envelope">ROUTE CONTEXT · world · area · context · topic · mode · intent · runtime preference</div>
+      <div class="layers">
+        <article class="layer"><span class="n">01</span><b>Workflows</b><p>plan · code · review · deploy · meet · summarize · archive</p></article>
+        <article class="layer"><span class="n">02</span><b>Capability ports</b><p>LLM · Tasks · Code · Collaborate · Store · Runtime</p></article>
+        <article class="layer"><span class="n">03</span><b>Control plane</b><p>provider selection · identity registry · policy · synchronization</p></article>
+        <article class="layer"><span class="n">04</span><b>Adapters</b><p>Linear · GitHub · OpenAI · Slack · Drive · GCP · iCloud</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Audit findings</h2>
+    <p class="intro">The model is sound. These are the boundaries that prevent it from turning into a generic integration layer with BPO semantics leaking everywhere.</p>
+    <div class="findings">
+      <article class="finding"><span class="sev">P0</span><div><strong>World is absent from ResourceRef</strong><p>Make BPO / Found / Dhamma mandatory before provider and account. This is a privacy boundary, not metadata.</p></div></article>
+      <article class="finding"><span class="sev">P1</span><div><strong>Semantic route mixes orthogonal axes</strong><p><code>code-m5</code> is a useful alias, but must resolve to area=code, host=m5, role=worker rather than become canonical truth.</p></div></article>
+      <article class="finding"><span class="sev">P1</span><div><strong>Gateway is too broad</strong><p>Keep policy, provider selection, identity mapping and sync in the control plane; push auth, retries, pagination and rate limits into adapters.</p></div></article>
+      <article class="finding"><span class="sev">P1</span><div><strong>Runtime and artifacts are missing capabilities</strong><p>Deploy needs an execution boundary. Artifacts require projection provenance beyond a generic object-store write.</p></div></article>
+      <article class="finding"><span class="sev">P2</span><div><strong>One parent is not a knowledge graph</strong><p>Use typed multi-edges for context, runtime, evidence and policy. Git supplies history; metadata supplies graph meaning.</p></div></article>
+      <article class="finding"><span class="sev">P2</span><div><strong>Provider parity is imaginary</strong><p>Expose capability negotiation and explicit unsupported behavior; Linear initiatives and GitHub milestones are not interchangeable.</p></div></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Correct the common reference</h2>
+    <p class="intro">Resource identity is provider-native and world-fenced. Capability is how a caller reaches the resource—not part of the resource’s identity. Execution is a separate reference.</p>
+    <div class="split">
+      <article class="code"><pre><span class="k">type ResourceRef</span> = {
+  world: <span class="s">"bpo" | "found" | "dhamma"</span>;
+  provider: string;
+  account: string;
+  workspace?: string;
+  kind: string;
+  nativeId: string;
+  url?: string;
+  revision?: string;
+};
+
+<span class="k">type ExecutionRef</span> = {
+  host: string;
+  taskId?: string;
+  taskUrl?: string;
+  lane?: string;
+};</pre></article>
+      <article class="decision"><h3>Resolution laws</h3>
+        <div class="rule"><span class="dot">1</span><p>Resolve world before using any credential, provider, or task adapter.</p></div>
+        <div class="rule"><span class="dot">2</span><p>Resolve the longest known semantic prefix; return the remaining suffix as intent.</p></div>
+        <div class="rule"><span class="dot">3</span><p>Keep the Codex task ID as runtime identity even when the title carries a perfect slug.</p></div>
+        <div class="rule"><span class="dot">4</span><p>Publish artifacts as timestamped projections linked to Git revision and Linear issue.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section final">
+    <p class="quote">The prompt title is an address into the knowledge graph—not the graph, not the workflow, and not the running task.</p>
+    <p>Deterministic routing precedes fuzzy retrieval. Git owns durable meaning. Linear owns the loop. Codex owns execution. The artifact makes the joined state legible.</p>
+  </section>
+
+  <footer><span>TODO-354 · generated 2026-08-04 11:55 Z</span><span><a href="https://linear.app/nomad-code/issue/TODO-354/codeetc-abstractions">Linear journal</a> · source task 019fcb05…2348</span></footer>
+</main>
+</body>
+</html>

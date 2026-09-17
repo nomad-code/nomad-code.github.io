@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TODO-319 · device fleet handoff</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { color-scheme: light; }
+    body {
+      background: var(--bg); color: var(--body); font-family: var(--font-ui);
+      max-width: 980px; margin: 0 auto; padding: 48px 24px 72px; line-height: 1.55;
+    }
+    a { color: var(--forest-d); text-underline-offset: 3px; }
+    .eyebrow {
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+    }
+    h1 { color: var(--ink); font-size: clamp(32px, 6vw, 54px); line-height: 1.02; letter-spacing: -.045em; margin: 0 0 18px; }
+    .lede { font-size: 18px; max-width: 68ch; margin: 0 0 26px; }
+    .verdict {
+      background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--forest);
+      border-radius: 12px; padding: 19px 22px; margin-bottom: 38px;
+    }
+    .verdict strong { color: var(--forest-d); display: block; font-size: 16px; margin-bottom: 5px; }
+    .verdict p { margin: 0; }
+    h2.section {
+      color: var(--faint); border-bottom: 1px solid var(--line); padding-bottom: 8px;
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: .11em;
+      text-transform: uppercase; margin: 42px 0 16px;
+    }
+    .architecture {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: stretch;
+    }
+    .node {
+      background: var(--card); border: 1px solid var(--line); border-radius: 11px;
+      padding: 16px; min-height: 148px;
+    }
+    .node .tag { color: var(--muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+    .node h3 { color: var(--ink); font-size: 16px; margin: 7px 0 6px; }
+    .node p { font-size: 13px; margin: 0; }
+    .node.primary { border-color: var(--forest); background: var(--forest-bg); }
+    .node.primary h3 { color: var(--forest-d); }
+    .formula {
+      margin-top: 12px; padding: 12px 15px; background: var(--well); border: 1px solid var(--line);
+      border-radius: 10px; font-family: var(--font-mono); font-size: 13px; text-align: center;
+    }
+    .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 11px; background: var(--card); }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 13.5px; }
+    th, td { padding: 11px 13px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--muted); background: var(--well); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; }
+    .done { color: var(--forest-d); font-weight: 700; }
+    .carry { color: var(--amber); font-weight: 700; }
+    .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .fact { background: var(--card); border: 1px solid var(--line); border-radius: 11px; padding: 16px; }
+    .fact b { color: var(--ink); display: block; font-size: 20px; margin-bottom: 3px; }
+    .fact span { color: var(--muted); font-size: 12.5px; }
+    .scenario-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .scenario-tabs button {
+      appearance: none; cursor: pointer; border: 1px solid var(--line); border-radius: 999px;
+      background: var(--card); color: var(--body); padding: 9px 14px; font: 600 12px var(--font-ui);
+    }
+    .scenario-tabs button:hover { border-color: var(--forest); }
+    .scenario-tabs button[aria-selected="true"] { background: var(--forest); color: white; border-color: var(--forest); }
+    .scenario {
+      display: grid; grid-template-columns: 1fr 1.45fr; gap: 18px; background: var(--card);
+      border: 1px solid var(--line); border-radius: 12px; padding: 20px;
+    }
+    .scenario h3 { color: var(--ink); margin: 0 0 6px; font-size: 21px; }
+    .scenario p { margin: 0; }
+    .route { margin: 0; padding-left: 20px; }
+    .route li { margin-bottom: 7px; }
+    .route li:last-child { margin-bottom: 0; }
+    .rule {
+      margin-top: 14px; background: var(--found-bg); border: 1px solid var(--found-bd);
+      border-radius: 10px; padding: 13px 15px; color: var(--found-d); font-size: 13px;
+    }
+    .next {
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; background: var(--card);
+      border: 1px solid var(--line); border-radius: 12px; padding: 20px;
+    }
+    .next h3 { color: var(--ink); margin: 0 0 7px; }
+    .next p { margin: 0; }
+    .next ul { margin: 0; padding-left: 20px; }
+    footer { color: var(--faint); font-family: var(--font-mono); font-size: 11px; margin-top: 46px; }
+    @media (max-width: 760px) {
+      body { padding: 32px 17px 54px; }
+      .architecture { grid-template-columns: 1fr 1fr; }
+      .facts { grid-template-columns: 1fr; }
+      .scenario, .next { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 440px) {
+      .architecture { grid-template-columns: 1fr; }
+      .node { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="eyebrow">nomad-code / bpo · TODO-319 · closeout</div>
+  <h1>A device may be bare.<br>Its work must not be trapped.</h1>
+  <p class="lede">The fleet does not need identical disks. It needs a shared logical workspace:
+  Linear carries the task loop, Git carries durable graph state, M5 is the default executor,
+  and every Codex task remains explicitly host-local until it is handed off.</p>
+
+  <section class="verdict">
+    <strong>Outcome — architecture dialed; cutover drills remain</strong>
+    <p>M5 now has a clean canonical BPO route, recoverable pre-existing work, bounded Linear
+    transport, and a tested URL-only hydration path. The fleet control plane is published and
+    distinguishes required, optional, divergent, and unresolved state. Neither M3 nor M5 is
+    declared nukeable yet; physical-device, backup, security, and destructive recovery drills
+    continue in <a href="https://linear.app/nomad-code/issue/TODO-331/code-device-fleet-cutover-drills">TODO-331</a>.</p>
+  </section>
+
+  <h2 class="section">The logical workspace</h2>
+  <div class="architecture">
+    <article class="node">
+      <div class="tag">Loop middleware</div>
+      <h3>Linear</h3>
+      <p>Issue URL, prompt, journal, status, acceptance criteria. The phone can originate and steer work here.</p>
+    </article>
+    <article class="node">
+      <div class="tag">Graph middleware</div>
+      <h3>Git</h3>
+      <p>Repositories, commits, rescue branches, manifests, artifacts, and durable recovery provenance.</p>
+    </article>
+    <article class="node primary">
+      <div class="tag">Durable executor</div>
+      <h3>M5</h3>
+      <p>The always-available execution tier. It hydrates context from the middleware; it does not impersonate M3.</p>
+    </article>
+    <article class="node">
+      <div class="tag">Edge + controllers</div>
+      <h3>M3 + phones</h3>
+      <p>M3 is the fastest local edge when present. Phones steer. Host-native tasks stay on their originating host unless handed off.</p>
+    </article>
+  </div>
+  <div class="formula">logical parity = task loop (Linear) + durable graph (Git) + declared workspace manifest + explicit handoff</div>
+
+  <h2 class="section">Evidence landed</h2>
+  <div class="facts">
+    <div class="fact"><b>81 / 81</b><span>control-plane checks green across BPO and etc</span></div>
+    <div class="fact"><b>45 / 4 / 0</b><span>M5 doctor: pass / warning / fail after cleanup</span></div>
+    <div class="fact"><b>77 repos</b><span>4 core · 6 warm · 67 on-demand in the logical manifest</span></div>
+    <div class="fact"><b>6fd6bfd</b><span>published, gated TODO-329 control-plane artifact</span></div>
+    <div class="fact"><b>21926f6</b><span>bounded BPO Linear transport, tested on both Macs</span></div>
+    <div class="fact"><b>14859f6</b><span>M5 rescue branch preserving dirty work plus unique history</span></div>
+  </div>
+
+  <h2 class="section">Ticket closeout</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Issue</th><th>Resolved here</th><th>State</th><th>Carry-forward</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><a href="https://linear.app/nomad-code/issue/TODO-319/code-codex-m5-m3-phones">TODO-319</a></td>
+          <td>M5 canonical BPO hydration, rescue capsule/branch, device hierarchy, explicit task-vs-thread model.</td>
+          <td class="done">close</td>
+          <td>pairing and end-to-end phone cutover drills → TODO-331</td>
+        </tr>
+        <tr>
+          <td><a href="https://linear.app/nomad-code/issue/TODO-297/etc-codex-mobile-thread-catalog">TODO-297</a></td>
+          <td>One session store per host; supported app host catalog bridges discovery. Live title rename persisted.</td>
+          <td class="done">close</td>
+          <td>phone rename/list canary → TODO-331</td>
+        </tr>
+        <tr>
+          <td><a href="https://linear.app/nomad-code/issue/TODO-285/bpo-m5-resilience-audit">TODO-285</a></td>
+          <td>Resilience audit complete; redundant orphan keep-awake process removed; current posture measured.</td>
+          <td class="done">close</td>
+          <td>power, restore, security and off-host monitor drills → TODO-331</td>
+        </tr>
+        <tr>
+          <td><a href="https://linear.app/nomad-code/issue/TODO-302/code-m3-claude-handoff-to-m5">TODO-302</a></td>
+          <td>Linear+Git fresh-context handoff and M5 Found Claude route verified.</td>
+          <td class="done">close</td>
+          <td>personal Claude login on M5 → TODO-331</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section">Recovery lane explorer</h2>
+  <div class="scenario-tabs" role="tablist" aria-label="Recovery scenarios">
+    <button type="button" role="tab" aria-selected="true" data-scenario="m3">Lose M3</button>
+    <button type="button" role="tab" aria-selected="false" data-scenario="phone">Phone only</button>
+    <button type="button" role="tab" aria-selected="false" data-scenario="m5">Lose M5</button>
+    <button type="button" role="tab" aria-selected="false" data-scenario="airplane">Airplane</button>
+  </div>
+  <section class="scenario" aria-live="polite">
+    <div>
+      <div class="eyebrow" id="scenario-tier">M5 becomes primary</div>
+      <h3 id="scenario-title">Lose M3</h3>
+      <p id="scenario-summary">Continue from the durable runner without trying to copy M3's app database.</p>
+    </div>
+    <ol class="route" id="scenario-route">
+      <li>Open the Linear issue from i17pm.</li>
+      <li>Start or continue the matching M5 task at the same Git root/subdirectory.</li>
+      <li>Hydrate from Linear journal plus Git branch/commit; use native handoff when the task supports it.</li>
+      <li>Recover anything unpushed from the declared rescue capsule—not from live filesystem sync.</li>
+    </ol>
+  </section>
+  <div class="rule" id="scenario-rule"><strong>Invariant:</strong> no task may depend on a sleeping laptop's private database or unpushed worktree.</div>
+
+  <h2 class="section">What “nukeable” now means</h2>
+  <div class="next">
+    <div>
+      <h3>Recoverable, not mirrored</h3>
+      <p><code>~/dev</code> may differ physically between hosts. The manifest declares what is
+      core, warm, on-demand, or unresolved; <code>worldctl</code> audits and converges without
+      synchronizing live <code>.git</code> directories or Codex databases. A wipe is allowed only
+      after the recovery gate is green and a human explicitly approves it.</p>
+    </div>
+    <ul>
+      <li>Control plane: <code>etc@98e2d5d</code></li>
+      <li>Private manifest: <code>bpo@770afff</code></li>
+      <li><a href="https://nomad-code.github.io/todo-329_code-dev_fleet_control_plane_2026-07-31_11-18/">Open the control-plane artifact</a></li>
+      <li class="carry">Current truth: M3 and M5 still have recovery blockers.</li>
+    </ul>
+  </div>
+
+  <footer>TODO-319 · device fleet handoff · 2026-07-31 11:24 UTC · sanitized BPO artifact · no device wiped</footer>
+
+  <script>
+    (function () {
+      var scenarios = {
+        m3: {
+          tier: "M5 becomes primary",
+          title: "Lose M3",
+          summary: "Continue from the durable runner without trying to copy M3's app database.",
+          route: [
+            "Open the Linear issue from i17pm.",
+            "Start or continue the matching M5 task at the same Git root/subdirectory.",
+            "Hydrate from Linear journal plus Git branch/commit; use native handoff when the task supports it.",
+            "Recover anything unpushed from the declared rescue capsule—not from live filesystem sync."
+          ],
+          rule: "No task may depend on a sleeping laptop's private database or unpushed worktree."
+        },
+        phone: {
+          tier: "i17pm controls M5",
+          title: "Phone only",
+          summary: "The phone is a control surface; M5 remains the executor and durable environment.",
+          route: [
+            "Paste the Linear issue URL into a task rooted at the matching M5 project.",
+            "Let Linear provide intent and journal; let Git provide code, branch, and durable state.",
+            "Review progress and steer from the phone.",
+            "Return to M3 later through the same issue and Git root—never by copying a task database."
+          ],
+          rule: "The minimum handoff packet is one issue URL plus a matching saved Git project."
+        },
+        m5: {
+          tier: "M3 is temporary executor",
+          title: "Lose M5",
+          summary: "Work can continue, but the fleet is not resilient until M5 recovery blockers and rebuild drills are cleared.",
+          route: [
+            "Use M3 at the same logical project root.",
+            "Read the current loop from Linear and the durable graph from Git.",
+            "Rebuild M5 from the manifest and recovery classes.",
+            "Promote M5 only after doctor, restore, remote access, and wipe-readiness gates pass."
+          ],
+          rule: "M5 is replaceable only after a clean rebuild has been demonstrated, not merely documented."
+        },
+        airplane: {
+          tier: "Local-first degraded mode",
+          title: "Airplane",
+          summary: "A good offline experience requires a prehydrated device; SaaS middleware cannot be fetched without a network.",
+          route: [
+            "Before departure, hydrate the chosen executor with the task journal, required repos, dependencies, and references.",
+            "Work locally and commit locally while offline.",
+            "Use local notes as the temporary loop journal.",
+            "Reconcile commits and journal updates to Git and Linear after connectivity returns."
+          ],
+          rule: "Offline is a prepared operating mode, not an on-demand remote handoff."
+        }
+      };
+      var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-scenario]"));
+      var tier = document.getElementById("scenario-tier");
+      var title = document.getElementById("scenario-title");
+      var summary = document.getElementById("scenario-summary");
+      var route = document.getElementById("scenario-route");
+      var rule = document.getElementById("scenario-rule");
+      buttons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var active = scenarios[button.dataset.scenario];
+          buttons.forEach(function (candidate) {
+            candidate.setAttribute("aria-selected", String(candidate === button));
+          });
+          tier.textContent = active.tier;
+          title.textContent = active.title;
+          summary.textContent = active.summary;
+          route.innerHTML = "";
+          active.route.forEach(function (step) {
+            var item = document.createElement("li");
+            item.textContent = step;
+            route.appendChild(item);
+          });
+          rule.innerHTML = "<strong>Invariant:</strong> " + active.rule;
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

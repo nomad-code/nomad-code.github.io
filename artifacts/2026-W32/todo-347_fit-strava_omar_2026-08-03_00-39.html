@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<script>
+(function () {
+  var KEY = 'bpo-unlocked', unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () { if (cover) cover.remove(); }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'], i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); if (cover) cover.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3f1e8">
+  <title>TODO-347 · Omar Strava Lab</title>
+  <meta name="description" content="Omar as the disposable Strava mirror, the nuke/redeploy proof, and evidence-bounded ATHX, HYROX, and Murph estimates.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f1e8;--ink:#17231e;--muted:#69736d;--forest:#174a38;--mint:#b9ee7c;--orange:#f05a28;--amber:#f0c94a;--card:#fffdf8;--line:#d5dad3;--ice:#dceff0;--red:#a83e29}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 28px,1080px);margin:auto;padding:46px 0 72px}.mono,.eyebrow,.badge,.metric strong,.step b,.score,.slider-value,footer{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .eyebrow{color:var(--forest);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}h1{max-width:950px;margin:13px 0 18px;font:850 clamp(44px,8vw,86px)/.92 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.075em}h1 span{color:var(--orange)}
+    .lede{max-width:840px;margin:0;color:var(--muted);font-size:21px}.truth{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:30px}.panel,.metric,.step,.sport,.source,.gate{border:1px solid var(--line);border-radius:18px;background:var(--card)}.panel{padding:24px}.panel.dark{border-color:var(--forest);background:var(--forest);color:white}.panel h2,.panel h3{margin:0 0 9px;font:800 25px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.045em}.panel p{margin:0;color:var(--muted)}.panel.dark p{color:#d9e6df}.equation{margin:20px 0 9px;color:var(--mint);font:900 31px/1.05 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.055em}
+    h2.section{margin:52px 0 10px;font:820 34px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.045em}.section-lede{max-width:830px;margin:0 0 18px;color:var(--muted)}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.metric{padding:18px}.metric span{display:block;color:var(--muted);font-size:13px}.metric strong{display:block;margin:5px 0 2px;color:var(--forest);font-size:31px;line-height:1;letter-spacing:-.06em}.metric small{color:var(--muted)}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.step{padding:19px}.step b{display:inline-grid;place-items:center;width:31px;height:31px;border-radius:50%;background:var(--forest);color:white}.step h3{margin:14px 0 6px;font-size:18px}.step p{margin:0;color:var(--muted);font-size:14px}.step a{color:var(--orange);font-weight:750}.gate{margin-top:12px;padding:16px 18px;border-color:#e4b9aa;background:#f7e4dc}.gate strong{color:var(--red)}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em}
+    .sports{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.sport{padding:20px;overflow:hidden}.sport-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.sport h3{margin:0;font:820 25px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.05em}.badge{padding:5px 8px;border-radius:20px;background:#f5e6b9;color:#705511;font-size:10px;font-weight:800;text-transform:uppercase}.badge.high{background:#d8eee8;color:#155b4c}.badge.none{background:#f2ded7;color:#943922}.sport p{color:var(--muted);font-size:14px}.score{margin:17px 0 4px;color:var(--forest);font-size:38px;font-weight:900;line-height:1;letter-spacing:-.06em}.caption{color:var(--muted);font-size:12px}.barset{display:grid;gap:9px;margin-top:18px}.barrow{display:grid;grid-template-columns:58px 1fr 42px;gap:8px;align-items:center;color:var(--muted);font-size:11px}.track{height:8px;border-radius:8px;background:#ecece5;overflow:hidden}.track i{display:block;height:100%;border-radius:inherit;background:var(--forest)}.barrow.current i{background:var(--orange)}
+    .sim{margin-top:17px;padding-top:15px;border-top:1px solid var(--line)}.slider{margin:13px 0}.slider label{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px}.slider-value{color:var(--ink);font-weight:800}input[type=range]{width:100%;accent-color:var(--forest)}.sim-total{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-top:14px}.sim-total strong{font:900 34px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.06em;color:var(--forest)}button{border:0;border-radius:10px;padding:8px 11px;background:var(--forest);color:white;font-weight:750;cursor:pointer}button.alt{background:#e5e8e2;color:var(--ink)}.buttons{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+    .checks{display:grid;gap:8px;margin-top:17px}.check{display:flex;gap:8px;align-items:start;color:var(--muted);font-size:13px}.check input{margin-top:3px;accent-color:var(--forest)}.murph-read{margin-top:13px;padding:11px;border-radius:11px;background:#f3e7df;color:var(--red);font:800 12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .sources{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.source{padding:19px}.source h3{margin:0 0 8px;font-size:18px}.yes,.no{margin:0;padding-left:18px;color:var(--muted);font-size:14px}.yes li::marker{color:var(--forest)}.no li::marker{color:var(--orange)}.fresh{margin-top:12px;padding:14px 16px;border-left:5px solid var(--amber);background:#fff9de;color:#665513;font-size:14px}
+    .flow{display:grid;grid-template-columns:1fr 38px 1fr 38px 1fr;align-items:stretch;gap:8px}.flow .panel{padding:18px}.arrow{display:grid;place-items:center;color:var(--forest);font-size:25px}.flow h3{font-size:17px}.flow p{font-size:13px}.rule{margin-top:14px;padding:18px;border-radius:18px;background:var(--ice);color:#31585c}.rule strong{color:#174a4f}footer{display:flex;justify-content:space-between;gap:20px;margin-top:48px;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}footer a{color:inherit}
+    @media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.sports{grid-template-columns:1fr}.sports .sport{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}.sports .sport-head,.sports .score,.sports .caption{grid-column:1}.sports .barset,.sports .sim,.sports .checks,.sports .murph-read{grid-column:2}.sports .sport>p{grid-column:1}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+    @media(max-width:700px){.truth,.sources{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.sports .sport{display:block}.metrics{grid-template-columns:1fr 1fr}h1{font-size:44px}.lede{font-size:18px}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / TODO-347 · Omar Strava lab</div>
+  <h1>Archive truth.<br><span>Omar mirror.</span></h1>
+  <p class="lede">Omar can be the account you look at, erase, and rebuild. He should not become the only copy: the raw archive is the authority, Omar is the family-visible proof that the authority can regenerate Strava.</p>
+
+  <section class="truth" aria-label="Source of truth model">
+    <article class="panel dark">
+      <h2>The invariant</h2>
+      <div class="equation">raw → FIT → Omar → verify</div>
+      <p>Every rebuild starts from immutable activity, lap, and stream captures. The deployment ledger prevents accidental duplicates and records the payload hash.</p>
+    </article>
+    <article class="panel">
+      <h2>The family boundary</h2>
+      <p>Omar remains a separate Strava athlete and OAuth principal. Family membership makes the account useful to view, but does not turn it into shared storage or grant it authority over Brendan's originals.</p>
+    </article>
+  </section>
+
+  <h2 class="section">What exists now</h2>
+  <p class="section-lede">The first live canary is exact for the fields that matter; the archive is broad in IDs and narrower in full-fidelity raw captures.</p>
+  <section class="metrics" aria-label="Archive and canary metrics">
+    <article class="metric"><span>Known activity IDs</span><strong>1,338</strong><small>local union</small></article>
+    <article class="metric"><span>Detailed raw triples</span><strong>531</strong><small>activity + laps + streams</small></article>
+    <article class="metric"><span>Detailed GPS routes</span><strong>193</strong><small>now preserved in FIT</small></article>
+    <article class="metric"><span>Live Omar canary</span><strong>1</strong><small>strength + HR verified</small></article>
+  </section>
+
+  <h2 class="section">Nuke cycle 1</h2>
+  <p class="section-lede">The API cannot delete. The one human action is deliberately narrow; everything around it is ledger-gated and verifiable.</p>
+  <section class="steps" aria-label="Nuke steps">
+    <article class="step"><b>1</b><h3>Delete the canary</h3><p>While signed in as Omar, delete only <a href="https://www.strava.com/activities/19576787218" target="_blank" rel="noopener">activity 19576787218</a>.</p></article>
+    <article class="step"><b>2</b><h3>Confirm absence</h3><p><code>nuke --target omar --source 17984664967 --confirm</code> requires an API 404 before clearing the ledger edge.</p></article>
+    <article class="step"><b>3</b><h3>Rebuild + compare</h3><p>Deploy the same source again, compare its payload hash and Strava read-back, then repeat with outdoor GPS and HYROX fixtures.</p></article>
+  </section>
+  <div class="gate"><strong>Current gate:</strong> target 19576787218 is still present. Brendan's production profile is hard-refused by the nuke command.</div>
+
+  <h2 class="section">What the data can predict</h2>
+  <p class="section-lede">The right question is not “do we have lots of data?” It is “does the evidence reproduce the exact task?”</p>
+  <section class="sports" aria-label="Event prediction confidence">
+    <article class="sport">
+      <div class="sport-head"><h3>ATHX</h3><span class="badge">low confidence</span></div>
+      <div class="score">260 kg</div><div class="caption">direct completed-rep floor · stated 2027 movements</div>
+      <p>50 kg press + 100 kg squat + 110 kg deadlift. A near-failure formula scenario is about 271 kg, but RIR is missing and the sets are from Mar–Apr.</p>
+      <div class="barset" aria-label="ATHX strength comparison, kilograms">
+        <div class="barrow current"><span>floor</span><div class="track"><i style="width:52%"></i></div><b>260</b></div>
+        <div class="barrow"><span>cohort min</span><div class="track"><i style="width:65.4%"></i></div><b>327</b></div>
+        <div class="barrow"><span>p10</span><div class="track"><i style="width:69%"></i></div><b>345</b></div>
+        <div class="barrow"><span>median</span><div class="track"><i style="width:84.3%"></i></div><b>422</b></div>
+      </div>
+    </article>
+
+    <article class="sport">
+      <div class="sport-head"><h3>HYROX</h3><span class="badge high">best model</span></div>
+      <div class="score">68:43</div><div class="caption">Bangkok 2026 official anchor</div>
+      <p>Eight compromised runs plus roxzones and eight stations are independently observable. Use HR to explain cost; use actual split time to score it.</p>
+      <div class="sim" aria-label="HYROX scenario calculator">
+        <div class="slider"><label for="pace">RUN pace / km <span class="slider-value" id="paceVal">4:38.5</span></label><input id="pace" type="range" min="215" max="300" value="278.5" step="0.5"></div>
+        <div class="slider"><label for="stations">Stations total <span class="slider-value" id="stationVal">28:27</span></label><input id="stations" type="range" min="1440" max="1900" value="1707" step="1"></div>
+        <div class="sim-total"><span>projected total</span><strong id="hyroxTotal">68:43</strong></div>
+        <div class="caption" id="hyroxGap">8:43 above sub-60</div>
+        <div class="buttons"><button id="baseline" type="button">Bangkok</button><button id="target" class="alt" type="button">Sub-60 scenario</button></div>
+      </div>
+    </article>
+
+    <article class="sport">
+      <div class="sport-head"><h3>Murph</h3><span class="badge none">not estimable</span></div>
+      <div class="score">—</div><div class="caption">no standardized full attempt</div>
+      <p>Calisthenics ingredients exist, but no record contains both miles, all 600 reps, transitions, vest/partition choice, and movement-validity loss.</p>
+      <div class="checks" aria-label="Murph evidence gates">
+        <label class="check"><input type="checkbox" value="protocol">Vest + partition protocol fixed</label>
+        <label class="check"><input type="checkbox" value="mile">Fresh same-course mile recorded</label>
+        <label class="check"><input type="checkbox" value="rounds">Timed 10-round Cindy block recorded</label>
+        <label class="check"><input type="checkbox" value="full">Complete standardized Murph recorded</label>
+      </div>
+      <div class="murph-read" id="murphRead">0/4 gates · not estimable</div>
+    </article>
+  </section>
+
+  <h2 class="section">Where Apple Health helps</h2>
+  <p class="section-lede">A fresh export is worth doing. It strengthens context and joins; it does not magically observe the event details the watch never captured.</p>
+  <section class="sources" aria-label="Apple Health capabilities">
+    <article class="source"><h3>It can add</h3><ul class="yes"><li>body mass on test and race dates</li><li>continuous HR, resting HR, HRV and recovery context</li><li>sleep context and cardio-fitness observations where recorded</li><li>workout and route cross-checks against Strava</li></ul></article>
+    <article class="source"><h3>It cannot add</h3><ul class="no"><li>barbell load, reps, RIR or failed reps</li><li>valid pull-up, push-up, squat or wall-ball standards</li><li>sled surface and venue friction</li><li>HYROX roxzone discipline or Murph partition strategy</li></ul></article>
+  </section>
+  <div class="fresh"><strong>Freshness warning:</strong> the latest located export is dated 2025-06-11. Preserve the next export as a dated immutable zip, then parse it downstream.</div>
+
+  <h2 class="section">The durable prediction loop</h2>
+  <section class="flow" aria-label="Evidence to prediction flow">
+    <article class="panel"><h3>1 · Observe</h3><p>Raw streams, official splits, body mass, exact sets/reps/load, RIR, conditions and corrections.</p></article><div class="arrow">→</div>
+    <article class="panel"><h3>2 · Model</h3><p>Event-specific formulas with an as-of date, range, confidence, assumptions and missing inputs.</p></article><div class="arrow">→</div>
+    <article class="panel"><h3>3 · Display</h3><p>Deploy the workout to Omar and render the estimate without writing guesses into the evidence record.</p></article>
+  </section>
+  <div class="rule"><strong>Source-of-truth rule:</strong> every number must say whether it was observed, calculated, or merely scenario-tested. Omar may show all three; only the archive preserves the distinction.</div>
+
+  <footer><span>TODO-347 · generated 2026-08-03 00:39Z</span><span><a href="../projects/workouts/SEED.md">Omar runbook</a> · <a href="../projects/workouts/PREDICTIONS.md">prediction contract</a></span></footer>
+</main>
+<script>
+(function(){
+  var pace=document.getElementById('pace'),stations=document.getElementById('stations');
+  function clock(seconds,showTenths){var s=Math.max(0,seconds),m=Math.floor(s/60),r=s-m*60;return m+':'+(r<10?'0':'')+(showTenths?r.toFixed(1):Math.round(r).toString().padStart(2,'0'));}
+  function render(){
+    var p=parseFloat(pace.value),st=parseInt(stations.value,10),total=Math.round(p*8.7+st-7),gap=total-3600;
+    document.getElementById('paceVal').textContent=clock(p,true);
+    document.getElementById('stationVal').textContent=clock(st,false);
+    document.getElementById('hyroxTotal').textContent=clock(total,false);
+    document.getElementById('hyroxGap').textContent=gap>0?clock(gap,false)+' above sub-60':clock(-gap,false)+' under sub-60';
+    document.getElementById('hyroxTotal').style.color=gap<0?'#0d7c68':'#174a38';
+  }
+  pace.addEventListener('input',render);stations.addEventListener('input',render);
+  document.getElementById('baseline').addEventListener('click',function(){pace.value='278.5';stations.value='1707';render()});
+  document.getElementById('target').addEventListener('click',function(){pace.value='231';stations.value='1560';render()});
+  var checks=[].slice.call(document.querySelectorAll('.check input')),read=document.getElementById('murphRead');
+  function murph(){var n=checks.filter(function(c){return c.checked}).length,label=n<2?'not estimable':n<4?'broad low-confidence range':'medium-confidence baseline';read.textContent=n+'/4 gates · '+label;read.style.background=n===4?'#d8eee8':'#f3e7df';read.style.color=n===4?'#155b4c':'#a83e29'}
+  checks.forEach(function(c){c.addEventListener('change',murph)});render();murph();
+})();
+</script>
+</body>
+</html>

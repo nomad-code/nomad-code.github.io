@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-197 · timeline-place-ingest · The saved-list, mapped</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --lane: #4a8aa0; }
+    html { scroll-behavior: smooth; }
+    body { min-height:100vh; overflow-x:hidden; background:var(--bg); }
+    main { max-width:1080px; margin:0 auto; padding:26px 24px 72px; }
+
+    .eyebrow { display:flex; align-items:center; gap:9px; font:600 12px/1 var(--font-mono); letter-spacing:.06em; color:var(--found-d); text-transform:uppercase; }
+    .eyebrow .d { width:8px; height:8px; border-radius:50%; background:var(--lime); box-shadow:0 0 0 4px rgba(132,194,65,.18); }
+    h1 { font:700 40px/1.03 var(--font-display); letter-spacing:-.02em; margin:15px 0 10px; color:var(--ink); }
+    h1 em { font-style:normal; color:var(--forest); }
+    .lede { max-width:64ch; font:400 16px/1.5 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:600; }
+
+    .kpis { display:flex; flex-wrap:wrap; gap:10px; margin:24px 0 6px; }
+    .kpi { flex:1 1 120px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-tile); padding:14px 16px; }
+    .kpi-n { font:700 26px/1 var(--font-display); color:var(--ink); }
+    .kpi-l { font:500 12px/1.3 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:6px; }
+
+    section.grp { margin-top:38px; }
+    .grp-head { display:flex; align-items:baseline; gap:10px; border-bottom:2px solid var(--line); padding-bottom:8px; margin-bottom:16px; }
+    .grp-head h2 { font:700 21px/1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .grp-head .sub { font:400 13px/1 var(--font-ui); color:var(--muted); margin-left:auto; }
+
+    table.places { width:100%; border-collapse:collapse; font:400 14px/1.4 var(--font-ui); }
+    table.places th { text-align:left; font:600 11.5px/1 var(--font-mono); text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:0 12px 9px; border-bottom:1px solid var(--line); }
+    table.places td { padding:10px 12px; border-bottom:1px solid var(--line); color:var(--body); vertical-align:top; }
+    table.places td.pl { font-weight:600; color:var(--ink); white-space:nowrap; }
+    table.places td.num { font:500 13px/1.4 var(--font-mono); color:var(--forest-d); text-align:right; white-space:nowrap; }
+    table.places tr:last-child td { border-bottom:none; }
+    table.places .anch { font-size:13px; color:var(--muted); }
+    table.places tr.stub td { color:var(--muted); font-style:italic; }
+
+    .cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .panel { background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:16px 18px; }
+    .panel h3 { font:700 15px/1.2 var(--font-display); color:var(--forest); margin:0 0 4px; }
+    .panel .t { font:600 12px/1 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+    .panel p { font:400 14px/1.55 var(--font-ui); color:var(--body); margin:9px 0 0; }
+    .panel p b { color:var(--ink); }
+
+    .tier { width:100%; border-collapse:collapse; margin-top:12px; font:400 13.5px/1.4 var(--font-ui); }
+    .tier td { padding:8px 10px; border-bottom:1px solid var(--line); }
+    .tier td:first-child { font:600 14px var(--font-ui); color:var(--ink); white-space:nowrap; }
+    .tier td.b { color:var(--muted); }
+    .tier tr:last-child td { border-bottom:none; }
+    .star { color:#c98a1a; font-weight:700; }
+
+    ul.drift { list-style:none; padding:0; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; }
+    ul.drift li { font:400 13.5px/1.5 var(--font-ui); color:var(--body); padding-left:16px; position:relative; }
+    ul.drift li::before { content:"↯"; position:absolute; left:0; color:var(--amber, #c98a1a); font-weight:700; }
+    ul.drift li b { color:var(--ink); font-weight:600; }
+
+    .foot { margin-top:44px; padding-top:14px; border-top:1px solid var(--line); font:400 12.5px/1.5 var(--font-mono); color:var(--muted); }
+    .foot a { color:var(--forest); }
+    @media (max-width:720px){ .cols{grid-template-columns:1fr} ul.drift{grid-template-columns:1fr} h1{font-size:32px} }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow"><span class="d"></span> TODO-197 · timeline-place-ingest</div>
+  <h1>The saved-list, <em>mapped</em></h1>
+  <p class="lede">Rolled the Medewi ingest pattern out to <b>seven places</b> (plus a Vienna
+  placeholder). Each place becomes a <b>manifest CSV</b> + an enriched note. The work runs in
+  two tiers — a mechanical catalog and hand-enrichment — and the Linear question resolves into
+  a <b>living saved-list</b>: an active project, a Completed archive, and a promotion tier that
+  carries what you loved forward.</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">7</div><div class="kpi-l">places</div></div>
+    <div class="kpi"><div class="kpi-n">46</div><div class="kpi-l">stays</div></div>
+    <div class="kpi"><div class="kpi-n">9,903</div><div class="kpi-l">files catalogued</div></div>
+    <div class="kpi"><div class="kpi-n">10.3&nbsp;GB</div><div class="kpi-l">indexed</div></div>
+    <div class="kpi"><div class="kpi-n">8</div><div class="kpi-l">manifests</div></div>
+  </div>
+
+  <section class="grp">
+    <div class="grp-head"><h2>Places</h2><span class="sub">idempotent · source read-only</span></div>
+    <table class="places">
+      <thead><tr><th>Place</th><th>Region</th><th style="text-align:right">Stays</th><th style="text-align:right">Files</th><th style="text-align:right">Size</th><th>⭐ anchors</th></tr></thead>
+      <tbody>
+        <tr><td class="pl">Uluwatu 🌊</td><td>Bali</td><td class="num">17</td><td class="num">6,867</td><td class="num">7.2 GB</td><td class="anch">360 Move · The Istana · Bali Life · Impossibles</td></tr>
+        <tr><td class="pl">Tokyo 🗼</td><td>Japan · Kanto</td><td class="num">9</td><td class="num">1,224</td><td class="num">1.48 GB</td><td class="anch">Shibuya Sky · Ghibli · Benitsuru</td></tr>
+        <tr><td class="pl">Canggu 🛵</td><td>Bali</td><td class="num">5</td><td class="num">496</td><td class="num">423 MB</td><td class="anch">Wanderlust · Blacklist Coffee</td></tr>
+        <tr><td class="pl">Denpasar 🏙️</td><td>Bali</td><td class="num">4</td><td class="num">449</td><td class="num">305 MB</td><td class="anch">Alam Puri</td></tr>
+        <tr><td class="pl">Ubud 🌾</td><td>Bali</td><td class="num">6</td><td class="num">402</td><td class="num">440 MB</td><td class="anch">Hujan Locale · Abipraya</td></tr>
+        <tr><td class="pl">Fukuoka 🍜</td><td>Japan · Kyushu</td><td class="num">2</td><td class="num">312</td><td class="num">171 MB</td><td class="anch">—</td></tr>
+        <tr><td class="pl">Taipei 🏙️</td><td>ZYX</td><td class="num">3</td><td class="num">153</td><td class="num">266 MB</td><td class="anch">Din Tai Fung · HYROX · Justin Prophet</td></tr>
+        <tr class="stub"><td class="pl">Vienna 🎻</td><td>—</td><td class="num">0</td><td class="num">—</td><td class="num">—</td><td class="anch">placeholder · no Timeline source yet</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2>Two tiers</h2><span class="sub">cheap vs. the real labor</span></div>
+    <div class="cols">
+      <div class="panel">
+        <span class="t">Tier 1 · mechanical</span>
+        <h3>The manifest</h3>
+        <p><code>timeline-manifest</code> walks a place folder → a CSV of
+        <b>stay · category · utc · name · ext · bytes</b>. The note's skeleton — dates, path,
+        <b>N files · MB · category counts</b> — is regenerable from it. Read-only, idempotent, stdlib.</p>
+      </div>
+      <div class="panel">
+        <span class="t">Tier 2 · enrichment</span>
+        <h3>Opening the files</h3>
+        <p>Docs named, people-card names, WhatsApp counterparties, webloc subjects — none of it lives
+        in the CSV. Spots merge <b>Google Maps saved-list exports</b> (found sitting in the archives)
+        with Address-Book place tags.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2>The living saved-list</h2><span class="sub">the Linear model, settled</span></div>
+    <div class="cols">
+      <div class="panel">
+        <span class="t">two layers + a rule</span>
+        <h3>Relevance flows up</h3>
+        <p><b>Active</b> — one live project = the place you're in now. <b>Archive</b> — past stays are
+        Completed, documented by the note + CSV. <b>Promotion</b> — a curation tier moves what you loved
+        into the active project when you return. Like a Maps saved list: keep, drop, or star.</p>
+      </div>
+      <div class="panel">
+        <span class="t">curation tier</span>
+        <table class="tier">
+          <tr><td>👎 drop</td><td class="b">not recorded</td></tr>
+          <tr><td>👍 keep</td><td class="b">stays in the note roster</td></tr>
+          <tr><td><span class="star">⭐</span> priority</td><td class="b">propagates forward · seeds the active project</td></tr>
+        </table>
+        <p style="margin-top:11px;font-size:13px">Stars are <b>earned, not invented</b> — a loved-doc, or
+        recurrence across ≥2 stays.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2>Drift the rollout exposed</h2><span class="sub">named in the convention, not "fixed" in the source</span></div>
+    <ul class="drift">
+      <li><b>Broken path</b> — <code>~/Timeline</code> didn't exist; fixed to <code>~/Documents/Timeline</code> in 22 files.</li>
+      <li><b>Three tree depths</b> — Japan nests Region/Prefecture/Place; city has no folder.</li>
+      <li><b>Loose stay-root files</b> — whole day-trips with no category folder.</li>
+      <li><b>Bad date strings</b> — <code>2026-01-20 to 2025-01-31</code>, <code>Toyko</code>, a stray <code>- a -</code>.</li>
+      <li><b>webp "people"</b> — headshots, not txt cards, in Denpasar / Canggu / Fukuoka.</li>
+      <li><b>Mis-filed work</b> — Figma / job-hunt / a 1,010-file Duolingo dump inside Uluwatu stays.</li>
+    </ul>
+  </section>
+
+  <p class="foot">
+    Convention: dna/places/timeline-convention.md · 8 manifests beside their notes ·
+    follow-up filed for the remaining Japan cities + thin webp rosters.<br>
+    Generated 2026-07-13 12:06 UTC · TODO-197 · bpo
+  </p>
+</main>
+</body>
+</html>

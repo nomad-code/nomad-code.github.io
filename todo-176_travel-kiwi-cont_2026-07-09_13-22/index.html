@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travel-kiwi · decision trace · RIX → TFS</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1a1a1a; --muted: #6b6b66;
+    --line: #e4e4de; --accent: #0a7d5f; --accent-ink: #ffffff;
+    --new: #0a7d5f; --new-bg: #e6f4ef; --target: #b45309; --target-bg: #fdf0e0;
+    --map-land: #eceae4; --map-line: #c9c7bf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15161a; --card: #1e2025; --ink: #ececea; --muted: #9a9a94;
+      --line: #33353c; --accent: #35b58e; --accent-ink: #0e1512;
+      --new: #35b58e; --new-bg: #17342b; --target: #e8a04c; --target-bg: #3a2c17;
+      --map-land: #262931; --map-line: #3d404a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.05rem; margin: 32px 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+  .context { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .chip {
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 3px 12px; font-size: .82rem; color: var(--muted); white-space: nowrap;
+  }
+  .chip.target { color: var(--target); border-color: var(--target); }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px; margin-bottom: 12px;
+  }
+  label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+  .muted { color: var(--muted); font-size: .85rem; }
+  .rule strong { color: var(--ink); }
+
+  /* tally */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .stat {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; text-align: center;
+  }
+  .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+  .stat .l { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+  @media (max-width: 520px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* chain table */
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; font-size: .78rem; }
+  td.country { color: var(--new); font-weight: 600; }
+  td.dup { color: var(--muted); font-weight: 400; }
+  td.dim { color: var(--muted); }
+  td .del { color: var(--muted); text-decoration: none; padding: 0 4px; cursor: pointer; }
+  td a.leg { color: var(--accent); text-decoration: none; }
+  tr.origin td { color: var(--muted); }
+  tr.arrive td { background: var(--target-bg); }
+
+  /* add-hop form */
+  .form-grid { display: grid; grid-template-columns: 1.2fr 1fr .7fr .9fr 1.4fr; gap: 8px; margin-top: 12px; }
+  .form-grid.details { grid-template-columns: 1fr 1fr .8fr .8fr .8fr; margin-top: 8px; }
+  .form-grid input {
+    width: 100%; padding: 8px; font-size: .9rem; border: 1px solid var(--line);
+    border-radius: 8px; background: var(--bg); color: var(--ink);
+  }
+  .form-hint { font-size: .74rem; color: var(--muted); margin: 10px 0 0; }
+  @media (max-width: 640px) { .form-grid, .form-grid.details { grid-template-columns: 1fr 1fr; } }
+
+  button {
+    margin-top: 12px; padding: 9px 16px; font-size: .92rem; font-weight: 600;
+    border: 0; border-radius: 8px; background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  }
+  button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 400; }
+
+  /* exclude toggle */
+  .excl { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: .88rem; color: var(--ink); }
+  .excl input { width: 16px; height: 16px; accent-color: var(--accent); }
+  .excl .q { color: var(--muted); font-size: .8rem; }
+
+  /* links */
+  .links a {
+    display: block; background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+    color: var(--ink); text-decoration: none;
+  }
+  .links a:active { border-color: var(--accent); }
+  .links .tag { font-size: .72rem; font-weight: 700; letter-spacing: .04em; color: var(--accent); }
+  .links .tag.finish { color: var(--target); }
+  .links .desc { font-size: .85rem; color: var(--muted); }
+
+  /* visited chips */
+  .visited { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
+  .visited .vc {
+    font-size: .8rem; padding: 3px 10px; border-radius: 999px;
+    background: var(--new-bg); color: var(--new); border: 1px solid transparent;
+  }
+
+  /* map */
+  svg { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px; }
+  .map-note { margin: 8px 0 0; }
+
+  footer { margin-top: 40px; font-size: .82rem; color: var(--muted); }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>travel-kiwi · decision trace</h1>
+  <p class="sub">Cheapest hop into a <em>new</em> country, again and again. Riga → Tenerife the long way — Baltics, Balkans, Levant, Caucasus. Maximize countries.</p>
+  <div class="context">
+    <span class="chip">RIX · Riga · Aug 17</span>
+    <span class="chip target">→ TFS · Tenerife · Sep 4</span>
+    <span class="chip">Maximize Countries</span>
+  </div>
+
+  <div class="card rule">
+    <p style="margin:0" class="muted">
+      From the current city, run Kiwi <strong>anywhere / anytime / no-return</strong>.
+      Take the <strong>cheapest fare into a country you haven't visited yet</strong>. Hop. Repeat —
+      land at <strong>TFS by Sep 4</strong>. No API (Kiwi's is closed): read the fare off the search
+      and log it, along with the times, duration and flight number worth remembering.
+    </p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="s-countries">–</div><div class="l">countries</div></div>
+    <div class="stat"><div class="n" id="s-spend">–</div><div class="l">total spend</div></div>
+    <div class="stat"><div class="n" id="s-hops">–</div><div class="l">hops</div></div>
+    <div class="stat"><div class="n" id="s-days">–</div><div class="l">days to TFS</div></div>
+  </div>
+
+  <h2>1 · The chain</h2>
+  <div class="card">
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>from</th><th>to</th><th>country</th><th>$</th><th>date</th>
+          <th>airline</th><th>flight</th><th>dep</th><th>arr</th><th>dur</th><th>kiwi</th><th></th>
+        </tr></thead>
+        <tbody id="chainBody"></tbody>
+      </table>
+    </div>
+    <div class="form-grid">
+      <input id="ah-city"    placeholder="to city (e.g. Catania)">
+      <input id="ah-country" placeholder="country (e.g. Italy)">
+      <input id="ah-price"   type="number" inputmode="decimal" placeholder="$ (optional)">
+      <input id="ah-date"    type="date">
+      <input id="ah-slug"    placeholder="kiwi slug (auto)">
+    </div>
+    <div class="form-grid details">
+      <input id="ah-airline" placeholder="airline (e.g. Wizz)">
+      <input id="ah-flight"  placeholder="flight # (e.g. W6 2311)">
+      <input id="ah-dep"     placeholder="dep (e.g. 06:45)">
+      <input id="ah-arr"     placeholder="arr (e.g. 09:20)">
+      <input id="ah-dur"     placeholder="dur (e.g. 2h35)">
+    </div>
+    <p class="form-hint">City + country are enough to add a hop. The rest — fare, times, duration, flight number — fill in as you read them off the search.</p>
+    <button id="addBtn">Add hop</button>
+    <button id="resetBtn" class="ghost">Reset to seed</button>
+  </div>
+
+  <h2>2 · Next hop — from <span id="curCity">–</span></h2>
+  <div class="card">
+    <label class="excl">
+      <input type="checkbox" id="exclFr">
+      <span>Exclude Ryanair <span class="q">(FR, RK — they're tough). Rewrites every Kiwi link below.</span></span>
+    </label>
+    <div class="links" id="nextLinks"></div>
+    <p class="muted" style="margin:14px 0 4px">Countries banked (don't repeat):</p>
+    <div class="visited" id="visited"></div>
+    <button id="copyBtn" class="ghost">Copy trace as markdown</button>
+  </div>
+
+  <h2>3 · Map</h2>
+  <div class="card">
+    <div id="mapWrap"></div>
+    <p class="map-note muted" id="mapNote"></p>
+  </div>
+
+  <footer>
+    <a href="https://linear.app/nomad-code/issue/TODO-172/travel-kiwi-dt">TODO-172</a> ·
+    continued in <a href="https://linear.app/nomad-code/issue/TODO-176/travel-kiwi-cont">TODO-176</a> ·
+    sibling of the VLC→CLT dashboard (<a href="https://linear.app/nomad-code/issue/TODO-103/travel-kiwi">TODO-103</a>) ·
+    trace is stored in this browser only (localStorage)
+  </footer>
+</main>
+<script>
+(function () {
+  var KEY = 'travel-kiwi-trace-v2';   // v2: enriched legs (airline/flight/times) + full RIX→TFS chain
+  var KEY_EXCL = 'travel-kiwi-exclude-fr';
+  var $ = function (id) { return document.getElementById(id); };
+
+  var ORIGIN = { city: 'Riga', country: 'Latvia', slug: 'riga-latvia', date: '2026-08-17' };
+  var TARGET = { city: 'Tenerife', country: 'Spain', slug: 'tenerife-spain', date: '2026-09-04' };
+
+  // Seed = TODO-172 Baltic/Balkan opener + TODO-176 continuation through the
+  // Levant + Caucasus, landing at Tenerife. Prices only where a fare was read;
+  // times / flight numbers are blanks to fill as the searches are re-run.
+  var SEED = [
+    { city: 'Vilnius',  country: 'Lithuania',  slug: 'vilnius-vilnius-lithuania', price: 54 },
+    { city: 'Tallinn',  country: 'Estonia',    slug: 'tallinn-estonia',           price: 24 },
+    { city: 'Tirana',   country: 'Albania',    slug: 'tirana-albania',            price: 43 },
+    { city: 'Malta',    country: 'Malta',      slug: 'malta-malta',               price: 19 },
+    { city: 'Milan',    country: 'Italy',      slug: 'milan-italy',               price: null },
+    { city: 'Larnaca',  country: 'Cyprus',     slug: 'larnaca-cyprus',            price: null },
+    { city: 'Tel Aviv', country: 'Israel',     slug: 'tel-aviv-israel',           price: null },
+    { city: 'Tbilisi',  country: 'Georgia',    slug: 'tbilisi-georgia',           price: null },
+    { city: 'Yerevan',  country: 'Armenia',    slug: 'yerevan-armenia',           price: null },
+    { city: 'Chisinau', country: 'Moldova',    slug: 'chisinau-moldova',          price: null },
+    { city: 'Tivat',    country: 'Montenegro', slug: 'tivat-montenegro',          price: 103 },
+    { city: 'Belgrade', country: 'Serbia',     slug: 'belgrade-serbia',           price: 61 },
+    { city: 'Tenerife', country: 'Spain',      slug: 'tenerife-spain',            price: 154, airline: 'Air Serbia' }
+  ];
+
+  // lat, lon — region + likely cheap hubs. keyed by lowercase city name.
+  var COORDS = {
+    riga: [56.95, 24.11], vilnius: [54.69, 25.28], tallinn: [59.44, 24.75],
+    tirana: [41.33, 19.82], malta: [35.90, 14.51], valletta: [35.90, 14.51],
+    tenerife: [28.05, -16.57],
+    milan: [45.46, 9.19], larnaca: [34.92, 33.63], 'tel aviv': [32.08, 34.78],
+    tbilisi: [41.72, 44.79], yerevan: [40.18, 44.51], chisinau: [47.01, 28.86],
+    tivat: [42.43, 18.70], belgrade: [44.79, 20.45],
+    london: [51.51, -0.13], barcelona: [41.39, 2.17],
+    madrid: [40.42, -3.70], rome: [41.90, 12.50], athens: [37.98, 23.73],
+    warsaw: [52.23, 21.01], paris: [48.85, 2.35], lisbon: [38.72, -9.14],
+    vienna: [48.21, 16.37], catania: [37.50, 15.09], palermo: [38.12, 13.36],
+    berlin: [52.52, 13.40], krakow: [50.06, 19.94], budapest: [47.50, 19.04],
+    naples: [40.85, 14.27], porto: [41.15, -8.61], sofia: [42.70, 23.32]
+  };
+
+  function readTrace() {
+    try { var v = JSON.parse(localStorage.getItem(KEY)); return Array.isArray(v) ? v : null; }
+    catch (e) { return null; }
+  }
+  function writeTrace(hops) { localStorage.setItem(KEY, JSON.stringify(hops)); }
+
+  var hops = readTrace();
+  if (!hops) { hops = SEED.slice(); writeTrace(hops); }
+
+  // exclude-Ryanair toggle — default ON (the ticket's standing preference)
+  var excl = localStorage.getItem(KEY_EXCL);
+  excl = (excl === null) ? true : (excl === '1');
+  function writeExcl() { localStorage.setItem(KEY_EXCL, excl ? '1' : '0'); }
+  // Kiwi's airline filter: list + exclude flag. Appended as the query string.
+  function exclSuffix() { return excl ? '?airlinesList=FR%2CRK&selectedAirlinesExclude=true' : ''; }
+
+  function fromAt(i) { return i === 0 ? ORIGIN : hops[i - 1]; }
+  function kiwi(fromSlug, toSlug) {
+    return 'https://www.kiwi.com/en/search/results/' + fromSlug + '/' + toSlug + '/anytime/no-return/' + exclSuffix();
+  }
+  function legLink(i) { return kiwi(fromAt(i).slug, hops[i].slug); }
+  function guessSlug(city, country) {
+    return (city + '-' + country).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function coordOf(city) { return COORDS[(city || '').trim().toLowerCase()] || null; }
+
+  function hasPrice(h) { return h.price !== null && h.price !== '' && h.price !== undefined && !isNaN(parseFloat(h.price)); }
+  function money(h) { return hasPrice(h) ? '$' + parseFloat(h.price) : '—'; }
+  function cell(v) { return (v === undefined || v === null || v === '') ? '<span class="dim">—</span>' : String(v); }
+
+  // countries banked, first-seen order (origin first)
+  function bankedCountries() {
+    var seen = [], set = {};
+    [ORIGIN].concat(hops).forEach(function (n) {
+      var c = n.country;
+      if (c && !set[c.toLowerCase()]) { set[c.toLowerCase()] = 1; seen.push(c); }
+    });
+    return seen;
+  }
+  function isNewAt(i) {
+    var c = hops[i].country.toLowerCase(), prior = {};
+    prior[ORIGIN.country.toLowerCase()] = 1;
+    for (var k = 0; k < i; k++) prior[hops[k].country.toLowerCase()] = 1;
+    return !prior[c];
+  }
+
+  function daysBetween(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
+  function latestDate() {
+    var d = ORIGIN.date;
+    hops.forEach(function (h) { if (h.date && h.date > d) d = h.date; });
+    return d;
+  }
+
+  function renderTally() {
+    $('s-countries').textContent = bankedCountries().length;
+    var spend = hops.reduce(function (s, h) { return s + (hasPrice(h) ? parseFloat(h.price) : 0); }, 0);
+    $('s-spend').textContent = '$' + spend;
+    $('s-hops').textContent = hops.length;
+    var left = daysBetween(latestDate(), TARGET.date);
+    $('s-days').textContent = isFinite(left) ? left : '–';
+  }
+
+  function renderChain() {
+    var body = $('chainBody');
+    body.innerHTML = '';
+    var origin = document.createElement('tr');
+    origin.className = 'origin';
+    origin.innerHTML = '<td>—</td><td>' + ORIGIN.city + '</td><td>' + ORIGIN.country +
+      '</td><td>start</td><td>' + ORIGIN.date + '</td><td colspan="5"></td><td></td><td></td>';
+    body.appendChild(origin);
+    hops.forEach(function (h, i) {
+      var tr = document.createElement('tr');
+      var novel = isNewAt(i);
+      var arrived = h.slug === TARGET.slug || h.country.toLowerCase() === TARGET.country.toLowerCase();
+      if (arrived) tr.className = 'arrive';
+      tr.innerHTML =
+        '<td>' + fromAt(i).city + '</td>' +
+        '<td>' + h.city + '</td>' +
+        '<td class="' + (novel ? 'country' : 'dup') + '">' + h.country + (novel ? '' : ' ↺') + '</td>' +
+        '<td>' + money(h) + '</td>' +
+        '<td>' + (h.date || '<span class="dim">—</span>') + '</td>' +
+        '<td>' + cell(h.airline) + '</td>' +
+        '<td>' + cell(h.flightNo) + '</td>' +
+        '<td>' + cell(h.dep) + '</td>' +
+        '<td>' + cell(h.arr) + '</td>' +
+        '<td>' + cell(h.dur) + '</td>' +
+        '<td><a class="leg" href="' + legLink(i) + '" target="_blank" rel="noopener">↗</a></td>' +
+        '<td><span class="del" data-i="' + i + '">✕</span></td>';
+      body.appendChild(tr);
+    });
+  }
+
+  function renderNext() {
+    var cur = hops.length ? hops[hops.length - 1] : ORIGIN;
+    $('curCity').textContent = cur.city;
+    var arrived = hops.some(function (h) { return h.slug === TARGET.slug || h.country.toLowerCase() === TARGET.country.toLowerCase(); });
+    var links = [
+      { tag: 'EXPLORE', url: 'https://www.kiwi.com/en/search/tiles/' + cur.slug + '/anywhere/anytime/no-return/' + exclSuffix(),
+        t: 'Kiwi tiles · ' + cur.city + ' → anywhere', d: 'Scan the map for the cheapest fare into a country not yet banked.' },
+      { tag: 'LIST', url: 'https://www.kiwi.com/en/search/results/' + cur.slug + '/anywhere/anytime/no-return/' + exclSuffix(),
+        t: 'Kiwi results · ' + cur.city + ' → anywhere', d: 'Same, as a sorted price list.' },
+      { tag: 'EXPLORE', url: 'https://www.google.com/travel/explore?tfs=' + encodeURIComponent(cur.city),
+        t: 'Google Flights · explore from ' + cur.city, d: 'Cross-check + price tracking Kiwi won’t give you.' },
+      { tag: 'FINISH', finish: true, url: kiwi(cur.slug, TARGET.slug),
+        t: 'Kiwi · ' + cur.city + ' → Tenerife (TFS)', d: 'The closing move — must land by Sep 4.' }
+    ];
+    $('nextLinks').innerHTML = links.map(function (l) {
+      return '<a href="' + l.url + '" target="_blank" rel="noopener">' +
+        '<span class="tag' + (l.finish ? ' finish' : '') + '">' + l.tag + '</span> ' + l.t +
+        '<div class="desc">' + l.d + '</div></a>';
+    }).join('');
+
+    var banked = bankedCountries();
+    $('visited').innerHTML = banked.map(function (c) {
+      var isSpain = c.toLowerCase() === TARGET.country.toLowerCase();
+      return '<span class="vc"' + (isSpain && arrived ? ' style="background:var(--target-bg);color:var(--target)"' : '') +
+        '>' + c + (isSpain && arrived ? ' · arrived ✓' : '') + '</span>';
+    }).join('');
+  }
+
+  function renderMap() {
+    var W = 720, H = 460, m = 34;
+    var lonMin = -20, lonMax = 46, latMin = 26, latMax = 62;
+    function px(lon) { return (m + (lon - lonMin) / (lonMax - lonMin) * (W - 2 * m)).toFixed(1); }
+    function py(lat) { return (m + (latMax - lat) / (latMax - latMin) * (H - 2 * m)).toFixed(1); }
+
+    var seq = [ORIGIN].concat(hops);
+    var plotted = [], missing = [];
+    seq.forEach(function (n) {
+      var c = coordOf(n.city);
+      if (c) plotted.push({ x: px(c[1]), y: py(c[0]), label: n.city });
+      else missing.push(n.city);
+    });
+
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Route map">';
+    svg += '<rect x="1" y="1" width="' + (W - 2) + '" height="' + (H - 2) + '" rx="8" fill="var(--map-land)" stroke="var(--map-line)"/>';
+
+    // chain polyline
+    if (plotted.length > 1) {
+      svg += '<polyline fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" points="' +
+        plotted.map(function (p) { return p.x + ',' + p.y; }).join(' ') + '"/>';
+    }
+    // dashed hint to TFS from last plotted point (unless we already landed there)
+    var tfs = coordOf(TARGET.city);
+    var landed = plotted.length && plotted[plotted.length - 1].label.toLowerCase() === TARGET.city.toLowerCase();
+    if (tfs) {
+      var tx = px(tfs[1]), ty = py(tfs[0]);
+      if (plotted.length && !landed) {
+        var last = plotted[plotted.length - 1];
+        svg += '<line x1="' + last.x + '" y1="' + last.y + '" x2="' + tx + '" y2="' + ty +
+          '" stroke="var(--target)" stroke-width="1.5" stroke-dasharray="4 4"/>';
+      }
+      svg += '<path d="M' + tx + ' ' + (ty - 7) + ' l6 6 l-6 6 l-6 -6 z" fill="var(--target)"/>';
+      svg += '<text x="' + tx + '" y="' + (parseFloat(ty) + 20) + '" text-anchor="middle" font-size="11" fill="var(--target)" font-weight="700">TFS</text>';
+    }
+    // chain dots + labels
+    plotted.forEach(function (p, i) {
+      svg += '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (i === 0 ? 5 : 4) + '" fill="var(--accent)"/>';
+      svg += '<text x="' + (parseFloat(p.x) + 7) + '" y="' + (parseFloat(p.y) + 3) + '" font-size="11" fill="var(--ink)">' + p.label + '</text>';
+    });
+    svg += '</svg>';
+
+    $('mapWrap').innerHTML = svg;
+    $('mapNote').textContent = missing.length
+      ? 'Not plotted (no coords): ' + missing.join(', ') + ' — add to COORDS to draw them.'
+      : 'Green = the chain so far · orange ◆ = Tenerife, the finish.';
+  }
+
+  function renderAll() { renderTally(); renderChain(); renderNext(); renderMap(); }
+
+  // add hop — slug auto-fills from city+country until the user edits it
+  var slugTouched = false;
+  $('ah-slug').addEventListener('input', function () { slugTouched = true; });
+  function refreshSlugGuess() {
+    if (slugTouched) return;
+    var c = $('ah-city').value.trim(), k = $('ah-country').value.trim();
+    $('ah-slug').value = (c && k) ? guessSlug(c, k) : '';
+  }
+  $('ah-city').addEventListener('input', refreshSlugGuess);
+  $('ah-country').addEventListener('input', refreshSlugGuess);
+
+  var FIELDS = ['ah-city', 'ah-country', 'ah-price', 'ah-date', 'ah-slug', 'ah-airline', 'ah-flight', 'ah-dep', 'ah-arr', 'ah-dur'];
+  $('addBtn').addEventListener('click', function () {
+    var city = $('ah-city').value.trim(), country = $('ah-country').value.trim();
+    if (!city || !country) { $('ah-city').focus(); return; }
+    var priceRaw = $('ah-price').value.trim();
+    var slug = $('ah-slug').value.trim() || guessSlug(city, country);
+    hops.push({
+      city: city, country: country, slug: slug,
+      price: priceRaw === '' ? null : parseFloat(priceRaw),
+      date: $('ah-date').value || '',
+      airline: $('ah-airline').value.trim(),
+      flightNo: $('ah-flight').value.trim(),
+      dep: $('ah-dep').value.trim(),
+      arr: $('ah-arr').value.trim(),
+      dur: $('ah-dur').value.trim()
+    });
+    writeTrace(hops);
+    FIELDS.forEach(function (id) { $(id).value = ''; });
+    slugTouched = false;
+    renderAll();
+  });
+
+  $('resetBtn').addEventListener('click', function () {
+    if (!confirm('Reset the trace to the seed (Riga → … → Tenerife)? Your edits are lost.')) return;
+    hops = SEED.slice(); writeTrace(hops); renderAll();
+  });
+
+  $('exclFr').checked = excl;
+  $('exclFr').addEventListener('change', function () {
+    excl = this.checked; writeExcl(); renderAll();
+  });
+
+  $('chainBody').addEventListener('click', function (e) {
+    if (!e.target.classList.contains('del')) return;
+    hops.splice(parseInt(e.target.dataset.i, 10), 1);
+    writeTrace(hops); renderAll();
+  });
+
+  $('copyBtn').addEventListener('click', function () {
+    var spend = hops.reduce(function (s, h) { return s + (hasPrice(h) ? parseFloat(h.price) : 0); }, 0);
+    var md = 'Kiwi decision trace — Riga (Aug 17) → Tenerife (Sep 4), maximize countries\n\n' +
+      '| from | to | country | $ | date | airline | flight | dep | arr | dur |\n' +
+      '|---|---|---|---|---|---|---|---|---|---|\n' +
+      hops.map(function (h, i) {
+        return '| ' + fromAt(i).city + ' | ' + h.city + ' | ' + h.country + ' | ' +
+          (hasPrice(h) ? '$' + parseFloat(h.price) : '') + ' | ' + (h.date || '') + ' | ' +
+          (h.airline || '') + ' | ' + (h.flightNo || '') + ' | ' + (h.dep || '') + ' | ' +
+          (h.arr || '') + ' | ' + (h.dur || '') + ' |';
+      }).join('\n') +
+      '\n\n**' + bankedCountries().length + ' countries · $' + spend + ' · ' + hops.length + ' hops**' +
+      (excl ? '  ·  _Ryanair (FR, RK) excluded_' : '');
+    navigator.clipboard.writeText(md).then(function () {
+      $('copyBtn').textContent = 'Copied ✓';
+      setTimeout(function () { $('copyBtn').textContent = 'Copy trace as markdown'; }, 1500);
+    });
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

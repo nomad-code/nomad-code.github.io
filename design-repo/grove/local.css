@@ -1,0 +1,11 @@
+/* grove · local — per-repo overrides. NEVER synced (LOCAL tier).
+
+   grove's other files (reset / tokens / components / viz / motion .css +
+   components.js) are CORE: byte-identical across bob · bpo · bre and
+   auto-copied by scripts/sync-from-bob (see ../../SYNC.md). Do NOT hand-edit
+   a CORE file for a repo-specific tweak — the next sync would flag it as
+   drift, and a whole-dir sync once clobbered exactly that kind of local edit.
+
+   Put any repo-local override HERE instead, then link it after components.css:
+       <link rel="stylesheet" href="../design-repo/grove/local.css">
+   Starts empty on purpose — today there is no legitimate local override. */

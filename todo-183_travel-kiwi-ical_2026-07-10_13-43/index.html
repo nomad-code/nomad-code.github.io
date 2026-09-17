@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travel-kiwi · ical · 16 events → TRAVEL</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1a1a1a; --muted: #6b6b66;
+    --line: #e4e4de; --accent: #0a7d5f; --accent-ink: #ffffff;
+    --new: #0a7d5f; --new-bg: #e6f4ef; --target: #b45309; --target-bg: #fdf0e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15161a; --card: #1e2025; --ink: #ececea; --muted: #9a9a94;
+      --line: #33353c; --accent: #35b58e; --accent-ink: #0e1512;
+      --new: #35b58e; --new-bg: #17342b; --target: #e8a04c; --target-bg: #3a2c17;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.05rem; margin: 32px 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+  .context { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .chip {
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 3px 12px; font-size: .82rem; color: var(--muted); white-space: nowrap;
+  }
+  .chip.target { color: var(--target); border-color: var(--target); }
+  .muted { color: var(--muted); font-size: .85rem; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .stat {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; text-align: center;
+  }
+  .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+  .stat .l { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+  @media (max-width: 520px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* timeline */
+  .leg {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 10px;
+    display: grid; grid-template-columns: 84px 1fr auto; gap: 4px 14px; align-items: baseline;
+  }
+  .leg .date { color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
+  .leg .route { font-weight: 600; }
+  .leg .route a { color: var(--accent); text-decoration: none; }
+  .leg .price { font-weight: 700; color: var(--new); font-variant-numeric: tabular-nums; }
+  .leg .times { grid-column: 2 / 4; color: var(--muted); font-size: .87rem; font-variant-numeric: tabular-nums; }
+  .leg .times b { color: var(--ink); font-weight: 600; }
+  .leg.stay { border-style: dashed; padding: 9px 16px; }
+  .leg.stay .route { font-weight: 500; }
+  .leg.gap { border-color: var(--target); background: var(--target-bg); }
+  .leg.gap .route, .leg.gap .times { color: var(--target); }
+  @media (max-width: 520px) {
+    .leg { grid-template-columns: 1fr auto; }
+    .leg .date { grid-column: 1 / 3; }
+    .leg .times { grid-column: 1 / 3; }
+  }
+
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; font-size: .78rem; }
+  td.tz { color: var(--new); }
+  code {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    padding: 1px 6px; font-size: .82em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>travel-kiwi → iCal</h1>
+  <p class="sub">TODO-183 · 16 events written to the <strong>TRAVEL</strong> calendar (Google, via EventKit) · 2026-07-10</p>
+  <div class="context">
+    <span class="chip">Aug 18 → Sep 4, 2026</span>
+    <span class="chip">8 flights · $931</span>
+    <span class="chip">8 city markers</span>
+    <span class="chip target">Sofia → Bucharest ground leg TBD</span>
+  </div>
+
+  <h2>Totals</h2>
+  <div class="stats">
+    <div class="stat"><div class="n">8</div><div class="l">flights</div></div>
+    <div class="stat"><div class="n">$931</div><div class="l">airfare</div></div>
+    <div class="stat"><div class="n">18d</div><div class="l">Riga → Tenerife</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">timezone rows</div></div>
+  </div>
+
+  <h2>Itinerary</h2>
+
+  <div class="leg">
+    <span class="date">Tue 08-18</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/riga-latvia/vilnius-vilnius-lithuania/2026-08-18/no-return/?airlinesList=FR%2CRK&amp;selectedAirlinesExclude=true">Riga → Vilnius</a></span>
+    <span class="price">$56</span>
+    <span class="times">dep <b>20:00</b> Riga · 55m · arr <b>20:55</b> Vilnius (both UTC+3)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Tue 08-18</span>
+    <span class="route">Vilnius 🇱🇹</span><span></span>
+  </div>
+
+  <div class="leg">
+    <span class="date">Wed 08-19</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/vilnius-vilnius-lithuania/tallinn-tallinn-estonia/2026-08-19/no-return/?times=12-24-0-24&amp;airlinesList=RK%2CFR&amp;selectedAirlinesExclude=true">Vilnius → Tallinn</a></span>
+    <span class="price">$64</span>
+    <span class="times">dep <b>22:55</b> Vilnius · 1h10m · arr <b>00:05 +1</b> Tallinn (both UTC+3, crosses midnight)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Thu 08-20</span>
+    <span class="route">Tallinn 🇪🇪</span><span></span>
+  </div>
+
+  <div class="leg">
+    <span class="date">Fri 08-21</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/tallinn-estonia/tirana-albania/2026-08-21/no-return/?stopNumber=0%7Etrue&amp;airlinesList=RK%2CFR&amp;selectedAirlinesExclude=true">Tallinn → Tirana</a></span>
+    <span class="price">$157</span>
+    <span class="times">dep <b>10:35</b> Tallinn (UTC+3) · 3h20m · arr <b>12:55</b> Tirana (UTC+2, −1h)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Fri 08-21</span>
+    <span class="route">Tirana 🇦🇱</span><span></span>
+  </div>
+
+  <div class="leg">
+    <span class="date">Sat 08-22</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/tirana-albania/malta-malta/2026-08-22/no-return/?stopNumber=0%7Etrue&amp;airlinesList=RK%2CFR&amp;selectedAirlinesExclude=true">Tirana → Malta</a></span>
+    <span class="price">$103</span>
+    <span class="times">dep <b>15:25</b> Tirana · 3h05m · arr <b>18:30</b> Malta (both UTC+2)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Sat 08-22</span>
+    <span class="route">Malta 🇲🇹</span><span></span>
+  </div>
+
+  <div class="leg">
+    <span class="date">Mon 08-24</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/malta-malta/milan-italy/2026-08-24_2026-08-25/no-return/?airlinesList=RK%2CFR&amp;selectedAirlinesExclude=true">Malta → Milan</a></span>
+    <span class="price">$94</span>
+    <span class="times">dep <b>12:45</b> Malta · 2h · arr <b>14:45</b> Milan (both UTC+2)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Mon 08-24</span>
+    <span class="route">Milan 🇮🇹</span><span></span>
+  </div>
+
+  <div class="leg">
+    <span class="date">Wed 08-26</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/milan-italy/larnaca-cyprus/2026-08-26/no-return/?stopNumber=0%7Etrue">Milan → Larnaca</a></span>
+    <span class="price">$110</span>
+    <span class="times">dep <b>18:00</b> Milan (UTC+2) · 3h30m · arr <b>22:30</b> Larnaca (UTC+3, +1h)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Wed 08-26</span>
+    <span class="route">Larnaca 🇨🇾</span><span></span>
+  </div>
+
+  <div class="leg">
+    <span class="date">Sat 08-29</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/larnaca-cyprus/sofia-bulgaria/2026-08-29/no-return/?stopNumber=0%7Etrue">Larnaca → Sofia</a></span>
+    <span class="price">$50</span>
+    <span class="times">dep <b>16:05</b> Larnaca · 2h25m · arr <b>18:30</b> Sofia (both UTC+3)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Sat 08-29</span>
+    <span class="route">Sofia 🇧🇬</span><span></span>
+  </div>
+
+  <div class="leg gap">
+    <span class="date">08-29 → 09-04</span>
+    <span class="route">🚌 Sofia → Bucharest · TRAIN/BUS/IDK</span><span></span>
+    <span class="times">not calendared — dates unknown, decide before booking</span>
+  </div>
+
+  <div class="leg">
+    <span class="date">Fri 09-04</span>
+    <span class="route">✈️ <a href="https://www.kiwi.com/en/search/results/henri-coanda-international-bucharest-romania/tenerife-spain/2026-09-04/no-return/?stopNumber=0%7Etrue">Bucharest (OTP) → Tenerife</a></span>
+    <span class="price">$297</span>
+    <span class="times">dep <b>12:00</b> Bucharest (UTC+3) · 6h15m · arr <b>16:15</b> Tenerife (UTC+1, −2h)</span>
+  </div>
+  <div class="leg stay">
+    <span class="date">Fri 09-04</span>
+    <span class="route">Tenerife 🇮🇨</span><span></span>
+  </div>
+
+  <h2>Timezone verification</h2>
+  <p class="sub">Each flight stored with the origin IANA zone; UTC instants read back from <code>Calendar.sqlitedb</code> after commit.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>leg</th><th>start_tz</th><th>UTC start–end</th><th>local dep</th></tr></thead>
+      <tbody>
+        <tr><td>Riga → Vilnius</td><td class="tz">Europe/Riga</td><td>08-18 17:00–17:55</td><td>20:00 (+3)</td></tr>
+        <tr><td>Vilnius → Tallinn</td><td class="tz">Europe/Vilnius</td><td>08-19 19:55–21:05</td><td>22:55 (+3)</td></tr>
+        <tr><td>Tallinn → Tirana</td><td class="tz">Europe/Tallinn</td><td>08-21 07:35–10:55</td><td>10:35 (+3)</td></tr>
+        <tr><td>Tirana → Malta</td><td class="tz">Europe/Tirane</td><td>08-22 13:25–16:30</td><td>15:25 (+2)</td></tr>
+        <tr><td>Malta → Milan</td><td class="tz">Europe/Malta</td><td>08-24 10:45–12:45</td><td>12:45 (+2)</td></tr>
+        <tr><td>Milan → Larnaca</td><td class="tz">Europe/Rome</td><td>08-26 16:00–19:30</td><td>18:00 (+2)</td></tr>
+        <tr><td>Larnaca → Sofia</td><td class="tz">Asia/Nicosia</td><td>08-29 13:05–15:30</td><td>16:05 (+3)</td></tr>
+        <tr><td>Bucharest → Tenerife</td><td class="tz">Europe/Bucharest</td><td>09-04 09:00–15:15</td><td>12:00 (+3)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Tooling</h2>
+  <p class="muted">
+    New <code>cal-add</code> (EventKit, Swift) at
+    <code>wip/sandbox/todo-183-travel-kiwi-ical/</code> — reads
+    <code>events.json</code>, dry-run by default, <code>--commit</code> writes and
+    records UUIDs to <code>uuids.txt</code>. Undo path: existing
+    <code>cal-delete uuids.txt --commit</code> (todo-93). Events carry a
+    <code>todo-183</code> note marker. City markers are floating all-day
+    events, matching the TRAVEL 2024 Q2 style.
+  </p>
+</main>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#153f35">
+  <title>TODO-352 · Mobal eSIM handoff</title>
+  <meta name="description" content="Redacted completion record and live checklist for moving a Mobal Voice+Data eSIM to a new iPhone.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f2f0e6;--ink:#14231f;--muted:#64706b;--forest:#153f35;--lime:#c9f36a;--line:#d2d7cd;--card:#fffdf7;--amber:#d7902c;--blue:#4a8aa0}
+    *{box-sizing:border-box}html{background:var(--paper)}body{margin:0;color:var(--ink);background:radial-gradient(circle at 88% 0,#dcebd7 0,transparent 30rem),var(--paper);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(calc(100% - 28px),820px);margin:auto;padding:42px 0 72px}.eyebrow,.label{font:750 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:var(--forest)}
+    h1{max-width:760px;margin:12px 0 14px;font:750 clamp(39px,9vw,76px)/.94 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.065em}.lede{max-width:660px;margin:0 0 26px;color:var(--muted);font-size:18px}
+    .status{position:sticky;top:10px;z-index:2;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;background:color-mix(in srgb,var(--forest) 95%,transparent);color:white;box-shadow:0 10px 35px #143b3030;backdrop-filter:blur(10px)}
+    .status strong{font:750 13px/1.2 ui-monospace,SFMono-Regular,monospace}.bar{height:7px;margin-top:8px;overflow:hidden;border-radius:99px;background:#ffffff25}.bar span{display:block;width:0;height:100%;border-radius:inherit;background:var(--lime);transition:width .25s ease}.pct{font:800 24px/1 ui-monospace,SFMono-Regular,monospace;color:var(--lime)}
+    .boundary{margin:24px 0 12px;padding:18px;border:1px solid #e0c796;border-left:5px solid var(--amber);border-radius:12px;background:#fff9eb}.boundary b{display:block;margin-bottom:4px}.boundary p{margin:0;color:#6b562c}
+    .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}.fact{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card)}.fact strong{display:block;margin-top:5px;font-size:18px;letter-spacing:-.02em}.fact span{color:var(--muted);font-size:13px}
+    .phase{margin-top:30px}.phase-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:10px}.phase h2{margin:5px 0 0;font-size:25px;letter-spacing:-.025em}.phase small{color:var(--muted)}
+    .list{overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--card)}.item{display:grid;grid-template-columns:30px 1fr;gap:13px;padding:17px;border-bottom:1px solid var(--line);cursor:pointer}.item:last-child{border-bottom:0}.item:hover{background:#f7f7ee}.item input{position:absolute;opacity:0;pointer-events:none}.box{display:grid;place-items:center;width:28px;height:28px;border:2px solid #93a39b;border-radius:8px;color:transparent;font-weight:900;transition:.15s}.item:has(input:checked) .box{border-color:var(--forest);background:var(--forest);color:var(--lime)}.item:has(input:checked) .copy{text-decoration:line-through;text-decoration-color:#71817a;color:#71817a}.copy b{display:block;margin-bottom:2px}.copy span{color:var(--muted);font-size:14px}
+    .privacy{margin-top:30px;padding:20px;border-radius:16px;background:#e2ecee}.privacy h2{margin:5px 0 8px}.privacy p{margin:0;color:#41575e}.controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}button,a.button{appearance:none;border:0;border-radius:999px;padding:11px 15px;background:var(--forest);color:white;font-weight:750;text-decoration:none;cursor:pointer}.secondary{background:transparent!important;color:var(--forest)!important;border:1px solid var(--forest)!important}.sources{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.sources a{color:var(--forest);font-weight:700}footer{display:flex;justify-content:space-between;gap:20px;margin-top:42px;color:var(--muted);font:12px/1.4 ui-monospace,SFMono-Regular,monospace}
+    @media(max-width:640px){main{padding-top:28px}.status{top:6px}.facts{grid-template-columns:1fr}.phase-head{align-items:start;flex-direction:column;gap:2px}footer{flex-direction:column;gap:5px}.item{padding:16px 14px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / bpo · TODO-352</div>
+  <h1>Keep the number.<br>Move the line.</h1>
+  <p class="lede">A redacted handoff record for reissuing the active Mobal Japan Voice+Data eSIM from i15p to Grayson’s i16p—without publishing the phone, account, EID, IMEI, or payment identifiers.</p>
+
+  <section class="status" aria-live="polite">
+    <div><strong id="count">0 of 10 checks complete</strong><div class="bar"><span id="bar"></span></div></div>
+    <div class="pct" id="pct">0%</div>
+  </section>
+
+  <aside class="boundary">
+    <b>Recorded boundary</b>
+    <p>The final order screen was reviewed. Submission, carrier provisioning, installation, and live-network verification were not evidenced in this session.</p>
+  </aside>
+
+  <div class="facts">
+    <div class="fact"><div class="label">Line</div><strong>Voice + Data</strong><span>Active ongoing plan</span></div>
+    <div class="fact"><div class="label">Replacement</div><strong>5G eSIM</strong><span>Keeps current number</span></div>
+    <div class="fact"><div class="label">Claim</div><strong>¥200 today</strong><span>Credited on next bill</span></div>
+  </div>
+
+  <section class="phase">
+    <div class="phase-head"><div><div class="label">01 · Verified</div><h2>The safe path is selected</h2></div><small>Captured privately in Linear.</small></div>
+    <div class="list">
+      <label class="item"><input type="checkbox" checked><span class="box">✓</span><span class="copy"><b>Choose eSIM — 5G</b><span>The Mobal option explicitly marked “Keeps your number.”</span></span></label>
+      <label class="item"><input type="checkbox" checked><span class="box">✓</span><span class="copy"><b>Use the protection claim</b><span>One free replacement in the renewal period; ¥200 returns as billing credit.</span></span></label>
+      <label class="item"><input type="checkbox" checked><span class="box">✓</span><span class="copy"><b>Select New device</b><span>The replacement is bound to the destination iPhone—not the old device.</span></span></label>
+      <label class="item"><input type="checkbox" checked><span class="box">✓</span><span class="copy"><b>Supply the destination EID</b><span>The new iPhone’s 32-digit EID was captured for the replacement request.</span></span></label>
+      <label class="item"><input type="checkbox" checked><span class="box">✓</span><span class="copy"><b>Review the order summary</b><span>5G eSIM, number retained, free replacement, ¥200 due today.</span></span></label>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="phase-head"><div><div class="label">02 · Remaining</div><h2>Provision, install, prove</h2></div><small>Do not erase the old phone yet.</small></div>
+    <div class="list">
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Confirm &amp; Pay</b><span>Submit the ¥200 claim fee using the payment method shown in Mobal.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Wait for Mobal / Docomo provisioning</b><span>Allow up to 24 hours for the email or carrier notification.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Install on Wi-Fi</b><span>Install only on the destination iPhone. If activation is still pending, do not delete the eSIM.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Set line labels and defaults</b><span>Keep Grayson’s usual voice/data defaults unless the Mobal line should replace them.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Verify the number live</b><span>Test inbound and outbound calls, carrier SMS, and cellular data before changing the old phone.</span></span></label>
+    </div>
+  </section>
+
+  <section class="privacy">
+    <div class="label">Evidence boundary</div>
+    <h2>Five originals, private by design</h2>
+    <p>The Mobal account, selection flow, destination identifiers, and final order summary are embedded in the private Linear ticket. This artifact carries conclusions only; no device or account identifiers are reproduced here.</p>
+  </section>
+
+  <div class="controls">
+    <button id="copy">Copy remaining runbook</button>
+    <button class="secondary" id="reset">Reset checks</button>
+    <a class="button secondary" href="https://linear.app/nomad-code/issue/TODO-352/zyxphone-mobal-esim-i15p-to-graywaai16p">Open private evidence ↗</a>
+  </div>
+
+  <div class="sources">Official reference: <a href="https://helpdesk.mobal.com/support/solutions/articles/205000042845-new-phone-transferring-esim-sim-card">Mobal · New Phone—Transferring eSIM / SIM Card</a></div>
+  <footer><span>TODO_352-ZYX/phone-mobal-esim_i15p_to_graywaa@i16p</span><span>2026-08-04 · 08:05 Z</span></footer>
+</main>
+<script>
+  const key='todo-352-mobal-esim-v1';
+  const checks=[...document.querySelectorAll('input[type="checkbox"]')];
+  const defaults=checks.map(x=>x.checked);
+  const count=document.getElementById('count'),pct=document.getElementById('pct'),bar=document.getElementById('bar');
+  function render(){const n=checks.filter(x=>x.checked).length,p=Math.round(n/checks.length*100);count.textContent=`${n} of ${checks.length} checks complete`;pct.textContent=`${p}%`;bar.style.width=`${p}%`;try{localStorage.setItem(key,JSON.stringify(checks.map(x=>x.checked)))}catch(e){}}
+  try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(Array.isArray(saved))checks.forEach((x,i)=>x.checked=!!saved[i])}catch(e){}
+  checks.forEach(x=>x.addEventListener('change',render));render();
+  document.getElementById('reset').onclick=()=>{if(confirm('Reset to the recorded session boundary?')){checks.forEach((x,i)=>x.checked=defaults[i]);render()}};
+  document.getElementById('copy').onclick=async function(){const text=`Mobal eSIM · remaining steps\n1. Confirm & Pay the ¥200 claim fee.\n2. Wait up to 24 hours for Mobal/Docomo provisioning.\n3. Install the replacement eSIM on the destination iPhone while on Wi-Fi.\n4. Set Cellular line labels and voice/data defaults.\n5. Test inbound/outbound calls, carrier SMS, and cellular data.\n6. Keep the old phone unchanged until the new line passes every test.`;await navigator.clipboard.writeText(text);const old=this.textContent;this.textContent='Copied ✓';setTimeout(()=>this.textContent=old,1400)};
+</script>
+</body>
+</html>

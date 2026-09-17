@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The gap is squat · CPH 2026 field · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--us:#b85339;--field:#a9b3ac;--best:#176b78;--accent:#c59a45}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(960px,calc(100% - 36px));margin:auto;padding:40px 0 58px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(38px,6.4vw,68px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:13ch;margin:16px 0}
+h1 em{color:var(--us);font-weight:400}
+.lede{max-width:70ch;font-size:17px;line-height:1.62;color:#43534a}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:24px 0}
+.m{margin:0 0 18px}.m:last-child{margin-bottom:0}
+.mt{font-size:13px;font-weight:700;margin-bottom:9px}
+.bar{display:grid;grid-template-columns:52px minmax(20px,1fr) 96px;align-items:center;gap:9px;margin:6px 0;font:700 10px ui-monospace,monospace;color:var(--muted)}
+.bar i{display:block;height:10px;border-radius:8px;min-width:3px}
+.bar i.us{background:var(--us)}.bar i.field{background:var(--field)}.bar i.best{background:var(--best)}
+.bar b{font:600 11px ui-monospace,monospace;color:var(--ink)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font:700 11px ui-monospace,monospace;color:var(--muted);margin:0 0 4px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:22px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ul{margin:0;padding-left:18px;line-height:1.65;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · CPH 2026 field context · Pro · Male · pairs</div>
+<h1>One block<br><em>bought the result.</em></h1>
+<p class="lede">Us against the sixteen-pair Pro Male cohort at Copenhagen. Bars are share of the field best, so longer is better in every row except MetCon X, where the clock is inverted to keep the reading consistent.</p>
+<div class="legend"><span><i style="background:#b85339"></i>us</span><span><i style="background:#a9b3ac"></i>field median</span><span><i style="background:#176b78"></i>field best</span></div>
+<div class="panel">
+<div class="m"><div class="mt">Strength total — 16 of 16</div>
+<div class="bar"><span>US</span><i class="us" style="width:63.5%"></i><b>649 KG</b></div>
+<div class="bar"><span>MED</span><i class="field" style="width:80.9%"></i><b>827 KG</b></div>
+<div class="bar"><span>BEST</span><i class="best" style="width:100%"></i><b>1022 KG</b></div></div>
+<div class="m"><div class="mt">3RM back squat — 16 of 16 · the worst-placed block</div>
+<div class="bar"><span>US</span><i class="us" style="width:57.9%"></i><b>220 KG</b></div>
+<div class="bar"><span>MED</span><i class="field" style="width:80.3%"></i><b>305 KG</b></div>
+<div class="bar"><span>BEST</span><i class="best" style="width:100%"></i><b>380 KG</b></div></div>
+<div class="m"><div class="mt">1RM strict press — 15 of 16</div>
+<div class="bar"><span>US</span><i class="us" style="width:70.9%"></i><b>129 KG</b></div>
+<div class="bar"><span>MED</span><i class="field" style="width:89.0%"></i><b>162 KG</b></div>
+<div class="bar"><span>BEST</span><i class="best" style="width:100%"></i><b>182 KG</b></div></div>
+<div class="m"><div class="mt">5RM deadlift — 15 of 16</div>
+<div class="bar"><span>US</span><i class="us" style="width:65.2%"></i><b>300 KG</b></div>
+<div class="bar"><span>MED</span><i class="field" style="width:79.9%"></i><b>367.5 KG</b></div>
+<div class="bar"><span>BEST</span><i class="best" style="width:100%"></i><b>460 KG</b></div></div>
+<div class="m"><div class="mt">Endurance run — 7 of 17 · above the median</div>
+<div class="bar"><span>US</span><i class="us" style="width:89.8%"></i><b>4.421 KM</b></div>
+<div class="bar"><span>MED</span><i class="field" style="width:89.1%"></i><b>4.384 KM</b></div>
+<div class="bar"><span>BEST</span><i class="best" style="width:100%"></i><b>4.921 KM</b></div></div>
+<div class="m"><div class="mt">Endurance row — 14 of 17</div>
+<div class="bar"><span>US</span><i class="us" style="width:87.8%"></i><b>5.416 KM</b></div>
+<div class="bar"><span>MED</span><i class="field" style="width:92.7%"></i><b>5.714 KM</b></div>
+<div class="bar"><span>BEST</span><i class="best" style="width:100%"></i><b>6.165 KM</b></div></div>
+<div class="m"><div class="mt">MetCon X — 14 of 17 · inverted (best clock = full bar)</div>
+<div class="bar"><span>US</span><i class="us" style="width:67.8%"></i><b>20:28</b></div>
+<div class="bar"><span>MED</span><i class="field" style="width:87.4%"></i><b>15:52</b></div>
+<div class="bar"><span>BEST</span><i class="best" style="width:100%"></i><b>13:52</b></div></div>
+</div>
+<div class="rules"><h3>What to train, in priority order</h3><ul>
+<li><b>Squat first.</b> Dead last in the cohort, 85 KG under the median pair on a 3RM. It is the cheapest rank to buy back.</li>
+<li><b>Points are rank sums.</b> Strength went from 16th; endurance from 11th. Lifting strength to mid-pack is worth roughly five overall places — a comparable endurance gain is worth one or two.</li>
+<li><b>The run stays as-is.</b> 4.421 KM is the only score above field median; row is the softer half of the endurance block.</li>
+<li><b>MetCon X follows strength.</b> 4:36 off the median clock with the field's weakest lifts reads as a load ceiling, not an engine ceiling.</li>
+</ul></div>
+<footer>Cohort: ATHX COPENHAGEN 2026 · ATHX Pro · Male · pairs (16 placings, 17 pairs on the workout views) · source <code>projects/fit-athx/warehouse/cph-2026/</code> · pulled 2026-08-17 with <code>bob/athx</code></footer>
+</main></body></html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-313 · dha-nmc_sync_bug</title>
+  <meta name="description" content="Mirror sync restored: missing secret + checkout credential override">
+<!-- bre password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6;--red:#a63d2f}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 32px,940px);margin:auto;padding:54px 0 70px}.eyebrow,.k{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}
+    h1{margin:14px 0 12px;font:700 clamp(34px,7vw,66px)/.98 ui-monospace,monospace;letter-spacing:-.055em}.lede{max-width:680px;color:var(--muted);font-size:18px}
+    .address{margin-top:24px;padding:15px 17px;border-radius:12px;background:var(--ink);color:#fff;font:700 clamp(14px,2.6vw,19px)/1.3 ui-monospace,monospace;overflow-wrap:anywhere}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}.card{padding:20px;border:1px solid var(--line);border-radius:15px;background:var(--card)}.card h2{font-size:18px;margin:8px 0}.card p{color:var(--muted);margin:0}
+    .card.bug .k{color:var(--red)}
+    .checks{margin-top:28px;padding:22px;border-radius:16px;background:var(--forest);color:#fff}.check{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #ffffff25}.check:last-child{border:0}.dot{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900}
+    .sha{font:700 12px/1.4 ui-monospace,monospace;background:#ffffff18;border-radius:8px;padding:2px 8px}
+    a{color:inherit}footer{display:flex;justify-content:space-between;gap:14px;margin-top:38px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">nomad-code / dha · iOS mirror plumbing</div>
+    <h1>mirror sync restored</h1>
+    <p class="lede">The hourly <code>sync-upstream</code> job on the nomad-code mirror of <code>dhammaorg/portal-v2</code> had never once run green. Two independent faults stacked: the upstream credential was never minted, and a checkout default silently overrode it once it was.</p>
+    <div class="address">TODO-313 · dha-nmc_sync_bug</div>
+    <section class="grid">
+      <article class="card bug"><div class="k">Bug 1 · secret</div><h2>Token never minted</h2><p><code>UPSTREAM_TOKEN</code> was an unchecked box since setup. The org blocks fine-grained PATs, so a fresh classic PAT — <code>repo</code> scope only, 90-day expiry — went in via a clipboard-to-sealed-box script; the token never touched the transcript.</p></article>
+      <article class="card bug"><div class="k">Bug 2 · workflow</div><h2>Checkout override</h2><p><code>actions/checkout</code> persists its own auth header into git config by default. That header outranks the token in the fetch URL, so upstream fetches hit a 404 wall as <code>GITHUB_TOKEN</code>. A clean-runner probe proved the token itself was fine.</p></article>
+      <article class="card"><div class="k">Fix</div><h2>Explicit token URLs</h2><p>Both workflows now check out with <code>persist-credentials:&nbsp;false</code>, and every remote operation names its token in the URL — upstream via the PAT, the mirror push via <code>GITHUB_TOKEN</code>.</p></article>
+    </section>
+    <section class="checks">
+      <div class="k" style="color:var(--lime)">Verified</div>
+      <div class="check"><span class="dot">1</span><div><b>Run #20 green</b><br>First successful <code>sync-upstream</code> in the mirror's history, via manual dispatch after the patch.</div></div>
+      <div class="check"><span class="dot">2</span><div><b>Exact parity</b><br>Mirror and upstream <code>main</code> both at <span class="sha">c5e1ca5</span> — a week of drift from seed <span class="sha">a8d1dd5</span> erased.</div></div>
+      <div class="check"><span class="dot">3</span><div><b>publish-upstream pre-fixed</b><br>The same credential-override bug was latent in the upstream hop; patched before it ever fired.</div></div>
+    </section>
+    <footer><a href="https://linear.app/nomad-code/issue/TODO-313/dha-nmc-sync-bug">TODO-313 ↗</a><span>2026-07-28 · hourly cron resumes at :17</span></footer>
+  </main>
+</body>
+</html>

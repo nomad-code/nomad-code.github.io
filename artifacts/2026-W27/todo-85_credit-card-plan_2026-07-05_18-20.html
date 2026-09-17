@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-85 · credit-card-plan · Five Cards, Zero Lock-In</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 78px 24px 72px; }
+  .hero { margin-bottom: 26px; }
+
+  /* verdict pills */
+  .vpill { display:inline-block; min-width:86px; text-align:center; padding:4px 12px;
+           border-radius:var(--r-pill); font-family:var(--font-mono); font-size:11px;
+           letter-spacing:.05em; text-transform:uppercase; font-weight:600; }
+  .vpill.get  { background:var(--forest); color:#fff; }
+  .vpill.keep { background:var(--g-lime); color:var(--forest-d); }
+  .vpill.down { background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-bd); }
+  .vpill.skip { background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn-bd); }
+
+  table.dt td.why { font-family:var(--font-ui); font-size:12.5px; color:var(--body);
+                    text-align:left; line-height:1.45; max-width:400px; }
+  table.dt td.cardname { font-family:var(--font-ui); font-weight:700; text-align:left; font-size:13.5px; }
+  table.dt td.cardname small { display:block; font-weight:500; color:var(--muted); font-size:10.5px; margin-top:2px; }
+
+  /* fee-vs-value paired bars */
+  .fee-chart { display:flex; flex-direction:column; gap:20px; }
+  .fee-leg { display:flex; gap:22px; margin-bottom:4px; font-family:var(--font-mono);
+             font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+  .fee-leg i { width:15px; height:10px; border-radius:3px; display:inline-block;
+               vertical-align:-1px; margin-right:7px; }
+  .frow { display:grid; grid-template-columns:170px 1fr; gap:16px; align-items:center;
+          padding:6px 8px; border-radius:var(--r-tile); transition:background .2s; }
+  .frow:hover { background:var(--well); }
+  .frow-name { font-size:13.5px; font-weight:700; line-height:1.3; }
+  .frow-name small { display:block; font-family:var(--font-mono); font-size:9.5px;
+                     color:var(--muted); font-weight:400; margin-top:2px; }
+  .frow-bars { display:flex; flex-direction:column; gap:5px; }
+  .fbar { display:flex; align-items:center; gap:10px; height:16px; }
+  .fbar .seg { height:12px; width:0; border-radius:3px; transition:width 1s var(--ease); }
+  .fbar .seg.fee   { background:#c1502e; }
+  .fbar .seg.val   { background:#0a8a76; }
+  .fbar .seg.soft  { background:#0a8a76; opacity:.45; border-radius:0 3px 3px 0; margin-left:-8px; padding-left:8px; box-sizing:content-box; }
+  .fbar .lab { font-family:var(--font-mono); font-size:11px; color:var(--ink); white-space:nowrap; }
+  .fbar .lab i { font-style:normal; color:var(--muted); }
+
+  /* timeline */
+  .steps { display:flex; flex-direction:column; gap:0; counter-reset:step; }
+  .step { display:grid; grid-template-columns:44px 1fr; gap:16px; padding:16px 4px;
+          border-bottom:1px solid var(--line); }
+  .step:last-child { border-bottom:0; }
+  .step .n { counter-increment:step; width:32px; height:32px; border-radius:10px;
+             background:var(--forest); color:#fff; display:flex; align-items:center;
+             justify-content:center; font-family:var(--font-mono); font-size:13px; font-weight:500; }
+  .step .n::before { content:counter(step); }
+  .step h4 { font-size:14.5px; font-weight:740; letter-spacing:-.01em; margin:5px 0 4px; }
+  .step h4 .when { font-family:var(--font-mono); font-size:10px; letter-spacing:.06em;
+                   text-transform:uppercase; color:var(--warn); font-weight:500; margin-left:8px; }
+  .step p { font-size:13px; line-height:1.55; color:var(--body); }
+  .step p b { color:var(--ink); }
+
+  /* do / don't */
+  .dodont { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:720px){ .dodont { grid-template-columns:1fr; } .frow { grid-template-columns:1fr; } }
+  .dd { border-radius:var(--r-card); padding:20px 22px; border:1px solid; }
+  .dd.do   { background:linear-gradient(180deg,#fff,#f6fbf6); border-color:#bcd9bf; }
+  .dd.dont { background:linear-gradient(180deg,#fff,#fbf5f2); border-color:var(--warn-bd); }
+  .dd h4 { font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em;
+           text-transform:uppercase; font-weight:600; margin-bottom:12px; }
+  .dd.do h4 { color:var(--forest-d); } .dd.dont h4 { color:var(--warn); }
+  .dd ul { list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .dd li { font-size:13px; line-height:1.5; color:var(--body); padding-left:20px; position:relative; }
+  .dd li::before { position:absolute; left:0; font-weight:800; }
+  .dd.do li::before { content:"✓"; color:var(--forest); }
+  .dd.dont li::before { content:"✕"; color:var(--warn); }
+  .dd li b { color:var(--ink); }
+
+  .callout { background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:var(--r-panel);
+             padding:16px 20px; font-size:13px; line-height:1.6; color:var(--body); margin-top:16px; }
+  .callout b { color:var(--warn); }
+  .callout.blue { background:var(--found-bg); border-color:var(--found-bd); }
+  .callout.blue b { color:var(--found-d); }
+
+  section { margin-top:54px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx">TODO-85 · credit-card-plan</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-05 · ccw</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="hero reveal">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>TODO-85 · fleet strategy · researched live 2026-07-05</div>
+      <h1>Five cards.<br>Two lounge keys.<br><span class="em">Zero lock-in.</span></h1>
+      <p class="hero-sub"><b>Get the Aspire and the Citi AA Executive. Keep Venture X, Ink Preferred, Savor.
+      Downgrade Sapphire — don't cancel it.</b> Skip Platinum, United Club, and every other hotel card.
+      The VA address is fine. Everything below has a 12-month escape hatch.</p>
+      <div class="hero-chips">
+        <span class="hchip v">Aspire 175k offer ends 7/29</span>
+        <span class="hchip v">Admirals Club works on standby</span>
+        <span class="hchip q">UR→Hyatt drops to 4:3 on Oct 1</span>
+      </div>
+    </div>
+    <div class="bignum">
+      <div class="n">+$314<span class="u">/yr</span></div>
+      <div class="cap">realistic value back <b>minus every annual fee</b> — before a single point is earned</div>
+      <div class="leak"><span class="v">$1,635</span><span class="l">total<br>annual fees</span></div>
+    </div>
+  </div>
+
+  <div class="kpis reveal">
+    <div class="kpi"><div class="kpi-n num">$1,949</div><div class="kpi-l">realistic credits + free night back</div></div>
+    <div class="kpi"><div class="kpi-n">Diamond</div><div class="kpi-l">Hilton status, automatic, day one</div></div>
+    <div class="kpi"><div class="kpi-n">$850<span class="u">value</span></div><div class="kpi-l">Admirals Club full membership</div></div>
+    <div class="kpi"><div class="kpi-n">+2</div><div class="kpi-l">5/24 slots used (both new cards are personal)</div></div>
+  </div>
+
+  <!-- ═══════════ 01 · THE FLEET ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">01 · the fleet</span><span class="sec-n">verdict per card</span></div>
+    <h2 class="sec-title">Every card, one move</h2>
+    <p class="lede">Each role gets exactly one card: <b>hotel anchor</b> (Aspire), <b>lounge key</b> (Citi AA Exec),
+    <b>catch-all</b> (Venture X), <b>points gateway</b> (Ink), <b>food</b> (Savor). Anything holding a seat
+    without a job gets downgraded or skipped.</p>
+
+    <div class="tw" style="margin-top:18px">
+      <table class="dt">
+        <thead><tr><th class="l">Card</th><th class="l">Move</th><th>AF</th><th class="l">Why</th></tr></thead>
+        <tbody>
+          <tr><td class="cardname">Hilton Aspire <small>Amex · new</small></td>
+              <td class="l"><span class="vpill get">get</span></td><td class="num">$550</td>
+              <td class="why">Diamond auto, $400 resort + $200 flight + $209 CLEAR credits, uncapped free night. Apply before <b>7/29</b> — 175k offer is top of its historical range.</td></tr>
+          <tr><td class="cardname">Citi AA Executive <small>Citi · new</small></td>
+              <td class="l"><span class="vpill get">get</span></td><td class="num">$595</td>
+              <td class="why">Full Admirals Club membership ($850) — and it works with a non-rev standby boarding pass on AA metal. $360 in credits nets the fee to ~$235.</td></tr>
+          <tr><td class="cardname">Venture X <small>Capital One</small></td>
+              <td class="l"><span class="vpill keep">keep</span></td><td class="num">$395</td>
+              <td class="why">$300 credit + 10k miles ≈ wash. C1 Lounges/Landings + the good Priority Pass (restaurants included — Amex's excludes them).</td></tr>
+          <tr><td class="cardname">Ink Preferred <small>Chase · business</small></td>
+              <td class="l"><span class="vpill keep">keep</span></td><td class="num">$95</td>
+              <td class="why">3x travel/ads, and it alone keeps the whole UR pool transferable — no Sapphire required. Off the personal report.</td></tr>
+          <tr><td class="cardname">Savor <small>Capital One · $0</small></td>
+              <td class="l"><span class="vpill keep">keep</span></td><td class="num">$0</td>
+              <td class="why">3% dining + grocery + entertainment, and the Duo converts it 1:1 into Venture X miles. The anti-cancel card.</td></tr>
+          <tr><td class="cardname">Sapphire Preferred <small>Chase</small></td>
+              <td class="l"><span class="vpill down">downgrade</span></td><td class="num">$95</td>
+              <td class="why">Product-change to Freedom Flex at next fee post — soft pull, keeps the line + age. Its 3x dining is Savor's job; UR transfers survive via Ink.</td></tr>
+          <tr><td class="cardname">$0-AF legacy downgrades</td>
+              <td class="l"><span class="vpill keep">keep oldest</span></td><td class="num">$0</td>
+              <td class="why">Free age + utilization padding. Keep the oldest lines forever; cull the rest slowly.</td></tr>
+          <tr><td class="cardname">Amex Platinum</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">$895</td>
+              <td class="why">2025 refresh took it to $895 of coupon book. Sky Club capped at 10 visits + requires Delta; its Priority Pass is worse than the one already in pocket.</td></tr>
+          <tr><td class="cardname">United Club Card</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">$695</td>
+              <td class="why">Zero synergy with AA standby life. Guest policy cut, 3-hour entry window since May 2025. Most locked-in product of the three.</td></tr>
+          <tr><td class="cardname">Marriott Brilliant / Hyatt / IHG</td>
+              <td class="l"><span class="vpill skip">skip / defer</span></td><td class="num">—</td>
+              <td class="why">Second hotel anchor = paying twice for one job. Only defensible satellite is the $95 Hyatt card — revisit in 2027 if Hyatt bookings actually happen.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><b>Footprint check:</b> Hilton is dominant in Hawaii (Grand Wailea, Hawaiian Village), strong and growing in Japan (~27), thin-but-perfect in Bali — Conrad Bali is exactly where the resort credit, the Waldorf/Conrad $100 credit, and the free night all stack. Diamond gets <b>real breakfast in Asia</b>; the watered-down F&amp;B-credit version is US-only.</p>
+  </section>
+
+  <!-- ═══════════ 02 · FEE MATH ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">02 · fee math</span><span class="sec-n">$ out vs $ back</span></div>
+    <h2 class="sec-title">The fees pay for themselves</h2>
+    <p class="lede">Conservative accounting: only credits that plausibly get used count, points earning counts for
+    <b>nothing</b>, and the Admirals Club membership itself ($850 retail) is listed as a benefit, not a bar.</p>
+
+    <div class="card" style="margin-top:18px">
+      <div class="fee-leg">
+        <span><i style="background:#c1502e"></i>annual fee</span>
+        <span><i style="background:#0a8a76"></i>realistic credits</span>
+        <span><i style="background:#0a8a76;opacity:.45"></i>free night ≈ value</span>
+      </div>
+      <div class="fee-chart" id="feechart">
+        <div class="frow">
+          <div class="frow-name">Hilton Aspire<small>+ Diamond status</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="550"></span><span class="lab">$550</span></div>
+            <div class="fbar"><span class="seg val" data-w="809"></span><span class="seg soft" data-w="500"></span><span class="lab">$809 <i>+ FN ≈$500</i></span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Citi AA Executive<small>+ $850 Admirals membership</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="595"></span><span class="lab">$595</span></div>
+            <div class="fbar"><span class="seg val" data-w="240"></span><span class="lab">$240 <i>couponized Lyft/Grubhub/Avis — counted low</i></span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Venture X<small>catch-all 2x</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="395"></span><span class="lab">$395</span></div>
+            <div class="fbar"><span class="seg val" data-w="400"></span><span class="lab">$400 <i>$300 portal + 10k mi</i></span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Ink Preferred<small>UR gateway</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="95"></span><span class="lab">$95</span></div>
+            <div class="fbar"><span class="seg val" data-w="0"></span><span class="lab">$0 <i>pays in points + trip cover only</i></span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Savor + Freedom<small>post-downgrade</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="0"></span><span class="lab">$0</span></div>
+            <div class="fbar"><span class="seg val" data-w="0"></span><span class="lab">$0 <i>free multipliers</i></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="formula" style="margin:20px 0 0">
+        <span class="k">net</span> = ($809 + $500 + $240 + $400) − ($550 + $595 + $395 + $95) = <b>+$314/yr</b> &nbsp;·&nbsp; worst case (half the credits die unused) ≈ <b>−$450/yr</b> for Diamond + Admirals + the full lounge map
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 03 · LOUNGE MAP ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">03 · lounge map</span><span class="sec-n">who opens which door</span></div>
+    <h2 class="sec-title">Coverage without the lock-in</h2>
+    <p class="lede">The lock-in fear inverts: the Admirals benefit needs same-day AA travel, but <b>standby flying is
+    already AA-shaped</b> — the free flights and the lounge key point at the same airline while the points stay in
+    Capital One, fully flexible.</p>
+
+    <div class="tw" style="margin-top:18px">
+      <table class="dt">
+        <thead><tr><th class="l">Network</th><th class="l">Key</th><th class="l">Condition</th></tr></thead>
+        <tbody>
+          <tr><td class="cardname">Admirals Club <small>worldwide</small></td><td class="l why"><b>Citi AA Exec</b> membership</td>
+              <td class="why">Same-day AA/oneworld boarding pass — <b>a non-rev standby pass on AA metal qualifies</b>. Immediate family or 2 guests in with you.</td></tr>
+          <tr><td class="cardname">Capital One Lounges <small>DFW·DEN·LAS·IAD·JFK + Landings DCA·LGA</small></td><td class="l why"><b>Venture X</b></td>
+              <td class="why">Unlimited solo entry. Guests $45 since Feb 2026 — solo traveler unaffected.</td></tr>
+          <tr><td class="cardname">Priority Pass <small>~1,700 lounges</small></td><td class="l why"><b>Venture X</b></td>
+              <td class="why">C1's flavor still includes restaurants (Amex's doesn't). Covers DPS, Tokyo, HNL international wings.</td></tr>
+          <tr><td class="cardname">Hilton Executive Lounges</td><td class="l why"><b>Aspire</b> Diamond</td>
+              <td class="why">At lounge-equipped Hiltons — strongest exactly where the travel is: Asia-Pacific.</td></tr>
+          <tr><td class="cardname">Centurion · Sky Club · United Club</td><td class="l why">— skipped</td>
+              <td class="why">$895–$695/yr for capped, airline-locked, or duplicate access. Not worth a third Priority Pass.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout"><b>The Alaska-award throwaway trick:</b> mechanically it still works (an AA-operated award via
+    Atmos produces a valid same-day boarding pass, cancellation redeposits free) — but partner bookings now carry a
+    <b>non-refundable $20/direction fee since 7/1/26</b>, AA audits book-to-lounge patterns, and misuse flagged on a
+    registered non-rev companion <b>blows back on Tim's Envoy privileges</b>. With Citi membership the standby pass
+    already opens the door — keep the trick as a rare fallback, never a routine.</div>
+  </section>
+
+  <!-- ═══════════ 04 · SEQUENCE ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">04 · sequence</span><span class="sec-n">order matters</span></div>
+    <h2 class="sec-title">The restructure, in order</h2>
+
+    <div class="card" style="margin-top:18px">
+      <div class="steps">
+        <div class="step"><span class="n"></span><div>
+          <h4>Apply: Hilton Aspire <span class="when">before Jul 29</span></h4>
+          <p>175k / $6k / 6mo is top-of-range and expires 7/29. One 5/24 slot. <b>If another Chase Ink is ever wanted, open it first</b> — Chase checks 5/24 on business apps too.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Apply: Citi AA Executive <span class="when">~Aug, spaced a few weeks</span></h4>
+          <p>Second 5/24 slot. Membership activates in days — Admirals access live before the next standby run.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Sweep UR points earmarked for Hyatt <span class="when">before Oct 1</span></h4>
+          <p>CSP and Ink Preferred both drop UR→Hyatt from 1:1 to <b>4:3 on Oct 1, 2026</b>. Transfer anything Hyatt-bound now; after that UR routes to airlines instead.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Downgrade Sapphire → Freedom Flex <span class="when">at next AF post</span></h4>
+          <p>Account must be 12+ months old; do it <b>within ~30 days of the fee posting</b> for a full refund. Soft pull, same account age, points sweep to Ink. Never cancel — convert.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Cull the leftovers <span class="when">slow, spaced</span></h4>
+          <p>Zero every reported balance first, <b>keep the oldest line forever</b>, space closures months apart. Closed accounts keep aging on the report for ~10 years — the "instant age hit" is a myth; utilization is the real risk.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Month-13 review on the new cards <span class="when">Jul–Aug 2027</span></h4>
+          <p>Both have real exits after 12 months: Aspire → Surpass ($150) or no-AF Hilton with <b>prorated refund</b>; Citi Exec → Platinum Select. The $1,145 in new fees is one-year-revocable, not a life sentence.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 05 · THE VA QUESTION ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">05 · the VA question</span><span class="sec-n">mail ≠ domicile</span></div>
+    <h2 class="sec-title">Ship the cards to Toano. It's fine.</h2>
+    <p class="lede">A mailing address is <b>not a domicile factor</b> Virginia's regulations enumerate — residency turns
+    on license, voter/vehicle registration, banking, and 183+ days of actual presence or abode
+    (Va. Code § 58.1-302; 23VAC10-110-30). Both addresses already live on the credit profile; cards arriving at the
+    parents' house adds one weak, already-existing data point. One structural fix makes it clean:</p>
+
+    <div class="callout blue" style="margin:18px 0"><b>The one move that matters:</b> at every issuer, set
+    <b>residential / KYC address = Texas</b> and <b>mailing address = Toano</b>. Every major issuer supports the split.
+    Bureau records and bank files stay anchored to TX; plastic ships to VA.</div>
+
+    <div class="dodont">
+      <div class="dd do"><h4>keep doing</h4><ul>
+        <li><b>TX driver's license</b> — renew from abroad if needed</li>
+        <li><b>TX voter registration</b> — overseas ballots can't be held against domicile (UOCAVA)</li>
+        <li>Vehicle reg, bank home branch, estate docs → <b>all Texas</b></li>
+        <li>Stay <b>under 183 days</b> of VA presence per tax year</li>
+        <li>Keep the evidence file: flight records, foreign leases, TX ties</li>
+      </ul></div>
+      <div class="dd dont"><h4>never do</h4><ul>
+        <li>Get a <b>VA license</b> or register a car in VA — the strong indicators</li>
+        <li>File a VA resident return "just in case" — that's affirmative evidence</li>
+        <li>List Toano as <b>residential</b> on W-9s or brokerage accounts — 1099 feeds trigger VA match letters</li>
+        <li>VA voter registration, club or gym memberships</li>
+      </ul></div>
+    </div>
+    <p class="note">General information, not tax advice — worth one cheap consult with a state-tax CPA. Virginia is a
+    known sticky state, but that machinery targets <b>ex-VA residents claiming they left</b>; a TX domiciliary receiving
+    mail at a family address is a far weaker fact pattern. "Can always change later" — correct, and nothing here is hard to unwind.</p>
+  </section>
+
+  <div class="foot">
+    TODO-85 · credit-card-plan · researched live 2026-07-05 (3 parallel research passes, fees verified against issuer pages) ·
+    grove · gated · <code>bpo/artifacts/2026-W27/</code><br>
+    key facts: Aspire 175k ends 7/29/26 · Amex Plat $895 since 9/18/25 renewal cycle · VX guest fees since 2/1/26 ·
+    Atmos partner fee $20 since 7/1/26 · UR→Hyatt 4:3 from 10/1/26 · CSP refreshed 6/15/26 ·
+    not financial or tax advice
+  </div>
+
+</div>
+<script>
+  // reveal on scroll
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+  }), { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // fee bars — scale to max total (Aspire 809+500)
+  const MAX = 1309, W = () => document.getElementById('feechart').clientWidth - 200;
+  const draw = () => document.querySelectorAll('#feechart .seg').forEach(s => {
+    s.style.width = Math.max(0, (+s.dataset.w / MAX) * Math.min(W(), 620)) + 'px';
+  });
+  const bio = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { requestAnimationFrame(draw); bio.disconnect(); }
+  }), { threshold: .3 });
+  bio.observe(document.getElementById('feechart'));
+  addEventListener('resize', draw);
+</script>
+</body>
+</html>

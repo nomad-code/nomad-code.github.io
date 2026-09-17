@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bpo · repo audit r2 — verification pass</title>
+<style>
+  :root {
+    --bg:#f6f6f3; --card:#fffffe; --ink:#191a17; --muted:#6d6f66; --line:#e4e5dd;
+    --accent:#0a7d5f; --loss:#c1440e; --amber:#9a6b00; --grid:#d9dad2;
+    --mono:"SF Mono",ui-monospace,"Menlo","Consolas",monospace;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root { --bg:#14150f; --card:#1d1f18; --ink:#ecece4; --muted:#9a9c8f; --line:#32342a;
+      --accent:#3fbf94; --loss:#e8734a; --amber:#d9a437; --grid:#33352a; }
+  }
+  :root[data-theme="light"] {
+    --bg:#f6f6f3; --card:#fffffe; --ink:#191a17; --muted:#6d6f66; --line:#e4e5dd;
+    --accent:#0a7d5f; --loss:#c1440e; --amber:#9a6b00; --grid:#d9dad2; }
+  :root[data-theme="dark"] {
+    --bg:#14150f; --card:#1d1f18; --ink:#ecece4; --muted:#9a9c8f; --line:#32342a;
+    --accent:#3fbf94; --loss:#e8734a; --amber:#d9a437; --grid:#33352a; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+  .wrap { max-width:880px; margin:0 auto; padding:40px 20px 64px; }
+  header h1 { font-size:22px; margin:0 0 4px; }
+  header .sub { color:var(--muted); font-size:13px; font-family:var(--mono); }
+  header .sub a { color:var(--muted); }
+  .verdict { margin:24px 0; padding:14px 18px; border:1px solid var(--line);
+    border-left:4px solid var(--accent); border-radius:8px; background:var(--card); }
+  .verdict strong { color:var(--accent); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin:20px 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+  .card h2 { font-size:13px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--accent); margin:0 0 10px; }
+  .card ul { margin:0; padding:0; list-style:none; font-size:13.5px; }
+  .card li { padding:4px 0 4px 22px; position:relative; }
+  .card li::before { content:"✓"; position:absolute; left:2px; color:var(--accent);
+    font-family:var(--mono); font-size:12px; }
+  .card li.fix::before { content:"＋"; color:var(--amber); }
+  .card li.open::before { content:"○"; color:var(--loss); }
+  .card .n { font-family:var(--mono); font-size:12px; color:var(--muted); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; margin:8px 0 0; }
+  th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+    color:var(--muted); padding:6px 10px; border-bottom:1px solid var(--line); }
+  td { padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td:first-child { font-family:var(--mono); font-size:12.5px; white-space:nowrap; }
+  tr:last-child td { border-bottom:none; }
+  .tag { display:inline-block; font-family:var(--mono); font-size:11px; padding:1px 7px;
+    border-radius:10px; border:1px solid var(--line); color:var(--muted); }
+  .tag.ok { color:var(--accent); border-color:var(--accent); }
+  .tag.fix { color:var(--amber); border-color:var(--amber); }
+  .tag.open { color:var(--loss); border-color:var(--loss); }
+  .scroll { overflow-x:auto; }
+  footer { margin-top:32px; color:var(--muted); font-size:12px; font-family:var(--mono); }
+  code { font-family:var(--mono); font-size:.92em; background:color-mix(in srgb, var(--line) 45%, transparent);
+    padding:1px 5px; border-radius:4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>bpo · repo audit — r2 verification pass</h1>
+    <div class="sub">TODO-194 · 2026-07-13 03:28 UTC · branch claude/bpo-repo-audit-x5ta95 · base ff3f2a4</div>
+  </header>
+
+  <div class="verdict">
+    <strong>Repo verified clean one day after the audit merge.</strong>
+    Every fix from the 2026-07-12 pass held; the one commit landed since
+    (TODO-195 golf-swingnerds) introduced no drift beyond an unmapped
+    <code>tests/</code> dir from TODO-191. Two gaps closed: the test suite and the
+    boot-budget gate now run in CI on every push.
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>lean</h2>
+      <ul>
+        <li>14 MB tree — unchanged post-audit <span class="n">(artifacts 11 MB)</span></li>
+        <li>no strays at <code>artifacts/</code> top level; W27/W28 filing intact</li>
+        <li>no tracked junk <span class="n">(.DS_Store / pyc / node_modules)</span></li>
+        <li>cold-queue: <strong>no stale candidates</strong> at 30d</li>
+        <li>largest tracked files all legit artifacts</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>clean</h2>
+      <ul>
+        <li>all 7 hook-review fixes confirmed in place</li>
+        <li>gate chain: source inject + deploy backstop + tripwire</li>
+        <li>56/56 artifacts carry the gate loader</li>
+        <li>unit tests 5/5 green <span class="n">(cold-queue)</span></li>
+        <li>secrets scan: zero case-exact hits <span class="n">(AKIA/AIza/ghp/lin_api/xox/PEM)</span></li>
+        <li>TODO-195 <code>linear</code> additions sound <span class="n">(viewer/project/describe/log --project)</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>clear</h2>
+      <ul>
+        <li>13/13 SPECs at goal + done-when</li>
+        <li>boot ledger 1,199 / 2,000 <span class="n">(60%)</span></li>
+        <li>routes ↔ disk: 8/8 scripts mapped, hooks match settings.json</li>
+        <li class="fix">AGENT.md layout: <code>tests/</code> was unlisted — mapped</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>changes this pass</h2>
+    <div class="scroll">
+    <table>
+      <tr><th>what</th><th>state</th><th>detail</th></tr>
+      <tr><td>.github/workflows/checks.yml</td><td><span class="tag fix">added</span></td>
+        <td><code>scripts/tokens</code> (exits 1 over budget) + <code>unittest discover -s tests</code> on every push — both existed, ran nowhere</td></tr>
+      <tr><td>AGENT.md</td><td><span class="tag fix">edited</span></td>
+        <td>layout maps <code>tests/</code>; <code>.github/</code> entry names the checks workflow · budget 1,199/2,000</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>open — human side (unchanged from r1)</h2>
+    <div class="scroll">
+    <table>
+      <tr><th>item</th><th>state</th><th>checked</th></tr>
+      <tr><td>rotate hyrox SA key</td><td><span class="tag open">open</span></td>
+        <td>not verifiable from this container — GCP-side; runbook <code>projects/hyrox/ROTATE-KEY.md</code></td></tr>
+      <tr><td>history purge (optional)</td><td><span class="tag open">open</span></td>
+        <td>same runbook; destructive, human call</td></tr>
+      <tr><td>W28 provenance backfill</td><td><span class="tag open">confirmed pending</span></td>
+        <td>index stops 2026-07-05, 0 W28 records — run <code>node scripts/build-provenance.mjs</code> on m3</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <footer>
+    bpo_repo-audit-r2_2026-07-13_03-28 · machine remote · world bpo · account nomad-code<br>
+    prev: <a href="https://nomad-code.github.io/bpo_repo-audit_2026-07-12_07-13" style="color:inherit">bpo_repo-audit_2026-07-12_07-13</a>
+  </footer>
+</div>
+</body>
+</html>

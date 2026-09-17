@@ -1,0 +1,105 @@
+/* grove · motion — the workflow-from-tape motion grammar (optional 4th file)
+   Canonized from growth-ortho_workflow-from-tape(-motion) (2026-W27,
+   TECH-398 sweep). The palette there was pure grove/legacy tokens; the
+   keeper was the motion — staggered reveals, pulse dots, flowing pipe
+   links, tape chips, counter step-lists. Re-expressed on grove's
+   --ease / --spring clocks. Link AFTER components.css, opt-in:
+
+     <link rel="stylesheet" href="../design-repo/grove/motion.css">
+
+   JS contract for reveals (same as grove's .reveal):
+     IntersectionObserver adds .shown; stagger with style="--d: 120ms". */
+
+/* ---- staggered reveal ---- */
+.mo-reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .6s var(--ease), transform .65s var(--spring);
+  transition-delay: var(--d, 0ms);
+}
+.mo-reveal.shown { opacity: 1; transform: none; }
+
+/* ---- pulse dot — live/active marker; recolor via --mo-pulse ---- */
+.mo-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex: none;
+  background: var(--mo-pulse, var(--forest));
+  animation: mo-pulse 2.4s var(--ease) infinite;
+}
+@keyframes mo-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(18, 124, 112, .45); }
+  70%  { box-shadow: 0 0 0 9px rgba(18, 124, 112, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(18, 124, 112, 0); }
+}
+
+/* ---- pipe — node chain with a flowing shimmer link ---- */
+.mo-pipe { display: flex; align-items: center; flex-wrap: wrap; }
+.mo-pipe-node { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 640; white-space: nowrap; }
+.mo-pipe-node .mo-dot { box-shadow: 0 0 0 4px var(--g-lime); animation: none; }
+.mo-pipe-node.end .mo-dot { background: var(--found); box-shadow: 0 0 0 4px var(--found-bg); animation: mo-pulse 2s infinite; }
+.mo-pipe-link {
+  flex: 1; min-width: 26px; height: 2px; margin: 0 12px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--forest), var(--lime));
+  position: relative; overflow: hidden;
+}
+.mo-pipe-link::after {
+  content: ""; position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  animation: mo-flow 2.4s linear infinite;
+}
+@keyframes mo-flow { to { left: 120%; } }
+
+/* ---- kick — gentle attention bounce (section kicker icons) ---- */
+.mo-kick { animation: mo-kick 3.2s var(--ease) infinite; }
+@keyframes mo-kick {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* ---- tape chip — provenance marker ("from the tape") ---- */
+.mo-tape {
+  font-family: var(--font-mono); font-size: 8px; font-weight: 500;
+  letter-spacing: .05em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 5px;
+  background: var(--g-lime); color: var(--forest-d);
+  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+.mo-tape.partial { background: var(--warn-bg); color: var(--warn); }
+.mo-tape .d { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* ---- swivel — numbered step list (tape → workflow walkthrough) ---- */
+.mo-swivel { counter-reset: mo-step; display: flex; flex-direction: column; gap: 8px; }
+.mo-swivel li {
+  counter-increment: mo-step; list-style: none; position: relative;
+  padding-left: 30px; font-size: 13.5px; line-height: 1.5; color: var(--body);
+}
+.mo-swivel li::before {
+  content: counter(mo-step); position: absolute; left: 0; top: 0;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--font-mono); font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.mo-swivel li b { color: var(--ink); font-weight: 600; }
+.mo-swivel-tail {
+  margin-top: 12px; padding: 12px 16px;
+  background: var(--warn-bg); border-left: 2px solid var(--warn);
+  border-radius: 0 var(--r-chip) var(--r-chip) 0;
+  font-size: 13px; line-height: 1.45;
+}
+.mo-swivel-tail b { color: var(--warn); }
+
+/* ---- fill — track fill that sweeps in (progress / coverage bars) ---- */
+.mo-fill { width: 0; transition: width 1.3s var(--ease); }
+.mo-fill.shown { width: var(--w, 100%); }
+
+/* ---- lift hovers (cards that respond) ---- */
+.mo-lift { transition: transform .3s var(--spring), box-shadow .3s, border-color .3s; }
+.mo-lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.mo-slide { transition: transform .25s var(--spring), border-color .25s, background .25s; }
+.mo-slide:hover { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mo-reveal, .mo-fill, .mo-lift, .mo-slide { transition: none; }
+  .mo-reveal { opacity: 1; transform: none; }
+  .mo-fill { width: var(--w, 100%); }
+  .mo-dot, .mo-pipe-node.end .mo-dot, .mo-pipe-link::after, .mo-kick { animation: none; }
+}
