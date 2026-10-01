@@ -1,0 +1,128 @@
+{
+    "updated":  "2026-07-23T09:08:58.7183469+08:00",
+    "rounds":  44,
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "rounds":  23,
+                        "holes":  310,
+                        "avgToPar18":  15,
+                        "avgToParDisp":  "+15",
+                        "avgSgTotal":  -13.29,
+                        "sgRounds":  15,
+                        "sg":  {
+                                   "off-tee":  1.19,
+                                   "approach":  -8.77,
+                                   "around-green":  -1.61,
+                                   "putting":  -4.11
+                               },
+                        "best":  {
+                                     "toPar18":  -6.9,
+                                     "id":  59,
+                                     "date":  "2026-07-10",
+                                     "course":  "Shadow_Ridge_gsp",
+                                     "toPar":  "-5",
+                                     "thru":  13
+                                 }
+                    },
+                    {
+                        "alias":  "BRU",
+                        "rounds":  10,
+                        "holes":  107,
+                        "avgToPar18":  17.1,
+                        "avgToParDisp":  "+17.1",
+                        "avgSgTotal":  null,
+                        "sgRounds":  0,
+                        "sg":  null,
+                        "best":  {
+                                     "toPar18":  -2,
+                                     "id":  22,
+                                     "date":  "2026-06-20",
+                                     "course":  "birkdale_gsp",
+                                     "toPar":  "-1",
+                                     "thru":  9
+                                 }
+                    },
+                    {
+                        "alias":  "P",
+                        "rounds":  25,
+                        "holes":  271,
+                        "avgToPar18":  18.5,
+                        "avgToParDisp":  "+18.5",
+                        "avgSgTotal":  -13.19,
+                        "sgRounds":  5,
+                        "sg":  {
+                                   "off-tee":  -1.18,
+                                   "approach":  -8.78,
+                                   "around-green":  -1.26,
+                                   "putting":  -1.97
+                               },
+                        "best":  {
+                                     "toPar18":  -9,
+                                     "id":  30,
+                                     "date":  "2026-06-27",
+                                     "course":  "royalqueensland_gsp",
+                                     "toPar":  "-6",
+                                     "thru":  12
+                                 }
+                    },
+                    {
+                        "alias":  "FLE",
+                        "rounds":  6,
+                        "holes":  65,
+                        "avgToPar18":  45.1,
+                        "avgToParDisp":  "+45.1",
+                        "avgSgTotal":  null,
+                        "sgRounds":  0,
+                        "sg":  null,
+                        "best":  {
+                                     "toPar18":  24,
+                                     "id":  30,
+                                     "date":  "2026-06-27",
+                                     "course":  "royalqueensland_gsp",
+                                     "toPar":  "+16",
+                                     "thru":  12
+                                 }
+                    },
+                    {
+                        "alias":  "MAR",
+                        "rounds":  2,
+                        "holes":  24,
+                        "avgToPar18":  45.8,
+                        "avgToParDisp":  "+45.8",
+                        "avgSgTotal":  null,
+                        "sgRounds":  0,
+                        "sg":  null,
+                        "best":  {
+                                     "toPar18":  40,
+                                     "id":  78,
+                                     "date":  "2026-07-17",
+                                     "course":  "dunes_gsp",
+                                     "toPar":  "+20",
+                                     "thru":  9
+                                 }
+                    },
+                    {
+                        "alias":  "RIC",
+                        "rounds":  1,
+                        "holes":  9,
+                        "avgToPar18":  null,
+                        "avgToParDisp":  "-",
+                        "avgSgTotal":  null,
+                        "sgRounds":  0,
+                        "sg":  null,
+                        "best":  null
+                    },
+                    {
+                        "alias":  "BRA",
+                        "rounds":  1,
+                        "holes":  9,
+                        "avgToPar18":  null,
+                        "avgToParDisp":  "-",
+                        "avgSgTotal":  null,
+                        "sgRounds":  0,
+                        "sg":  null,
+                        "best":  null
+                    }
+                ]
+}

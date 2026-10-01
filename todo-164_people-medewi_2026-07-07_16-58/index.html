@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-164 · people-medewi · Who's Who at Medewi</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  main { max-width: 940px; }
+
+  /* urgent anchor — the Thursday trivia callout */
+  .today {
+    border: 1px solid var(--amber-bd);
+    background: linear-gradient(180deg, var(--amber-bg), var(--card) 70%);
+    border-radius: var(--r-hero);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-card);
+    margin-top: 18px;
+  }
+  .today-kick { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--amber); margin-bottom: 6px; display:flex; gap:8px; align-items:center; }
+  .today h3 { font-size: 20px; line-height: 1.2; color: var(--ink); margin: 0 0 8px; letter-spacing:-.02em; }
+  .today p { font-size: 13.5px; line-height: 1.6; color: var(--body); margin: 0; }
+  .today p b { color: var(--ink); }
+
+  /* the three questions */
+  .q3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 4px; }
+  .qcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 18px 18px 20px; box-shadow: var(--shadow-card); }
+  .qcard .qq { font-size: 12.5px; font-weight: 700; color: var(--forest-d); line-height: 1.35;
+    display: flex; gap: 8px; align-items: baseline; }
+  .qcard .qq .em { font-size: 18px; }
+  .qcard .qa { font-size: 13px; line-height: 1.55; color: var(--body); margin-top: 11px;
+    padding-top: 11px; border-top: 1px solid var(--line); }
+  .qcard .qa b { color: var(--ink); }
+  .qcard.gap { border-color: var(--warn-bd); background: linear-gradient(180deg,var(--warn-bg),var(--card) 78%); }
+  .qcard.gap .qq { color: var(--warn); }
+
+  /* venue section head */
+  .venue-h { display:flex; align-items:baseline; gap:12px; margin: 0 0 4px; }
+  .venue-h .vem { font-size: 26px; }
+  .venue-h h2 { font-size: 25px; font-weight: 780; letter-spacing:-.03em; margin:0; }
+  .venue-h .role { margin-left:auto; font-family:var(--font-mono); font-size:10.5px;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+  .venue-sub { font-size: 13px; color: var(--muted); margin: 2px 0 16px; line-height:1.5; }
+  .venue-sub b { color: var(--body); }
+
+  /* people grid */
+  .people { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+  .pcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 17px 18px; box-shadow: var(--shadow-card); transition: transform .3s var(--spring), box-shadow .3s var(--ease), border-color .3s; }
+  .pcard:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); border-color:#d6ddd7; }
+  .pc-top { display:flex; align-items:center; gap:10px; }
+  .pc-name { font-size: 17px; font-weight: 780; letter-spacing:-.02em; color: var(--ink); }
+  .pc-flag { font-size: 15px; }
+  .pc-tag { margin-left:auto; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.05em;
+    text-transform:uppercase; padding:4px 9px; border-radius:6px; font-weight:500;
+    background: var(--g-lime); color: var(--forest-d); white-space:nowrap; }
+  .pc-tag.q { background:#f3f3ec; color:var(--muted); }
+  .pc-tag.v { background: var(--found-bg); color: var(--found-d); }
+  .pc-hook { font-size: 13.5px; font-weight: 640; color: var(--forest-d); margin-top: 11px; line-height:1.4; }
+  .pc-back { font-size: 12.5px; color: var(--body); margin-top: 6px; line-height:1.5; }
+  .pc-back b { color: var(--ink); }
+  .pc-src { font-family:var(--font-mono); font-size:10px; color:var(--faint); margin-top:9px; letter-spacing:.01em; }
+
+  /* gap / method blocks */
+  .gaplist { display:grid; gap:10px; }
+  .gapitem { display:grid; grid-template-columns: 26px 1fr; gap:12px; align-items:start;
+    font-size:13.5px; line-height:1.55; color:var(--body); }
+  .gapitem .gn { font-family:var(--font-mono); font-size:12px; color:var(--card);
+    background:var(--warn); width:24px; height:24px; border-radius:7px; display:flex;
+    align-items:center; justify-content:center; font-weight:600; }
+  .gapitem b { color: var(--ink); }
+
+  .method { background: var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+    padding: 22px 24px; box-shadow: var(--shadow-card); }
+  .flow { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:var(--font-mono);
+    font-size:12px; color:var(--body); margin: 4px 0 18px; }
+  .flow .node { background: var(--well); border:1px solid var(--line); border-radius:var(--r-chip);
+    padding:7px 12px; font-weight:500; color:var(--ink); }
+  .flow .arr { color: var(--forest); font-weight:700; }
+  .method pre { background: var(--well); border:1px solid var(--line); border-radius:var(--r-panel);
+    padding:14px 16px; font-family:var(--font-mono); font-size:12px; line-height:1.6; color:var(--body);
+    overflow-x:auto; margin: 12px 0; }
+  .method .lesson { font-size:13.5px; line-height:1.6; color:var(--body); margin-top:14px;
+    padding:14px 16px; border-left:3px solid var(--forest); background:var(--g-lime); border-radius:0 var(--r-tile) var(--r-tile) 0; }
+  .method .lesson b { color: var(--forest-d); }
+
+  @media(max-width:1080px){ .q3{grid-template-columns:1fr} .people{grid-template-columns:1fr} main{max-width:none} }
+</style>
+</head>
+<body class="standalone" style="background:var(--bg);">
+
+<div class="topbar">
+  <div class="tb-brand"><span class="mk"></span>bpo</div>
+  <span class="tb-x">×</span>
+  <span class="tb-client">Medewi 🖤</span>
+  <span class="tb-sep"></span>
+  <span class="tb-ctx"><span class="dot"></span>people-in-a-place ontology</span>
+  <span class="tb-spacer"></span>
+  <span class="tb-tag">TODO-164</span>
+</div>
+<div class="brandstrip"></div>
+
+<div class="layout">
+  <nav class="rail">
+    <div class="rl-h">Venues</div>
+    <a href="#questions" class="on">🎯 The three questions</a>
+    <a href="#pangea">☕ Pangea · trivia</a>
+    <a href="#holytree">🏄 Holy Tree</a>
+    <a href="#bomboloni">🍩 Bomboloni</a>
+    <a href="#warungs">🍤 Warungs &amp; services</a>
+    <a href="#madewith">🏠 Made With</a>
+    <a href="#manor">🖤 Medewi Manor</a>
+    <div class="rl-h" style="margin-top:14px">Meta</div>
+    <a href="#gaps">🕳️ The gaps</a>
+    <a href="#scale">🧬 How to scale it</a>
+    <div class="rl-foot">
+      Distilled from <b>18 people</b> across your <code>dna/people/</code> notes +
+      👫🇮🇩 photo albums. Private repo.
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero-wrap reveal">
+      <div class="hero" style="grid-template-columns:1.25fr 1fr;">
+        <div>
+          <div class="hero-eyebrow"><span class="d"></span>TODO-164 · people-medewi</div>
+          <h1>The names you need <span class="em">in your head</span> when you're at Medewi.</h1>
+          <p class="hero-sub">It <b>was</b> in your second brain — just scattered across
+            18 per-person notes and a shelf of 👫🇮🇩 photo albums. Here it is, keyed by
+            <b>venue</b>, each with a memory hook and the backstory you already logged.
+            <span class="lk">The Pangea one is the 42-hour clock →</span></p>
+          <div class="hero-chips">
+            <span class="hchip v">👫 18 people</span>
+            <span class="hchip v">📍 6 venues</span>
+            <span class="hchip q">🕳️ 4 open gaps</span>
+          </div>
+        </div>
+        <div>
+          <div class="today">
+            <div class="today-kick">⏳ the 42-hour one · thursday</div>
+            <h3>Pangea trivia — Thursday night</h3>
+            <p>Walk in already knowing the crew working the room: <b>Decko</b>
+              (his brother runs the gym), <b>Dede</b>, <b>Sinar</b>, and the <b>Dinda</b>
+              who told you 14 people work there. Bring this — add faces + the actual
+              trivia regulars as you meet them. <b>Jump to Pangea ↓</b></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- THE THREE QUESTIONS -->
+    <section id="questions" class="reveal">
+      <div class="sec-head">
+        <span class="sec-kick">🎯 what you actually asked</span>
+        <span class="sec-n">3 questions</span>
+      </div>
+      <h2 class="sec-title">Straight answers, from your own notes.</h2>
+      <p class="lede">Two are answerable today. One is an honest blank — and that blank
+        is the most useful thing on this page.</p>
+      <div class="q3" style="margin-top:20px;">
+        <div class="qcard">
+          <div class="qq"><span class="em">🏄</span> Who works at <b>Holy Tree</b>?</div>
+          <div class="qa"><b>Ipan</b>, <b>Anang</b>, and <b>Dinda</b> are your logged staff.
+            <b>Aji Jie</b> shows up in a Holy Tree photo album (no story yet). Stephi 🇩🇪 is
+            tied to Holy Tree too, but her role isn't logged.</div>
+        </div>
+        <div class="qcard">
+          <div class="qq"><span class="em">☕</span> Who's at <b>Pangea trivia</b> Thursday?</div>
+          <div class="qa">Your Pangea people — the baristas who'll be in the room — are
+            <b>Decko</b>, <b>Dede</b>, <b>Sinar</b> &amp; <b>Dinda</b>. The trivia
+            <i>attendee</i> roster you never captured. Fix it Thursday.</div>
+        </div>
+        <div class="qcard gap">
+          <div class="qq"><span class="em">🖤</span> Who lives at <b>Medewi Manor</b>?</div>
+          <div class="qa">Right now, in the vault: <b>just you</b>. It's logged only as your
+            brew HQ. No housemates, villa staff, or fellow guests captured — the biggest hole.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PANGEA (first — it's the urgent one) -->
+    <section id="pangea" class="reveal">
+      <div class="venue-h">
+        <span class="vem">☕🧖</span><h2>Pangea</h2>
+        <span class="role">café · gym · sauna — trivia thursdays</span>
+      </div>
+      <p class="venue-sub">Your Medewi third place: espresso in the day, <b>200k recovery
+        sauna</b>, gym out back. You brewed Space Roastery Aceh Gayo here (daily 04-21/22).
+        <b>Trivia is Thursday.</b></p>
+      <div class="people">
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Decko</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">barista</span></div>
+          <div class="pc-hook">His brother runs the gym.</div>
+          <div class="pc-back">The Pangea barista with the family link to the gym next door — an easy in for both rooms.</div>
+          <div class="pc-src">people/🇮🇩-decko-pangea</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Dede</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">barista</span></div>
+          <div class="pc-hook">The other Pangea barista.</div>
+          <div class="pc-back">Behind the bar with Decko. Pair them in your head: <b>Decko &amp; Dede</b>.</div>
+          <div class="pc-src">people/🇮🇩-dede-barista-pangea</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Dinda</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">staff</span></div>
+          <div class="pc-hook">Lives 3km away — told you 14 people work at Pangea.</div>
+          <div class="pc-back">Your source on how big the Pangea team is. <b>Note:</b> maybe the same Dinda as Holy Tree — reconcile (see gaps).</div>
+          <div class="pc-src">people/dinda-1aff7371</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Sinar</span><span class="pc-flag">🇮🇩</span><span class="pc-tag q">name only</span></div>
+          <div class="pc-hook">Pangea — face &amp; detail still to capture.</div>
+          <div class="pc-back">You've got the name. Thursday: get one memory hook + a face.</div>
+          <div class="pc-src">people/🇮🇩-sinar-pangea</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Natan</span><span class="pc-flag">🇫🇷</span><span class="pc-tag v">visitor</span></div>
+          <div class="pc-hook">Canggu PT who tried the Pangea sauna.</div>
+          <div class="pc-back">Not local — a Canggu personal trainer passing through. Said the sauna was rough; you gave him beans ☕.</div>
+          <div class="pc-src">people/🇫🇷-natan</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- HOLY TREE -->
+    <section id="holytree" class="reveal">
+      <div class="venue-h">
+        <span class="vem">🏄☕</span><h2>Holy Tree</h2>
+        <span class="role">the surf-spot café — workplace</span>
+      </div>
+      <p class="venue-sub">The café at the Holy Tree break (your surf log keys spots as
+        "Holy Tree" vs "Medewi"). Your morning-coffee crew.</p>
+      <div class="people">
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Ipan</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">staff</span></div>
+          <div class="pc-hook">Worked his own sister's wedding day.</div>
+          <div class="pc-back">Showed up to work <b>the day of his sister's wedding</b>. Starting a <b>run club in June</b> — a thread to pull.</div>
+          <div class="pc-src">people/🇮🇩-ipan-holy-tree</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Anang</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">barista</span></div>
+          <div class="pc-hook">You gave him the Ethiopia honeydew.</div>
+          <div class="pc-back">The one you gifted the <b>Ethiopia honeydew</b> beans to ☕. Ask how he brewed them.</div>
+          <div class="pc-src">people/🇮🇩-anang-holy-tree</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Dinda</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">staff</span></div>
+          <div class="pc-hook">First seen by her bike, waiting for a ride.</div>
+          <div class="pc-back">The nice worker you clocked <b>sitting by the bike waiting for a ride</b>. (Two Dindas — see gaps.)</div>
+          <div class="pc-src">people/🇮🇩-dinda-holy-tree</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Aji Jie</span><span class="pc-flag">🇮🇩</span><span class="pc-tag q">photo only</span></div>
+          <div class="pc-hook">In a "Aji Jie Holy Tree" photo album — no note.</div>
+          <div class="pc-back">Exists as a photo album, not yet a person note. Promote to a note next time you're in.</div>
+          <div class="pc-src">photos · Aji Jie Holy Tree 👫🇮🇩</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Stephi</span><span class="pc-flag">🇩🇪</span><span class="pc-tag v">role unlogged</span></div>
+          <div class="pc-hook">German — Holy Tree + Made With, role not recorded.</div>
+          <div class="pc-back">Note only ties her to Holy Tree and the <b>Made With</b> hostel — nothing on staff vs guest. Reads like a guest; confirm on the ground. Cross-listed under accommodation.</div>
+          <div class="pc-src">people/🇩🇪-stephi-germany</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- BOMBOLONI -->
+    <section id="bomboloni" class="reveal">
+      <div class="venue-h">
+        <span class="vem">🍩☕</span><h2>Bomboloni</h2>
+        <span class="role">bakery · morning coffee</span>
+      </div>
+      <p class="venue-sub">The doughnut/bakery spot — good protein-per-dollar order
+        (80g chicken 10k, four portions + citrus salad). Morning coffee too.</p>
+      <div class="people">
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Yanti</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">morning coffee</span></div>
+          <div class="pc-hook">She's the one who makes the morning coffee — not Dewi.</div>
+          <div class="pc-back">Young, hijab. The <b>coffee maker in the mornings</b> (you noted: "not dewi, but young girl").</div>
+          <div class="pc-src">people/yanti-bomboloni-medewi</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Roy</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">mornings</span></div>
+          <div class="pc-hook">Big young guy, short hair — around mornings, doesn't make coffee.</div>
+          <div class="pc-back">Bigger build, shorter hair. <b>There in the morning but not on the machine</b> — pair opposite Yanti.</div>
+          <div class="pc-src">people/roy-bomboloni-medewi</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Hans</span><span class="pc-flag">🇮🇩</span><span class="pc-tag v">t-shirts</span></div>
+          <div class="pc-hook">Custom t-shirts — bring old tees, he remakes them.</div>
+          <div class="pc-back">The custom-tshirt/polo guy near Bomboloni. IG <b>@haannnnsssss</b>. Bring old shirts.</div>
+          <div class="pc-src">people/🇮🇩-hans-bomboloni</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- WARUNGS -->
+    <section id="warungs" class="reveal">
+      <div class="venue-h">
+        <span class="vem">🍤</span><h2>Warungs &amp; services</h2>
+        <span class="role">food · pilates · boards</span>
+      </div>
+      <p class="venue-sub">The people who keep the week running — protein, movement, a board.</p>
+      <div class="people">
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Uchi Dira</span><span class="pc-flag">🇮🇩</span><span class="pc-tag">protein</span></div>
+          <div class="pc-hook">Your protein lady — knows your chicken &amp; shrimp order.</div>
+          <div class="pc-back">Petite, Muslim woman. Prices you logged: <b>chicken breast 35k</b> (70k/kg) 🐔, <b>shrimp 180k/kg</b> 🍤.</div>
+          <div class="pc-src">people/uchi-dira-medewi</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Corine</span><span class="pc-flag">🇸🇬</span><span class="pc-tag">pilates</span></div>
+          <div class="pc-hook">Singaporean — Pilates, and a farm-to-table spot opening.</div>
+          <div class="pc-back">Does Pilates; <b>opening a farm-to-table place later this year</b>. Worth checking whether it's open when you're back.</div>
+          <div class="pc-src">people/corine-singapore-medewi</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Cary</span><span class="pc-flag">🇮🇩</span><span class="pc-tag q">thin</span></div>
+          <div class="pc-hook">Boardriders — 200k.</div>
+          <div class="pc-back">Board rental / boardriders, "200k." Only detail logged — capture more next time.</div>
+          <div class="pc-src">people/cary-medewi-boardridets</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- MADE WITH -->
+    <section id="madewith" class="reveal">
+      <div class="venue-h">
+        <span class="vem">🏠</span><h2>Made With</h2>
+        <span class="role">hostel / hotel — the travelers</span>
+      </div>
+      <p class="venue-sub">The hostel/hotel where the rotating cast stays — you spelled it
+        "madewith" / "made with hostel" / "made with hotel"; same place.</p>
+      <div class="people">
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Laurie Larina</span><span class="pc-flag">🇱🇹</span><span class="pc-tag">long-stay</span></div>
+          <div class="pc-hook">Lithuania — run club + HYROX + coffee, works off Starlink.</div>
+          <div class="pc-back">Your overlap crowd: <b>run club, HYROX, coffee</b>. Works online on Starlink; back in May. Girlfriend/wife with her.</div>
+          <div class="pc-src">people/laurie-larina</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">"Norway girl"</span><span class="pc-flag">🇳🇴</span><span class="pc-tag q">get the name</span></div>
+          <div class="pc-hook">Made With guest — flag day May, back in Sept.</div>
+          <div class="pc-back">Logged only as "norway girl." <b>Get the actual name</b> when she's back in September.</div>
+          <div class="pc-src">people/norway-girl</div>
+        </div>
+        <div class="pcard">
+          <div class="pc-top"><span class="pc-name">Stephi</span><span class="pc-flag">🇩🇪</span><span class="pc-tag v">also holy tree</span></div>
+          <div class="pc-hook">German — Made With + Holy Tree.</div>
+          <div class="pc-back">Cross-listed from Holy Tree. Stays at Made With; role not recorded.</div>
+          <div class="pc-src">people/🇩🇪-stephi-germany</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- MEDEWI MANOR -->
+    <section id="manor" class="reveal">
+      <div class="venue-h">
+        <span class="vem">🖤</span><h2>Medewi Manor</h2>
+        <span class="role">home base — residence</span>
+      </div>
+      <p class="venue-sub">Your Medewi HQ. The Aeropress mornings — Kona, Ethiopia, Colombian
+        "keeper baseline" — all logged here (daily 2026-04-21 → 23).</p>
+      <div class="qcard gap" style="max-width:640px;">
+        <div class="qq"><span class="em">🕳️</span> Residents captured: <b>just you.</b></div>
+        <div class="qa">The Manor is in the vault only as a <b>brew location</b>, never as a
+          household. Whoever else lives or stays there — housemates, the villa owner, staff,
+          fellow long-stayers — <b>isn't recorded anywhere</b>. This is the one question the
+          second brain genuinely can't answer yet. Sweep Apple Photos (faces at the villa),
+          WhatsApp, and screenshots to fill it.</div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- GAPS -->
+    <section id="gaps" class="reveal">
+      <div class="sec-head">
+        <span class="sec-kick">🕳️ honest holes</span>
+        <span class="sec-n">4 gaps</span>
+      </div>
+      <h2 class="sec-title">What the vault can't tell you yet.</h2>
+      <p class="lede">Named so you can close them on the ground Thursday, not rediscover them
+        in six months.</p>
+      <div class="card" style="margin-top:18px;">
+        <div class="gaplist">
+          <div class="gapitem"><span class="gn">1</span><div><b>Medewi Manor residents.</b> Zero captured. Biggest hole. Source from Apple Photos / WhatsApp / screenshots.</div></div>
+          <div class="gapitem"><span class="gn">2</span><div><b>Pangea trivia roster.</b> You have Pangea <i>staff</i>, not Thursday <i>attendees</i>. Capture people by <b>event</b>, not just workplace.</div></div>
+          <div class="gapitem"><span class="gn">3</span><div><b>Two Dindas.</b> Holy Tree worker vs. Pangea worker (lives 3km away). Same person, or two? Reconcile — a name collision the vault won't resolve on its own.</div></div>
+          <div class="gapitem"><span class="gn">4</span><div><b>Name-only / photo-only.</b> Aji Jie, Sinar, Cary, "Norway girl" each need one hook + a face.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- SCALE / METHOD -->
+    <section id="scale" class="reveal">
+      <div class="sec-head">
+        <span class="sec-kick">🧬 the ontology, at scale</span>
+        <span class="sec-n">apple → vault</span>
+      </div>
+      <h2 class="sec-title">How to make a person-ontology and grow it.</h2>
+      <p class="lede">You asked "idk how to make a person ontology with the Apple ecosystem and
+        scale it." You already are — this is just the shape of it, written down.</p>
+      <div class="method" style="margin-top:18px;">
+        <div class="flow">
+          <span class="node">📝 Apple Notes / Contacts / IG / WhatsApp / 📸</span>
+          <span class="arr">→</span>
+          <span class="node">one per-person note · <b>👫🇨🇨</b></span>
+          <span class="arr">→</span>
+          <span class="node">place-cohort index · <code>groups/medewi</code></span>
+        </div>
+        <p style="font-size:13.5px;line-height:1.6;color:var(--body);margin:0 0 4px;">
+          The atom is one note per person, tagged <code>👫</code> + a country flag, named
+          <code>&lt;name&gt;-&lt;venue&gt;-&lt;id&gt;.md</code>. The venue lives in the name and body.
+          One memory hook + one backstory line is enough — <b>SRS compression</b>: as time
+          compounds, the file gets smaller, not bigger.</p>
+        <pre>---
+ji: [👫🇮🇩]                    # people + country
+created: 2026-07-09
+source: apple-notes/&lt;UUID&gt;    # or apple-contacts / instagram / whatsapp / screenshot
+---
+# &lt;name&gt; &lt;venue&gt;
+&lt;one memory hook&gt; · &lt;one backstory line&gt;</pre>
+        <p style="font-size:13.5px;line-height:1.6;color:var(--body);margin:8px 0 0;">
+          Then add a bullet to <code>dna/people/groups/medewi.md</code> under the venue —
+          the <b>place-cohort index</b> this page is built from. That's the layer you were
+          missing: per-person notes answer "tell me about X"; the cohort index answers
+          "who's at <i>place</i>." Both now exist in the repo.</p>
+        <div class="lesson">
+          <b>The lesson TODO-164 taught the vault:</b> you captured people by
+          <b>place-of-work</b>, so "who works at Holy Tree" is a clean lookup — but
+          "who goes to Pangea trivia on Thursdays" isn't, because nobody's tagged by the
+          <b>event</b> they show up to. Recurring events are a second capture axis. Add it,
+          and the second brain answers the question you actually walked in with.
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      TODO-164 · people-medewi · generated 2026-07-07 · 16-58 Z<br>
+      sources — <code>dna/people/</code> (18 notes) · <code>dna/places/bali/medewi.md</code> ·
+      <code>dna/daily/2026-04-2{1,2,3}</code> · <code>dna/photos/</code> 👫🇮🇩 albums ·
+      <code>dna/surf/README.md</code><br>
+      durable index committed to <code>dna/people/groups/medewi.md</code> · ji <code>[👫, 🇮🇩🪷🖤]</code> ·
+      grove · gated <code>bpo · Private</code>
+    </div>
+  </main>
+</div>
+
+<script>
+  // scroll-reveal
+  (function(){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('shown'); io.unobserve(e.target);} });
+    }, {threshold:.08, rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  })();
+  // rail scrollspy
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+    var map = {};
+    links.forEach(function(a){ var id=a.getAttribute('href').slice(1); if(id) map[id]=a; });
+    var secs = Object.keys(map).map(function(id){ return document.getElementById(id); }).filter(Boolean);
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){ l.classList.remove('on'); });
+          if(map[e.target.id]) map[e.target.id].classList.add('on');
+        }
+      });
+    }, {rootMargin:'-40% 0px -55% 0px'});
+    secs.forEach(function(s){ spy.observe(s); });
+  })();
+</script>
+</body>
+</html>

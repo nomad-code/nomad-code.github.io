@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-85 · all-hotel-cards · Every Chain, One Forever Card</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 78px 24px 72px; }
+  .hero { margin-bottom: 26px; }
+
+  /* verdict pills */
+  .vpill { display:inline-block; min-width:86px; text-align:center; padding:4px 12px;
+           border-radius:var(--r-pill); font-family:var(--font-mono); font-size:11px;
+           letter-spacing:.05em; text-transform:uppercase; font-weight:600; white-space:nowrap; }
+  .vpill.forever { background:var(--forest-d); color:#fff; }
+  .vpill.get  { background:var(--forest); color:#fff; }
+  .vpill.later { background:var(--found-bg); color:var(--found-d); border:1px solid var(--found-bd); }
+  .vpill.opt  { background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-bd); }
+  .vpill.skip { background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn-bd); }
+
+  table.dt td.why { font-family:var(--font-ui); font-size:12.5px; color:var(--body);
+                    text-align:left; line-height:1.45; max-width:400px; }
+  table.dt td.cardname { font-family:var(--font-ui); font-weight:700; text-align:left; font-size:13.5px; }
+  table.dt td.cardname small { display:block; font-weight:500; color:var(--muted); font-size:10.5px; margin-top:2px; }
+
+  /* fee-vs-value paired bars */
+  .fee-chart { display:flex; flex-direction:column; gap:20px; }
+  .fee-leg { display:flex; gap:22px; margin-bottom:4px; font-family:var(--font-mono);
+             font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+  .fee-leg i { width:15px; height:10px; border-radius:3px; display:inline-block;
+               vertical-align:-1px; margin-right:7px; }
+  .frow { display:grid; grid-template-columns:170px 1fr; gap:16px; align-items:center;
+          padding:6px 8px; border-radius:var(--r-tile); transition:background .2s; }
+  .frow:hover { background:var(--well); }
+  .frow-name { font-size:13.5px; font-weight:700; line-height:1.3; }
+  .frow-name small { display:block; font-family:var(--font-mono); font-size:9.5px;
+                     color:var(--muted); font-weight:400; margin-top:2px; }
+  .frow-bars { display:flex; flex-direction:column; gap:5px; }
+  .fbar { display:flex; align-items:center; gap:10px; height:16px; }
+  .fbar .seg { height:12px; width:0; border-radius:3px; transition:width 1s var(--ease); }
+  .fbar .seg.fee   { background:#c1502e; }
+  .fbar .seg.val   { background:#0a8a76; }
+  .fbar .seg.soft  { background:#0a8a76; opacity:.45; border-radius:0 3px 3px 0; margin-left:-8px; padding-left:8px; box-sizing:content-box; }
+  .fbar .lab { font-family:var(--font-mono); font-size:11px; color:var(--ink); white-space:nowrap; }
+  .fbar .lab i { font-style:normal; color:var(--muted); }
+
+  /* timeline */
+  .steps { display:flex; flex-direction:column; gap:0; counter-reset:step; }
+  .step { display:grid; grid-template-columns:44px 1fr; gap:16px; padding:16px 4px;
+          border-bottom:1px solid var(--line); }
+  .step:last-child { border-bottom:0; }
+  .step .n { counter-increment:step; width:32px; height:32px; border-radius:10px;
+             background:var(--forest); color:#fff; display:flex; align-items:center;
+             justify-content:center; font-family:var(--font-mono); font-size:13px; font-weight:500; }
+  .step .n::before { content:counter(step); }
+  .step.far .n { background:var(--found); }
+  .step h4 { font-size:14.5px; font-weight:740; letter-spacing:-.01em; margin:5px 0 4px; }
+  .step h4 .when { font-family:var(--font-mono); font-size:10px; letter-spacing:.06em;
+                   text-transform:uppercase; color:var(--warn); font-weight:500; margin-left:8px; }
+  .step p { font-size:13px; line-height:1.55; color:var(--body); }
+  .step p b { color:var(--ink); }
+
+  /* 5/24 slot ledger */
+  .slots { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .slot { flex:1; min-width:120px; border:1px solid var(--line); border-radius:var(--r-tile);
+          padding:12px 14px; background:var(--card); }
+  .slot .s-n { font-family:var(--font-mono); font-size:9.5px; letter-spacing:.07em;
+               text-transform:uppercase; color:var(--muted); }
+  .slot .s-c { font-size:13px; font-weight:720; margin-top:5px; line-height:1.3; }
+  .slot .s-w { font-family:var(--font-mono); font-size:10px; color:var(--faint); margin-top:4px; }
+  .slot.chase { border-color:#bcd9bf; background:linear-gradient(180deg,#fff,#f6fbf6); }
+  .slot.full  { border-color:var(--warn-bd); background:linear-gradient(180deg,#fff,#fbf5f2); }
+  .slot.full .s-c { color:var(--warn); }
+
+  /* do / don't */
+  .dodont { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:720px){ .dodont { grid-template-columns:1fr; } .frow { grid-template-columns:1fr; } }
+  .dd { border-radius:var(--r-card); padding:20px 22px; border:1px solid; }
+  .dd.do   { background:linear-gradient(180deg,#fff,#f6fbf6); border-color:#bcd9bf; }
+  .dd.dont { background:linear-gradient(180deg,#fff,#fbf5f2); border-color:var(--warn-bd); }
+  .dd h4 { font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em;
+           text-transform:uppercase; font-weight:600; margin-bottom:12px; }
+  .dd.do h4 { color:var(--forest-d); } .dd.dont h4 { color:var(--warn); }
+  .dd ul { list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .dd li { font-size:13px; line-height:1.5; color:var(--body); padding-left:20px; position:relative; }
+  .dd li::before { position:absolute; left:0; font-weight:800; }
+  .dd.do li::before { content:"✓"; color:var(--forest); }
+  .dd.dont li::before { content:"✕"; color:var(--warn); }
+  .dd li b { color:var(--ink); }
+
+  .callout { background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:var(--r-panel);
+             padding:16px 20px; font-size:13px; line-height:1.6; color:var(--body); margin-top:16px; }
+  .callout b { color:var(--warn); }
+  .callout.blue { background:var(--found-bg); border-color:var(--found-bd); }
+  .callout.blue b { color:var(--found-d); }
+  .callout.green { background:var(--g-lime); border-color:#bcd9bf; }
+  .callout.green b { color:var(--forest-d); }
+
+  /* footprint dots */
+  td.fp { font-family:var(--font-mono); font-size:12px; }
+  .fdot { display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:6px; vertical-align:-.5px; }
+  .fdot.hi { background:var(--forest); } .fdot.mid { background:var(--amber); } .fdot.lo { background:#d3d3c8; }
+
+  section { margin-top:54px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx">TODO-85 · all-hotel-cards</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-06 · ccw</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="hero reveal">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>TODO-85 · v2 — the all-in hotel build · researched live 2026-07-06</div>
+      <h1>Every chain.<br>One <span class="em">forever card</span>.</h1>
+      <p class="hero-sub"><b>Aspire stays the anchor — Diamond for life. Around it: Marriott Boundless, World of Hyatt,
+      and IHG Premier, all Chase, all before 5/24 slams shut.</b> Boundless goes first because it starts the 24-month
+      clock that unlocks Brilliant in 2028. Order is the entire game — the cards themselves are all keepers.</p>
+      <div class="hero-chips">
+        <span class="hchip v">Boundless 125k + free night — live now</span>
+        <span class="hchip v">Aspire 175k ends 7/29</span>
+        <span class="hchip q">Hyatt cert = Andaz Bali, literally</span>
+      </div>
+    </div>
+    <div class="bignum">
+      <div class="n">4<span class="u">→5</span></div>
+      <div class="cap">free-night certs banked <b>every year</b>, before any bonus-spend nights — 5 once Brilliant joins in 2028</div>
+      <div class="leak"><span class="v">$839</span><span class="l">hotel fees<br>2026 · all four</span></div>
+    </div>
+  </div>
+
+  <div class="kpis reveal">
+    <div class="kpi"><div class="kpi-n num">~500k</div><div class="kpi-l">welcome points across the four 2026 hotel cards</div></div>
+    <div class="kpi"><div class="kpi-n">Diamond</div><div class="kpi-l">+ IHG Platinum + Marriott 15 elite nights, day one</div></div>
+    <div class="kpi"><div class="kpi-n">5<span class="u">/24</span></div><div class="kpi-l">slots consumed by Oct — the plan uses every one</div></div>
+    <div class="kpi"><div class="kpi-n">Sep '28</div><div class="kpi-l">Brilliant unlock — Boundless bonus starts the clock</div></div>
+  </div>
+
+  <!-- ═══════════ 01 · THE FULL FLEET ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">01 · the full fleet</span><span class="sec-n">every hotel card on the market</span></div>
+    <h2 class="sec-title">All of them, sorted</h2>
+    <p class="lede">The whole US hotel-card market as of this week. <b>Four are core, one unlocks in 2028,
+    two are cheap satellites, the rest are noise.</b> "All the hotel cards" turns out to mean seven that matter.</p>
+
+    <div class="tw" style="margin-top:18px">
+      <table class="dt">
+        <thead><tr><th class="l">Card</th><th class="l">Move</th><th>AF</th><th class="l">Why</th></tr></thead>
+        <tbody>
+          <tr><td class="cardname">Hilton Aspire <small>Amex</small></td>
+              <td class="l"><span class="vpill forever">forever</span></td><td class="num">$550</td>
+              <td class="why">The anchor, unchanged: Diamond auto, <b>uncapped</b> free night every year (+2 more at $30k/$60k spend), $809 realistic credits. 175k offer ends <b>7/29</b>.</td></tr>
+          <tr><td class="cardname">Marriott Boundless <small>Chase</small></td>
+              <td class="l"><span class="vpill get">get 1st</span></td><td class="num">$95</td>
+              <td class="why">Fresh June offer: <b>125k + a 50k free night</b> after $3k/3mo. 35k cert (+15k top-off) every anniversary, 15 elite nights. Going first starts the 24-month Brilliant clock.</td></tr>
+          <tr><td class="cardname">World of Hyatt <small>Chase</small></td>
+              <td class="l"><span class="vpill get">get 2nd</span></td><td class="num">$95</td>
+              <td class="why">Cat 1–4 anniversary cert — <b>Andaz Bali is Cat 4</b>. 60k offer (30k + 30k via 2x on $15k). No downgrade path exists, so it's keep-forever by design. Discoverist is filler; the cert is the card.</td></tr>
+          <tr><td class="cardname">IHG One Premier <small>Chase</small></td>
+              <td class="l"><span class="vpill get">get 3rd</span></td><td class="num">$99</td>
+              <td class="why">Platinum auto, 40k anniversary night with <b>unlimited points top-off</b>, 4th night free on award stays, $50 United cash, GE/PreCheck credit. 140k standard now — the 185k mega-offer died 6/24; they recur.</td></tr>
+          <tr><td class="cardname">Marriott Brilliant <small>Amex</small></td>
+              <td class="l"><span class="vpill later">2028</span></td><td class="num">$650</td>
+              <td class="why">The endgame Marriott: Platinum auto + 25 elite nights, 85k cert, $300 dining credits. Its bonus is <b>blocked for 24 months</b> after the Boundless bonus — locked until ~Sep 2028. Not skipped, scheduled.</td></tr>
+          <tr><td class="cardname">Choice Privileges <small>Wells Fargo · $0</small></td>
+              <td class="l"><span class="vpill opt">2027 opt</span></td><td class="num">$0</td>
+              <td class="why">Free card, 60k offer, and Comfort-brand Japan at ~8k pts/night is a real sweet spot — but it's a personal card, and every 5/24 slot until Oct is spoken for. Revisit once a slot frees.</td></tr>
+          <tr><td class="cardname">Amex Marriott Business <small>35k cert @ $125</small></td>
+              <td class="l"><span class="vpill opt">2027 opt</span></td><td class="num">$125</td>
+              <td class="why">Cheapest extra Marriott cert; no bureau report. But applying before Boundless kills the Boundless bonus, and after it it's blocked 90 days — a later satellite, never a starter.</td></tr>
+          <tr><td class="cardname">Wyndham Earner+ / Premier</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">$95–395</td>
+              <td class="why">The whole play was Diamond → Caesars match → comped Atlantis. <b>Dead since 2/1/25</b> — card-granted status no longer matches. Footprint in HI/JP/Bali: negligible.</td></tr>
+          <tr><td class="cardname">Bevy · Bold · Bountiful</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">—</td>
+              <td class="why">Marriott middle children. Each consumes the same one-Marriott-bonus-per-24-months budget that Boundless and Brilliant use better.</td></tr>
+          <tr><td class="cardname">Best Western · MGM · Hard Rock · Sonesta</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">—</td>
+              <td class="why">Subprime issuer (BW), casino niche (MGM $249, Hard Rock), or dead (Sonesta card discontinued 2/13/26). Radisson/Omni/Accor: no US card exists.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><b>Hilton family bonus rules are the friendliest in the industry:</b> no cross-card blocks. Taking the
+    Aspire now doesn't foreclose a Surpass or Business bonus later — the Hilton wing can grow whenever. Marriott is the
+    opposite: one bonus per ~24 months across <b>both</b> issuers, which is why Boundless-first matters so much.</p>
+  </section>
+
+  <!-- ═══════════ 02 · THE ORDER ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">02 · the order</span><span class="sec-n">5/24 is the whole game</span></div>
+    <h2 class="sec-title">Chase first. Always Chase first.</h2>
+    <p class="lede">All three starter cards are Chase, and Chase auto-denies at <b>5 personal cards opened in 24 months —
+    across all banks</b>. The Aspire and Citi AA Exec each burn a slot the moment they're approved. So the window for
+    Hyatt / IHG / Boundless is <b>now, before and between</b> those two applications.</p>
+
+    <div class="slots">
+      <div class="slot chase"><div class="s-n">slot 1 · jul</div><div class="s-c">Marriott Boundless</div><div class="s-w">chase · rolls off jul '28</div></div>
+      <div class="slot chase"><div class="s-n">slot 2 · jul</div><div class="s-c">World of Hyatt</div><div class="s-w">chase · 2-per-30 respected</div></div>
+      <div class="slot"><div class="s-n">slot 3 · jul</div><div class="s-c">Hilton Aspire</div><div class="s-w">amex · by 7/29</div></div>
+      <div class="slot"><div class="s-n">slot 4 · aug</div><div class="s-c">Citi AA Executive</div><div class="s-w">citi · admirals club</div></div>
+      <div class="slot chase"><div class="s-n">slot 5 · sep–oct</div><div class="s-c">IHG Premier</div><div class="s-w">chase · last one in</div></div>
+      <div class="slot full"><div class="s-n">then</div><div class="s-c">5/24 — shut</div><div class="s-w">until jul 2028</div></div>
+    </div>
+
+    <div class="callout blue" style="margin-top:18px"><b>The escape valve:</b> this ledger assumes a clean 0/24 today.
+    If any slot is already burned, swap <b>IHG Premier → IHG Premier Business</b> ($99, same Platinum, same 40k
+    anniversary night — a full substitute that never reports to the personal bureau). Hyatt has the same move
+    (Hyatt Business, $199 — Discoverist + $100 Hyatt credit, but <b>no anniversary cert</b>, so it's a weaker swap).
+    Chase still checks 5/24 <b>at approval</b> for business cards, so even the escape valves must land before the count hits five.</div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="steps">
+        <div class="step"><span class="n"></span><div>
+          <h4>Marriott Boundless <span class="when">now — this week</span></h4>
+          <p>125k + 50k free night after $3k/3mo, no published end date but June offers don't last. <b>Approval day starts the 24-month timer on Brilliant.</b> Every week of delay pushes the 2028 unlock back a week.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>World of Hyatt <span class="when">~mid-jul, 7–14 days later</span></h4>
+          <p>Chase allows 2 personal approvals per 30 days — Boundless + Hyatt both fit in July. 30k after $3k/3mo, +30k more via 2x on the first $15k (that back half can run all year; no rush).</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Hilton Aspire <span class="when">before jul 29</span></h4>
+          <p>Amex doesn't care about Chase velocity, Chase doesn't count Amex until it reports (~1 cycle). 175k/$6k/6mo — top-of-range, hard deadline. <b>The forever card lands here.</b></p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Citi AA Executive <span class="when">aug, spaced a few weeks</span></h4>
+          <p>Unchanged from the v1 plan — Admirals Club membership that works with a non-rev standby pass. Airline lane, doesn't touch any hotel rule.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>IHG Premier <span class="when">sep–oct</span></h4>
+          <p>The last Chase card in — 140k standard offer (if an elevated one reappears, even better; don't wait past October for it). Personal if the slot math held; <b>Premier Business if it didn't</b>. After this, 5/24 is closed and that's fine — everything wanted is already in the wallet.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Sweep UR → Hyatt <span class="when">before oct 1</span></h4>
+          <p>Carried over from v1: UR→Hyatt drops to 4:3 on Oct 1. With a Hyatt card now in the fleet, the combined Hyatt balance (card earning + swept UR) is what funds Bali/Japan redemptions.</p></div></div>
+        <div class="step far"><span class="n"></span><div>
+          <h4>Satellites, if wanted <span class="when">2027</span></h4>
+          <p>Choice MC ($0, Japan Comfort redemptions) and/or Amex Marriott Business ($125, extra 35k cert) once the dust settles. Neither is time-sensitive; elevated offers on both recur.</p></div></div>
+        <div class="step far"><span class="n"></span><div>
+          <h4>Marriott Brilliant <span class="when">~sep 2028</span></h4>
+          <p>24 months + buffer after the Boundless bonus posts. Platinum + 25 elite nights + 85k cert. <b>Set the reminder at Boundless bonus-post date + 25 months.</b> Until then, Boundless certs carry the Marriott wing.</p></div></div>
+      </div>
+    </div>
+
+    <div class="callout"><b>The real constraint isn't approvals — it's minimum spend.</b> Boundless $3k + Hyatt $3k +
+    Aspire $6k + Citi's SUB + IHG $3k ≈ <b>$15–21k of required spend inside ~6 months</b>, all overlapping. The sequence
+    above staggers the clocks (each SUB window opens at approval), but if organic spend can't cover it, stretch steps
+    2 and 5 out rather than missing a bonus — a missed SUB is the only unrecoverable error in this plan.</div>
+  </section>
+
+  <!-- ═══════════ 03 · FEE MATH ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">03 · fee math</span><span class="sec-n">$ out vs $ back, steady state</span></div>
+    <h2 class="sec-title">Four fees, four free nights</h2>
+    <p class="lede">Same conservative accounting as v1: welcome bonuses count for <b>nothing</b>, points earning counts for
+    nothing — just annual fees against credits and the anniversary nights at realistic (not aspirational) values.</p>
+
+    <div class="card" style="margin-top:18px">
+      <div class="fee-leg">
+        <span><i style="background:#c1502e"></i>annual fee</span>
+        <span><i style="background:#0a8a76"></i>realistic credits</span>
+        <span><i style="background:#0a8a76;opacity:.45"></i>anniversary night ≈ value</span>
+      </div>
+      <div class="fee-chart" id="feechart">
+        <div class="frow">
+          <div class="frow-name">Hilton Aspire<small>forever card</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="550"></span><span class="lab">$550</span></div>
+            <div class="fbar"><span class="seg val" data-w="809"></span><span class="seg soft" data-w="500"></span><span class="lab">$809 <i>+ FN ≈$500, uncapped</i></span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Marriott Boundless<small>+15 elite nights</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="95"></span><span class="lab">$95</span></div>
+            <div class="fbar"><span class="seg val" data-w="100"></span><span class="seg soft" data-w="250"></span><span class="lab">$100 airline <i>(thru 6/27)</i> + FN ≈$250</span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">World of Hyatt<small>cat 1–4 cert</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="95"></span><span class="lab">$95</span></div>
+            <div class="fbar"><span class="seg val" data-w="0"></span><span class="seg soft" data-w="300"></span><span class="lab">FN ≈$300 <i>Andaz Bali runs $350+</i></span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">IHG Premier<small>40k + top-off</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="99"></span><span class="lab">$99</span></div>
+            <div class="fbar"><span class="seg val" data-w="80"></span><span class="seg soft" data-w="250"></span><span class="lab">$50 United + GE <i>≈$80</i> + FN ≈$250</span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Marriott Brilliant<small>from 2028</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="650"></span><span class="lab">$650</span></div>
+            <div class="fbar"><span class="seg val" data-w="200"></span><span class="seg soft" data-w="500"></span><span class="lab">$200 <i>of the $25/mo dining, counted low</i> + FN ≈$500 (85k)</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="formula" style="margin:20px 0 0">
+        <span class="k">2026 net</span> = ($989 credits + $1,300 nights) − $839 fees ≈ <b>+$1,450/yr</b> &nbsp;·&nbsp;
+        <span class="k">2028+ with Brilliant</span> ≈ +$1,500/yr on $1,489 fees &nbsp;·&nbsp;
+        worst case (certs half-wasted) still clears the fees on the three $95-class cards
+      </div>
+    </div>
+    <p class="note"><b>Why the cheap trio is nearly unlosable:</b> each $95–99 fee buys one night that a single Friday in
+    Tokyo, Kauai, or Canggu redeems above cost. The Aspire and Brilliant are the only cards that need active credit
+    management — the Chase trio is set-and-forget.</p>
+  </section>
+
+  <!-- ═══════════ 04 · STATUS STACK ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">04 · status stack</span><span class="sec-n">what the wallet confers</span></div>
+    <h2 class="sec-title">One real status, three useful ones</h2>
+    <p class="lede">Card-granted status is mostly theater — <b>Hilton Diamond is the exception</b>, and it's already in the
+    plan. The rest of the stack is honest middle-tier: real enough to use, not worth optimizing around.</p>
+
+    <div class="tw" style="margin-top:18px">
+      <table class="dt">
+        <thead><tr><th class="l">Status</th><th class="l">Source</th><th class="l">What it actually does</th></tr></thead>
+        <tbody>
+          <tr><td class="cardname">Hilton Diamond</td><td class="l why"><b>Aspire</b>, automatic forever</td>
+              <td class="why"><b>Breakfast for two outside the US</b>, exec lounges, space-available upgrades, 100% points bonus. Strongest exactly where the travel is: Japan and Bali. (New "Diamond Reserve" tier above it needs 80 stayed nights — not card-reachable, doesn't dilute this.)</td></tr>
+          <tr><td class="cardname">IHG Platinum</td><td class="l why"><b>IHG Premier</b>, automatic</td>
+              <td class="why">Upgrades when available, welcome points. Fine, not breakfast. The card's real perks are the cert and <b>4th-night-free on award stays</b> — that one's worth ~25% off every long IHG redemption.</td></tr>
+          <tr><td class="cardname">Marriott Silver +15 nights <small>→ Platinum in 2028</small></td><td class="l why"><b>Boundless</b> now · <b>Brilliant</b> later</td>
+              <td class="why">Silver ≈ nothing; the 15 elite nights are a head start if a status year ever matters. Brilliant flips it to <b>Platinum: breakfast, lounge, suite upgrades, 4pm checkout</b> — the second real status, arriving 2028.</td></tr>
+          <tr><td class="cardname">Hyatt Discoverist</td><td class="l why"><b>WoH card</b>, automatic</td>
+              <td class="why">2pm checkout and wifi. Near-worthless — hold the card for the cert and the 5 tier-nights/yr it banks toward Explorist if a big Hyatt year ever happens.</td></tr>
+          <tr><td class="cardname">Wyndham Diamond → Caesars</td><td class="l why">— skipped</td>
+              <td class="why">The famous chain (Diamond → Caesars Diamond → comped Atlantis) <b>no longer accepts card-granted status</b> since Feb 2025. Without it, Wyndham Diamond is suite upgrades at Super 8s.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════ 05 · FOOTPRINT ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">05 · footprint</span><span class="sec-n">hawaii · japan · bali</span></div>
+    <h2 class="sec-title">Where each card actually gets used</h2>
+    <p class="lede">The four-chain build covers the three home regions with <b>no dead weight</b> — every anniversary cert
+    has a named property it can land on this year.</p>
+
+    <div class="tw" style="margin-top:18px">
+      <table class="dt">
+        <thead><tr><th class="l">Chain</th><th class="l">Hawaii</th><th class="l">Japan</th><th class="l">Bali</th></tr></thead>
+        <tbody>
+          <tr><td class="cardname">Hilton</td>
+              <td class="why fp"><span class="fdot hi"></span>Grand Wailea, Hawaiian Village, Waikoloa — no resort fees on points</td>
+              <td class="why fp"><span class="fdot hi"></span>~30 and building luxury fast (Waldorf Osaka '25)</td>
+              <td class="why fp"><span class="fdot mid"></span>Conrad Bali — where Aspire's credits + FN stack</td></tr>
+          <tr><td class="cardname">Marriott</td>
+              <td class="why fp"><span class="fdot hi"></span>Biggest footprint on the islands — Royal Hawaiian, Ritz Maui; certs beat dynamic pricing</td>
+              <td class="why fp"><span class="fdot hi"></span><b>~100 hotels</b> — largest western chain in Japan; 35–50k certs land easily</td>
+              <td class="why fp"><span class="fdot hi"></span>St. Regis, W, Westin, Sheraton — broad</td></tr>
+          <tr><td class="cardname">Hyatt</td>
+              <td class="why fp"><span class="fdot mid"></span>Best point value (Andaz Maui ~40k vs $1k cash) — but all Cat 5+, <b>cert doesn't reach Hawaii</b></td>
+              <td class="why fp"><span class="fdot mid"></span>22 hotels, Park Hyatt Tokyo/Kyoto — points territory</td>
+              <td class="why fp"><span class="fdot hi"></span><b>Andaz Bali is Cat 4 — the anniversary cert's bullseye</b>; Alila + Grand Hyatt behind it</td></tr>
+          <tr><td class="cardname">IHG</td>
+              <td class="why fp"><span class="fdot lo"></span>Thin — a HIX in Waikiki</td>
+              <td class="why fp"><span class="fdot hi"></span>54 hotels + ANA co-brand — 40k cert + top-off very usable</td>
+              <td class="why fp"><span class="fdot hi"></span>InterContinental Jimbaran, new Regent Canggu, Kimpton</td></tr>
+          <tr><td class="cardname">Wyndham · Choice · BW</td>
+              <td class="why fp"><span class="fdot lo"></span>Negligible</td>
+              <td class="why fp"><span class="fdot mid"></span>Choice's Comfort network ~8k pts/night is the one gem (why it stays on the 2027 list)</td>
+              <td class="why fp"><span class="fdot lo"></span>Negligible</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><b>Region playbook:</b> Hawaii → Aspire's uncapped night + Marriott certs + Hyatt <i>points</i> (never the cert).
+    Japan → Marriott + IHG certs + Choice points later. Bali → Hyatt cert at Andaz + IHG + Aspire credits at the Conrad.</p>
+  </section>
+
+  <!-- ═══════════ 06 · TRAPS ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">06 · traps</span><span class="sec-n">the ways this goes wrong</span></div>
+    <h2 class="sec-title">Sequencing traps, named</h2>
+
+    <div class="dodont" style="margin-top:18px">
+      <div class="dd do"><h4>do</h4><ul>
+        <li><b>Boundless before everything</b> — it starts the only 24-month clock in the plan</li>
+        <li>Both Chase apps in July, <b>7–14 days apart</b> (2-per-30 is the ceiling)</li>
+        <li>Aspire by <b>7/29</b>; Amex and Chase velocity don't see each other same-month</li>
+        <li>Use <b>IHG Premier Business</b> if the 5/24 math turns out tighter than assumed</li>
+        <li>Calendar the Brilliant unlock: <b>Boundless bonus post-date + 25 months</b></li>
+        <li>Keep every card's cert redeemed before its next fee posts — the fee is the cert's price</li>
+      </ul></div>
+      <div class="dd dont"><h4>don't</h4><ul>
+        <li>Apply for <b>any</b> non-plan personal card before October — every slot is budgeted</li>
+        <li>Touch <b>Amex Marriott Business before Boundless</b> — its bonus kills the Boundless bonus for 24 months</li>
+        <li>Touch <b>Bevy, ever</b> — and note Brilliant permanently blocks Bevy's bonus (fine; Bevy isn't wanted)</li>
+        <li>Chase Wyndham for Caesars — that door closed Feb 2025</li>
+        <li>Miss a minimum spend — approvals are recoverable, a burned SUB is not</li>
+        <li>Cancel the Hyatt card in a weak year — <b>no downgrade path exists</b>; it's keep-or-lose-forever</li>
+      </ul></div>
+    </div>
+
+    <div class="callout green" style="margin-top:18px"><b>What stays true from v1:</b> Venture X, Ink Preferred, and Savor
+    keep their jobs; Sapphire still downgrades at next fee; Platinum and United Club stay skipped. This build adds the
+    hotel wing around that core — total fleet fees land at <b>$1,924/yr in 2026</b> (v1's $1,635 + $289 for the Chase trio),
+    against a credit-and-cert stack that clears it before a single point is spent.</div>
+  </section>
+
+  <div class="foot">
+    TODO-85 · all-hotel-cards (v2 — the all-in build) · researched live 2026-07-06 (4 parallel research passes) ·
+    grove · gated · <code>bpo/artifacts/2026-W28/</code><br>
+    key facts: Boundless 125k+FN launched 6/4/26 · IHG 185k offer ended 6/24/26, 140k standard · Hyatt 5-night offer died 2/26/26, 60k standard ·
+    Aspire/Surpass/no-AF/Biz Hilton offers all end 7/29/26 · Brilliant 200k died 5/13/26, 150k standing · Marriott cross-issuer: one personal bonus per 24mo ·
+    Wyndham→Caesars card-status match dead 2/1/25 · Sonesta card dead 2/13/26 · Hyatt award chart re-tiered 5/20/26 (cat 1–4 certs intact) ·
+    5/24 mechanics per TPG/UP 2026 guides · issuer terms shift — re-check the application pop-up at apply time · not financial advice
+  </div>
+
+</div>
+<script>
+  // reveal on scroll
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+  }), { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // fee bars — scale to max total (Aspire 809+500)
+  const MAX = 1309, W = () => document.getElementById('feechart').clientWidth - 210;
+  const draw = () => document.querySelectorAll('#feechart .seg').forEach(s => {
+    s.style.width = Math.max(0, (+s.dataset.w / MAX) * Math.min(W(), 600)) + 'px';
+  });
+  const bio = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { requestAnimationFrame(draw); bio.disconnect(); }
+  }), { threshold: .3 });
+  bio.observe(document.getElementById('feechart'));
+  addEventListener('resize', draw);
+</script>
+</body>
+</html>

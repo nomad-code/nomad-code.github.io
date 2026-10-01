@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Privacy-safe JLPT Shorts production checkpoint">
+  <title>TODO-400 · JLPT Shorts production checkpoint</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <style>
+    :root { --paper:#fffdf8; --canvas:#f4f0e7; --ink:#14252e; --soft:#5f6d74; --indigo:#24365f; --coral:#b84b32; --moss:#34725f; --line:#d9d2c6; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--canvas); color:var(--ink); font:16px/1.5 system-ui,sans-serif; }
+    header { background:var(--indigo); color:white; padding:clamp(36px,7vw,84px) 6vw; }
+    header p { color:#d9dfec; max-width:66ch; }
+    main { margin:auto; max-width:1100px; padding:32px 6vw 80px; }
+    h1 { font-size:clamp(2.2rem,6vw,5rem); line-height:.98; margin:0 0 18px; }
+    h2 { margin:0; }
+    .eyebrow { color:#f2b5a7; font-size:.76rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    .grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); margin:24px 0; }
+    .card { background:var(--paper); border:1px solid var(--line); border-radius:20px; padding:20px; }
+    .number { color:var(--indigo); font-size:2.5rem; font-weight:850; letter-spacing:-.05em; }
+    .muted { color:var(--soft); }
+    .gate { align-items:center; display:flex; gap:12px; padding:12px 0; }
+    .dot { background:var(--moss); border-radius:999px; height:12px; width:12px; }
+    .warn .dot { background:var(--coral); }
+    .checklist { display:grid; gap:10px; margin-top:18px; }
+    label { align-items:flex-start; background:var(--paper); border:1px solid var(--line); border-radius:14px; cursor:pointer; display:flex; gap:12px; padding:14px; }
+    input { height:20px; margin-top:2px; width:20px; }
+    progress { accent-color:var(--moss); height:14px; width:100%; }
+    footer { color:var(--soft); font-size:.82rem; padding-top:32px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">TODO-400 · 2026-08-21</div>
+    <h1>JLPT flight reels</h1>
+    <p>A privacy-safe checkpoint for the original, rights-gated N5/N4 vertical-lesson pipeline and Sora Watch catalog. No private source labels, URLs, ordering, examples, or audio are embedded here.</p>
+  </header>
+  <main>
+    <section class="grid" aria-label="Coverage totals">
+      <div class="card"><div class="number">2,512</div><div class="muted">concepts reconciled exactly once</div></div>
+      <div class="card"><div class="number">756</div><div class="muted">planned ≤60-second episodes</div></div>
+      <div class="card"><div class="number">317</div><div class="muted">one-concept grammar episodes</div></div>
+      <div class="card"><div class="number">439</div><div class="muted">five-word vocabulary drills</div></div>
+    </section>
+
+    <section class="card">
+      <h2>Build state</h2>
+      <div class="gate"><span class="dot"></span><span>Exact corpus reconciliation and deterministic batching pass.</span></div>
+      <div class="gate"><span class="dot"></span><span>1080×1920 H.264/AAC render, SRT caption, poster, and ffprobe gates pass.</span></div>
+      <div class="gate"><span class="dot"></span><span>Expo Watch schema, SQLite state, filters, provider links, import, export, and production bundles pass.</span></div>
+      <div class="gate warn"><span class="dot"></span><span>Publication remains blocked until each lesson has original reviewed copy and licensed narration.</span></div>
+      <div class="gate warn"><span class="dot"></span><span>YouTube offline eligibility remains blocked on the physical 3–5-video Premium airplane-mode pilot.</span></div>
+    </section>
+
+    <section style="margin-top:24px">
+      <h2>Pilot checklist</h2>
+      <p class="muted">This local checklist persists in the browser. It records process only—never account, video, or source identifiers.</p>
+      <progress id="progress" max="5" value="0"></progress>
+      <div class="checklist" id="checklist">
+        <label><input type="checkbox"><span>Review original scripts, examples, graphics, and narration rights.</span></label>
+        <label><input type="checkbox"><span>Inspect representative masters for glyphs, crop, sync, and loudness.</span></label>
+        <label><input type="checkbox"><span>Upload 3–5 masters manually as unlisted Shorts.</span></label>
+        <label><input type="checkbox"><span>Download every pilot in YouTube Premium and cold-start in airplane mode.</span></label>
+        <label><input type="checkbox"><span>Confirm Expo handoff online and use YouTube Downloads directly offline.</span></label>
+      </div>
+    </section>
+    <footer>Canonical source stays local. Social platforms are delivery surfaces, not the archive.</footer>
+  </main>
+  <script>
+    const key='todo-400-jlpt-shorts-pilot-v1';
+    const boxes=[...document.querySelectorAll('input[type=checkbox]')];
+    const saved=JSON.parse(localStorage.getItem(key)||'[]');
+    boxes.forEach((box,index)=>{box.checked=saved[index]===true;box.addEventListener('change',save)});
+    function save(){const state=boxes.map(box=>box.checked);localStorage.setItem(key,JSON.stringify(state));document.querySelector('#progress').value=state.filter(Boolean).length}
+    save();
+  </script>
+</body>
+</html>

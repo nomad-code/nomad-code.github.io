@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- DSP shell template — GENERATED from template.src.html; fai/wip/button-m1 apps/dispatch/button/app.css @ 0686d94d (agent/button-trail-20260928) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>DSP shell</title>
+<link rel="stylesheet" href="shell.css">
+</head>
+<body>
+<nav class="rail" id="rail" aria-label="Sections">
+  <a class="brand" href="#" aria-label="Home">DS</a>
+  <button class="iconbtn on" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button>
+  <button class="iconbtn" aria-label="Sources"><svg viewBox="0 0 24 24"><path d="M3 7V4h7l3 3h8v13H3Z"/></svg></button>
+  <button class="iconbtn" aria-label="Canvas"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+  <button class="iconbtn" aria-label="Chat"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 1-8 8H5l-3 2V11a9 9 0 0 1 18 0Z"/><path d="M7 9h10M7 13h6"/></svg></button>
+  <span class="spacer"></span>
+  <button class="iconbtn" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+  <button class="iconbtn" id="theme" aria-label="Theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
+</nav>
+<div class="scrim" id="scrim" hidden></div>
+<header class="topbar">
+  <div class="crumb">
+    <button class="iconbtn burger" id="burger" aria-label="Menu" aria-controls="rail" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <b>Workspace</b><span class="sep">/</span><span class="dim">Section</span><span class="tag">v1</span>
+  </div>
+  <div class="meta">
+    <span class="caps">period</span>
+    <button class="tbtn">Sources <span>3</span></button>
+    <div class="seg" role="tablist"><button role="tab" aria-selected="true">Now</button><button role="tab" aria-selected="false">Quarter</button><button role="tab" aria-selected="false">Year</button></div>
+  </div>
+</header>
+<main class="canvas">
+<div class="insight">
+  <div class="caps">Eyebrow · one line of context</div>
+  <section class="answer">
+    <div class="ans-top"><span class="caps">answer</span><span class="dim">updated today</span></div>
+    <h1>The headline, in one line.</h1>
+    <div class="ans-body">
+      <p class="summary">One sentence under it that says <b>what changed</b> and why it matters. The long read stays folded below.</p>
+      <div class="q">A quoted line from a source sits on the lane rule.<small>Role · source · date</small></div>
+    </div>
+    <div class="ans-acts"><button class="primary">Primary action</button><button class="tbtn">Secondary</button></div>
+  </section>
+  <div class="tabs" role="tablist"><button role="tab" aria-selected="true">Overview</button><button role="tab" aria-selected="false">Detail</button><button role="tab" aria-selected="false">Trail</button></div>
+  <div class="metrics">
+    <div class="metric" data-light="green"><b>1,234</b><small>ready</small></div>
+    <div class="metric" data-light="yellow"><b>87</b><small>to review</small></div>
+    <div class="metric" data-light="red"><b>12</b><small>blocked</small></div>
+    <div class="metric" data-light="out"><b>4</b><small>out of scope</small></div>
+  </div>
+  <div class="group">
+    <div class="grouphead"><span class="caps">Lights by area</span><span class="legend"><span data-light="green">ready</span><span data-light="yellow">review</span><span data-light="red">blocked</span></span></div>
+    <div class="tablecard">
+      <button class="lrow on"><span class="lbl">Area one</span><span class="tr">team</span><span class="track"><span class="seg-l" data-light="green" style="width:70%"></span><span class="seg-l" data-light="yellow" style="width:20%"></span><span class="seg-l" data-light="red" style="width:10%"></span></span><span class="counts"><b data-light="green">70</b><b data-light="yellow">20</b><b data-light="red">10</b><i>100</i></span></button>
+      <button class="lrow"><span class="lbl">Area two</span><span class="tr">team</span><span class="track"><span class="seg-l" data-light="green" style="width:40%"></span><span class="seg-l" data-light="yellow" style="width:50%"></span><span class="seg-l" data-light="red" style="width:10%"></span></span><span class="counts"><b data-light="green">40</b><b data-light="yellow">50</b><b data-light="red">10</b><i>100</i></span></button>
+      <button class="lrow"><span class="lbl">Area three</span><span class="tr">team</span><span class="track"><span class="seg-l" data-light="green" style="width:90%"></span><span class="seg-l" data-light="red" style="width:10%"></span></span><span class="counts"><b data-light="green">90</b><b data-light="red">10</b><i>100</i></span></button>
+      <div class="foot">Counts are items. Lights mean ready · review · blocked, never a lane.</div>
+    </div>
+  </div>
+  <div class="group">
+    <div class="answercard"><h2>A card that answers first</h2><p class="summary">Two lines of support, then chips for what it touches.</p><div class="chips"><span class="chip">alpha</span><span class="chip">beta</span><span class="own">owner</span></div></div>
+  </div>
+  <div class="group">
+    <div class="grouphead"><span class="caps">Table</span></div>
+    <div class="tablecard"><table class="tbl"><thead><tr><th>Item</th><th>Role</th><th class="num">Count</th></tr></thead><tbody><tr><td>First row</td><td>Role</td><td class="num">1,204</td></tr><tr><td>Second row</td><td>Role</td><td class="num">318</td></tr><tr><td>Third row</td><td>Role</td><td class="num">27</td></tr></tbody></table></div>
+  </div>
+</div>
+</main>
+<script>
+const $=s=>document.querySelector(s),root=document.documentElement,q=new URLSearchParams(location.search)
+const setTheme=t=>{root.dataset.theme=t;try{localStorage.setItem('dsp-theme',t)}catch{}}
+let t0=q.get('theme');try{t0=t0||localStorage.getItem('dsp-theme')}catch{}
+setTheme(t0||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'))
+$('#theme').onclick=()=>setTheme(root.dataset.theme==='dark'?'light':'dark')
+const mobileRail=matchMedia('(max-width: 700px)'),rail=$('#rail'),burger=$('#burger')
+const focusables=()=>[...rail.querySelectorAll('a[href],button:not([disabled])')].filter(el=>el.offsetParent!==null)
+const menu=on=>{const was=document.body.dataset.menu==='open';document.body.dataset.menu=on?'open':'';$('#scrim').hidden=!on;burger.setAttribute('aria-expanded',String(on));rail.inert=mobileRail.matches&&!on
+  if(on&&mobileRail.matches)rail.querySelector('.brand').focus({preventScroll:true})
+  else if(was&&mobileRail.matches&&(rail.contains(document.activeElement)||document.activeElement===document.body))burger.focus({preventScroll:true})}
+mobileRail.addEventListener('change',()=>{const inRail=rail.contains(document.activeElement);menu(false);if(!mobileRail.matches&&(inRail||document.activeElement===burger))rail.querySelector('.brand').focus({preventScroll:true});else if(mobileRail.matches&&inRail)burger.focus({preventScroll:true})})
+burger.onclick=()=>menu(document.body.dataset.menu!=='open')
+$('#scrim').onclick=()=>menu(false)
+rail.addEventListener('click',e=>{if(e.target.closest('.iconbtn:not(#theme),.brand'))menu(false)})
+addEventListener('keydown',e=>{const open=mobileRail.matches&&document.body.dataset.menu==='open'
+  if(e.key==='Escape'&&open){e.preventDefault();menu(false);return}
+  if(e.key==='Tab'&&open){const f=focusables();if(!f.length)return;const i=f.indexOf(document.activeElement)
+    if(e.shiftKey&&(i<=0)){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&(i===-1||i===f.length-1)){e.preventDefault();f[0].focus()}}})
+// tabs: roving tabindex over ENABLED tabs only. A disabled or aria-disabled tab is skipped by
+// arrows/Home/End and cannot be selected. If the selected tab becomes disabled it stays
+// aria-selected (the consumer decides what to show) but the roving stop moves to the first
+// enabled tab; an empty or all-disabled list is a no-op.
+document.querySelectorAll('[role=tablist]').forEach(l=>{const tabs=()=>[...l.querySelectorAll('[role=tab]')],ok=t=>!t.disabled&&t.getAttribute('aria-disabled')!=='true'
+  const refresh=()=>{const t=tabs(),stop=t.find(x=>ok(x)&&x.getAttribute('aria-selected')==='true')||t.find(ok);t.forEach(x=>x.tabIndex=x===stop?0:-1)}
+  const select=b=>{if(!b||!ok(b))return;tabs().forEach(x=>x.setAttribute('aria-selected',String(x===b)));refresh();b.focus()}
+  refresh();new MutationObserver(refresh).observe(l,{subtree:true,childList:true,attributes:true,attributeFilter:['disabled','aria-disabled','aria-selected']})
+  l.addEventListener('click',e=>{const b=e.target.closest('[role=tab]');if(b)select(b)})
+  l.addEventListener('keydown',e=>{const t=tabs(),c=t.indexOf(document.activeElement);if(c<0)return
+    const en=t.filter(ok);if(!en.length)return
+    let target;if(e.key==='Home')target=en[0];else if(e.key==='End')target=en[en.length-1]
+    else{const d={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];if(!d)return;for(let k=1;k<=t.length;k++){const x=t[(c+d*k+t.length*k)%t.length];if(ok(x)){target=x;break}}}
+    if(!target)return;e.preventDefault();select(target)})})
+document.querySelectorAll('.lrow').forEach(r=>r.onclick=()=>{document.querySelectorAll('.lrow').forEach(x=>x.classList.toggle('on',x===r))})
+menu(false)
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-175 · grove-mobile · Never bad on mobile again</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .frame{padding:0 clamp(16px,4vw,64px) 40px}
+  .band{margin-top:30px}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  /* the contract in practice: bespoke grids ship their own ≤640 collapse */
+  @media(max-width:900px){.g3{grid-template-columns:1fr}}
+  @media(max-width:640px){.g2{grid-template-columns:1fr}}
+  .spec{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);padding:18px 20px;box-shadow:var(--shadow-card)}
+  .spec-k{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--forest);margin-bottom:8px}
+  .spec h4{font-size:15px;font-weight:740;color:var(--ink);margin:0 0 7px;line-height:1.25}
+  .spec p{font-size:13px;line-height:1.58;color:var(--body);margin:0}
+  .spec p b{color:var(--ink)}
+  .spec.warn{border-color:var(--warn-bd);background:linear-gradient(180deg,var(--warn-bg),var(--card) 72%)}
+  .spec.warn .spec-k{color:var(--warn)}
+  .spec.key{border-color:#bcd9bf;background:linear-gradient(180deg,var(--g-lime),var(--card) 72%)}
+  .code{font-family:var(--font-mono);font-size:12px;line-height:1.7;color:var(--body);background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);padding:16px 18px;overflow-x:auto;box-shadow:var(--shadow-card);white-space:pre;-webkit-overflow-scrolling:touch}
+  .code .c{color:var(--forest)} .code .m{color:var(--muted)} .code .k{color:var(--warn)}
+  .demo-label{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin:0 0 10px}
+  .checklist{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .checklist li{display:grid;grid-template-columns:20px 1fr;gap:11px;font-size:13.5px;line-height:1.5;color:var(--body)}
+  .checklist li b{color:var(--ink)}
+  .checklist .ck{width:19px;height:19px;border-radius:6px;background:var(--g-lime);color:var(--forest);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px}
+  .checklist .ck.you{background:var(--found-bg);color:var(--found-d)}
+</style>
+</head>
+<body class="standalone">
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span>
+    <span class="tb-sep"></span>
+    <span class="tb-ctx"><span class="dot"></span>TODO-175 · grove-mobile</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">design system · 2026-07-09</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <div class="hero band reveal" style="margin-top:80px">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>the grove design system · mobile pass</div>
+      <h1>grove, <span class="em">on your phone</span>.</h1>
+      <p class="hero-sub">Artifacts were authored on a fixed <b>1440px</b> canvas and shrunk to fit
+      with <code>zoom</code>. On an iPhone that floored at <b>0.45</b> — a 648px comp
+      jammed into a 390px screen. It looked terrible. Now, below <b>640px</b>, grove
+      <b>stops shrinking and reflows</b>: one readable column, right-sized type, nothing
+      clipped. The fix lives in <code>components.css</code>, which every artifact already
+      links — so the whole gallery, present and future, inherits it.</p>
+      <div class="hero-chips">
+        <span class="hchip v">✓ zoom → reflow ≤640px</span>
+        <span class="hchip v">✓ 12 / 12 artifacts clean</span>
+        <span class="hchip q">this page proves it</span>
+      </div>
+    </div>
+    <div class="bignum">
+      <div class="n">0<span class="u">px</span></div>
+      <div class="cap">horizontal overflow, measured at 390px across
+      <b>every live artifact</b>. Scroll this page on your phone — it never
+      pans sideways.</div>
+      <div class="leak"><span class="v">648→390</span><span class="l">canvas now<br>fits the screen</span></div>
+    </div>
+  </div>
+
+  <div class="kpis band reveal">
+    <div class="kpi"><div class="kpi-n">640<span class="u">px</span></div><div class="kpi-l">the phone breakpoint — below it, the fixed canvas goes fluid</div></div>
+    <div class="kpi"><div class="kpi-n">zoom→<span class="u">1</span></div><div class="kpi-l">the scale-to-fit trick is switched off; content flows at real size</div></div>
+    <div class="kpi"><div class="kpi-n">min-w<span class="u">:0</span></div><div class="kpi-l">the one rule that lets wide tables scroll instead of overflow</div></div>
+    <div class="kpi"><div class="kpi-n">1<span class="u">file</span></div><div class="kpi-l">the fix is in components.css — no per-artifact edits needed</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WHAT BROKE -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 4.3 2.8 18a1.9 1.9 0 0 0 1.7 2.9h15a1.9 1.9 0 0 0 1.7-2.9L13.7 4.3a1.9 1.9 0 0 0-3.4 0Z"/></svg>what broke</span>
+    <h2 class="sec-title">The zoom canvas couldn't shrink far enough</h2>
+    <span class="sec-n">01</span>
+  </div>
+  <p class="lede reveal">grove comps are drawn at a fixed <b>1440px</b> width and scaled to the window with
+  a single <code>zoom</code> value. That's elegant on a laptop. On a phone the maths run out of room.</p>
+  <div class="g3 band reveal">
+    <div class="spec warn"><div class="spec-k">the floor</div><h4>zoom clamped at 0.45</h4><p>Fitting 1440px into 390px needs a zoom of <b>~0.27</b>. The clamp floor was <b>0.45</b>, so the comp rendered <b>648px</b> wide — 258px wider than the screen.</p></div>
+    <div class="spec warn"><div class="spec-k">no phone tier</div><h4>reflow stopped at 760px</h4><p>The only responsive layer targeted tablets. Fixed-canvas artifacts got <b>no reflow at all</b> — they shrank-and-overflowed instead.</p></div>
+    <div class="spec warn"><div class="spec-k">giant type</div><h4>128px display numbers</h4><p>Every size was a fixed pixel value. A 128px hero number on a 390px screen overran its own container.</p></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- THE FIX -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>the fix</span>
+    <h2 class="sec-title">Below 640px: reflow, don't shrink</h2>
+    <span class="sec-n">02</span>
+  </div>
+  <div class="g2 band reveal">
+    <div class="spec key"><div class="spec-k">canvas</div><h4>Drop the zoom, go fluid</h4><p>The fixed frame becomes <code>width:100%</code> and <code>zoom:1</code>. Content lays out at its true, readable size and stacks into one column.</p></div>
+    <div class="spec key"><div class="spec-k">the crux</div><h4>min-width:0 on every child</h4><p>Grid &amp; flex items default to <code>min-width:auto</code>, so a wide table forces its whole column off-screen. Zeroing it lets wide content <b>scroll inside its own box</b> instead of the page.</p></div>
+    <div class="spec"><div class="spec-k">grids</div><h4>Everything to one column</h4><p>Hero, KPIs, cards, bars, formula rows — plus a <code>[class*="grid"]</code> net that catches bespoke per-artifact layouts too.</p></div>
+    <div class="spec"><div class="spec-k">type</div><h4>Fluid display sizes</h4><p>The oversized numbers and headings switch to <code>clamp()</code> on mobile only — desktop is byte-for-byte unchanged.</p></div>
+  </div>
+  <div class="code band reveal">@media (max-width:640px){
+  .frame{width:100%!important}
+  .frame:not(.overlay),.fit{<span class="c">zoom:1!important</span>}   <span class="m">/* reflow, not shrink */</span>
+  .hero,.rails,.kpis{grid-template-columns:1fr!important}
+  <span class="c">.frame *,.layout *{min-width:0}</span>          <span class="m">/* the rule that matters most */</span>
+  .tw,.rb-wrap,[class*=<span class="k">"wrap"</span>]{overflow-x:auto}  <span class="m">/* wide tables scroll */</span>
+  .bignum .n{font-size:clamp(52px,18vw,96px)}
+}</div>
+
+  <div class="divider"></div>
+
+  <!-- LIVE GALLERY -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>live gallery</span>
+    <h2 class="sec-title">Every primitive, reflowing right now</h2>
+    <span class="sec-n">03</span>
+  </div>
+  <p class="lede reveal">These are real grove components — the same classes the artifacts use.
+  Resize this window past 640px, or open it on your phone: each one collapses cleanly.</p>
+
+  <p class="demo-label band reveal">rail cards · .rails › .rail-card</p>
+  <div class="rails reveal">
+    <div class="rail-card prev"><div class="rc-h"><span class="rc-tag prev">before</span><b>shrink-to-fit</b></div><p class="rc-p">A 1440px comp scaled to 0.45 and panned sideways. Type below legibility, layout clipped at the right edge.</p><div class="rc-m">outcome · <b>looked terrible on iPhone</b></div></div>
+    <div class="rail-card rec"><div class="rc-h"><span class="rc-tag rec">after</span><b>reflow-to-fit</b></div><p class="rc-p">One column, full-size type, wide tables scroll in place. The same content, actually readable in the hand.</p><div class="rc-m">outcome · <b>native-feeling on mobile</b></div></div>
+  </div>
+
+  <p class="demo-label band reveal">horizontal bars · .bars › .brow</p>
+  <div class="card reveal">
+    <div class="bars">
+      <div class="bars-leg"><span><i style="background:var(--forest)"></i>reflowed</span><span><i style="background:#cdd6cf"></i>remaining</span></div>
+      <div class="brow"><div class="brow-name">Fixed-canvas artifacts<small>.frame / .fit</small></div><div class="brow-track"><div class="brow-fill" data-w="100%"></div><div class="brow-auth" data-w="100%"></div><div class="brow-val"><b class="pct">4/4 fixed</b></div></div></div>
+      <div class="brow"><div class="brow-name">Rail-layout artifacts<small>.layout</small></div><div class="brow-track"><div class="brow-fill" data-w="100%"></div><div class="brow-auth" data-w="100%"></div><div class="brow-val"><b class="pct">clean</b></div></div></div>
+      <div class="brow"><div class="brow-name">Bespoke-CSS artifacts<small>own &lt;style&gt;</small></div><div class="brow-track"><div class="brow-fill" data-w="100%"></div><div class="brow-auth" data-w="100%"></div><div class="brow-val"><b class="pct">caught by the net</b></div></div></div>
+    </div>
+  </div>
+
+  <p class="demo-label band reveal">data table · .tw › table.dt</p>
+  <div class="tw reveal">
+    <table class="dt">
+      <thead><tr><th class="l">Artifact family</th><th>Canvas</th><th>≤640px behaviour</th><th>Overflow @390</th></tr></thead>
+      <tbody>
+        <tr><td class="l">aeroplan · max-run</td><td>.frame 1440</td><td>reflow, 1-col</td><td><span class="cpill hi">0px</span></td></tr>
+        <tr><td class="l">state-machine</td><td>.fit 1180</td><td>reflow, 1-col</td><td><span class="cpill hi">0px</span></td></tr>
+        <tr><td class="l">bpo-init</td><td>.layout</td><td>rail → stack</td><td><span class="cpill hi">0px</span></td></tr>
+        <tr><td class="l">all-hotel-cards</td><td>.wrap 980</td><td>bespoke net</td><td><span class="cpill hi">0px</span></td></tr>
+        <tr class="tot"><td class="l">12 live artifacts</td><td>mixed</td><td>all reflow</td><td><span class="cpill hi">0px</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="demo-label band reveal">confidence rows · .cf › .crow</p>
+  <div class="card reveal">
+    <div class="cf">
+      <div class="crow"><div class="crow-lab">No horizontal scroll<small>document.scrollWidth ≤ clientWidth</small></div><div class="crow-track"><div class="crow-fill hi" data-w="100%"></div></div><div class="crow-pct hi">100</div></div>
+      <div class="crow"><div class="crow-lab">Legible body type<small>≥13px, real size (no zoom)</small></div><div class="crow-track"><div class="crow-fill hi" data-w="100%"></div></div><div class="crow-pct hi">100</div></div>
+      <div class="crow"><div class="crow-lab">Desktop unchanged<small>mobile block is ≤640px only</small></div><div class="crow-track"><div class="crow-fill hi" data-w="100%"></div></div><div class="crow-pct hi">100</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CONTRACT -->
+  <div class="sec-head reveal">
+    <span class="sec-kick"><svg class="ic" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/></svg>the contract</span>
+    <h2 class="sec-title">Never bad on mobile again</h2>
+    <span class="sec-n">04</span>
+  </div>
+  <p class="lede reveal">What grove now guarantees for free, and the one thing a bespoke
+  <code>&lt;style&gt;</code> block still owes.</p>
+  <div class="g2 band reveal">
+    <div class="card">
+      <p class="demo-label">grove handles automatically</p>
+      <ul class="checklist">
+        <li><span class="ck">✓</span><span>The <b>zoom canvas reflows</b> to one column below 640px — any <code>.frame</code>/<code>.fit</code>/<code>.layout</code> artifact.</span></li>
+        <li><span class="ck">✓</span><span>Every grove grid collapses; display type rescales; the topbar de-chromes.</span></li>
+        <li><span class="ck">✓</span><span><code>min-width:0</code> + <code>overflow-wrap</code> keep wide tables and long strings from overflowing.</span></li>
+        <li><span class="ck">✓</span><span>A <code>[class*="grid"]</code> net collapses most bespoke grids without you lifting a finger.</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="demo-label">you still owe (bespoke layouts)</p>
+      <ul class="checklist">
+        <li><span class="ck you">›</span><span>Prefer grove primitives over one-off grids — they're already mobile-safe.</span></li>
+        <li><span class="ck you">›</span><span>If you hand-roll a multi-column grid, give it <code>@media(max-width:640px){…1fr}</code>.</span></li>
+        <li><span class="ck you">›</span><span>Wrap wide tables in an <code>overflow-x:auto</code> box so they scroll, not the page.</span></li>
+        <li><span class="ck you">›</span><span>Test at 390px before you ship — the fix is a floor, not a guarantee against everything.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot reveal">
+    <div><b>TODO-175 · bpo-mobile</b> — grove mobile pass. Fix in <code>design-repo/grove/components.css</code> (≤640px reflow layer). Verified 0px horizontal overflow across all 12 live artifacts at 390px via headless Chrome.</div>
+    <div>grove · Found client studio system · warm paper, forest + lime · <code>2026-07-09 13:34 UTC</code></div>
+  </div>
+</div>
+
+<noscript><style>.reveal{opacity:1!important;transform:none!important}[data-w]{width:var(--fallback,60%)}</style></noscript>
+<script>
+  const revealAll=()=>document.querySelectorAll('.reveal').forEach(e=>e.classList.add('shown'));
+  const fill=()=>document.querySelectorAll('[data-w]').forEach(el=>{el.style.width=el.dataset.w});
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  setTimeout(fill,240);
+  // Safety: nothing stays invisible even if the user never scrolls or IO is flaky.
+  setTimeout(revealAll,1600);
+</script>
+</body>
+</html>

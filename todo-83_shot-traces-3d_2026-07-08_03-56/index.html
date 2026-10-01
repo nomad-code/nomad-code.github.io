@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-83 · golf-spica-3 · Shot Traces on 3D Terrain</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  main { max-width: 1180px; margin: 0 auto; padding: 26px 26px 60px; }
+  .divider { margin: 40px 0; }
+  .hero { grid-template-columns: 1fr; gap: 0; }
+  .hero-sub { max-width: 70ch; }
+
+  .stage-card { padding: 0; overflow: hidden; }
+  .stage-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    padding: 16px 20px 12px; border-bottom: 1px solid var(--line); }
+  .stage-head .st-t { font: 700 15px/1.2 var(--font-display); color: var(--ink); }
+  .stage-head .st-s { font: 400 12.5px/1.4 var(--font-ui); color: var(--muted); }
+  .canvas-wrap { position: relative; background: linear-gradient(180deg, #eef4f6, #e7eef0 60%, #e2e9e6);
+    touch-action: none; }
+  canvas.terrain { display: block; width: 100%; height: 520px; cursor: grab; }
+  canvas.terrain:active { cursor: grabbing; }
+  .hint { position: absolute; left: 16px; bottom: 14px; font: 500 11px/1 var(--font-mono);
+    letter-spacing: .05em; text-transform: uppercase; color: rgba(53,101,119,.85);
+    display: flex; align-items: center; gap: 7px; pointer-events: none; transition: opacity .5s var(--ease); }
+  .hint .rr { width: 13px; height: 13px; border: 1.6px solid rgba(53,101,119,.6); border-radius: 50%;
+    border-top-color: transparent; animation: spin 2.4s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .tip { position: absolute; z-index: 6; pointer-events: none; opacity: 0; transform: translate(-50%, -122%);
+    transition: opacity .12s ease; background: rgba(21,32,29,.94); color: #fff; border-radius: 9px;
+    padding: 8px 11px; font: 500 11.5px/1.5 var(--font-ui); white-space: nowrap; box-shadow: var(--shadow-lift); }
+  .tip b { font-variant-numeric: tabular-nums; } .tip .tg { color: var(--lime-b); } .tip .tl { color: #f0a58c; }
+
+  .ctl { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 12px 18px; border-top: 1px solid var(--line); background: #fbfcfb; }
+  .ctl .lab { font: 600 10.5px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+  .chips { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 1px solid var(--line); background: var(--card); cursor: pointer; border-radius: var(--r-pill);
+    font: 640 11.5px/1 var(--font-ui); color: var(--muted); padding: 7px 12px; transition: all .18s var(--ease);
+    display: inline-flex; align-items: center; gap: 6px; }
+  .chip .sw { width: 8px; height: 8px; border-radius: 50%; }
+  .chip:hover { border-color: #cdd8d1; color: var(--ink); }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .ctl .spacer { flex: 1; }
+  .tgl { border: 1px solid var(--line); background: var(--card); cursor: pointer; border-radius: var(--r-chip);
+    font: 640 12px/1 var(--font-ui); color: var(--body); padding: 8px 13px; transition: all .18s var(--ease);
+    display: inline-flex; align-items: center; gap: 7px; }
+  .tgl:hover { border-color: #cdd8d1; color: var(--ink); }
+  .tgl.on { background: var(--g-lime); border-color: #bcd9bf; color: var(--forest-d); }
+  .tgl .d { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+  .tgl.on .d { background: var(--forest); }
+
+  .readout { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ro-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 20px 22px; box-shadow: var(--shadow-card); }
+  .ro-card h3 { font: 700 15px/1.2 var(--font-display); color: var(--ink); margin: 0 0 4px; display: flex; align-items: center; gap: 9px; }
+  .ro-card h3 .code { font: 600 10.5px/1 var(--font-mono); letter-spacing: .04em; color: #fff; background: var(--forest); padding: 4px 7px; border-radius: 5px; }
+  .ro-card .sg-big { font: 800 32px/1 var(--font-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; margin: 12px 0 2px; }
+  .ro-card .sg-big.pos { color: var(--forest); } .ro-card .sg-big.neg { color: var(--warn); }
+  .ro-card .sg-sub { font: 400 12.5px/1.5 var(--font-ui); color: var(--muted); }
+  .ro-card p { font: 400 13px/1.6 var(--font-ui); color: var(--body); margin: 12px 0 0; } .ro-card p b { color: var(--ink); }
+  .rmeta { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; }
+  .rmeta div { }
+  .rmeta .rl { font: 600 9.5px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--faint); }
+  .rmeta .rv { font: 700 14px/1.3 var(--font-ui); color: var(--ink); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+  /* north / esri stack */
+  .north { background: linear-gradient(160deg, #10352f, #0c2a33); border-radius: var(--r-card); padding: 26px 26px 24px; color: #cfe3dd; }
+  .north h3 { font: 700 19px/1.25 var(--font-display); color: #fff; margin: 0 0 6px; }
+  .north .np { font: 400 13.5px/1.6 var(--font-ui); color: #a8c7c0; margin: 0 0 18px; max-width: 66ch; }
+  .north .np a { color: var(--lime-b); text-decoration: none; border-bottom: 1px solid rgba(155,212,87,.4); }
+  .layers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 820px){ .layers { grid-template-columns: 1fr 1fr; } .readout { grid-template-columns: 1fr; } }
+  .nlayer { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09); border-radius: var(--r-tile); padding: 15px; }
+  .nlayer .z { width: 26px; height: 26px; border-radius: 7px; background: var(--lime); color: #0c2a33;
+    font: 800 13px/26px var(--font-mono); text-align: center; display: block; }
+  .nlayer h4 { font: 700 12.5px/1.3 var(--font-ui); color: #fff; margin: 11px 0 5px; }
+  .nlayer p { font: 400 11.5px/1.5 var(--font-ui); color: #9fbdb6; margin: 0; }
+  .feas { margin-top: 16px; padding: 14px 16px; background: rgba(132,194,65,.1); border: 1px solid rgba(132,194,65,.25);
+    border-radius: var(--r-tile); font: 400 12.5px/1.6 var(--font-ui); color: #cfe3dd; }
+  .feas b { color: #fff; }
+
+  .note { font: 400 12.5px/1.6 var(--font-ui); color: var(--muted); margin: 10px 0 0; } .note b { color: var(--body); }
+  .sample-tag { display: inline-flex; align-items: center; gap: 7px; font: 600 10.5px/1 var(--font-mono);
+    letter-spacing: .05em; text-transform: uppercase; color: var(--amber); background: var(--amber-bg);
+    border: 1px solid var(--amber-bd); padding: 6px 10px; border-radius: var(--r-pill); }
+  .vh { position: absolute!important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx"><span class="dot"></span>TODO-83 · golf-spica-3</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">shot traces · on 3D terrain</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow"><span class="d"></span>the north star, drawn — TECH-481 · esri-3d</div>
+      <h1>Your rounds, <span class="em">on the ground</span>.</h1>
+      <p class="hero-sub">Not a spreadsheet of numbers — your shots drawn as arcs on the actual hole.
+      Every trace runs tee → carry → finish over a shaded 3D terrain, and each is <b>colored by strokes
+      gained</b>: green where you beat the field, red where you bled a stroke. The leak stops being a
+      row in a table and becomes a <b>place</b> — you can see the approach misses cluster short-right.
+      Orbit the hole; filter by stratum.</p>
+      <div class="hero-chips">
+        <span class="hchip v">shot traces</span>
+        <span class="hchip q">SG heat · green gained / red lost</span>
+        <span class="hchip q">GSPro · Mammoth Dunes</span>
+        <span class="hchip q">drag to orbit</span>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-n" id="k-hole">6</div><div class="kpi-l">the hole — one GSPro course, played over and over</div></div>
+      <div class="kpi"><div class="kpi-n" id="k-shots">–</div><div class="kpi-l">shots traced this round, tee to holed putt</div></div>
+      <div class="kpi"><div class="kpi-n" id="k-net">–</div><div class="kpi-l">net strokes gained across the hole</div></div>
+      <div class="kpi"><div class="kpi-n" id="k-leak">–</div><div class="kpi-l">the trace that bled the most — where to look</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sec-head"><span class="sec-kick">the hole · drag to orbit</span><span class="sec-n">01 / the leak becomes a place</span></div>
+
+    <div class="card stage-card">
+      <div class="stage-head">
+        <span class="st-t" id="stage-title">GSPro · Mammoth Dunes — Hole 6, par 4, 412 yd</span>
+        <span class="st-s" id="stage-sub">hand-rolled heightfield · hillshade + contours · zero ArcGIS SDK</span>
+      </div>
+      <div class="canvas-wrap">
+        <canvas class="terrain" id="terrain" role="img"
+          aria-label="A 3D shaded-relief drawing of a golf hole: tee at the near end, fairway curving to a raised green, sand bunkers, and water on the right. Coloured shot-trace arcs fly from tee to green; green arcs gained strokes, red arcs lost them. The deepest-red trace is the approach that finished short-right."></canvas>
+        <div class="hint" id="hint"><span class="rr"></span>drag to orbit · hover a trace</div>
+        <div class="tip" id="tip"></div>
+      </div>
+      <div class="ctl">
+        <span class="lab">stratum</span>
+        <div class="chips" id="chips"></div>
+        <div class="spacer"></div>
+        <button class="tgl on" id="rot"><span class="d"></span>auto-orbit</button>
+        <button class="tgl" id="replay">▸ replay shots</button>
+        <button class="tgl" id="reset">reset view</button>
+      </div>
+    </div>
+
+    <div class="vz-leg" style="margin-top:14px">
+      <span class="claim"><i></i>strokes gained</span>
+      <span class="leak"><i></i>strokes lost</span>
+      <span class="agent"><i style="background:var(--found)"></i>water</span>
+      <span class="found"><i></i>best trace</span>
+    </div>
+
+    <div class="readout">
+      <div class="ro-card" id="ro-main">
+        <h3><span class="code" id="ro-code">SG:APP</span><span id="ro-club">approach</span></h3>
+        <div class="sg-big neg" id="ro-sg">–</div>
+        <div class="sg-sub" id="ro-sub">strokes gained on this shot vs the field</div>
+        <div class="rmeta" id="ro-meta"></div>
+        <p id="ro-note"></p>
+      </div>
+      <div class="ro-card">
+        <h3>reading the hole</h3>
+        <p style="margin-top:6px">Each trace is one shot: where it started, its carry apex, where it
+        finished. <b>Color is the strokes-gained score</b> — the same per-shot number your Spica already
+        computes. Filter to a stratum and the pattern jumps out: the <b>approach</b> misses cluster
+        <b>short-right</b>, exactly where the flick + weak grip send the face. That's the leak, as a
+        place on the map — and it points at the same fix the swing lab does.</p>
+        <p class="note"><b>Click a trace</b> to load its shot here. <b>Replay</b> re-fires the round in sequence.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:18px"><span class="sample-tag">◆ sample hole + sample round</span></p>
+    <p class="note"><b>Replace <code>SHOTS</code> with your Spica start/carry/finish logs</b> and the
+    <code>grid</code> elevation with the real course, and every round you've played layers onto the
+    terrain. The hole geometry here is a hand-built heightfield — dunes, a raised green, flanking
+    bunkers, water right — shaded exactly the way an Esri elevation surface reads, but computed offline
+    behind the gate. No ArcGIS SDK, no API key, no network.</p>
+
+    <table class="vh" id="datatable" aria-label="Shots, club and strokes gained"><tbody></tbody></table>
+
+    <div class="divider"></div>
+
+    <div class="sec-head"><span class="sec-kick">the real thing · when you want it</span><span class="sec-n">02 / the stack</span></div>
+    <div class="north">
+      <h3>GSPro courses × Esri 3D × strokes-gained shot traces.</h3>
+      <p class="np">This page is the self-contained prototype. The full build ties the traces to real
+      geography — <a href="https://linear.app/foundai/issue/TECH-481/esri-3d">TECH-481 · esri-3d</a>,
+      but with your shots and your strokes gained on it. The data already exists: Spica logs, the ArcGIS
+      3D APIs, and GSPro's laser-scanned course geometry. Here's the stack.</p>
+      <div class="layers">
+        <div class="nlayer"><span class="z">1</span><h4>Terrain</h4><p>Esri 3D world elevation + imagery for the real course (Pebble, Mammoth Dunes) — the ground truth GSPro already scanned.</p></div>
+        <div class="nlayer"><span class="z">2</span><h4>Shot traces</h4><p>Each Spica shot — start x,y → carry → finish — drawn as an arc on the terrain. Every round, layered.</p></div>
+        <div class="nlayer"><span class="z">3</span><h4>Strokes-gained heat</h4><p>Color each trace by its SG score. Red where you bled, green where you gained. The leak becomes a place.</p></div>
+        <div class="nlayer"><span class="z">4</span><h4>Stratum overlay</h4><p>Filter to tee / approach / around-green / putting and watch the misses cluster spatially, not just in a table.</p></div>
+      </div>
+      <div class="feas"><b>Feasibility:</b> real ArcGIS integration renders 3D via a SceneView with world-elevation
+      ground and elevated polyline graphics — the one place the build brings in an external SDK. The loop works
+      today with zero of it built; the Esri map is the surface you earn once the log has rounds in it. It belongs
+      in bpo — personal.</div>
+    </div>
+
+    <div class="foot">
+      TODO-83 · golf-spica-3 &nbsp;·&nbsp; <code>bpo · Medewi Manor</code> &nbsp;·&nbsp;
+      shot traces on 3D terrain &nbsp;·&nbsp; hand-rolled canvas · zero libraries &nbsp;·&nbsp;
+      refs: TECH-481 esri-3d · TECH-402 golf-strata &nbsp;·&nbsp; 2026-07-08 03:56Z
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var reduced = false;
+  try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+  // ============================================================
+  // Sample hole + round. Replace with real Spica logs + Esri elevation.
+  // grid coords: u across width [0..1], v down the hole tee(0)->green(1).
+  // ============================================================
+  var NX = 40, NZ = 26, CELL = 22, YSCALE = 96;
+  function cx(v) { return 0.5 + 0.11 * Math.sin(v * Math.PI * 0.92) - 0.02; }   // gentle right bend
+  var BUNKERS = [
+    { u: 0.62, v: 0.50, ru: 0.06, rv: 0.045 },   // fairway bunker
+    { u: 0.35, v: 0.84, ru: 0.055, rv: 0.04 },   // greenside left
+    { u: 0.66, v: 0.86, ru: 0.05, rv: 0.035 }    // greenside right
+  ];
+  function inEll(u, v, e) { var du = (u - e.u) / e.ru, dv = (v - e.v) / e.rv; return du * du + dv * dv < 1; }
+  var GREENC = { u: cx(0.9), v: 0.9 };
+  function zoneOf(u, v) {
+    if (v < 0.075 && Math.abs(u - cx(0.03)) < 0.05) return 'tee';
+    var gd = Math.hypot((u - GREENC.u) * 1.05, (v - GREENC.v) * 1.5);
+    if (gd < 0.12) return 'green';
+    if (u > 0.82 && v > 0.44 && v < 0.72) return 'water';
+    for (var i = 0; i < BUNKERS.length; i++) if (inEll(u, v, BUNKERS[i])) return 'bunker';
+    var fw = 0.115 + 0.028 * Math.sin(v * Math.PI);
+    if (Math.abs(u - cx(v)) < fw && v > 0.055 && v < 0.9) return 'fairway';
+    return 'rough';
+  }
+  function elevOf(u, v, zone) {
+    var e = 0.5 + 0.30 * Math.sin(u * 5.4 + 1.3) * Math.cos(v * 4.1) + 0.16 * Math.sin(v * 6.6 + 2.1) + v * 0.22;
+    if (zone === 'fairway') e = 0.5 + v * 0.22 + 0.06 * Math.sin(u * 5.4 + 1.3) + 0.05 * Math.sin(v * 6.6);
+    if (zone === 'green') e = 0.5 + 0.9 * 0.22 + 0.17;
+    if (zone === 'tee') e = 0.5 + 0.02;
+    if (zone === 'water') e = 0.30;
+    if (zone === 'bunker') e -= 0.13;
+    return e;
+  }
+
+  var ZONE_COL = {
+    fairway: [116, 170, 104], green: [150, 198, 112], rough: [58, 112, 92],
+    bunker: [216, 194, 142], water: [74, 138, 160], tee: [128, 176, 128]
+  };
+
+  // shots: SG strata OTT/APP/ARG/PUTT; start/finish in (u,v)
+  var STRATA = { 'SG:OTT': 'Off the Tee', 'SG:APP': 'Approach', 'SG:ARG': 'Around the Green', 'SG:PUTT': 'Putting' };
+  var SHOTS = [
+    { id: 1, strat: 'SG:OTT', club: 'driver', start: { u: cx(0.03), v: 0.03 }, finish: { u: cx(0.46), v: 0.47 }, apex: 1.5, sg: 0.31, lie: 'tee → fairway' },
+    { id: 2, strat: 'SG:APP', club: '7-iron', start: { u: cx(0.46), v: 0.47 }, finish: { u: GREENC.u + 0.11, v: 0.80 }, apex: 1.7, sg: -0.46, lie: 'fairway → short-right' },
+    { id: 3, strat: 'SG:ARG', club: '56°', start: { u: GREENC.u + 0.11, v: 0.80 }, finish: { u: GREENC.u + 0.02, v: 0.885 }, apex: 0.5, sg: -0.12, lie: 'rough → green' },
+    { id: 4, strat: 'SG:PUTT', club: 'putter', start: { u: GREENC.u + 0.02, v: 0.885 }, finish: { u: GREENC.u - 0.015, v: 0.9 }, apex: 0.03, sg: 0.08, lie: '19 ft → 3 ft' },
+    { id: 5, strat: 'SG:PUTT', club: 'putter', start: { u: GREENC.u - 0.015, v: 0.9 }, finish: { u: GREENC.u, v: 0.9 }, apex: 0.0, sg: 0.06, lie: '3 ft → holed' }
+  ];
+  // prior rounds' approach shots — the cluster. Dim, non-clickable; they make the
+  // "approach misses cluster short-right" pattern a thing you can see on the map.
+  function seeded(a, b) { var s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return (s - Math.floor(s)) * 2 - 1; }
+  var PRIOR = [];
+  for (var pk = 0; pk < 7; pk++) {
+    var fu = GREENC.u + 0.07 + 0.10 * Math.abs(seeded(pk, 3)), fv = 0.75 + 0.08 * seeded(pk, 7);
+    PRIOR.push({ start: { u: cx(0.46) + 0.04 * seeded(pk, 1), v: 0.47 + 0.03 * seeded(pk, 2) }, finish: { u: fu, v: fv }, apex: 1.6, sg: -0.14 - 0.34 * Math.abs(seeded(pk, 5)) });
+  }
+
+  // ---- build world grid ----
+  var WORLD = new Array(NX * NZ), ELEV = new Array(NX * NZ), ZONE = new Array(NX * NZ);
+  var minY = 1e9, maxY = -1e9;
+  for (var j = 0; j < NZ; j++) for (var i = 0; i < NX; i++) {
+    var u = i / (NX - 1), v = j / (NZ - 1);
+    var z = zoneOf(u, v); var e = elevOf(u, v, z);
+    var wx = (i - (NX - 1) / 2) * CELL, wz = (j - (NZ - 1) / 2) * CELL, wy = e * YSCALE;
+    WORLD[j * NX + i] = { x: wx, y: wy, z: wz }; ELEV[j * NX + i] = e; ZONE[j * NX + i] = z;
+    if (wy < minY) minY = wy; if (wy > maxY) maxY = wy;
+  }
+  function worldAtUV(u, v) {
+    var fi = u * (NX - 1), fj = v * (NZ - 1);
+    var i = Math.max(0, Math.min(NX - 1, Math.round(fi))), j = Math.max(0, Math.min(NZ - 1, Math.round(fj)));
+    var w = WORLD[j * NX + i];
+    return { x: (u - 0.5) * (NX - 1) * CELL, y: w.y, z: (v - 0.5) * (NZ - 1) * CELL };
+  }
+
+  // ---- contours (precompute world-space segments) ----
+  var CONTOURS = [];
+  (function () {
+    var levels = 7;
+    for (var l = 1; l < levels; l++) {
+      var ly = minY + (maxY - minY) * l / levels;
+      for (var j = 0; j < NZ - 1; j++) for (var i = 0; i < NX - 1; i++) {
+        var c = [WORLD[j * NX + i], WORLD[j * NX + i + 1], WORLD[(j + 1) * NX + i + 1], WORLD[(j + 1) * NX + i]];
+        var pts = [];
+        for (var k = 0; k < 4; k++) {
+          var a = c[k], b = c[(k + 1) % 4];
+          if ((a.y - ly) * (b.y - ly) < 0) { var t = (ly - a.y) / (b.y - a.y); pts.push({ x: a.x + (b.x - a.x) * t, y: ly, z: a.z + (b.z - a.z) * t }); }
+        }
+        if (pts.length >= 2) CONTOURS.push([pts[0], pts[1]]);
+      }
+    }
+  })();
+
+  // ============================================================
+  // Camera3D v1 — keep in sync with strokes-gained-3d
+  // ============================================================
+  function makeCamera() {
+    var yaw = 0.30, pitch = -0.62, focal = 940, camDist = 720, cx0 = 0, cy0 = 0;
+    return {
+      yaw: yaw, pitch: pitch,
+      setSize: function (w, h) { cx0 = w * 0.5; cy0 = h * 0.52; },
+      rot: function (p) {
+        var cyw = Math.cos(this.yaw), syw = Math.sin(this.yaw);
+        var x1 = p.x * cyw + p.z * syw, z1 = -p.x * syw + p.z * cyw;
+        var cpi = Math.cos(this.pitch), spi = Math.sin(this.pitch);
+        var y2 = p.y * cpi - z1 * spi, z2 = p.y * spi + z1 * cpi;
+        return { x: x1, y: y2, z: z2 };
+      },
+      project: function (p) {
+        var r = this.rot(p);
+        var f = focal / (focal + r.z + camDist);
+        return { x: cx0 + r.x * f, y: cy0 - r.y * f, f: f, depth: r.z };
+      }
+    };
+  }
+  var cam = makeCamera();
+  var LIGHT = (function () { var v = { x: -0.5, y: 0.72, z: -0.48 }; var m = Math.hypot(v.x, v.y, v.z); return { x: v.x / m, y: v.y / m, z: v.z / m }; })();
+
+  var canvas = document.getElementById('terrain'), ctx = canvas.getContext('2d');
+  var LOGW = 1000, LOGH = 520, DPR = 1;
+  function resize() {
+    var cssW = canvas.clientWidth || 1000; DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+    LOGW = cssW; LOGH = 520; canvas.width = Math.round(cssW * DPR); canvas.height = Math.round(LOGH * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0); cam.setSize(LOGW, LOGH);
+  }
+
+  function rgb(c, k) { return 'rgb(' + (c[0] * k | 0) + ',' + (c[1] * k | 0) + ',' + (c[2] * k | 0) + ')'; }
+  function mix(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
+  var PAPER = [231, 238, 236];
+  var FOREST = [18, 124, 112], WARN = [193, 80, 46], LIME = [132, 194, 65], NEUTRAL = [150, 158, 150];
+  function sgColor(sg) {
+    var t = Math.max(-1, Math.min(1, sg / 0.45));
+    return t >= 0 ? mix(NEUTRAL, FOREST, t) : mix(NEUTRAL, WARN, -t);
+  }
+
+  // active filter + selection
+  var filter = 'all', selShot = 1, hoverShot = -1, autoRot = true, resumeAt = 0;
+  var bestShot = SHOTS.reduce(function (a, s) { return s.sg > a.sg ? s : a; }, SHOTS[0]);
+  var worstShot = SHOTS.reduce(function (a, s) { return s.sg < a.sg ? s : a; }, SHOTS[0]);
+
+  // trace polylines (world), precomputed
+  var TRACES = SHOTS.map(function (s) {
+    var a = worldAtUV(s.start.u, s.start.v), b = worldAtUV(s.finish.u, s.finish.v);
+    var apex = s.apex * YSCALE, pts = [];
+    var N = 30;
+    for (var i = 0; i <= N; i++) { var t = i / N; pts.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t + apex * 4 * t * (1 - t), z: a.z + (b.z - a.z) * t }); }
+    return { shot: s, pts: pts, land: b };
+  });
+  var PRIOR_TRACES = PRIOR.map(function (s) {
+    var a = worldAtUV(s.start.u, s.start.v), b = worldAtUV(s.finish.u, s.finish.v);
+    var apex = s.apex * YSCALE, pts = [];
+    for (var i = 0; i <= 24; i++) { var t = i / 24; pts.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t + apex * 4 * t * (1 - t), z: a.z + (b.z - a.z) * t }); }
+    return { sg: s.sg, pts: pts };
+  });
+
+  var animT = 0, animating = false;
+  var pickSegs = [];
+
+  function draw() {
+    ctx.clearRect(0, 0, LOGW, LOGH);
+    var i, j;
+
+    // project all grid verts
+    var PV = new Array(NX * NZ);
+    for (i = 0; i < NX * NZ; i++) PV[i] = cam.project(WORLD[i]);
+
+    // build + sort terrain quads
+    var faces = [];
+    for (j = 0; j < NZ - 1; j++) for (i = 0; i < NX - 1; i++) {
+      var i00 = j * NX + i, i10 = j * NX + i + 1, i11 = (j + 1) * NX + i + 1, i01 = (j + 1) * NX + i;
+      var w00 = WORLD[i00], w10 = WORLD[i10], w11 = WORLD[i11];
+      // normal
+      var ux = w10.x - w00.x, uy = w10.y - w00.y, uz = w10.z - w00.z;
+      var vx = w11.x - w00.x, vy = w11.y - w00.y, vz = w11.z - w00.z;
+      var nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      var nm = Math.hypot(nx, ny, nz) || 1; var ndl = Math.max(0, (nx * LIGHT.x + ny * LIGHT.y + nz * LIGHT.z) / nm);
+      var shade = 0.62 + 0.5 * ndl;
+      var col = ZONE_COL[ZONE[i00]];
+      var depth = (cam.rot(w00).z + cam.rot(w11).z) / 2;
+      // depth fog toward paper
+      var fog = Math.max(0, Math.min(0.55, (depth + 160) / 900));
+      var cc = mix([col[0] * shade, col[1] * shade, col[2] * shade], PAPER, fog);
+      faces.push({ p: [PV[i00], PV[i10], PV[i11], PV[i01]], depth: depth, col: 'rgb(' + (cc[0] | 0) + ',' + (cc[1] | 0) + ',' + (cc[2] | 0) + ')' });
+    }
+    faces.sort(function (a, b) { return b.depth - a.depth; });
+    for (i = 0; i < faces.length; i++) {
+      var F = faces[i], p = F.p;
+      ctx.beginPath(); ctx.moveTo(p[0].x, p[0].y); ctx.lineTo(p[1].x, p[1].y); ctx.lineTo(p[2].x, p[2].y); ctx.lineTo(p[3].x, p[3].y); ctx.closePath();
+      ctx.fillStyle = F.col; ctx.fill(); ctx.strokeStyle = F.col; ctx.lineWidth = 0.7; ctx.stroke();
+    }
+
+    // contours
+    ctx.strokeStyle = 'rgba(20,32,29,.16)'; ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    for (i = 0; i < CONTOURS.length; i++) { var s0 = cam.project(CONTOURS[i][0]), s1 = cam.project(CONTOURS[i][1]); ctx.moveTo(s0.x, s0.y); ctx.lineTo(s1.x, s1.y); }
+    ctx.stroke();
+
+    // tee marker + pin flag
+    var teeW = worldAtUV(cx(0.03), 0.03), tp = cam.project(teeW);
+    ctx.fillStyle = 'rgba(43,58,53,.9)'; ctx.beginPath(); ctx.arc(tp.x, tp.y, 4, 0, 7); ctx.fill();
+    ctx.font = '600 10px "DM Mono", monospace'; ctx.fillStyle = 'rgba(43,58,53,.9)'; ctx.textAlign = 'center'; ctx.fillText('TEE', tp.x, tp.y + 16);
+    var pinBase = worldAtUV(GREENC.u, GREENC.v), pinTop = { x: pinBase.x, y: pinBase.y + 42, z: pinBase.z };
+    var pb = cam.project(pinBase), pt = cam.project(pinTop);
+    ctx.strokeStyle = 'rgba(21,32,29,.85)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(pb.x, pb.y); ctx.lineTo(pt.x, pt.y); ctx.stroke();
+    ctx.fillStyle = '#c1502e';
+    ctx.beginPath(); ctx.moveTo(pt.x, pt.y); ctx.lineTo(pt.x + 15, pt.y + 4); ctx.lineTo(pt.x, pt.y + 9); ctx.closePath(); ctx.fill();
+
+    // prior-round approach cluster (dim) — only under all / APP filter, after reveal
+    if ((filter === 'all' || filter === 'SG:APP') && !animating) {
+      for (i = 0; i < PRIOR_TRACES.length; i++) {
+        var pr = PRIOR_TRACES[i], pc = sgColor(pr.sg), pp = pr.pts.map(function (p) { return cam.project(p); });
+        ctx.strokeStyle = 'rgba(' + (pc[0] | 0) + ',' + (pc[1] | 0) + ',' + (pc[2] | 0) + ',.34)'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(pp[0].x, pp[0].y); for (j = 1; j < pp.length; j++) ctx.lineTo(pp[j].x, pp[j].y); ctx.stroke();
+        var pl = pp[pp.length - 1]; ctx.fillStyle = 'rgba(' + (pc[0] | 0) + ',' + (pc[1] | 0) + ',' + (pc[2] | 0) + ',.5)'; ctx.beginPath(); ctx.arc(pl.x, pl.y, 2.4, 0, 7); ctx.fill();
+      }
+    }
+
+    // shot traces
+    pickSegs = [];
+    for (i = 0; i < TRACES.length; i++) {
+      var tr = TRACES[i], sh = tr.shot;
+      var active = (filter === 'all' || sh.strat === filter);
+      var isBest = sh.id === bestShot.id;
+      var base = isBest && sh.sg > 0 ? LIME : sgColor(sh.sg);
+      var alpha = active ? 1 : 0.12;
+      var isSel = sh.id === selShot, isHov = sh.id === hoverShot;
+      // reveal fraction during animation (staggered)
+      var reveal = 1;
+      if (animating) { var start = i * 0.16; reveal = Math.max(0, Math.min(1, (animT - start) / 0.5)); if (reveal <= 0) continue; }
+      var proj = tr.pts.map(function (p) { return cam.project(p); });
+      var upto = Math.max(1, Math.floor((proj.length - 1) * reveal));
+      ctx.strokeStyle = 'rgba(' + (base[0] | 0) + ',' + (base[1] | 0) + ',' + (base[2] | 0) + ',' + alpha + ')';
+      ctx.lineWidth = active ? (isSel ? 4.2 : (isHov ? 3.6 : 2.8)) : 1.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(proj[0].x, proj[0].y);
+      for (j = 1; j <= upto; j++) ctx.lineTo(proj[j].x, proj[j].y);
+      ctx.stroke();
+      // ball head during animation
+      if (animating && reveal < 1) { var hp = proj[upto]; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hp.x, hp.y, 3.5, 0, 7); ctx.fill(); }
+      // landing dot + ripple
+      if (reveal >= 1) {
+        var lp = proj[proj.length - 1];
+        ctx.fillStyle = 'rgba(' + (base[0] | 0) + ',' + (base[1] | 0) + ',' + (base[2] | 0) + ',' + alpha + ')';
+        ctx.beginPath(); ctx.arc(lp.x, lp.y, active ? 4 : 2.5, 0, 7); ctx.fill();
+        if (isSel && active) { ctx.strokeStyle = 'rgba(' + (base[0] | 0) + ',' + (base[1] | 0) + ',' + (base[2] | 0) + ',.8)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(lp.x, lp.y, 9, 0, 7); ctx.stroke(); }
+      }
+      // pick segments (screen space)
+      if (active) for (j = 0; j < proj.length - 1; j++) pickSegs.push({ a: proj[j], b: proj[j + 1], id: sh.id });
+    }
+  }
+
+  // ---- interaction ----
+  function toLocal(e) { var r = canvas.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * LOGW, y: (e.clientY - r.top) / r.height * LOGH }; }
+  function distSeg(px, py, a, b) {
+    var dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy; if (l2 === 0) return Math.hypot(px - a.x, py - a.y);
+    var t = Math.max(0, Math.min(1, ((px - a.x) * dx + (py - a.y) * dy) / l2));
+    return Math.hypot(px - (a.x + t * dx), py - (a.y + t * dy));
+  }
+  function pickTrace(px, py) { var best = -1, bd = 10; for (var i = 0; i < pickSegs.length; i++) { var d = distSeg(px, py, pickSegs[i].a, pickSegs[i].b); if (d < bd) { bd = d; best = pickSegs[i].id; } } return best; }
+
+  var tip = document.getElementById('tip'), hintEl = document.getElementById('hint');
+  var dragging = false, lastX = 0, lastY = 0, moved = false;
+  canvas.addEventListener('pointerdown', function (e) { dragging = true; moved = false; lastX = e.clientX; lastY = e.clientY; autoRot = false; document.getElementById('rot').classList.remove('on'); canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointermove', function (e) {
+    var lp = toLocal(e);
+    if (dragging) {
+      var dx = e.clientX - lastX, dy = e.clientY - lastY; lastX = e.clientX; lastY = e.clientY;
+      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      cam.yaw += dx * 0.008; cam.pitch = Math.max(-1.2, Math.min(-0.2, cam.pitch + dy * 0.006));
+      if (hintEl) hintEl.style.opacity = '0'; if (!ticking) draw(); return;
+    }
+    var hit = pickTrace(lp.x, lp.y);
+    if (hit !== hoverShot) { hoverShot = hit; if (!ticking) draw(); }
+    if (hit > 0) {
+      var s = SHOTS.filter(function (x) { return x.id === hit; })[0];
+      tip.innerHTML = '<b>' + s.strat + '</b> · ' + s.club + '<br>SG <b class="' + (s.sg >= 0 ? 'tg' : 'tl') + '">' + (s.sg >= 0 ? '+' : '') + s.sg.toFixed(2) + '</b> · ' + s.lie;
+      tip.style.left = lp.x + 'px'; tip.style.top = lp.y + 'px'; tip.style.opacity = '1'; canvas.style.cursor = 'pointer';
+    } else { tip.style.opacity = '0'; canvas.style.cursor = 'grab'; }
+  });
+  canvas.addEventListener('pointerup', function (e) {
+    if (!dragging) return; dragging = false;
+    if (!moved) { var lp = toLocal(e); var hit = pickTrace(lp.x, lp.y); if (hit > 0) { selShot = hit; renderReadout(); } }
+    resumeAt = Date.now() + 4000;
+  });
+  canvas.addEventListener('pointerleave', function () { tip.style.opacity = '0'; if (hoverShot !== -1) { hoverShot = -1; if (!ticking) draw(); } });
+
+  // ---- chips ----
+  var chipsEl = document.getElementById('chips');
+  var CHIP_DEFS = [{ k: 'all', t: 'all' }, { k: 'SG:OTT', t: 'OTT' }, { k: 'SG:APP', t: 'APP' }, { k: 'SG:ARG', t: 'ARG' }, { k: 'SG:PUTT', t: 'PUTT' }];
+  CHIP_DEFS.forEach(function (cd) {
+    var b = document.createElement('button'); b.className = 'chip' + (cd.k === 'all' ? ' on' : '');
+    var swatch = cd.k === 'all' ? '' : '<span class="sw" style="background:' + (function () { var c = cd.k === 'SG:APP' ? WARN : FOREST; return 'rgb(' + c.join(',') + ')'; })() + '"></span>';
+    b.innerHTML = swatch + cd.t;
+    b.addEventListener('click', function () { filter = cd.k; Array.prototype.forEach.call(chipsEl.children, function (c) { c.classList.remove('on'); }); b.classList.add('on'); if (!ticking) draw(); });
+    chipsEl.appendChild(b);
+  });
+
+  document.getElementById('rot').addEventListener('click', function () { autoRot = !autoRot; this.classList.toggle('on', autoRot); resumeAt = 0; });
+  document.getElementById('reset').addEventListener('click', function () { cam.yaw = 0.30; cam.pitch = -0.62; if (!ticking) draw(); });
+  document.getElementById('replay').addEventListener('click', function () { if (reduced) return; animating = true; animT = 0; });
+
+  // ---- readout / KPIs ----
+  function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+  function renderReadout() {
+    var s = SHOTS.filter(function (x) { return x.id === selShot; })[0];
+    document.getElementById('ro-code').textContent = s.strat;
+    document.getElementById('ro-code').style.background = s.sg >= 0 ? 'var(--forest)' : 'var(--warn)';
+    document.getElementById('ro-club').textContent = s.club + ' · ' + STRATA[s.strat];
+    var big = document.getElementById('ro-sg'); big.textContent = fmt(s.sg); big.className = 'sg-big ' + (s.sg >= 0 ? 'pos' : 'neg');
+    document.getElementById('ro-meta').innerHTML =
+      '<div><div class="rl">shot</div><div class="rv">#' + s.id + ' of ' + SHOTS.length + '</div></div>' +
+      '<div><div class="rl">club</div><div class="rv">' + s.club + '</div></div>' +
+      '<div><div class="rl">result</div><div class="rv">' + s.lie + '</div></div>';
+    document.getElementById('ro-note').innerHTML = s.sg < -0.2
+      ? 'This is the hole\'s leak — the approach that finished <b>short-right</b>, exactly where the flick and weak grip send the face. Same fix as the swing lab.'
+      : (s.sg > 0.2 ? 'A stroke <b>gained</b> — the tee ball that set up the hole. Face control off the tee is holding up.'
+        : 'Roughly neutral — you neither gained nor bled here. The strokes live in the red traces.');
+  }
+  function updateKPIs() {
+    var net = SHOTS.reduce(function (a, s) { return a + s.sg; }, 0);
+    document.getElementById('k-shots').textContent = SHOTS.length;
+    var kn = document.getElementById('k-net'); kn.textContent = fmt(net); kn.style.color = net >= 0 ? 'var(--forest)' : 'var(--warn)';
+    document.getElementById('k-leak').innerHTML = worstShot.strat + '<span class="u"> ' + fmt(worstShot.sg) + '</span>';
+    document.getElementById('k-leak').style.color = 'var(--warn)';
+    var tb = document.querySelector('#datatable tbody');
+    tb.innerHTML = SHOTS.map(function (s) { return '<tr><td>#' + s.id + ' ' + s.club + '</td><td>' + s.strat + '</td><td>' + fmt(s.sg) + '</td></tr>'; }).join('');
+  }
+
+  // ---- loop ----
+  var ticking = false;
+  function frame() {
+    if (animating) { animT += 0.02; if (animT > 1.4) animating = false; }
+    if (autoRot && !dragging && Date.now() >= resumeAt) { cam.yaw += 0.0035; if (resumeAt) { document.getElementById('rot').classList.add('on'); } }
+    draw();
+    requestAnimationFrame(frame);
+  }
+  function boot() {
+    resize(); updateKPIs(); renderReadout(); draw();
+    if (reduced) { if (hintEl) hintEl.style.opacity = '0'; return; }
+    animating = true; animT = 0; ticking = true; requestAnimationFrame(frame);
+    setTimeout(function () { if (hintEl) hintEl.style.opacity = '0'; }, 5600);
+  }
+  window.addEventListener('resize', function () { resize(); draw(); });
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { resize(); draw(); }); }
+  boot();
+})();
+</script>
+</body>
+</html>

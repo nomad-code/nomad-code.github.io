@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TODO-193 · strava-running_distance · journal loop closed</title>
+
+<!-- bpo password wall · self-locating loader -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+
+<style>
+  /* Fluid responsive document — no .frame / .fit (DEPLOY.md · Mobile). */
+  html, body { overflow-x: hidden; }
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: clamp(18px, 4vw, 44px) clamp(14px, 4vw, 40px) 90px;
+  }
+  /* Every wide row scrolls inside its own box, never the page. */
+  .xscroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--r-card);
+  }
+
+  .hero { padding: clamp(20px, 4vw, 34px); }
+  .hero h1 { font-size: clamp(27px, 4.6vw, 40px); }
+
+  /* Issue status card (hero right) */
+  .loopcard {
+    background: var(--card); border: 1px solid #bcd9bf; border-radius: var(--r-panel);
+    padding: 20px 22px; box-shadow: var(--shadow-card);
+  }
+  .loopcard .lk-id { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; color: var(--forest-d); }
+  .loopcard .lk-t  { font-size: 18px; font-weight: 780; letter-spacing: -.02em; margin-top: 6px; }
+  .loopcard .lk-m  { font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.55; }
+  .loopcard .lk-m b { color: var(--ink); }
+  .loopcard .lk-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+  /* Flow diagram — horizontal chain, lives in .xscroll */
+  .flow { display: flex; align-items: stretch; gap: 8px; min-width: 1180px; padding: 6px 2px 14px; }
+  .fnode {
+    flex: 1 1 0; min-width: 148px;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+    padding: 13px 14px; box-shadow: var(--shadow-card);
+  }
+  .fnode .fk { font-family: var(--font-mono); font-size: 9px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .fnode .fk .fdot { width: 7px; height: 7px; border-radius: 2px; background: var(--forest); flex: none; }
+  .fnode .ft { font-size: 12.5px; font-weight: 720; line-height: 1.3; margin-top: 7px; letter-spacing: -.01em; }
+  .fnode .fd { font-size: 10.8px; color: var(--muted); line-height: 1.5; margin-top: 5px; }
+  .fnode .fd code { font-size: .95em; color: var(--forest-d); }
+  .fnode.gap    { border-color: var(--warn-bd);  background: linear-gradient(180deg,#fff,#fdf5f0); }
+  .fnode.gap .fk    { color: var(--warn); } .fnode.gap .fk .fdot    { background: var(--warn); }
+  .fnode.bridge { border-color: var(--found-bd); background: linear-gradient(180deg,#fff,#f6fafb); }
+  .fnode.bridge .fk { color: var(--found-d); } .fnode.bridge .fk .fdot { background: var(--found); }
+  .fnode.done   { border-color: #bcd9bf;         background: linear-gradient(180deg,#fff,#f6fbf6); }
+  .fnode.done .fk   { color: var(--forest-d); }  .fnode.done .fk .fdot  { background: var(--lime); }
+  .farrow { align-self: center; flex: none; color: var(--faint); font-size: 15px; padding: 0 1px; }
+
+  /* Terminal mock — lives in .xscroll */
+  .term {
+    background: #15201d; border-radius: var(--r-card); padding: 20px 22px;
+    font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7;
+    color: #cfe1da; min-width: 660px; white-space: pre;
+  }
+  .term .p   { color: #9bd457; }
+  .term .cmd { color: #eef4f0; font-weight: 500; }
+  .term .dim { color: #6f7a76; }
+  .term .k   { color: #84c241; }
+  .term .hd  { color: #8fb8ae; }
+  .termbar {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    background: #0e1614; border-radius: var(--r-card) var(--r-card) 0 0;
+    padding: 10px 16px; min-width: 660px;
+  }
+  .termbar .td { width: 9px; height: 9px; border-radius: 50%; background: #2e3d38; flex: none; }
+  .termbar .tt { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; color: #6f7a76; margin-left: 6px; }
+  .termbar .tag {
+    margin-left: auto; font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--amber); background: rgba(154,122,31,.14);
+    border: 1px solid rgba(154,122,31,.35); border-radius: var(--r-chip); padding: 3px 8px;
+  }
+  .term { border-radius: 0 0 var(--r-card) var(--r-card); }
+
+  /* Links row */
+  .links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .linkcard {
+    display: block; text-decoration: none; color: inherit; min-width: 0;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+    padding: 16px 18px; box-shadow: var(--shadow-card);
+    transition: transform .3s var(--spring), box-shadow .3s var(--ease), border-color .3s;
+  }
+  .linkcard:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: #d6ddd7; }
+  .linkcard .lc-k { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .linkcard .lc-t { font-size: 14px; font-weight: 720; margin-top: 7px; letter-spacing: -.01em; overflow-wrap: anywhere; }
+  .linkcard .lc-d { font-size: 11.5px; color: var(--muted); line-height: 1.5; margin-top: 5px; }
+  .linkcard .lc-u { font-family: var(--font-mono); font-size: 10px; color: var(--forest-d); margin-top: 10px; overflow-wrap: anywhere; }
+
+  @media (max-width: 900px) {
+    .links { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    h2.sec-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar inflow">
+  <div class="tb-brand"><span class="mk"></span>nomad-code</div>
+  <span class="tb-sep"></span>
+  <span class="tb-ctx"><span class="dot"></span>TODO-193 · journal loop · strava-nix</span>
+  <span class="tb-spacer"></span>
+  <span class="tb-tag">personal · bpo</span>
+</header>
+<div class="brandstrip inflow"></div>
+
+<div class="wrap">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero reveal">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>TODO-193 · strava-running_distance</div>
+      <h1>The run finally made it <span class="em">into the journal</span></h1>
+      <p class="hero-sub">
+        A prior session answered <b>“how many kms/miles have I run?”</b> by shipping a
+        <code>stats</code> command into strava-nix and graduating the repo — but its
+        environment carried <b>no Linear credentials</b>, so the work went unlogged.
+        This session ran with the personal <b>nomad-code</b> key and retro-archived the
+        whole story as <b>TODO-193</b>: PROMPT comment, RESPONSE comment with both merged
+        PR links, assigned to Brendan, state <b>In Review</b>.
+      </p>
+      <div class="hero-chips">
+        <span class="hchip v">2 PRs merged · 2026-07-12</span>
+        <span class="hchip v">59 tests passing</span>
+        <span class="hchip q">nomad-code/strava-nix → canonical</span>
+      </div>
+    </div>
+    <div class="loopcard">
+      <div class="lk-id">linear.app/nomad-code · TODO-193</div>
+      <div class="lk-t">strava-running_distance</div>
+      <div class="lk-row">
+        <span class="cpill hi">In Review</span>
+        <span class="cpill mid">retro-archived</span>
+      </div>
+      <div class="lk-m">
+        Assignee <b>Brendan</b> · workspace <b>nomad-code</b> (personal)<br>
+        PROMPT + RESPONSE comments posted · both PR links attached<br>
+        Logged from a new environment that finally carried the key
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= KPIs ================= -->
+  <div class="kpis">
+    <div class="kpi reveal"><div class="kpi-n">2</div><div class="kpi-l">PRs merged — nomad-code/strava-nix#1 + brendobrien/strava-nix#6</div></div>
+    <div class="kpi reveal"><div class="kpi-n">59</div><div class="kpi-l">tests passing — 10 new in stats.test.ts</div></div>
+    <div class="kpi reveal"><div class="kpi-n">1</div><div class="kpi-l">Linear issue logged — TODO-193, In Review</div></div>
+    <div class="kpi reveal"><div class="kpi-n">km+mi</div><div class="kpi-l">every distance printed in both units, all-time / YTD / 4-week</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ================= FLOW ================= -->
+  <section class="reveal">
+    <div class="sec-head">
+      <span class="sec-kick">the closed loop</span>
+      <span class="sec-n">01 · flow</span>
+    </div>
+    <h2 class="sec-title">Prompt → shipped PRs → credential gap → logged issue</h2>
+    <p class="lede">
+      Seven hops across two environments. The gap in the middle —
+      <b>no Linear credentials where the code shipped</b> — is what this session existed to close.
+      Scroll the strip sideways on small screens.
+    </p>
+    <div class="xscroll" style="margin-top:18px">
+      <div class="flow">
+        <div class="fnode">
+          <div class="fk"><span class="fdot"></span>prompt</div>
+          <div class="ft">“How many kms/miles have I run?”</div>
+          <div class="fd">Brendan’s question kicks off the strava-running session.</div>
+        </div>
+        <div class="farrow">→</div>
+        <div class="fnode">
+          <div class="fk"><span class="fdot"></span>session 1 · strava-running</div>
+          <div class="ft">Builds <code>stats</code> in strava-nix</div>
+          <div class="fd">Athlete-stats endpoint + <code>--from-archive</code> offline mode. 59 tests green.</div>
+        </div>
+        <div class="farrow">→</div>
+        <div class="fnode done">
+          <div class="fk"><span class="fdot"></span>shipped · 2026-07-12</div>
+          <div class="ft">Two PRs merged</div>
+          <div class="fd">nomad-code/strava-nix<b>#1</b> (stats + canonical) · brendobrien/strava-nix<b>#6</b> (deprecation banner).</div>
+        </div>
+        <div class="farrow">→</div>
+        <div class="fnode gap">
+          <div class="fk"><span class="fdot"></span>gap</div>
+          <div class="ft">No Linear credentials</div>
+          <div class="fd">Session 1’s environment couldn’t reach Linear — journal entry blocked.</div>
+        </div>
+        <div class="farrow">→</div>
+        <div class="fnode bridge">
+          <div class="fk"><span class="fdot"></span>new env</div>
+          <div class="ft">nomad-code key present</div>
+          <div class="fd">The personal nomad-code Linear key is finally in scope (value never printed).</div>
+        </div>
+        <div class="farrow">→</div>
+        <div class="fnode bridge">
+          <div class="fk"><span class="fdot"></span>session 2 · this one</div>
+          <div class="ft">Creates TODO-193</div>
+          <div class="fd">Retro-archives PROMPT, posts RESPONSE with both PR links.</div>
+        </div>
+        <div class="farrow">→</div>
+        <div class="fnode done">
+          <div class="fk"><span class="fdot"></span>closed</div>
+          <div class="ft">TODO-193 · In Review</div>
+          <div class="fd">Assigned Brendan. The work and its record finally live in the same graph.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ================= TERMINAL ================= -->
+  <section class="reveal">
+    <div class="sec-head">
+      <span class="sec-kick">the shipped command</span>
+      <span class="sec-n">02 · stats</span>
+    </div>
+    <h2 class="sec-title">What PR #1 put on the CLI</h2>
+    <p class="lede">
+      <code>stats</code> pulls all-time / year-to-date / last-4-weeks run distance from Strava’s
+      <code>/athletes/{id}/stats</code> endpoint, with ride and swim variants, and an
+      <code>--from-archive</code> offline mode that sums the local archive index with a per-year
+      breakdown. Every distance in <b>both km and mi</b>.
+    </p>
+    <div class="xscroll" style="margin-top:18px">
+      <div>
+        <div class="termbar">
+          <span class="td"></span><span class="td"></span><span class="td"></span>
+          <span class="tt">strava-nix · cli.ts</span>
+          <span class="tag">output shape · illustrative — no live Strava data in this env</span>
+        </div>
+        <div class="term"><span class="p">$</span> <span class="cmd">npx tsx cli.ts stats --profile brendan</span>
+
+<span class="hd">strava-nix · athlete stats · brendan</span>
+<span class="dim">source: GET /athletes/{id}/stats</span>
+
+  <span class="k">run</span>   all-time        <span class="cmd">x,xxx.x km</span>   ·   <span class="cmd">x,xxx.x mi</span>
+        year-to-date      <span class="cmd">xxx.x km</span>   ·     <span class="cmd">xxx.x mi</span>
+        last 4 weeks       <span class="cmd">xx.x km</span>   ·      <span class="cmd">xx.x mi</span>
+
+  <span class="dim">variants: --sport ride · --sport swim</span>
+
+<span class="p">$</span> <span class="cmd">npx tsx cli.ts stats --profile brendan --from-archive</span>
+
+<span class="hd">strava-nix · offline · sums local archive index</span>
+
+  <span class="k">2023</span>      <span class="cmd">xxx.x km</span>   ·     <span class="cmd">xxx.x mi</span>
+  <span class="k">2024</span>      <span class="cmd">xxx.x km</span>   ·     <span class="cmd">xxx.x mi</span>
+  <span class="k">2025</span>      <span class="cmd">xxx.x km</span>   ·     <span class="cmd">xxx.x mi</span>
+  <span class="k">2026</span>      <span class="cmd">xxx.x km</span>   ·     <span class="cmd">xxx.x mi</span>
+  <span class="dim">──────────────────────────────────────</span>
+  <span class="k">total</span>   <span class="cmd">x,xxx.x km</span>   ·   <span class="cmd">x,xxx.x mi</span>
+
+<span class="dim">59 tests passing · 10 new in stats.test.ts</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ================= CREDENTIAL GAP ================= -->
+  <section class="reveal">
+    <div class="sec-head">
+      <span class="sec-kick">why it needed a second session</span>
+      <span class="sec-n">03 · the gap</span>
+    </div>
+    <h2 class="sec-title">Git held the work; the journal was waiting on a key</h2>
+    <div class="rails" style="margin-top:18px">
+      <div class="rail-card prev">
+        <div class="rc-h"><span class="rc-tag prev">session 1</span><b>shipped, unlogged</b></div>
+        <p class="rc-p">
+          The <code>stats</code> work merged as two PRs, but that environment had no
+          nomad-code Linear key — so the journal entry couldn’t be written. Real work,
+          no record.
+        </p>
+        <div class="rc-m">git had truth · Linear had nothing</div>
+      </div>
+      <div class="rail-card rec">
+        <div class="rc-h"><span class="rc-tag rec">session 2</span><b>logged, In Review</b></div>
+        <p class="rc-p">
+          This session ran with the personal nomad-code key in scope and closed the loop:
+          <b>TODO-193 · strava-running_distance</b> — PROMPT retro-archived, RESPONSE with
+          both PR links, assigned Brendan, In Review.
+        </p>
+        <div class="rc-m">git ↔ Linear now agree</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ================= LINKS ================= -->
+  <section class="reveal">
+    <div class="sec-head">
+      <span class="sec-kick">receipts</span>
+      <span class="sec-n">04 · links</span>
+    </div>
+    <h2 class="sec-title">The two PRs and the issue</h2>
+    <div class="links" style="margin-top:18px">
+      <a class="linkcard" href="https://github.com/nomad-code/strava-nix/pull/1" target="_blank" rel="noopener">
+        <div class="lc-k">merged · 2026-07-12 06:30Z</div>
+        <div class="lc-t">nomad-code/strava-nix #1</div>
+        <div class="lc-d"><code>stats</code> command — all-time / YTD / last-4-weeks, ride + swim variants, <code>--from-archive</code>. Declares this repo canonical.</div>
+        <div class="lc-u">github.com/nomad-code/strava-nix/pull/1</div>
+      </a>
+      <a class="linkcard" href="https://github.com/brendobrien/strava-nix/pull/6" target="_blank" rel="noopener">
+        <div class="lc-k">merged · 2026-07-12 06:30Z</div>
+        <div class="lc-t">brendobrien/strava-nix #6</div>
+        <div class="lc-d">Deprecation banner — freezes the old repo as a pre-graduation snapshot pointing at the canonical fork.</div>
+        <div class="lc-u">github.com/brendobrien/strava-nix/pull/6</div>
+      </a>
+      <a class="linkcard" href="https://linear.app/nomad-code/issue/TODO-193/strava-running-distance" target="_blank" rel="noopener">
+        <div class="lc-k">linear · in review</div>
+        <div class="lc-t">TODO-193 · strava-running_distance</div>
+        <div class="lc-d">PROMPT retro-archived + RESPONSE with both PR links. Assigned Brendan. The loop’s closing entry.</div>
+        <div class="lc-u">linear.app/nomad-code/issue/TODO-193</div>
+      </a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    TODO-193 · strava-linear-logging session · built 2026-07-13 UTC<br>
+    artifact: <code>artifacts/2026-W29/todo-193_strava-journal-loop_2026-07-13_15-17.html</code> ·
+    live: <code>nomad-code.github.io/todo-193_strava-journal-loop_2026-07-13_15-17</code><br>
+    numbers in the terminal are output <em>shape</em> only — no live Strava data was available in this environment.
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('shown'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

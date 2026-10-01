@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>photos · country_ontology — TODO-417</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../../design-repo/grove/motion.css">
+<style>
+  body{background:var(--bg);color:var(--body);font-family:var(--font-ui)}
+  .wrap{max-width:1080px;margin:0 auto;padding:34px 30px 110px}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--forest);font-weight:600}
+  h1{font-size:40px;line-height:1.06;letter-spacing:-.025em;color:var(--ink);
+    font-weight:800;margin:10px 0 12px;text-wrap:balance;max-width:20ch}
+  .lede{font-size:16.5px;line-height:1.55;color:var(--muted);max-width:64ch}
+  h2{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);
+    font-weight:800;margin:0 0 14px;font-family:var(--font-mono)}
+  section{margin-top:46px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+    padding:22px 24px;box-shadow:var(--shadow-card)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:26px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);padding:15px 17px}
+  .kpi b{display:block;font-size:27px;font-weight:800;color:var(--ink);
+    letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .kpi span{font-size:11.5px;color:var(--muted);font-weight:600}
+  .hero{background:linear-gradient(135deg,var(--forest),var(--forest-d));
+    border-radius:var(--r-hero);padding:28px 30px;color:#eaf5f2;margin-top:26px}
+  .hero .big{font-size:58px;font-weight:800;letter-spacing:-.03em;line-height:1;
+    font-variant-numeric:tabular-nums}
+  .hero .big i{font-style:normal;color:var(--lime-b);font-size:30px}
+  .hero p{margin:9px 0 20px;opacity:.84;font-size:14px;max-width:56ch}
+  .cn{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .cn-l{width:118px;font-size:12.5px;font-weight:650;opacity:.92}
+  .cn-bar{flex:1;height:7px;background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden}
+  .cn-bar i{display:block;height:100%;background:var(--lime-b);border-radius:99px}
+  .cn-n{width:56px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+  .cn-n .dim{opacity:.55}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--faint);font-weight:800;padding:0 10px 9px;border-bottom:1px solid var(--line);
+    font-family:var(--font-mono)}
+  td{padding:8px 10px;border-bottom:1px solid var(--line)}
+  tbody tr:hover{background:var(--well)}
+  .num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:12.5px}
+  .mono{font-family:var(--font-mono);font-size:12px}
+  .iso{font-family:var(--font-mono);font-weight:700;color:var(--forest);font-size:12px}
+  .cty{font-weight:650;color:var(--ink)}
+  .dim{color:var(--faint)}
+  .scroll{overflow-x:auto}
+  .chip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;
+    padding:3px 8px;border-radius:var(--r-chip);white-space:nowrap;font-family:var(--font-mono)}
+  .chip.ok{background:var(--g-lime);color:var(--forest-d)}
+  .chip.fnd{background:var(--found-bg);color:var(--found-d);border:1px solid var(--found-bd)}
+  .chip.am{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+  .chip.wn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-bd)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .sprintgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:11px}
+  .sp{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:13px 15px}
+  .sp-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+  .sp-h b{font-size:13.5px;color:var(--ink);font-weight:700}
+  .sp-d{color:var(--muted);font-size:11px;margin-bottom:9px}
+  .sp-bar{height:5px;background:var(--well);border-radius:99px;overflow:hidden}
+  .sp-bar i{display:block;height:100%;background:var(--forest);border-radius:99px}
+  .sp-n{color:var(--faint);font-size:10.5px;margin-top:7px}
+  .cv{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+  .yr{width:40px;color:var(--muted);font-weight:600}
+  .cv-bar{flex:1;height:6px;background:var(--well);border-radius:99px;overflow:hidden}
+  .cv-bar i{display:block;height:100%;background:var(--forest);border-radius:99px}
+  .cv-n{width:38px;text-align:right;color:var(--body);font-variant-numeric:tabular-nums}
+  .cv-c{width:48px;text-align:right;color:var(--faint)}
+  ul.plain{list-style:none;padding:0;margin:0}
+  ul.plain li{display:flex;justify-content:space-between;padding:7px 0;
+    border-bottom:1px solid var(--line);font-size:13px}
+  ul.plain li b{font-weight:650;color:var(--ink)}
+  ul.plain li span{color:var(--muted)}
+  .find{border-left:3px solid var(--line);padding:2px 0 2px 15px;margin-bottom:18px}
+  .find.w{border-color:var(--warn)} .find.g{border-color:var(--forest)}
+  .find.a{border-color:var(--amber)}
+  .find h3{font-size:14.5px;color:var(--ink);font-weight:750;margin:0 0 5px;
+    display:flex;align-items:center;gap:9px}
+  .find p{font-size:13.5px;line-height:1.55;color:var(--muted);margin:0;max-width:70ch}
+  code{font-family:var(--font-mono);font-size:12px;background:var(--well);
+    padding:1.5px 5px;border-radius:5px;color:var(--ink)}
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--faint);font-family:var(--font-mono);
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  @media (max-width:760px){.grid2{grid-template-columns:1fr}h1{font-size:31px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">TODO-417 · photos · country_ontology</p>
+  <h1>Every frame is a moment with an intention.</h1>
+  <p class="lede">53,334 frames and 19,378 calendar events, resolved to
+  a country per day across 32 years. Photos alone found 47 countries; the calendar
+  found 15 more that the camera never witnessed — including all of 2024, a year with
+  zero photos in the corpus.</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>53,334</b><span>frames indexed</span></div>
+    <div class="kpi"><b>4,669</b><span>days placed</span></div>
+    <div class="kpi"><b>445</b><span>visits segmented</span></div>
+    <div class="kpi"><b>14,372</b><span>events geo-resolved</span></div>
+  </div>
+
+  <div class="hero">
+    <div class="big">61<i> / 202</i></div>
+    <p>Sovereign countries with at least one placed day. The gap is not evenly
+    spread — Europe is nearly half done, Africa and Oceania are almost untouched.</p>
+    <div class="cn"><span class="cn-l">Europe</span>
+<div class="cn-bar"><i style="width:47%"></i></div>
+<span class="mono cn-n">23<span class="dim">/48</span></span></div><div class="cn"><span class="cn-l">Asia</span>
+<div class="cn-bar"><i style="width:36%"></i></div>
+<span class="mono cn-n">17<span class="dim">/47</span></span></div><div class="cn"><span class="cn-l">North America</span>
+<div class="cn-bar"><i style="width:38%"></i></div>
+<span class="mono cn-n">10<span class="dim">/26</span></span></div><div class="cn"><span class="cn-l">South America</span>
+<div class="cn-bar"><i style="width:50%"></i></div>
+<span class="mono cn-n">6<span class="dim">/12</span></span></div><div class="cn"><span class="cn-l">Africa</span>
+<div class="cn-bar"><i style="width:5%"></i></div>
+<span class="mono cn-n">3<span class="dim">/52</span></span></div><div class="cn"><span class="cn-l">Oceania</span>
+<div class="cn-bar"><i style="width:7%"></i></div>
+<span class="mono cn-n">1<span class="dim">/14</span></span></div>
+  </div>
+
+  <section>
+    <h2>The August run — 12 countries in 20 days</h2>
+    <p class="lede" style="margin-bottom:18px">The documentation pattern, isolated. One
+    to three days per country, several hundred frames each, roughly half of them
+    screenshots. The last two countries carry no frames at all: the photo library
+    stopped updating on 26 Aug, so calendar is the only witness.</p>
+    <div class="sprintgrid"><div class="sp">
+<div class="sp-h"><b>Taiwan</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-11 → 2026-08-12 · 2d</div>
+<div class="sp-bar"><i style="width:17%"></i></div>
+<div class="sp-n mono">210 frames · 148 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Slovakia</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-13 → 2026-08-13 · 1d</div>
+<div class="sp-bar"><i style="width:40%"></i></div>
+<div class="sp-n mono">483 frames · 287 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Austria</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-14 → 2026-08-14 · 1d</div>
+<div class="sp-bar"><i style="width:27%"></i></div>
+<div class="sp-n mono">329 frames · 105 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Denmark</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-15 → 2026-08-17 · 3d</div>
+<div class="sp-bar"><i style="width:49%"></i></div>
+<div class="sp-n mono">591 frames · 165 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Latvia</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-18 → 2026-08-18 · 1d</div>
+<div class="sp-bar"><i style="width:74%"></i></div>
+<div class="sp-n mono">895 frames · 344 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Lithuania</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-19 → 2026-08-19 · 1d</div>
+<div class="sp-bar"><i style="width:53%"></i></div>
+<div class="sp-n mono">645 frames · 352 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Estonia</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-20 → 2026-08-20 · 1d</div>
+<div class="sp-bar"><i style="width:73%"></i></div>
+<div class="sp-n mono">876 frames · 410 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Albania</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-21 → 2026-08-22 · 2d</div>
+<div class="sp-bar"><i style="width:92%"></i></div>
+<div class="sp-n mono">1,111 frames · 537 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Malta</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-23 → 2026-08-24 · 2d</div>
+<div class="sp-bar"><i style="width:82%"></i></div>
+<div class="sp-n mono">995 frames · 407 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Italy</b><span class="chip ok">photo</span></div>
+<div class="sp-d mono">2026-08-25 → 2026-08-26 · 2d</div>
+<div class="sp-bar"><i style="width:61%"></i></div>
+<div class="sp-n mono">740 frames · 501 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Cyprus</b><span class="chip fnd">calendar</span></div>
+<div class="sp-d mono">2026-08-27 → 2026-08-28 · 2d</div>
+<div class="sp-bar"><i style="width:4%"></i></div>
+<div class="sp-n mono">0 frames · 0 screenshots</div></div><div class="sp">
+<div class="sp-h"><b>Bulgaria</b><span class="chip fnd">calendar</span></div>
+<div class="sp-d mono">2026-08-29 → 2026-08-30 · 2d</div>
+<div class="sp-bar"><i style="width:4%"></i></div>
+<div class="sp-n mono">0 frames · 0 screenshots</div></div></div>
+  </section>
+
+  <section>
+    <h2>Findings</h2>
+    <div class="card">
+      <div class="find w"><h3>Photo library frozen since 26 Aug <span class="chip wn">needs you</span></h3>
+      <p>The live library database has not changed since <code>2026-08-26 20:11</code> —
+      four days — while Calendar synced minutes ago. Cyprus and Bulgaria appear in this
+      ontology only because the calendar recorded them. Every frame shot since the 26th
+      is missing from the corpus.</p></div>
+
+      <div class="find g"><h3>2024 recovered from calendar</h3>
+      <p>2024 holds zero photos across both Apple and Google sources, but 2,994 calendar
+      events. Reconstructed: Indonesia 163d, United States of America 75d, Philippines 33d, Japan 25d.
+      A whole year of the ontology existed and was invisible to the photo pipeline.</p></div>
+
+      <div class="find a"><h3>14,814 redundant frames in 7,166 bursts</h3>
+      <p>41% of the corpus sits inside a burst — frames
+      shot within 20 seconds of each other, the same moment attempted repeatedly. Keeping
+      one frame per burst would drop 14,814 frames without losing a single moment.</p></div>
+
+      <div class="find g"><h3>Border days resolve, transit days do not</h3>
+      <p>Interpolation only fills a gap when the frames on both sides agree, so it never
+      invents a crossing. That leaves flight days unresolved from photos alone — which is
+      exactly where the calendar's timezone field takes over.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Country ledger</h2>
+    <div class="card scroll">
+    <table><thead><tr>
+      <th>ISO</th><th>Country</th><th>Continent</th><th class="num">Days</th>
+      <th class="num">Frames</th><th class="num">Shots</th><th>First</th><th>Last</th>
+      <th>Evidence</th></tr></thead>
+    <tbody><tr>
+<td class="iso">US</td>
+<td class="cty">United States of America</td>
+<td class="dim">North America</td>
+<td class="num">2,304</td>
+<td class="num">15,005</td>
+<td class="num">6</td>
+<td class="mono dim">1994-03-11</td>
+<td class="mono dim">2026-06-23</td>
+<td><span class="chip am">52% mixed</span></td></tr><tr>
+<td class="iso">ID</td>
+<td class="cty">Indonesia</td>
+<td class="dim">Asia</td>
+<td class="num">743</td>
+<td class="num">8,392</td>
+<td class="num">1,062</td>
+<td class="mono dim">2012-12-15</td>
+<td class="mono dim">2026-07-28</td>
+<td><span class="chip am">42% mixed</span></td></tr><tr>
+<td class="iso">CR</td>
+<td class="cty">Costa Rica</td>
+<td class="dim">North America</td>
+<td class="num">313</td>
+<td class="num">6,538</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-12-21</td>
+<td class="mono dim">2023-01-19</td>
+<td><span class="chip am">44% mixed</span></td></tr><tr>
+<td class="iso">PT</td>
+<td class="cty">Portugal</td>
+<td class="dim">Europe</td>
+<td class="num">197</td>
+<td class="num">3,351</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-09-19</td>
+<td class="mono dim">2021-03-20</td>
+<td><span class="chip am">70% mixed</span></td></tr><tr>
+<td class="iso">JP</td>
+<td class="cty">Japan</td>
+<td class="dim">Asia</td>
+<td class="num">178</td>
+<td class="num">1,904</td>
+<td class="num">845</td>
+<td class="mono dim">2023-10-06</td>
+<td class="mono dim">2026-08-10</td>
+<td><span class="chip am">74% mixed</span></td></tr><tr>
+<td class="iso">IN</td>
+<td class="cty">India</td>
+<td class="dim">Asia</td>
+<td class="num">95</td>
+<td class="num">1,514</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2019-11-14</td>
+<td class="mono dim">2020-02-18</td>
+<td><span class="chip ok">94% hard</span></td></tr><tr>
+<td class="iso">TH</td>
+<td class="cty">Thailand</td>
+<td class="dim">Asia</td>
+<td class="num">91</td>
+<td class="num">276</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2016-06-19</td>
+<td class="mono dim">2026-03-20</td>
+<td><span class="chip am">47% mixed</span></td></tr><tr>
+<td class="iso">NI</td>
+<td class="cty">Nicaragua</td>
+<td class="dim">North America</td>
+<td class="num">62</td>
+<td class="num">535</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2018-01-29</td>
+<td class="mono dim">2018-04-03</td>
+<td><span class="chip ok">92% hard</span></td></tr><tr>
+<td class="iso">MX</td>
+<td class="cty">Mexico</td>
+<td class="dim">North America</td>
+<td class="num">51</td>
+<td class="num">1,465</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2018-04-27</td>
+<td class="mono dim">2025-09-06</td>
+<td><span class="chip ok">96% hard</span></td></tr><tr>
+<td class="iso">HN</td>
+<td class="cty">Honduras</td>
+<td class="dim">North America</td>
+<td class="num">47</td>
+<td class="num">872</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2021-03-30</td>
+<td class="mono dim">2022-06-06</td>
+<td><span class="chip am">79% mixed</span></td></tr><tr>
+<td class="iso">PE</td>
+<td class="cty">Peru</td>
+<td class="dim">South America</td>
+<td class="num">40</td>
+<td class="num">575</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-10-29</td>
+<td class="mono dim">2017-12-07</td>
+<td><span class="chip ok">80% hard</span></td></tr><tr>
+<td class="iso">PH</td>
+<td class="cty">Philippines</td>
+<td class="dim">Asia</td>
+<td class="num">34</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2024-04-22</td>
+<td class="mono dim">2025-11-26</td>
+<td><span class="chip am">79% mixed</span></td></tr><tr>
+<td class="iso">ES</td>
+<td class="cty">Spain</td>
+<td class="dim">Europe</td>
+<td class="num">32</td>
+<td class="num">615</td>
+<td class="num">50</td>
+<td class="mono dim">2017-06-14</td>
+<td class="mono dim">2025-03-11</td>
+<td><span class="chip am">75% mixed</span></td></tr><tr>
+<td class="iso">EC</td>
+<td class="cty">Ecuador</td>
+<td class="dim">South America</td>
+<td class="num">29</td>
+<td class="num">247</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-12-08</td>
+<td class="mono dim">2019-02-17</td>
+<td><span class="chip am">79% mixed</span></td></tr><tr>
+<td class="iso">LK</td>
+<td class="cty">Sri Lanka</td>
+<td class="dim">Asia</td>
+<td class="num">28</td>
+<td class="num">964</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2020-02-19</td>
+<td class="mono dim">2020-03-17</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">GT</td>
+<td class="cty">Guatemala</td>
+<td class="dim">North America</td>
+<td class="num">27</td>
+<td class="num">267</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2018-04-04</td>
+<td class="mono dim">2023-01-25</td>
+<td><span class="chip ok">96% hard</span></td></tr><tr>
+<td class="iso">AU</td>
+<td class="cty">Australia</td>
+<td class="dim">Oceania</td>
+<td class="num">27</td>
+<td class="num">119</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2014-08-10</td>
+<td class="mono dim">2023-11-29</td>
+<td><span class="chip am">48% mixed</span></td></tr><tr>
+<td class="iso">HU</td>
+<td class="cty">Hungary</td>
+<td class="dim">Europe</td>
+<td class="num">21</td>
+<td class="num">776</td>
+<td class="num">185</td>
+<td class="mono dim">2017-07-27</td>
+<td class="mono dim">2017-08-16</td>
+<td><span class="chip ok">95% hard</span></td></tr><tr>
+<td class="iso">RU</td>
+<td class="cty">Russia</td>
+<td class="dim">Europe</td>
+<td class="num">18</td>
+<td class="num">185</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2019-10-25</td>
+<td class="mono dim">2019-11-13</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">NO</td>
+<td class="cty">Norway</td>
+<td class="dim">Europe</td>
+<td class="num">13</td>
+<td class="num">97</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2025-03-10</td>
+<td class="mono dim">2025-07-31</td>
+<td><span class="chip am">77% mixed</span></td></tr><tr>
+<td class="iso">HK</td>
+<td class="cty">Hong Kong</td>
+<td class="dim">Asia</td>
+<td class="num">12</td>
+<td class="num">91</td>
+<td class="num">2</td>
+<td class="mono dim">2016-10-07</td>
+<td class="mono dim">2026-05-13</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">GR</td>
+<td class="cty">Greece</td>
+<td class="dim">Europe</td>
+<td class="num">12</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2023-10-02</td>
+<td class="mono dim">2023-11-08</td>
+<td><span class="chip fnd">0% soft</span></td></tr><tr>
+<td class="iso">TW</td>
+<td class="cty">Taiwan</td>
+<td class="dim">Asia</td>
+<td class="num">10</td>
+<td class="num">342</td>
+<td class="num">150</td>
+<td class="mono dim">2026-02-25</td>
+<td class="mono dim">2026-08-12</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">CA</td>
+<td class="cty">Canada</td>
+<td class="dim">North America</td>
+<td class="num">10</td>
+<td class="num">180</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2021-09-06</td>
+<td class="mono dim">2021-09-23</td>
+<td><span class="chip am">40% mixed</span></td></tr><tr>
+<td class="iso">PR</td>
+<td class="cty">Puerto Rico</td>
+<td class="dim">North America</td>
+<td class="num">9</td>
+<td class="num">273</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2021-03-21</td>
+<td class="mono dim">2021-03-29</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">MA</td>
+<td class="cty">Morocco</td>
+<td class="dim">Africa</td>
+<td class="num">9</td>
+<td class="num">213</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-08-28</td>
+<td class="mono dim">2017-09-18</td>
+<td><span class="chip am">78% mixed</span></td></tr><tr>
+<td class="iso">DK</td>
+<td class="cty">Denmark</td>
+<td class="dim">Europe</td>
+<td class="num">7</td>
+<td class="num">624</td>
+<td class="num">165</td>
+<td class="mono dim">2025-03-20</td>
+<td class="mono dim">2026-08-17</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">TR</td>
+<td class="cty">Turkey</td>
+<td class="dim">Asia</td>
+<td class="num">6</td>
+<td class="num">618</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2022-11-17</td>
+<td class="mono dim">2025-09-26</td>
+<td><span class="chip am">67% mixed</span></td></tr><tr>
+<td class="iso">SV</td>
+<td class="cty">El Salvador</td>
+<td class="dim">North America</td>
+<td class="num">5</td>
+<td class="num">52</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2022-06-16</td>
+<td class="mono dim">2022-06-20</td>
+<td><span class="chip am">60% mixed</span></td></tr><tr>
+<td class="iso">SG</td>
+<td class="cty">Singapore</td>
+<td class="dim">Asia</td>
+<td class="num">5</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2025-11-08</td>
+<td class="mono dim">2025-12-01</td>
+<td><span class="chip ok">80% hard</span></td></tr><tr>
+<td class="iso">CO</td>
+<td class="cty">Colombia</td>
+<td class="dim">South America</td>
+<td class="num">5</td>
+<td class="num">127</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-12-14</td>
+<td class="mono dim">2017-12-18</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">SA</td>
+<td class="cty">Saudi Arabia</td>
+<td class="dim">Asia</td>
+<td class="num">4</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2025-09-19</td>
+<td class="mono dim">2025-09-23</td>
+<td><span class="chip fnd">0% soft</span></td></tr><tr>
+<td class="iso">NL</td>
+<td class="cty">Netherlands</td>
+<td class="dim">Europe</td>
+<td class="num">4</td>
+<td class="num">15</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2022-08-20</td>
+<td class="mono dim">2025-03-15</td>
+<td><span class="chip am">50% mixed</span></td></tr><tr>
+<td class="iso">KR</td>
+<td class="cty">South Korea</td>
+<td class="dim">Asia</td>
+<td class="num">4</td>
+<td class="num">38</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2024-04-12</td>
+<td class="mono dim">2026-04-15</td>
+<td><span class="chip am">50% mixed</span></td></tr><tr>
+<td class="iso">PL</td>
+<td class="cty">Poland</td>
+<td class="dim">Europe</td>
+<td class="num">3</td>
+<td class="num">75</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-08-25</td>
+<td class="mono dim">2017-08-27</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">MY</td>
+<td class="cty">Malaysia</td>
+<td class="dim">Asia</td>
+<td class="num">3</td>
+<td class="num">17</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2020-03-18</td>
+<td class="mono dim">2026-05-02</td>
+<td><span class="chip am">67% mixed</span></td></tr><tr>
+<td class="iso">IT</td>
+<td class="cty">Italy</td>
+<td class="dim">Europe</td>
+<td class="num">3</td>
+<td class="num">740</td>
+<td class="num">501</td>
+<td class="mono dim">2023-09-28</td>
+<td class="mono dim">2026-08-26</td>
+<td><span class="chip am">67% mixed</span></td></tr><tr>
+<td class="iso">GB</td>
+<td class="cty">United Kingdom</td>
+<td class="dim">Europe</td>
+<td class="num">3</td>
+<td class="num">9</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2009-06-06</td>
+<td class="mono dim">2023-09-26</td>
+<td><span class="chip am">67% mixed</span></td></tr><tr>
+<td class="iso">DE</td>
+<td class="cty">Germany</td>
+<td class="dim">Europe</td>
+<td class="num">3</td>
+<td class="num">66</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-08-19</td>
+<td class="mono dim">2017-08-21</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">CZ</td>
+<td class="cty">Czechia</td>
+<td class="dim">Europe</td>
+<td class="num">3</td>
+<td class="num">121</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-08-22</td>
+<td class="mono dim">2017-08-24</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">AT</td>
+<td class="cty">Austria</td>
+<td class="dim">Europe</td>
+<td class="num">3</td>
+<td class="num">482</td>
+<td class="num">126</td>
+<td class="mono dim">2017-08-17</td>
+<td class="mono dim">2026-08-14</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">PA</td>
+<td class="cty">Panama</td>
+<td class="dim">North America</td>
+<td class="num">2</td>
+<td class="num">53</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2017-12-19</td>
+<td class="mono dim">2017-12-20</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">MV</td>
+<td class="cty">Maldives</td>
+<td class="dim">Seven seas (open ocean)</td>
+<td class="num">2</td>
+<td class="num">135</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2020-01-11</td>
+<td class="mono dim">2020-01-12</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">MT</td>
+<td class="cty">Malta</td>
+<td class="dim">Europe</td>
+<td class="num">2</td>
+<td class="num">995</td>
+<td class="num">407</td>
+<td class="mono dim">2026-08-23</td>
+<td class="mono dim">2026-08-24</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">ET</td>
+<td class="cty">Ethiopia</td>
+<td class="dim">Africa</td>
+<td class="num">2</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2025-09-24</td>
+<td class="mono dim">2025-09-25</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">CY</td>
+<td class="cty">Cyprus</td>
+<td class="dim">Asia</td>
+<td class="num">2</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2026-08-27</td>
+<td class="mono dim">2026-08-28</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">CL</td>
+<td class="cty">Chile</td>
+<td class="dim">South America</td>
+<td class="num">2</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2023-11-16</td>
+<td class="mono dim">2023-11-17</td>
+<td><span class="chip am">50% mixed</span></td></tr><tr>
+<td class="iso">BH</td>
+<td class="cty">Bahrain</td>
+<td class="dim">Asia</td>
+<td class="num">2</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2025-09-15</td>
+<td class="mono dim">2025-09-20</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">BG</td>
+<td class="cty">Bulgaria</td>
+<td class="dim">Europe</td>
+<td class="num">2</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2026-08-29</td>
+<td class="mono dim">2026-08-30</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">AL</td>
+<td class="cty">Albania</td>
+<td class="dim">Europe</td>
+<td class="num">2</td>
+<td class="num">1,111</td>
+<td class="num">537</td>
+<td class="mono dim">2026-08-21</td>
+<td class="mono dim">2026-08-22</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">AE</td>
+<td class="cty">United Arab Emirates</td>
+<td class="dim">Asia</td>
+<td class="num">2</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2025-09-17</td>
+<td class="mono dim">2025-09-18</td>
+<td><span class="chip fnd">0% soft</span></td></tr><tr>
+<td class="iso">SK</td>
+<td class="cty">Slovakia</td>
+<td class="dim">Europe</td>
+<td class="num">1</td>
+<td class="num">483</td>
+<td class="num">287</td>
+<td class="mono dim">2026-08-13</td>
+<td class="mono dim">2026-08-13</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">QA</td>
+<td class="cty">Qatar</td>
+<td class="dim">Asia</td>
+<td class="num">1</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2025-09-16</td>
+<td class="mono dim">2025-09-16</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">LV</td>
+<td class="cty">Latvia</td>
+<td class="dim">Europe</td>
+<td class="num">1</td>
+<td class="num">895</td>
+<td class="num">344</td>
+<td class="mono dim">2026-08-18</td>
+<td class="mono dim">2026-08-18</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">LT</td>
+<td class="cty">Lithuania</td>
+<td class="dim">Europe</td>
+<td class="num">1</td>
+<td class="num">645</td>
+<td class="num">352</td>
+<td class="mono dim">2026-08-19</td>
+<td class="mono dim">2026-08-19</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">IE</td>
+<td class="cty">Ireland</td>
+<td class="dim">Europe</td>
+<td class="num">1</td>
+<td class="num">1</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2009-06-11</td>
+<td class="mono dim">2009-06-11</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">FI</td>
+<td class="cty">Finland</td>
+<td class="dim">Europe</td>
+<td class="num">1</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2023-09-27</td>
+<td class="mono dim">2023-09-27</td>
+<td><span class="chip fnd">0% soft</span></td></tr><tr>
+<td class="iso">EG</td>
+<td class="cty">Egypt</td>
+<td class="dim">Africa</td>
+<td class="num">1</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2023-10-18</td>
+<td class="mono dim">2023-10-18</td>
+<td><span class="chip fnd">0% soft</span></td></tr><tr>
+<td class="iso">EE</td>
+<td class="cty">Estonia</td>
+<td class="dim">Europe</td>
+<td class="num">1</td>
+<td class="num">876</td>
+<td class="num">410</td>
+<td class="mono dim">2026-08-20</td>
+<td class="mono dim">2026-08-20</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">BZ</td>
+<td class="cty">Belize</td>
+<td class="dim">North America</td>
+<td class="num">1</td>
+<td class="num">42</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2018-04-26</td>
+<td class="mono dim">2018-04-26</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">BO</td>
+<td class="cty">Bolivia</td>
+<td class="dim">South America</td>
+<td class="num">1</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2023-11-18</td>
+<td class="mono dim">2023-11-18</td>
+<td><span class="chip ok">100% hard</span></td></tr><tr>
+<td class="iso">AR</td>
+<td class="cty">Argentina</td>
+<td class="dim">South America</td>
+<td class="num">1</td>
+<td class="num"><span class="dim">—</span></td>
+<td class="num"><span class="dim">—</span></td>
+<td class="mono dim">2023-11-12</td>
+<td class="mono dim">2023-11-12</td>
+<td><span class="chip ok">100% hard</span></td></tr></tbody></table></div>
+  </section>
+
+  <section class="grid2">
+    <div>
+      <h2>What you were doing</h2>
+      <div class="card"><table><thead><tr><th>Activity</th><th class="num">Frames</th>
+      <th class="num">Countries</th></tr></thead><tbody><tr><td>work</td><td class='num'>4,543</td><td class='num dim'>17</td></tr><tr><td>sleep</td><td class='num'>477</td><td class='num dim'>9</td></tr><tr><td>eating in</td><td class='num'>398</td><td class='num dim'>2</td></tr><tr><td>family</td><td class='num'>218</td><td class='num dim'>3</td></tr><tr><td>phone</td><td class='num'>187</td><td class='num dim'>4</td></tr><tr><td>spa</td><td class='num'>177</td><td class='num dim'>1</td></tr><tr><td>scooter</td><td class='num'>148</td><td class='num dim'>1</td></tr><tr><td>reading</td><td class='num'>119</td><td class='num dim'>3</td></tr><tr><td>eating out</td><td class='num'>110</td><td class='num dim'>5</td></tr><tr><td>yoga</td><td class='num'>68</td><td class='num dim'>2</td></tr><tr><td>coffee</td><td class='num'>48</td><td class='num dim'>2</td></tr><tr><td>running</td><td class='num'>28</td><td class='num dim'>3</td></tr></tbody></table>
+      <p class="mono dim" style="margin-top:12px;line-height:1.5">Frames shot inside a
+      calendar event, labelled by your own leading-emoji convention. No vision model.</p>
+      </div>
+    </div>
+    <div>
+      <h2>Evidence mix</h2>
+      <div class="card"><table><tbody><tr><td><span class='chip ok'>gps</span></td><td class='num'>1,962 days</td></tr><tr><td><span class='chip fnd'>timezone</span></td><td class='num'>1,136 days</td></tr><tr><td><span class='chip fnd'>calendar</span></td><td class='num'>623 days</td></tr><tr><td><span class='chip am'>inferred</span></td><td class='num'>543 days</td></tr><tr><td><span class='chip am'>carried</span></td><td class='num'>405 days</td></tr></tbody></table>
+      <p class="mono dim" style="margin-top:12px;line-height:1.5">Each day keeps its
+      strongest witness. GPS beats calendar coordinates, which beat interpolation,
+      which beats a timezone.</p></div>
+      <h2 style="margin-top:26px">2024, from calendar alone</h2>
+      <div class="card"><ul class="plain"><li><b>Indonesia</b><span class='mono'>163d</span></li><li><b>United States of America</b><span class='mono'>75d</span></li><li><b>Philippines</b><span class='mono'>33d</span></li><li><b>Japan</b><span class='mono'>25d</span></li><li><b>Malaysia</b><span class='mono'>1d</span></li><li><b>South Korea</b><span class='mono'>1d</span></li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Places — named from your own calendar</h2>
+    <p class="lede" style="margin-bottom:18px">GPS frames cluster tightly around the
+    few spots you actually stood in. Those clusters are anonymous, but your calendar
+    carries 836 venue names with coordinates, so the places get named
+    from your data rather than a geocoding service. 282 clusters of 8+ frames,
+    51 named this way.</p>
+    <div class="card scroll">
+    <table><thead><tr><th>Place</th><th>ISO</th><th class="num">Frames</th>
+    <th class="num">Days</th><th>Usual activity</th><th class="num">Venue dist</th>
+    </tr></thead><tbody><tr><td class="cty">7588 Uncle's Neck Rd Toano, VA, United Sta</td>
+<td class="iso">US</td>
+<td class="num">1,369</td><td class="num dim">278</td>
+<td><span class="chip ok">sleep</span></td>
+<td class="num dim">120m</td></tr><tr><td class="cty">Mercure Tallinn Lennujaama tee 2, Tallinn,</td>
+<td class="iso">EE</td>
+<td class="num">567</td><td class="num dim">3</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">176m</td></tr><tr><td class="cty">Daiwa Roynet Hotel Chiba-chuo 〒260-0014, 千</td>
+<td class="iso">JP</td>
+<td class="num">246</td><td class="num dim">5</td>
+<td><span class="chip ok">sleep</span></td>
+<td class="num dim">160m</td></tr><tr><td class="cty">Zoey kego 〒810-0023, 福岡県福岡市中央区, 警固1丁目5-4 1</td>
+<td class="iso">JP</td>
+<td class="num">240</td><td class="num dim">12</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">197m</td></tr><tr><td class="cty">Qudo Uluwatu Jalan Labuansait No. 250, Kab</td>
+<td class="iso">ID</td>
+<td class="num">177</td><td class="num dim">53</td>
+<td><span class="chip ok">eating out</span></td>
+<td class="num dim">43m</td></tr><tr><td class="cty">Couleur Cafe Puntarenas, Costa Rica</td>
+<td class="iso">CR</td>
+<td class="num">163</td><td class="num dim">72</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">41m</td></tr><tr><td class="cty">Bali Beach Deli Puntarenas, Costa Rica</td>
+<td class="iso">CR</td>
+<td class="num">162</td><td class="num dim">80</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">67m</td></tr><tr><td class="cty">Makuhari Messe International Exhibition Ha</td>
+<td class="iso">JP</td>
+<td class="num">155</td><td class="num dim">2</td>
+<td><span class="dim">—</span></td>
+<td class="num dim">145m</td></tr><tr><td class="cty">A casa mia Via San Francesco 16, 21047 Sar</td>
+<td class="iso">IT</td>
+<td class="num">123</td><td class="num dim">3</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">176m</td></tr><tr><td class="cty">Openhouse Cafe</td>
+<td class="iso">ID</td>
+<td class="num">102</td><td class="num dim">30</td>
+<td><span class="chip ok">family</span></td>
+<td class="num dim">169m</td></tr><tr><td class="cty">Skydive Elsinore, 20701 Cereal St, Lake El</td>
+<td class="iso">US</td>
+<td class="num">98</td><td class="num dim">14</td>
+<td><span class="dim">—</span></td>
+<td class="num dim">15m</td></tr><tr><td class="cty">No. 12, Keqiang Rd, Lanxing Village, Shili</td>
+<td class="iso">TW</td>
+<td class="num">90</td><td class="num dim">8</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">116m</td></tr><tr><td class="cty">Primeclass Business Lounge Muzeju iela 3, </td>
+<td class="iso">LV</td>
+<td class="num">85</td><td class="num dim">2</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">70m</td></tr><tr><td class="cty">2643 N Hermitage Ave Chicago, IL, United S</td>
+<td class="iso">US</td>
+<td class="num">82</td><td class="num dim">25</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">128m</td></tr><tr><td class="cty">Park Hyatt Jakarta</td>
+<td class="iso">ID</td>
+<td class="num">80</td><td class="num dim">1</td>
+<td><span class="chip ok">work</span></td>
+<td class="num dim">85m</td></tr><tr><td class="cty">Four Seasons Hotel Jakarta Jalan Jenderal </td>
+<td class="iso">ID</td>
+<td class="num">67</td><td class="num dim">2</td>
+<td><span class="dim">—</span></td>
+<td class="num dim">224m</td></tr></tbody></table></div>
+
+    <h2 style="margin-top:30px">By city — 116 resolved</h2>
+    <div class="card scroll">
+    <table><thead><tr><th>City</th><th>Region</th><th>ISO</th>
+    <th class="num">Frames</th><th class="num">Days</th><th class="num">Spots</th>
+    <th>Range</th></tr></thead><tbody><tr><td class="cty">Petersburg</td>
+<td class="dim">Virginia</td><td class="iso">US</td>
+<td class="num">1,418</td><td class="num dim">288</td>
+<td class="num dim">3</td>
+<td class="mono dim">1994-03-11 → 2026-06-21</td></tr><tr><td class="cty">Durham</td>
+<td class="dim">North Carolina</td><td class="iso">US</td>
+<td class="num">721</td><td class="num dim">179</td>
+<td class="num dim">2</td>
+<td class="mono dim">2013-06-04 → 2019-02-24</td></tr><tr><td class="cty">Tallinn</td>
+<td class="dim">Harju</td><td class="iso">EE</td>
+<td class="num">681</td><td class="num dim">5</td>
+<td class="num dim">3</td>
+<td class="mono dim">2026-08-19 → 2026-08-21</td></tr><tr><td class="cty">Portimão</td>
+<td class="dim">Faro</td><td class="iso">PT</td>
+<td class="num">671</td><td class="num dim">154</td>
+<td class="num dim">15</td>
+<td class="mono dim">2020-09-12 → 2021-03-20</td></tr><tr><td class="cty">Dallas</td>
+<td class="dim">Texas</td><td class="iso">US</td>
+<td class="num">668</td><td class="num dim">284</td>
+<td class="num dim">16</td>
+<td class="mono dim">1994-08-15 → 2023-01-24</td></tr><tr><td class="cty">Tokyo</td>
+<td class="dim">Tokyo</td><td class="iso">JP</td>
+<td class="num">661</td><td class="num dim">14</td>
+<td class="num dim">9</td>
+<td class="mono dim">2026-08-06 → 2026-08-10</td></tr><tr><td class="cty">Mysuru</td>
+<td class="dim">Karnataka</td><td class="iso">IN</td>
+<td class="num">593</td><td class="num dim">98</td>
+<td class="num dim">6</td>
+<td class="mono dim">2019-11-23 → 2020-02-17</td></tr><tr><td class="cty">Valletta</td>
+<td class="dim"></td><td class="iso">MT</td>
+<td class="num">584</td><td class="num dim">7</td>
+<td class="num dim">4</td>
+<td class="mono dim">2026-08-22 → 2026-08-24</td></tr><tr><td class="cty">Riga</td>
+<td class="dim">Riga</td><td class="iso">LV</td>
+<td class="num">543</td><td class="num dim">4</td>
+<td class="num dim">2</td>
+<td class="mono dim">2026-08-17 → 2026-08-18</td></tr><tr><td class="cty">Denpasar</td>
+<td class="dim">Bali</td><td class="iso">ID</td>
+<td class="num">512</td><td class="num dim">11</td>
+<td class="num dim">4</td>
+<td class="mono dim">2022-08-31 → 2026-07-27</td></tr><tr><td class="cty">Kuta</td>
+<td class="dim">Bali</td><td class="iso">ID</td>
+<td class="num">460</td><td class="num dim">122</td>
+<td class="num dim">10</td>
+<td class="mono dim">2020-03-19 → 2026-07-28</td></tr><tr><td class="cty">Puntarenas</td>
+<td class="dim">Puntarenas</td><td class="iso">CR</td>
+<td class="num">444</td><td class="num dim">197</td>
+<td class="num dim">6</td>
+<td class="mono dim">2021-05-31 → 2023-01-15</td></tr><tr><td class="cty">København</td>
+<td class="dim">Hovedstaden</td><td class="iso">DK</td>
+<td class="num">414</td><td class="num dim">13</td>
+<td class="num dim">5</td>
+<td class="mono dim">2025-03-20 → 2026-08-17</td></tr><tr><td class="cty">Vienna</td>
+<td class="dim">Wien</td><td class="iso">AT</td>
+<td class="num">388</td><td class="num dim">10</td>
+<td class="num dim">5</td>
+<td class="mono dim">2017-08-16 → 2026-08-14</td></tr><tr><td class="cty">Jakarta</td>
+<td class="dim">Jakarta Raya</td><td class="iso">ID</td>
+<td class="num">350</td><td class="num dim">12</td>
+<td class="num dim">7</td>
+<td class="mono dim">2026-06-25 → 2026-06-29</td></tr><tr><td class="cty">Tirana</td>
+<td class="dim">Durrës</td><td class="iso">AL</td>
+<td class="num">311</td><td class="num dim">3</td>
+<td class="num dim">2</td>
+<td class="mono dim">2026-08-21 → 2026-08-22</td></tr><tr><td class="cty">Budapest</td>
+<td class="dim">Budapest</td><td class="iso">HU</td>
+<td class="num">294</td><td class="num dim">21</td>
+<td class="num dim">2</td>
+<td class="mono dim">2017-07-27 → 2017-08-16</td></tr><tr><td class="cty">Fukuoka</td>
+<td class="dim">Fukuoka</td><td class="iso">JP</td>
+<td class="num">283</td><td class="num dim">17</td>
+<td class="num dim">3</td>
+<td class="mono dim">2026-03-24 → 2026-08-05</td></tr><tr><td class="cty">Puerto Vallarta</td>
+<td class="dim">Jalisco</td><td class="iso">MX</td>
+<td class="num">267</td><td class="num dim">36</td>
+<td class="num dim">2</td>
+<td class="mono dim">2018-08-02 → 2018-09-06</td></tr><tr><td class="cty">Vilnius</td>
+<td class="dim">Vilniaus</td><td class="iso">LT</td>
+<td class="num">241</td><td class="num dim">4</td>
+<td class="num dim">3</td>
+<td class="mono dim">2026-08-18 → 2026-08-19</td></tr></tbody></table>
+    <p class="mono dim" style="margin-top:12px;line-height:1.5">Every cluster also
+    resolves to its nearest populated place (Natural Earth, 7,342 cities), so the
+    ontology reads by city, not only by country. "Spots" = distinct places inside it.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Coverage by year</h2>
+    <div class="card"><div class="cv"><span class="mono yr">2014</span>
+<div class="cv-bar"><i style="width:93%"></i></div>
+<span class="mono cv-n">93%</span><span class="mono cv-c">3 cc</span></div><div class="cv"><span class="mono yr">2015</span>
+<div class="cv-bar"><i style="width:99%"></i></div>
+<span class="mono cv-n">99%</span><span class="mono cv-c">2 cc</span></div><div class="cv"><span class="mono yr">2016</span>
+<div class="cv-bar"><i style="width:96%"></i></div>
+<span class="mono cv-n">96%</span><span class="mono cv-c">4 cc</span></div><div class="cv"><span class="mono yr">2017</span>
+<div class="cv-bar"><i style="width:89%"></i></div>
+<span class="mono cv-n">89%</span><span class="mono cv-c">16 cc</span></div><div class="cv"><span class="mono yr">2018</span>
+<div class="cv-bar"><i style="width:100%"></i></div>
+<span class="mono cv-n">100%</span><span class="mono cv-c">6 cc</span></div><div class="cv"><span class="mono yr">2019</span>
+<div class="cv-bar"><i style="width:99%"></i></div>
+<span class="mono cv-n">99%</span><span class="mono cv-c">5 cc</span></div><div class="cv"><span class="mono yr">2020</span>
+<div class="cv-bar"><i style="width:100%"></i></div>
+<span class="mono cv-n">100%</span><span class="mono cv-c">8 cc</span></div><div class="cv"><span class="mono yr">2021</span>
+<div class="cv-bar"><i style="width:98%"></i></div>
+<span class="mono cv-n">98%</span><span class="mono cv-c">7 cc</span></div><div class="cv"><span class="mono yr">2022</span>
+<div class="cv-bar"><i style="width:100%"></i></div>
+<span class="mono cv-n">100%</span><span class="mono cv-c">8 cc</span></div><div class="cv"><span class="mono yr">2023</span>
+<div class="cv-bar"><i style="width:87%"></i></div>
+<span class="mono cv-n">87%</span><span class="mono cv-c">14 cc</span></div><div class="cv"><span class="mono yr">2024</span>
+<div class="cv-bar"><i style="width:85%"></i></div>
+<span class="mono cv-n">85%</span><span class="mono cv-c">6 cc</span></div><div class="cv"><span class="mono yr">2025</span>
+<div class="cv-bar"><i style="width:98%"></i></div>
+<span class="mono cv-n">98%</span><span class="mono cv-c">18 cc</span></div><div class="cv"><span class="mono yr">2026</span>
+<div class="cv-bar"><i style="width:100%"></i></div>
+<span class="mono cv-n">100%</span><span class="mono cv-c">19 cc</span></div>
+    <p class="mono dim" style="margin-top:14px;line-height:1.5">Share of days in the year
+    with a resolved country, and how many distinct countries that year touched.</p></div>
+  </section>
+
+  <footer>
+    <span>bpo · TODO-417 · country_ontology</span>
+    <span>ontology.db · 53,334 frames · 19,378 events · 61/202 countries</span>
+  </footer>
+</div>
+</body>
+</html>

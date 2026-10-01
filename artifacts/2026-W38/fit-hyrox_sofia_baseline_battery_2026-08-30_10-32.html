@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>hyrox · sofia baseline battery</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+<style>
+  body{background:var(--bg);color:var(--body);font-family:var(--font-ui)}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 100px}
+
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--forest);font-weight:600}
+  h1{font-size:clamp(30px,7vw,40px);line-height:1.05;letter-spacing:-.025em;
+    color:var(--ink);font-weight:800;margin:9px 0 12px;text-wrap:balance}
+  .lede{font-size:16px;line-height:1.55;color:var(--muted)}
+  p{line-height:1.6;margin:0 0 12px}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  code{font-family:var(--font-mono);font-size:.88em;background:var(--well);
+    padding:1px 5px;border-radius:5px;color:var(--ink)}
+
+  /* the fork */
+  .fork{display:grid;gap:10px;grid-template-columns:1fr;margin:22px 0 8px}
+  @media(min-width:640px){.fork{grid-template-columns:1fr auto 1fr;align-items:stretch}}
+  .fk{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);
+    padding:16px 18px}
+  .fk .t{font-family:var(--font-mono);font-size:34px;font-weight:700;color:var(--ink);
+    font-variant-numeric:tabular-nums;line-height:1}
+  .fk .s{font-size:12px;color:var(--faint);font-family:var(--font-mono);
+    letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px}
+  .fk .w{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.45}
+  .vs{display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);
+    font-size:12px;color:var(--warn);font-weight:700;letter-spacing:.1em;padding:4px 0}
+
+  .keyline{background:var(--g-lime);border:1px solid #b9dcd6;border-left:3px solid var(--forest);
+    border-radius:var(--r-tile);padding:16px 18px;margin:18px 0}
+  .keyline .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--forest-d);font-weight:700;margin-bottom:6px}
+  .keyline p{margin:0;color:#1d4a44}
+
+  .flag{background:var(--amber-bg);border:1px solid var(--amber-bd);border-left:3px solid var(--amber);
+    border-radius:var(--r-tile);padding:16px 18px;margin:18px 0}
+  .flag .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:6px}
+  .flag p{margin:0;color:#6b5410}
+
+  h2{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;margin:44px 0 14px;padding-top:22px;border-top:1px solid var(--line)}
+
+  .test{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+    padding:20px 20px 18px;margin-bottom:16px}
+  .test.primary{border-color:#9ccfc7;box-shadow:0 0 0 3px var(--g-lime)}
+  .th{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:3px}
+  .tag{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--forest);
+    letter-spacing:.06em}
+  .test h3{font-size:19px;color:var(--ink);font-weight:700;margin:0;letter-spacing:-.01em}
+  .meta{font-family:var(--font-mono);font-size:11px;color:var(--faint);
+    letter-spacing:.06em;text-transform:uppercase;margin-bottom:13px}
+
+  pre{background:#151917;color:#e8e5df;border-radius:var(--r-tile);padding:14px 16px;
+    font-family:var(--font-mono);font-size:13px;line-height:1.62;overflow-x:auto;margin:0 0 13px}
+  pre .c{color:#7f8b86}
+
+  .ro{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);font-weight:700;margin:14px 0 7px}
+
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:340px}
+  th{text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;padding:0 10px 7px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);vertical-align:baseline}
+  td.r,th.r{text-align:right}
+  tbody tr:last-child td{border-bottom:none}
+  .band{font-family:var(--font-mono);font-weight:700;color:var(--ink);white-space:nowrap}
+  .good{color:var(--forest);font-weight:700}
+  .mid{color:var(--amber);font-weight:700}
+  .bad{color:var(--warn);font-weight:700}
+
+  ol.days{list-style:none;padding:0;margin:0}
+  ol.days li{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);
+    align-items:baseline}
+  ol.days li:last-child{border-bottom:none}
+  .d{font-family:var(--font-mono);font-size:11px;color:var(--forest);font-weight:700;
+    letter-spacing:.08em;min-width:52px}
+  .sess{font-weight:600;color:var(--ink);min-width:88px}
+  .rz{color:var(--muted);font-size:13.5px}
+
+  .foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:11px;color:var(--faint);line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">fit · hyrox · sofia</div>
+  <h1>Five tests that answer one question</h1>
+  <p class="lede">Everything about Tenerife is already known except a single number.
+  These are bite-size enough to run this week, and each one collapses part of the
+  guess into a measurement.</p>
+
+  <h2>The fork</h2>
+  <div class="fork">
+    <div class="fk">
+      <div class="s">your sheet · TFS-1o-67</div>
+      <div class="t">67:59</div>
+      <div class="w">Needs mid-race kilometres at <span class="mono">3:32</span>.
+      Your tested vVO₂max is <span class="mono">3:45</span>.</div>
+    </div>
+    <div class="vs">10:14 APART</div>
+    <div class="fk">
+      <div class="s">bpo engine · 30 Aug</div>
+      <div class="t">1:18:13</div>
+      <div class="w">Assumes mid-race kilometres at
+      <span class="mono">4:15–4:59</span>, triangulated three ways.</div>
+    </div>
+  </div>
+
+  <div class="keyline">
+    <div class="k">everything else agrees</div>
+    <p>Chunk shares match within 0.5&nbsp;pp. Stations differ by about a minute.
+    The whole ten-minute spread is <strong>your repeatable compromised-kilometre
+    pace right now</strong> — a 25-minute test, not a season.</p>
+  </div>
+
+  <div class="flag">
+    <div class="k">what the 67:59 actually is</div>
+    <p>Bangkok's card with the run rows edited down — total gain over Bangkok is
+    <strong>44 seconds</strong>. Every roxzone value is Bangkok's verbatim, so it
+    imports Bangkok's corridor geometry into a venue that has its own. It isn't
+    wrong. It's untested. T1 tests it.</p>
+  </div>
+
+  <h2>Framing</h2>
+  <p><strong>Tenerife is not a PB race.</strong> It's experimental — Mexico City is
+  the PB race, doubles isn't optimised for. So a good Tenerife is a clean read on
+  every chunk, not a number. Cap the HR, hold the plan, come home with data.</p>
+
+  <div class="flag">
+    <div class="k">worth checking before Oct</div>
+    <p>The calendar has Mexico City <span class="mono">Oct 30</span> as
+    <strong>Singles&nbsp;Pro</strong>. A Pro PB isn't comparable to an Open PB —
+    different loads, different sport. Your open PB is
+    <span class="mono">1:08:43</span> at Bangkok. If the plan is to beat that
+    number, MEX has to be Open.</p>
+  </div>
+
+  <h2>The battery</h2>
+  <p>All doable in the Sofia gym. Each is 15–25 minutes of work, done fresh.
+  <strong>Run every transition</strong> — walking one corrupts the roxzone read.</p>
+
+  <div class="test primary">
+    <div class="th"><span class="tag">T1</span><h3>Compromised km</h3></div>
+    <div class="meta">~25 min · resolves the fork · do this first</div>
+<pre>4 × [ 1 km run  +  1 station ]
+
+    stations   ski 1000m, row 1000m,
+               ski 1000m, row 1000m
+    <span class="c">no rest run → station</span>
+    <span class="c">no rest between rounds</span>
+    <span class="c">cap HR at 159 on the runs</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">159 is your lab LTP. Above it the
+    lactate slope is steep and it stops being a race simulation.</p>
+
+    <div class="ro">readout — mean pace of runs 2–4</div>
+    <p style="font-size:13px;color:var(--faint);margin-bottom:10px">Run 1 is always
+    fast and always lies.</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Mean 2–4</th><th>Which world</th><th class="r">TFS</th></tr></thead>
+      <tbody>
+        <tr><td class="band good">≤ 3:45</td><td>Bangkok form or better</td><td class="r mono">68–71</td></tr>
+        <tr><td class="band good">3:46–4:05</td><td>slightly off March peak</td><td class="r mono">71–74</td></tr>
+        <tr><td class="band mid">4:06–4:25</td><td>detrained, still strong</td><td class="r mono">74–78</td></tr>
+        <tr><td class="band bad">≥ 4:26</td><td>engine needs weeks</td><td class="r mono">78+</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13.5px;color:var(--muted);margin-top:13px">Log HR at the end
+    of each run too. Stable HR at a falling pace is a different problem from climbing
+    HR at a fixed pace.</p>
+  </div>
+
+  <div class="test">
+    <div class="th"><span class="tag">T2</span><h3>Opener</h3></div>
+    <div class="meta">chunk A · ~15 min · the one you already liked</div>
+<pre>1 km run @ goal pace
+  → straight into 1000m SkiErg</pre>
+    <div class="ro">readout — ski split + HR at the line</div>
+    <p>Bangkok's ski was <span class="mono">4:20</span> off a 5:59 opener. Sofia on
+    28 Aug ran <span class="mono">2045 m at 2:12/500m</span> — twice race distance at
+    race pace — so the ski isn't the problem. This checks it holds with a kilometre
+    in front of it.</p>
+  </div>
+
+  <div class="test">
+    <div class="th"><span class="tag">T3</span><h3>Sled repeat</h3></div>
+    <div class="meta">chunk B · ~20 min · 23% of the race</div>
+<pre>4 × [ 50m sled push + 50m sled pull ]
+
+    <span class="c">90 s easy jog between rounds</span>
+    <span class="c">race loads, open division</span></pre>
+    <div class="ro">readout — round 4 ÷ round 1</div>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Decay</th><th>Read</th></tr></thead>
+      <tbody>
+        <tr><td class="band good">&lt; 1.10</td><td>strength is not the limiter</td></tr>
+        <tr><td class="band mid">1.10–1.25</td><td>normal — plan for it</td></tr>
+        <tr><td class="band bad">&gt; 1.25</td><td>chunk B costs you minutes</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-top:12px">Squat went 90→100 kg × 6, deadlift 125→130 × 5.
+    Strength went up. This asks whether <em>repeatability</em> did.</p>
+  </div>
+
+  <div class="test">
+    <div class="th"><span class="tag">T4</span><h3>Grind</h3></div>
+    <div class="meta">chunk C · ~20 min · most invariant chunk, 25.4%</div>
+<pre>80m burpee broad jump
+  → 1 km run
+  → 1000m row
+  <span class="c">continuous, no stops</span></pre>
+    <div class="ro">readout — HR at three points</div>
+    <p>End of BBJ, end of run, end of row. The drift matters more than the time.
+    This is where the Close gets bought — if HR is pinned here, T5 is decided before
+    you start it.</p>
+  </div>
+
+  <div class="test">
+    <div class="th"><span class="tag">T5</span><h3>The Close</h3></div>
+    <div class="meta">chunk E · ~18 min · your chunk</div>
+<pre>100m sandbag lunge
+  → 1 km run
+  → 100 wall balls</pre>
+    <div class="ro">readout — the break pattern, not the time</div>
+    <p>Wall balls are bimodal: unbroken ≈ <span class="mono">4:05–4:45</span>, broken
+    ≈ <span class="mono">5:00–5:45</span>. The gap is bigger than your whole farmers
+    carry. Record where the first break lands and how many you got before it.</p>
+    <p>Bangkok: 100 unbroken in <span class="mono">4:08</span> off a run 8 at
+    156.7 bpm. Yokohama: <span class="mono">11:38</span>. Same athlete, fourteen
+    months apart — the widest range of anything you do.</p>
+  </div>
+
+  <div class="test">
+    <div class="th"><span class="tag">T0</span><h3>Six-minute max</h3></div>
+    <div class="meta">not a chunk · the ceiling · costs a day</div>
+<pre>6 min all-out, treadmill @ 1% grade</pre>
+    <div class="ro">readout — distance → vVO₂max · peak HR → is 166 still true</div>
+    <p>The Oct 2025 lab is ten months old and was probably a fitness <em>low</em>.
+    Every band on this page is anchored to it. One six-minute effort re-anchors the
+    whole model. Do it last.</p>
+  </div>
+
+  <h2>Order</h2>
+  <ol class="days">
+    <li><span class="d">DAY 1</span><span class="sess">T1</span>
+      <span class="rz">resolves 90% of the uncertainty</span></li>
+    <li><span class="d">DAY 2</span><span class="sess">T2 + T3</span>
+      <span class="rz">opener is light, sleds want fresh legs</span></li>
+    <li><span class="d">DAY 3</span><span class="sess">easy / off</span>
+      <span class="rz">T4 and T5 need real legs</span></li>
+    <li><span class="d">DAY 4</span><span class="sess">T4 + T5</span>
+      <span class="rz">the two that decide the back half</span></li>
+    <li><span class="d">DAY 5</span><span class="sess">T0</span>
+      <span class="rz">re-anchor the ceiling</span></li>
+  </ol>
+  <p style="margin-top:16px">One day only: <strong>T1</strong>. Two:
+  <strong>T1 and T5</strong>.</p>
+
+  <h2>What each test replaces</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Test</th><th>Assumption it retires in <code>engine/model.py</code></th></tr></thead>
+    <tbody>
+      <tr><td class="band">T1</td><td><code>RUN_PACE</code> — the 255/278/299 band, the widest guess in the model</td></tr>
+      <tr><td class="band">T3</td><td><code>LIMITER_MULT[STRENGTH]</code></td></tr>
+      <tr><td class="band">T4</td><td><code>LIMITER_MULT[AEROBIC]</code></td></tr>
+      <tr><td class="band">T5</td><td><code>WALL_BALL_MODES</code> — which mode you're in</td></tr>
+      <tr><td class="band">T0</td><td>the ceiling that bounds all of them</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="foot">
+    projects/hyrox/BASELINE-TESTS.md · CHUNKS.md · ONTOLOGY.md<br>
+    bands anchored to the Oct 2025 lactate test — HRmax 166 · LT2 151–159 · vVO₂max 3:45/km<br>
+    race evidence: 10 observed races, results.hyrox.com, pulled 2026-08-30
+  </div>
+
+</div>
+</body>
+</html>

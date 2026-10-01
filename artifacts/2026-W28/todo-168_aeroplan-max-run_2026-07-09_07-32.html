@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-168 · aeroplan · Max-Country Run · Aug 17 – Sep 4</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media(max-width:1080px){ .grid2,.grid3{grid-template-columns:1fr} }
+
+  /* rule tiles */
+  .rule { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+    padding: 18px 20px; box-shadow: var(--shadow-card); }
+  .rule.hot { border-color: var(--warn-bd); background: linear-gradient(180deg,var(--warn-bg),var(--card) 70%); }
+  .rule.key { border-color: #bcd9bf; background: linear-gradient(180deg,var(--g-lime),var(--card) 70%); }
+  .rule-k { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--forest-d); margin-bottom: 7px; }
+  .rule.hot .rule-k { color: var(--warn); }
+  .rule h4 { font-size: 15px; line-height: 1.25; margin: 0 0 8px; color: var(--ink); font-weight: 720; }
+  .rule p { font-size: 13px; line-height: 1.55; color: var(--body); margin: 0; }
+  .rule p b { color: var(--ink); }
+
+  /* route board */
+  .rb { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .rb th { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--muted); text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid var(--line); font-weight: 500; }
+  .rb th.r, .rb td.r { text-align: right; font-variant-numeric: tabular-nums; }
+  .rb td { padding: 11px 12px; border-bottom: 1px solid #eef0ea; color: var(--body); vertical-align: middle; }
+  .rb tr:last-child td { border-bottom: 0; }
+  .rb .leg { font-family: var(--font-mono); color: var(--forest); font-weight: 500; white-space: nowrap; }
+  .rb .car { font-size: 12px; color: var(--muted); }
+  .rb tr.city td { background: var(--g-lime); }
+  .rb tr.city td .c-new { font-weight: 760; color: var(--forest-d); }
+  .newpill { display:inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: var(--r-pill); background: var(--g-lime); color: var(--forest-d); }
+  .newpill.no { background: var(--well); color: var(--faint); }
+  .via { font-family: var(--font-mono); font-size: 10px; color: var(--found-d);
+    background: var(--found-bg); border: 1px solid var(--found-bd); padding: 2px 7px; border-radius: 6px;
+    white-space: nowrap; }
+  .via.cash { color: var(--warn); background: var(--warn-bg); border-color: var(--warn-bd); }
+  .via.land { color: #6b5a2e; background: #f6f0dd; border-color: #e4d7a8; }
+  .rb-wrap { overflow-x: auto; }
+
+  /* ledger chips */
+  .clist { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+  .cchip { font-size: 12px; font-weight: 640; padding: 5px 11px; border-radius: var(--r-pill);
+    background: #f3f3ec; border: 1px solid var(--line); color: var(--muted); }
+  .cchip.hit { background: var(--g-lime); border-color: #bcd9bf; color: var(--forest-d); }
+  .cchip.hit b { color: var(--forest); }
+  .cchip.str { background: var(--found-bg); border-color: var(--found-bd); color: var(--found-d); }
+
+  .lk { color: var(--forest); text-decoration: none; font-weight: 640; border-bottom: 1px solid #bcd9bf; }
+  .lk:hover { color: var(--forest-d); }
+  .linkrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media(max-width:1080px){ .linkrow{grid-template-columns:1fr} }
+  .lcard { display: flex; flex-direction: column; gap: 3px; padding: 14px 16px; text-decoration: none;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--r-tile);
+    box-shadow: var(--shadow-card); transition: transform .25s var(--spring), border-color .25s; }
+  .lcard:hover { transform: translateY(-2px); border-color: #bcd9bf; }
+  .lcard .lc-t { font-size: 13.5px; font-weight: 720; color: var(--forest); }
+  .lcard .lc-d { font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+
+  .strip { display: grid; grid-template-columns: 150px 1fr; gap: 14px; padding: 11px 0;
+    border-bottom: 1px solid #eef0ea; font-size: 13px; }
+  .strip:last-child { border-bottom: 0; }
+  .strip .s-city { font-weight: 700; color: var(--ink); }
+  .strip .s-city small { display: block; font-family: var(--font-mono); font-size: 10px;
+    font-weight: 400; color: var(--muted); margin-top: 2px; letter-spacing: .02em; }
+  .strip .s-body { color: var(--body); line-height: 1.5; }
+  .strip .s-body b { color: var(--ink); }
+  .breathe { border-left: 3px solid var(--lime); padding-left: 14px; color: var(--body);
+    font-size: 15px; line-height: 1.55; }
+  .stopover { color: var(--amber); font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: .05em; }
+
+  /* tier legend */
+  .tiers { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 16px 0 6px; }
+  @media(max-width:1080px){ .tiers{grid-template-columns:1fr} }
+  .tier { border: 1px solid var(--line); border-radius: var(--r-tile); padding: 14px 16px; background: var(--card); }
+  .tier .t-k { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+  .tier.pts { border-color: #bcd9bf; } .tier.pts .t-k { color: var(--forest); }
+  .tier.land { border-color: #e4d7a8; } .tier.land .t-k { color: #8a7524; }
+  .tier.cash { border-color: var(--warn-bd); } .tier.cash .t-k { color: var(--warn); }
+  .tier h4 { font-size: 14px; margin: 0 0 6px; color: var(--ink); }
+  .tier p { font-size: 12.5px; line-height: 1.5; color: var(--body); margin: 0; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand">bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx">TODO-168 · aeroplan · v2</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-09 · window Aug 17 – Sep 4</span>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>every country in the world · maximize the window</div>
+      <h1>The <span class="em">max-country</span> run.<br>Aug 17 – Sep 4.</h1>
+      <p class="hero-sub">v2 of TODO-143, rebuilt around the fact you caught: <b>airBaltic is now an
+      Aeroplan redemption partner</b> — your own app screenshots book RIX→VNO and VNO→TLL nonstop at
+      <b>7.5k pts</b> each. That kills 143's cash-and-hub-bounce workaround and, combined with the
+      Balkans being a dense <b>overland</b> cluster, roughly doubles the reachable count. Mandate this
+      time: <b>maximum new countries</b>, points where they win, cash where they don't, no work-week.
+      Target: <b>up to 16 new countries</b> in 18 days.</p>
+      <div class="hero-chips">
+        <span class="hchip v">16 new countries in play</span>
+        <span class="hchip v">airBaltic = partner now</span>
+        <span class="hchip v">≤12 segments / 6 directions</span>
+        <span class="hchip q">&lt;24h layover = free</span>
+      </div>
+    </div>
+    <div class="bignum">
+      <div class="n">81<span class="u">/195</span></div>
+      <div class="cap">countries visited so far. <b>114 to go</b> — this run clears up to <b>16</b> of
+      them, all in the <b>Europe &amp; Balkans</b> bucket (21 left there).</div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">&lt;24h</div><div class="kpi-l">a connection this short is a free layover, still one award — walk the city</div></div>
+    <div class="kpi"><div class="kpi-n">5,000<span class="u">pt</span></div><div class="kpi-l">per stopover (≥24h) · max 1 per direction of travel</div></div>
+    <div class="kpi"><div class="kpi-n">12</div><div class="kpi-l">max flight segments per reservation · up to 6 directions</div></div>
+    <div class="kpi"><div class="kpi-n">✦</div><div class="kpi-l">airBaltic is an Aeroplan partner &amp; combinable with Star Alliance on one award</div></div>
+  </div>
+
+  <p class="breathe" style="margin-top:22px">The one thing 143 got wrong, and it changes everything:
+  Aeroplan can now book <b>airBaltic</b> on points (redeem-only partnership, standard partner
+  distance chart), and — the real unlock — <b>airBaltic segments combine with Star Alliance and
+  other partners on a single award</b>. So the Baltics go on <b>points</b>, not cash. The corollary:
+  the Balkans are so tightly packed by <b>bus</b> that flying them on points is the expensive way to
+  see fewer countries. Max countries = points for the long jumps, buses for the dense middle.</p>
+
+  <div class="sec-head"><span class="sec-kick">the mechanic — corrected for v2</span><span class="sec-n">01</span></div>
+  <div class="grid3">
+    <div class="rule key">
+      <div class="rule-k">correction · carriers</div>
+      <h4>airBaltic IS a partner now</h4>
+      <p>The 2025 partnership added airBaltic as an Aeroplan <b>redemption</b> partner. Your
+      screenshots prove it: <b>RIX→VNO, VNO→TLL nonstop = 7.5k</b>, TLL→SPU = 15k. No more hub
+      backtracking for the Baltics — book them direct on points.</p>
+    </div>
+    <div class="rule key">
+      <div class="rule-k">the real unlock</div>
+      <h4>Combinable on one award</h4>
+      <p>airBaltic <b>combines with Star Alliance + other partners</b> on a single ticket. That's what
+      lets you chain airBaltic Baltic hops into a partner award and price the whole
+      <b>direction</b> off summed distance — not add fares up per hop like Flying Blue would.</p>
+    </div>
+    <div class="rule key">
+      <div class="rule-k">the container</div>
+      <h4>12 segments · 6 directions</h4>
+      <p>One reservation holds up to <b>6 directions of travel</b>, ≤6 segments each, <b>12 segments
+      total</b>, and <b>one stopover per direction</b> (+5k, ≥24h). A &lt;24h connection is free and
+      stays on the same direction — that's how a direction grazes several capitals.</p>
+    </div>
+    <div class="rule">
+      <div class="rule-k">how it's priced</div>
+      <h4>One direction, summed distance</h4>
+      <p>Each direction = one partner award priced on the <b>Within Europe</b> band by the
+      <b>sum of its segments</b> (empirically ≤~800mi ≈ 7.5k · 1,001–2,000mi ≈ 12.5k · longer ≈ 15k).
+      Chart shifted <b>Jun 1 2026</b> — every figure here is <b>≈ verify live</b>.</p>
+    </div>
+    <div class="rule hot">
+      <div class="rule-k">the sharp move</div>
+      <h4>Don't fly the Balkan spine</h4>
+      <p>Zagreb→Ljubljana→Belgrade→Sarajevo→Podgorica→Tirana→Skopje→Sofia→Bucharest are all <b>2–7h
+      FlixBus</b> hops (~€10–25 each). Flying them means hub-bouncing via VIE/IST for triple the
+      points and half the countries. <b>Take the buses</b> — 9 countries overland.</p>
+    </div>
+    <div class="rule">
+      <div class="rule-k">booking reality</div>
+      <h4>The engine won't build it — you will</h4>
+      <p>aeroplan.com won't auto-assemble a long self-transfer chain. Build it <b>multi-city</b>; if it
+      balks, call the desk (<b>1-833-247-6668</b>) and dictate segments. HUCA if the first agent won't.
+      Stamp every hold in <b>UTC</b>. +CA$39 partner fee/award + taxes.</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="sec-kick">the ledger — 16 targets this window</span><span class="sec-n">02</span></div>
+  <div class="card">
+    <p class="note" style="margin-top:0"><b>Europe &amp; Balkans: 21 unvisited.</b> This window is a
+    Baltic + Balkan + islands sweep — the densest cluster of unvisited countries you have left, and
+    the only region where one 18-day run can clear this many. Every hub you touch —
+    <b>Germany, Austria, Poland, Turkey</b> — is already visited, so it's pure transit.</p>
+    <div class="clist" style="margin-top:14px">
+      <span class="cchip hit"><b>🇱🇻 Latvia</b> · RIX</span>
+      <span class="cchip hit"><b>🇱🇹 Lithuania</b> · VNO</span>
+      <span class="cchip hit"><b>🇪🇪 Estonia</b> · TLL</span>
+      <span class="cchip hit"><b>🇭🇷 Croatia</b> · ZAG/SPU</span>
+      <span class="cchip hit"><b>🇸🇮 Slovenia</b> · LJU</span>
+      <span class="cchip hit"><b>🇷🇸 Serbia</b> · BEG</span>
+      <span class="cchip hit"><b>🇧🇦 Bosnia</b> · SJJ</span>
+      <span class="cchip hit"><b>🇲🇪 Montenegro</b> · TGD</span>
+      <span class="cchip hit"><b>🇦🇱 Albania</b> · TIA</span>
+      <span class="cchip hit"><b>🇲🇰 N.Macedonia</b> · SKP</span>
+      <span class="cchip hit"><b>🇧🇬 Bulgaria</b> · SOF</span>
+      <span class="cchip hit"><b>🇷🇴 Romania</b> · OTP</span>
+      <span class="cchip hit"><b>🇲🇩 Moldova</b> · KIV</span>
+      <span class="cchip hit"><b>🇲🇹 Malta</b> · MLA</span>
+      <span class="cchip hit"><b>🇨🇾 Cyprus</b> · LCA/ECN</span>
+      <span class="cchip hit"><b>🇸🇰 Slovakia</b> · BTS bus</span>
+    </div>
+    <p class="note"><b>16 core.</b> Note: <b>N. Cyprus (ECN)</b> and the south (LCA) both count as
+    <b>Cyprus</b> — one country on your list, two routings. <b>Kosovo</b> isn't on your not-visited
+    list, so it's not counted (it's a free overland add if you want it). Estonia was missing from the
+    list you pasted but you're clearly routing to TLL — kept in.</p>
+    <div class="clist" style="margin-top:12px">
+      <span class="cchip str">stretch · 🇬🇪 Georgia · TBS</span>
+      <span class="cchip str">stretch · 🇦🇲 Armenia · EVN</span>
+      <span class="cchip str">stretch · 🇦🇿 Azerbaijan · GYD</span>
+      <span class="cchip str">stretch · 🇸🇲 San Marino · via Rimini</span>
+      <span class="cchip str">stretch · 🇱🇮 Liechtenstein · via ZRH</span>
+      <span class="cchip str">stretch · 🇻🇦 Vatican · via Rome</span>
+    </div>
+    <p class="note"><b>Stretch (+6).</b> Caucasus is reachable via <b>IST on Turkish</b> (airBaltic
+    combinable) but sits in the 2,000mi+ band (~25k pts) and pulls you far east — a separate mini-loop.
+    The micro-states are an Alps/Italy detour off the main cluster. Add them only if you extend the window.</p>
+  </div>
+
+  <div class="sec-head"><span class="sec-kick">the strategy — three tiers</span><span class="sec-n">03</span></div>
+  <p class="lede" style="margin-bottom:2px">Maximizing countries isn't "book everything on points." It's
+  matching each leg to its cheapest tool. Three tiers:</p>
+  <div class="tiers">
+    <div class="tier pts">
+      <div class="t-k">tier 1 · points</div>
+      <h4>The long jumps</h4>
+      <p>Transatlantic in/out, the Baltic sweep (airBaltic 7.5k hops), the Baltic→Balkan jump, and the
+      island annex (Malta / Cyprus). Where distance is real, points win.</p>
+    </div>
+    <div class="tier land">
+      <div class="t-k">tier 2 · overland</div>
+      <h4>The Balkan spine</h4>
+      <p>9 countries by FlixBus/train, ~€10–25 a hop, one night each. The densest new-country-per-euro
+      stretch on earth — never fly it.</p>
+    </div>
+    <div class="tier cash">
+      <div class="t-k">tier 3 · cash flights</div>
+      <h4>The awkward gaps</h4>
+      <p>Moldova (KIV) and the islands when points space is dry — Wizz/Ryanair via <b>Kiwi/Skyscanner</b>,
+      often €20–60. Cheaper than forcing a hub-bounce award.</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="sec-kick">the route board — 18 days, top to bottom</span><span class="sec-n">04</span></div>
+  <p class="lede" style="margin-bottom:18px"><span class="via">POINTS</span> = Aeroplan award ·
+  <span class="via land">BUS</span> = FlixBus/train overland ·
+  <span class="via cash">CASH</span> = paid flight (Kiwi/Skyscanner). <span class="newpill">NEW</span>
+  = country you haven't been to. Distances/points ≈ — <b>confirm live before you hold</b>.</p>
+
+  <div class="rails">
+    <!-- LEG A: BALTICS ON POINTS -->
+    <div class="rail-card rec">
+      <div class="rc-h">
+        <span class="rc-tag rec">Direction 1 · points</span>
+        <b>Baltic sweep + jump — airBaltic</b>
+      </div>
+      <div class="rc-p" style="margin-top:6px">Fly the Atlantic in to Riga, then airBaltic's own nonstop
+      network down the Baltic triangle and out to the Balkans. All bookable on points now.</div>
+      <div class="rb-wrap" style="margin-top:14px">
+      <table class="rb">
+        <tr><th>leg</th><th>carrier</th><th class="r">≈mi</th><th class="r">≈pts</th><th>book</th></tr>
+        <tr class="city"><td colspan="5"><span class="c-new">🇱🇻 RIGA (RIX)</span> — Latvia · <span class="newpill">NEW</span> · Aug 17 arrival</td></tr>
+        <tr><td class="leg">YYZ→[FRA/MUC]→RIX</td><td class="car">Star Alliance (LH/AC)</td><td class="r">~4,300</td><td class="r">~50k</td><td><span class="via">POINTS · Atlantic</span></td></tr>
+        <tr class="city"><td colspan="5"><span class="c-new">🇱🇹 VILNIUS (VNO)</span> — Lithuania · <span class="newpill">NEW</span> · &lt;24h walk</td></tr>
+        <tr><td class="leg">RIX→VNO</td><td class="car">airBaltic nonstop</td><td class="r">~165</td><td class="r">7.5k</td><td><span class="via">POINTS ✓ shot</span></td></tr>
+        <tr class="city"><td colspan="5"><span class="c-new">🇪🇪 TALLINN (TLL)</span> — Estonia · <span class="newpill">NEW</span> · &lt;24h walk</td></tr>
+        <tr><td class="leg">VNO→TLL</td><td class="car">airBaltic nonstop</td><td class="r">~370</td><td class="r">7.5k</td><td><span class="via">POINTS ✓ shot</span></td></tr>
+        <tr class="city"><td colspan="5"><span class="c-new">🇭🇷 SPLIT / ZAGREB (SPU/ZAG)</span> — Croatia · <span class="newpill">NEW</span> · gateway to the spine</td></tr>
+        <tr><td class="leg">TLL→SPU</td><td class="car">airBaltic nonstop</td><td class="r">~1,050</td><td class="r">15k</td><td><span class="via">POINTS ✓ shot</span></td></tr>
+      </table>
+      </div>
+      <div class="rc-m"><b>4 new countries.</b> The three airBaltic hops (~30k combined, or cheaper
+      priced as one summed-distance direction) are exactly your screenshots. Land Split, drop into
+      the Balkan bus network. Transatlantic is a <b>separate</b> Atlantic-zone award.</div>
+    </div>
+
+    <!-- LEG B: BALKAN SPINE OVERLAND -->
+    <div class="rail-card prev">
+      <div class="rc-h">
+        <span class="rc-tag prev">The spine · overland</span>
+        <b>9 countries by bus — Croatia → Romania</b>
+      </div>
+      <div class="rc-p" style="margin-top:6px">No flights. FlixBus/GetByBus/train, one night per city,
+      ~€10–25 a hop. This is the run's engine — the most countries for the least money and points.</div>
+      <div class="rb-wrap" style="margin-top:14px">
+      <table class="rb">
+        <tr><th>hop</th><th>mode</th><th class="r">≈hrs</th><th>country</th></tr>
+        <tr><td class="leg">Zagreb → Ljubljana</td><td class="car">FlixBus / train</td><td class="r">~2.5</td><td>🇸🇮 Slovenia <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">Ljubljana → Belgrade</td><td class="car">FlixBus (via ZAG)</td><td class="r">~7</td><td>🇷🇸 Serbia <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">Belgrade → Sarajevo</td><td class="car">FlixBus</td><td class="r">~6.5</td><td>🇧🇦 Bosnia <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">Sarajevo → Podgorica</td><td class="car">bus</td><td class="r">~7</td><td>🇲🇪 Montenegro <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">Podgorica → Tirana</td><td class="car">bus</td><td class="r">~5</td><td>🇦🇱 Albania <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">Tirana → Skopje</td><td class="car">bus</td><td class="r">~5</td><td>🇲🇰 N.Macedonia <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">Skopje → Sofia</td><td class="car">FlixBus</td><td class="r">~5.5</td><td>🇧🇬 Bulgaria <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">Sofia → Bucharest</td><td class="car">FlixBus / train</td><td class="r">~7</td><td>🇷🇴 Romania <span class="newpill">NEW</span></td></tr>
+      </table>
+      </div>
+      <div class="rc-m"><b>8 new countries overland (Croatia was the fly-in = 9 in the cluster).</b>
+      ~€120 total, zero points. Kosovo (Pristina) is a free detour off Skopje/Tirana if you decide to
+      count it. This is the stretch 143 tried to force onto Star Alliance awards — don't.</div>
+    </div>
+
+    <!-- LEG C: ISLAND ANNEX + MOLDOVA -->
+    <div class="rail-card rec">
+      <div class="rc-h">
+        <span class="rc-tag rec">Direction 2–3 · points / cash</span>
+        <b>The annex — Moldova + the islands</b>
+      </div>
+      <div class="rc-p" style="margin-top:6px">The three that don't fit the bus spine. Slot from the
+      Bucharest end. Points where partner space exists (Austrian/Turkish serve all three); cash Wizz
+      where it doesn't.</div>
+      <div class="rb-wrap" style="margin-top:14px">
+      <table class="rb">
+        <tr><th>leg</th><th>carrier</th><th class="r">≈mi</th><th class="r">≈pts/€</th><th>book</th></tr>
+        <tr class="city"><td colspan="5"><span class="c-new">🇲🇩 CHIȘINĂU (KIV)</span> — Moldova · <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">OTP→KIV (or bus ~7h)</td><td class="car">Wizz / TAROM</td><td class="r">~215</td><td class="r">€30–60</td><td><span class="via cash">CASH / bus</span></td></tr>
+        <tr class="city"><td colspan="5"><span class="c-new">🇲🇹 MALTA (MLA)</span> — Malta · <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">OTP/SOF→[VIE/IST]→MLA</td><td class="car">Austrian / Turkish</td><td class="r">~1,050</td><td class="r">12.5k</td><td><span class="via">POINTS</span></td></tr>
+        <tr class="city"><td colspan="5"><span class="c-new">🇨🇾 LARNACA / ERCAN (LCA/ECN)</span> — Cyprus · <span class="newpill">NEW</span></td></tr>
+        <tr><td class="leg">MLA→[hub]→LCA</td><td class="car">Turkish via IST / Aegean via ATH</td><td class="r">~1,300</td><td class="r">12.5k</td><td><span class="via">POINTS ✓ ECN shot</span></td></tr>
+        <tr class="city"><td colspan="5">🇸🇰 BRATISLAVA (BTS) — Slovakia · <span class="newpill">NEW</span> · €10 bus from any VIE touch</td></tr>
+      </table>
+      </div>
+      <div class="rc-m"><b>4 new (Moldova, Malta, Cyprus, Slovakia).</b> If any points leg routes via
+      <b>VIE</b>, walk Bratislava on the layover for Slovakia free. Malta+Cyprus are the time-eaters —
+      if the window gets tight, they're the first to defer to a later run.</div>
+    </div>
+  </div>
+
+  <p class="note"><b>Tally: 16 new countries</b> — 4 airBaltic/points (Baltics + Croatia) + 8 overland
+  (rest of the spine) + 4 annex (Moldova, Malta, Cyprus, Slovakia). Points spend ≈ <b>30k intra-Europe
+  + ~50k transatlantic each way</b>; the rest is ~€250 of buses and cash hops. <b>Re-price live</b> —
+  award space and the Jun-2026 chart move.</p>
+
+  <div class="sec-head"><span class="sec-kick">verify &amp; book — live links</span><span class="sec-n">05</span></div>
+  <div class="linkrow">
+    <a class="lcard" href="https://www.aircanada.com/ca/en/aco/home/book.html" target="_blank" rel="noopener">
+      <span class="lc-t">Aeroplan · book multi-city award →</span>
+      <span class="lc-d">"Book with points" + Multi-city. airBaltic now appears in results — enter each segment. Call the desk if it won't chain.</span></a>
+    <a class="lcard" href="https://seats.aero" target="_blank" rel="noopener">
+      <span class="lc-t">seats.aero · partner award space →</span>
+      <span class="lc-d">See which dates have economy seats on airBaltic / Austrian / LOT / Turkish before you commit. Filter to Aeroplan.</span></a>
+    <a class="lcard" href="https://www.kiwi.com" target="_blank" rel="noopener">
+      <span class="lc-t">Kiwi · cheapest cash + virtual-interline →</span>
+      <span class="lc-d">Best for the awkward Wizz/Ryanair gaps (Moldova, Malta, Cyprus) and self-transfer combos points can't touch.</span></a>
+    <a class="lcard" href="https://www.skyscanner.ca" target="_blank" rel="noopener">
+      <span class="lc-t">Skyscanner · everywhere / price radar →</span>
+      <span class="lc-d">"Everywhere" from a Balkan hub surfaces the cheapest next new-country hop. Set price alerts on the island legs.</span></a>
+    <a class="lcard" href="https://www.flixbus.com" target="_blank" rel="noopener">
+      <span class="lc-t">FlixBus · the Balkan spine →</span>
+      <span class="lc-d">Zagreb→Ljubljana→Belgrade→Sarajevo→Podgorica→Tirana→Skopje→Sofia→Bucharest. Book 1–2 days ahead, ~€10–25 each.</span></a>
+    <a class="lcard" href="https://www.airbaltic.com/en" target="_blank" rel="noopener">
+      <span class="lc-t">airBaltic · schedule check →</span>
+      <span class="lc-d">Confirm the RIX/VNO/TLL/SPU nonstops and times you saw at 7.5k/15k — verify the same-day connections are real.</span></a>
+    <a class="lcard" href="https://www.google.com/travel/flights?q=flights%20TLL%20to%20SPU" target="_blank" rel="noopener">
+      <span class="lc-t">Google Flights · schedule + &lt;24h check →</span>
+      <span class="lc-d">A free layover only works if the next flight actually leaves in time. Swap the city pair per leg.</span></a>
+    <a class="lcard" href="https://www.rome2rio.com" target="_blank" rel="noopener">
+      <span class="lc-t">Rome2Rio · overland sanity-check →</span>
+      <span class="lc-d">Confirms bus/train exists + rough time/price for any spine hop, and the Bucharest↔Chișinău + Bratislava options.</span></a>
+  </div>
+  <p class="note"><b>Phone desk:</b> Aeroplan 1-833-247-6668. Write the exact segments + dates first,
+  hold in <b>UTC</b>, HUCA if the first agent won't build the self-transfer. Irish passport = EU free
+  movement, no Schengen 90/180 clock; visa-check only the non-EU grabs (N. Cyprus via Turkey is fine
+  on an Irish passport; Caucasus is visa-free too if you add the stretch).</p>
+
+  <div class="sec-head"><span class="sec-kick">gym on the move — no base week</span><span class="sec-n">06</span></div>
+  <div class="card">
+    <div class="strip">
+      <div class="s-city">Baltics 🇱🇻🇱🇹🇪🇪<small>Riga · Vilnius · Tallinn</small></div>
+      <div class="s-body"><b>MyFitness</b> (all three) and <b>Lemon Gym</b> (LTU/LVA, 24/7) — day pass or
+      short membership. No Anytime Fitness in the Baltics; TrainAway app is the universal fallback.</div>
+    </div>
+    <div class="strip">
+      <div class="s-city">The spine 🇭🇷→🇷🇴<small>one night per city</small></div>
+      <div class="s-body">One workout + one big protein meal per stop, then the next bus. Local 24/7
+      chains and ~€8–15 day passes everywhere; check TrainAway per city. No taper — training holds
+      through travel days.</div>
+    </div>
+    <div class="strip">
+      <div class="s-city">Annex 🇲🇹🇨🇾<small>Malta · Cyprus</small></div>
+      <div class="s-body">Warm-weather recovery days between the island flights — coastal runs +
+      a day pass. This is the closest thing to rest on an all-out run.</div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="sec-kick">getting there — bookends</span><span class="sec-n">07</span></div>
+  <div class="card">
+    <p class="rc-p" style="margin-top:0">The intra-region chain above is separate from the
+    transatlantic in/out. Two ways to attach it:</p>
+    <div class="grid2" style="margin-top:14px">
+      <div class="rule">
+        <div class="rule-k">option a · already in Europe</div>
+        <h4>Skip the Atlantic award</h4>
+        <p>If you're basing in Europe that window, start at RIX off a cheap intra-EU positioning hop and
+        end at OTP/LCA. Simplest, and frees the points for the in-region legs.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-k">option b · from North America</div>
+        <h4>Wrap a separate transatlantic award</h4>
+        <p>YYZ/EWR→RIX inbound, OTP/LCA→YYZ outbound, as its own Atlantic-zone Aeroplan award (~50k
+        each way, ≈ verify). Route via a hub you can grab nothing new from — FRA/MUC/VIE all visited.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="breathe" style="margin-top:24px">Book order: <b>lock the airBaltic Baltic sweep first</b>
+  (award space on the 7.5k nonstops is the linchpin and your screenshots show it live), then the
+  transatlantic bookend, then the island annex. The Balkan spine needs no advance booking — buses are
+  walk-up. Everything here is a menu to re-price the day you hold.</p>
+
+  <div class="foot">bpo · TODO-168 aeroplan v2 · max-country run Aug 17 – Sep 4 2026 · airBaltic = Aeroplan partner (redeem-only, combinable) · <code>&lt;24h = free layover · ≥24h = 5k stopover · ≤12 seg / 6 directions</code> · points ≈ verify on aeroplan.com (chart changed Jun 1 2026) · 2026-07-09 07:32 UTC</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tenerife race-week state</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css"><link rel="stylesheet" href="../design-repo/grove/tokens.css"><link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+body{background:var(--paper,#f4f4ef);color:#1b2822}.wrap{max-width:1060px;margin:auto;padding:48px 22px 88px}h1{font:700 clamp(38px,7vw,76px)/.98 Georgia,serif;letter-spacing:-.045em;margin:8px 0 14px}h2{font:700 27px/1.1 Georgia,serif;margin:0 0 14px}.eyebrow{font:700 11px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:#b14d2f}.lead{font-size:19px;line-height:1.55;max-width:75ch;color:#44534b}.verdict{margin:34px 0 28px;border-left:5px solid #b14d2f;padding:20px 24px;background:#fff;border-radius:0 15px 15px 0;font:700 25px/1.35 Georgia,serif}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:#fff;border:1px solid #e1e3dd;border-radius:16px;padding:20px}.card b{display:block;font:700 35px/1 ui-monospace,monospace;margin:6px 0 10px}.label{font:700 11px ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;color:#66746d}.card p,li{line-height:1.55;color:#48574f}.track{height:13px;background:#e4e7e2;border-radius:8px;overflow:hidden;margin:14px 0 8px}.fill{height:100%;background:#23806d;width:90.2%}section{margin-top:44px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}ul{margin:0;padding-left:20px}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th,td{padding:13px 14px;border-bottom:1px solid #e8e9e5;text-align:left;vertical-align:top}td:first-child{font:700 12px ui-monospace,monospace;white-space:nowrap}th{width:170px}footer{margin-top:40px;border-top:1px solid #d6dad3;padding-top:15px;color:#68756e;font:11px/1.6 ui-monospace,monospace}@media(max-width:760px){.grid,.twocol{grid-template-columns:1fr}.verdict{font-size:21px}th{width:auto}}
+</style></head><body><main class="wrap">
+<div class="eyebrow">TODO-424 · FIT / STRAVA · evidence through 30 Aug</div><h1>Tenerife race-week state</h1>
+<p class="lead">2026-09-05 · 09:10 local · HYROX MEN (Singles Open) · bib 91002</p>
+<div class="verdict">Open-load wall-ball speed and controlled aerobic work are present; current compromised-kilometre repeatability is still unmeasured.</div>
+<div class="grid">
+<article class="card"><span class="label">100 wall balls · 6 kg</span><b>3:50</b><p>HR 138.4/157 avg/max. Peak-to-60 s recovery: −29 bpm.</p></article>
+<article class="card"><span class="label">10 km after mixed work</span><b>57:26</b><p>HR 140.3/166 avg/max. The deliberate fast block produced the ceiling, not the full run.</p></article>
+<article class="card"><span class="label">Ski Nine</span><b>2045 m</b><p>3 km @1% → 9 min ski → 2 km. Active-window HR 140.4/153.</p></article>
+</div>
+<section><h2>The run was controlled until it was deliberately fast</h2><div class="card"><div class="track"><div class="fill"></div></div><p><b style="display:inline;font-size:inherit">90.2%</b> of the recorded 10 km stream was below 151 bpm. The longest 151+ bout was 5:36; 159+ lasted 3:39. Watch stream distance ends 7.9% short of the activity summary, so it is not belt pace.</p></div></section>
+<section class="twocol"><article class="card"><h2>What moved positive</h2><ul><li>100 wall balls at the Tenerife Open load finished in about 3:50 with peak HR 157 and a 29 bpm first-minute recovery.</li><li>The 10 km run followed strength, rowing, and wall balls yet spent about nine tenths of recorded time below 151 bpm.</li><li>The deliberate fast block reached the tested 166 ceiling, then HR fell without ending the run.</li><li>The 2045 m Ski Nine baseline is now tied to its two flanking runs and exact HR streams.</li></ul></article><article class="card"><h2>What is still missing</h2><ul><li>No M7 compromised-kilometre result exists, so the 68-78+ Tenerife model fork is not collapsed.</li><li>The wall-ball break pattern and target height are missing, and the set was not performed after lunges plus run eight.</li><li>The treadmill belt time and per-kilometre splits are missing; the Watch distance stream ends materially short of the activity summary.</li><li>Current toe symptoms, sleep, recovery, and travel load were not recorded.</li></ul></article></section>
+<section><h2>Race week</h2><table><tbody><tr><td>08-31</td><th>Absorb the Aug 30 load</th><td>Easy movement, mobility, food, fluids, and sleep; no second benchmark.</td></tr><tr><td>09-01</td><th>M5 Row Off only if fresh</th><td>1 km run at &lt;=159 bpm straight into 1000 m row. Record belt pace, end-run HR, row split, and RPE; stop if toe or gait is abnormal.</td></tr><tr><td>09-02</td><th>Easy aerobic or off</th><td>Keep volume low enough that the Sep 1 read, not accumulated fatigue, determines the next day.</td></tr><tr><td>09-03</td><th>Technique primer</th><td>Short transitions and small Open-load wall-ball sets; finish before fatigue or form loss.</td></tr><tr><td>09-04</td><th>Freshness day</th><td>No fitness test. Prepare kit, timing, travel, sleep, food, and the race capture checklist.</td></tr><tr><td>09-05</td><th>Experimental race</th><td>Use 159 bpm as an early-run ceiling, not a target. Capture run+rox, stations, HR, penalties, conditions, RPE, and wall-ball breaks.</td></tr></tbody></table></section>
+<footer>10 archived activity bundles · 7 memo digests · fixed LT1 133–138 / LT2 151–159 · raw archive read-only · Brendan Strava read-only · Omar is display only</footer>
+</main></body></html>

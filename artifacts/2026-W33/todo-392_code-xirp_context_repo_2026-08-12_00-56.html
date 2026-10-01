@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f1efe6">
+  <title>TODO-392 · BPO × Spotify XIRP</title>
+  <meta name="description" content="A source-grounded comparison of Brendan's BPO agent context architecture with Spotify XIRP, plus the next build sequence for a sovereign personal agent command center.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <style>
+    :root{
+      --paper:#f1efe6;--paper2:#e9e5d9;--ink:#14211c;--muted:#647069;--line:#cad1c9;
+      --forest:#123d2f;--forest2:#09271e;--mint:#b9ef7d;--lime:#e1ffa8;--coral:#ef7656;
+      --amber:#f2c85d;--sky:#b7dde6;--white:#fffdf8;--spotify:#1ed760;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --shadow:0 20px 56px rgba(15,42,32,.11);
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans);overflow-x:hidden}
+    a{color:inherit}.mono,.eyebrow,.pill,.kicker,.stat b,.layer b,.score b,.timeline time,.command,.stamp,footer{font-family:var(--mono)}
+    .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px max(16px,calc((100vw - 1220px)/2));background:rgba(241,239,230,.91);border-bottom:1px solid rgba(202,209,201,.84);backdrop-filter:blur(14px)}
+    .brand{display:flex;align-items:center;gap:8px;font:900 12px var(--mono);letter-spacing:.06em}.brand i{width:19px;height:19px;border-radius:6px;background:var(--forest);box-shadow:inset 0 0 0 5px var(--mint)}
+    .topbar .slash{color:var(--muted)}.topbar .spacer{flex:1}.topbar a{min-height:36px;display:flex;align-items:center;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--white);font:800 11px var(--mono);text-decoration:none}
+    main{width:min(100% - 34px,1220px);margin:auto;padding:38px 0 70px}
+    .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}
+    .hero-copy{display:flex;flex-direction:column;justify-content:center;min-height:610px;padding:42px;border-radius:28px;background:var(--forest2);color:white;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+    .hero-copy::after{content:"";position:absolute;width:420px;height:420px;right:-240px;bottom:-230px;border-radius:50%;border:76px solid rgba(185,239,125,.1)}
+    .eyebrow{display:flex;align-items:center;gap:9px;color:var(--mint);font-size:11px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}.eyebrow::before{content:"";width:24px;height:7px;border-radius:999px;background:var(--mint)}
+    h1{max-width:760px;margin:22px 0 20px;font:950 clamp(45px,6.5vw,84px)/.9 var(--mono);letter-spacing:-.078em}h1 span{color:var(--coral)}
+    .hero-copy .lede{max-width:700px;margin:0;color:#c9d8d0;font-size:19px}.hero-copy .lede strong{color:white}
+    .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}.pill{display:inline-flex;align-items:center;min-height:34px;padding:6px 10px;border:1px solid #ffffff29;border-radius:999px;color:#d9e5df;font-size:10px;font-weight:850}.pill.primary{border-color:var(--mint);background:var(--mint);color:var(--forest2)}
+    .hero-proof{display:grid;grid-template-rows:1fr auto;gap:14px}
+    .source-card{min-height:470px;border-radius:28px;overflow:hidden;background:#111;box-shadow:var(--shadow);position:relative}.source-card img{width:100%;height:100%;object-fit:cover;display:block;opacity:.92}.source-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(8,24,18,.9))}
+    .source-label{position:absolute;z-index:2;left:22px;right:22px;bottom:20px;color:white}.source-label small{display:block;color:var(--spotify);font:900 10px var(--mono);letter-spacing:.1em;text-transform:uppercase}.source-label b{display:block;max-width:520px;margin-top:7px;font:900 23px/1.05 var(--mono);letter-spacing:-.04em}.source-label a{display:inline-block;margin-top:9px;color:#d8e6de;font-size:12px}
+    .verdict{padding:20px 22px;border:1px solid var(--line);border-radius:20px;background:var(--white)}.verdict b{font:900 17px var(--mono)}.verdict p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.stat{min-height:126px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--white)}.stat b{display:block;color:var(--forest);font-size:30px;letter-spacing:-.06em}.stat span{display:block;margin-top:7px;color:var(--muted);font-size:12px}.stat.hot{background:var(--coral);border-color:var(--coral);color:#311a14}.stat.hot b,.stat.hot span{color:inherit}
+    section{scroll-margin-top:70px}.frame{margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:28px;background:#f7f5ed}.frame.dark{border-color:var(--forest2);background:var(--forest2);color:white}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px}.section-head h2{max-width:880px;margin:0;font:950 clamp(32px,5vw,56px)/.95 var(--mono);letter-spacing:-.065em}.section-head h2 em{color:var(--coral);font-style:normal}.section-head p{max-width:350px;margin:0;color:var(--muted);font-size:13px}.dark .section-head p{color:#b9cbc2}
+    .answer{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.answer article{min-height:228px;padding:20px;border:1px solid var(--line);border-radius:20px;background:var(--white)}.answer article:nth-child(1){background:var(--forest);border-color:var(--forest);color:white}.answer article:nth-child(2){border-top:8px solid var(--coral)}.answer article:nth-child(3){border-top:8px solid var(--sky)}.answer .kicker{font-size:10px;font-weight:900;letter-spacing:.1em;color:var(--muted)}.answer article:nth-child(1) .kicker{color:var(--mint)}.answer h3{margin:20px 0 9px;font:900 23px/1 var(--mono);letter-spacing:-.045em}.answer p{margin:0;color:var(--muted);font-size:13px}.answer article:nth-child(1) p{color:#d1ded7}
+    .callout{margin-top:12px;padding:18px 20px;border-radius:18px;background:#fee1d8;color:#5c2a1d;font:850 16px/1.45 var(--mono)}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.moment{min-height:220px;padding:18px;border:1px solid #ffffff20;border-radius:18px;background:#ffffff0b}.moment time{display:block;color:var(--mint);font-size:10px;font-weight:900}.moment b{display:block;margin:16px 0 8px;font:900 18px/1.05 var(--mono);letter-spacing:-.035em}.moment p{margin:0;color:#c1d0c8;font-size:12px}.moment a{display:inline-block;margin-top:14px;color:var(--mint);font:800 11px var(--mono)}
+    .moment.prime{background:var(--mint);color:var(--forest2)}.moment.prime time,.moment.prime p,.moment.prime a{color:var(--forest2)}
+    .comparison{overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--white)}.row{display:grid;grid-template-columns:.75fr 1.35fr 1.35fr .55fr}.row>div{padding:14px 16px;border-top:1px solid var(--line);font-size:12.5px}.row:first-child>div{border-top:0;background:#e5e7df;font:900 10px var(--mono);letter-spacing:.08em;text-transform:uppercase}.row>div+div{border-left:1px solid var(--line)}.row .dim{font:850 12px var(--mono)}.row .edge{font:900 10px var(--mono);text-transform:uppercase}.edge.bpo{color:var(--forest)}.edge.xirp{color:#0a803a}.edge.draw{color:#8b5720}
+    .scores{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}.score-card{padding:20px;border:1px solid var(--line);border-radius:20px;background:var(--white)}.score-card h3{margin:0 0 15px;font:900 19px var(--mono)}.score{display:grid;grid-template-columns:124px 1fr 32px;gap:10px;align-items:center;margin-top:10px}.score b{font-size:10px}.bar{height:11px;border-radius:99px;background:#dde2dc;overflow:hidden}.bar i{display:block;height:100%;border-radius:99px;background:var(--forest)}.score-card.spotify .bar i{background:var(--spotify)}.score span{font:900 10px var(--mono);text-align:right}
+    .architecture{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.layer{min-height:216px;padding:16px;border:1px solid #ffffff20;border-radius:17px;background:#ffffff0c}.layer:nth-child(1){background:var(--mint);color:var(--forest2)}.layer:nth-child(2){border-top:7px solid var(--sky)}.layer:nth-child(3){border-top:7px solid var(--amber)}.layer:nth-child(4){border-top:7px solid var(--coral)}.layer:nth-child(5){border-top:7px solid var(--mint)}.layer:nth-child(6){border-top:7px solid var(--spotify)}.layer small{color:#aec2b8;font:900 9px var(--mono);letter-spacing:.08em}.layer:nth-child(1) small{color:var(--forest)}.layer b{display:block;margin:15px 0 8px;font-size:16px;letter-spacing:-.04em}.layer p{margin:0;color:#c0d0c8;font-size:11.5px}.layer:nth-child(1) p{color:var(--forest2)}
+    .hard-truth{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:14px}.hard-truth .quote{padding:24px;border-radius:20px;background:var(--coral);color:#331a13;font:950 clamp(24px,3vw,38px)/1.04 var(--mono);letter-spacing:-.05em}.hard-truth .note{padding:22px;border:1px solid #ffffff20;border-radius:20px;background:#ffffff0b}.hard-truth .note b{font:900 17px var(--mono)}.hard-truth .note p{margin:8px 0 0;color:#bdd0c6;font-size:13px}
+    .upgrades{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.upgrade{display:grid;grid-template-columns:48px 1fr;gap:14px;min-height:156px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--white)}.upgrade .num{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:var(--forest);color:var(--mint);font:900 13px var(--mono)}.upgrade h3{margin:2px 0 7px;font:900 17px var(--mono);letter-spacing:-.03em}.upgrade p{margin:0;color:var(--muted);font-size:12.5px}.upgrade code{color:var(--forest);font-weight:800}
+    .roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.phase{padding:20px;border:1px solid var(--line);border-radius:20px;background:var(--white)}.phase:nth-child(2){border-top:8px solid var(--amber)}.phase:nth-child(3){border-top:8px solid var(--coral)}.phase small{font:900 10px var(--mono);color:var(--muted);letter-spacing:.08em}.phase h3{margin:16px 0 10px;font:900 21px/1 var(--mono);letter-spacing:-.04em}.phase ol{margin:0;padding-left:20px;color:var(--muted);font-size:12.5px}.phase li+li{margin-top:7px}
+    .command-deck{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.command{min-height:84px;padding:14px;border-radius:15px;background:var(--forest2);color:#d8e5de;font-size:11px}.command b{display:block;color:var(--mint);margin-bottom:7px}.command span{color:#aebfb7;font-family:var(--sans);font-size:11px}
+    .steal{display:grid;grid-template-columns:1fr 1fr;gap:12px}.list-card{padding:22px;border-radius:20px}.list-card.yes{background:#e1f0d8}.list-card.no{background:#fee1d8}.list-card h3{margin:0 0 13px;font:900 20px var(--mono)}.list-card ul{margin:0;padding-left:19px;color:#435249;font-size:13px}.list-card.no ul{color:#62382d}.list-card li+li{margin-top:8px}
+    .sources{display:grid;grid-template-columns:1fr 1fr;gap:10px}.source-list{padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--white)}.source-list h3{margin:0 0 12px;font:900 16px var(--mono)}.source-list a{display:block;padding:9px 0;border-top:1px solid var(--line);color:var(--forest);font-size:12px;text-decoration:none}.source-list a:first-of-type{border-top:0}.source-list a span{display:block;color:var(--muted);font-size:10px}
+    .final{margin-top:56px;padding:30px;border-radius:26px;background:var(--forest);color:white}.final p{max-width:1050px;margin:0;font:950 clamp(27px,4vw,47px)/1.03 var(--mono);letter-spacing:-.058em}.final p span{color:var(--mint)}.final small{display:block;margin-top:15px;color:#c5d5cc;font-size:13px}
+    footer{display:flex;justify-content:space-between;gap:18px;margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:10px}
+    @media(max-width:1040px){.hero{grid-template-columns:1fr}.hero-copy{min-height:540px}.hero-proof{grid-template-columns:1.1fr .9fr;grid-template-rows:auto}.source-card{min-height:340px}.timeline{grid-template-columns:1fr 1fr}.architecture{grid-template-columns:repeat(3,1fr)}.command-deck{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){.topbar a:not(.keep){display:none}main{width:min(100% - 20px,1220px);padding-top:18px}.hero-copy{min-height:0;padding:28px 22px}.hero-proof{grid-template-columns:1fr}.source-card{min-height:300px}.stats,.answer,.timeline,.scores,.upgrades,.roadmap,.steal,.sources{grid-template-columns:1fr}.section-head{display:block}.section-head p{margin-top:10px}.frame{margin-top:32px;padding:18px}.row{grid-template-columns:.78fr 1fr 1fr}.row>div{padding:11px 9px;font-size:10.5px}.row>div:last-child{display:none}.comparison .row>div:nth-child(3){border-right:0}.architecture{grid-template-columns:1fr 1fr}.hard-truth{grid-template-columns:1fr}.command-deck{grid-template-columns:1fr 1fr}.score{grid-template-columns:108px 1fr 28px}.source-card img{object-position:center}.stamp{display:none}footer{flex-direction:column}}
+    @media(max-width:440px){h1{font-size:44px}.stats,.architecture,.command-deck{grid-template-columns:1fr}.stat{min-height:0}.answer article,.moment,.layer{min-height:0}.frame{border-radius:20px}.source-label b{font-size:18px}.topbar .slash{display:none}}
+  </style>
+</head>
+<body>
+  <nav class="topbar" aria-label="Artifact navigation">
+    <div class="brand"><i></i>BPO</div><span class="slash">×</span><div class="brand" style="color:#087d38">XIRP</div><span class="spacer"></span>
+    <a href="#lineage">Prior art</a><a href="#compare">Compare</a><a class="keep" href="#roadmap">Build next</a>
+  </nav>
+  <main>
+    <header class="hero" id="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">TODO-392 · source-grounded architecture riff</div>
+        <h1>You built the <span>bones.</span><br>Spotify packaged the control room.</h1>
+        <p class="lede">BPO already separated durable context from agents, routed every harness through Git + Linear, designed active-active workers, and made agent identity portable. <strong>XIRP validates that architecture.</strong> Its edge is productization: a session command center, worktree isolation, organizational retrieval, model switching, and an automatic learning loop.</p>
+        <div class="pills"><span class="pill primary">Verdict · convergent architecture</span><span class="pill">world · BPO private</span><span class="pill">source · Spotify 2026-08-10</span><span class="pill">scope · agents × context × concurrency</span></div>
+      </div>
+      <div class="hero-proof">
+        <article class="source-card">
+          <img src="https://portal.spotify.com/_next/static/media/hello-xirp-blog-cover.0vrarc6ez3p7e.webp" alt="Spotify XIRP announcement cover">
+          <div class="source-label"><small>Primary source · Spotify Portal</small><b>What we've learned scaling AI coding agents at Spotify</b><a href="https://portal.spotify.com/blog/introducing-xirp">Open announcement ↗</a></div>
+        </article>
+        <article class="verdict"><b>The essential correction</b><p>“Shared brand” is one layer, not the whole system. Give every agent the same brand kernel and institutional baseline; keep its job, credentials, memory, and runtime identity separate.</p></article>
+      </div>
+    </header>
+
+    <div class="stats" aria-label="Headline evidence">
+      <article class="stat hot"><b>36k+</b><span>XIRP sessions reported by Spotify.</span></article>
+      <article class="stat"><b>50+</b><span>parallel sessions XIRP says it coordinates.</span></article>
+      <article class="stat"><b>91</b><span>BPO TODO nodes handed M3→M5 in 16.83s.</span></article>
+      <article class="stat"><b>7</b><span>prior BPO records that directly anticipate XIRP.</span></article>
+    </div>
+
+    <section class="frame" id="brand">
+      <div class="section-head"><h2>What you meant by <em>shared brand</em></h2><p>The phrase was carrying three different architectural jobs. Splitting them makes the system buildable.</p></div>
+      <div class="answer">
+        <article><span class="kicker">SHARED · EVERY AGENT</span><h3>Brand kernel</h3><p>Nomad Code voice, Grove visual grammar, privacy posture, evidence standard, artifact contract, definition of Done, and “Git holds truth; SaaS holds workflow.” This is the recognizable family resemblance.</p></article>
+        <article><span class="kicker">SHARED · BY WORLD / JOB</span><h3>Context baseline</h3><p>Typed BPO routes, relevant repo truth, Linear journal, ownership, dependencies, prior decisions, and task capsule. The agent starts informed without ingesting the whole person.</p></article>
+        <article><span class="kicker">SEPARATE · PER AGENT</span><h3>Soul + throne</h3><p>Your language is already exact: soul = context repo + scoped accounts + vault membership; throne = interchangeable runtime. Omar, Francis, and Ken should share the brand, not collapse into one identity.</p></article>
+      </div>
+      <div class="callout">One uniform persona would erase useful specialization. One uniform operating constitution creates trust without flattening the crew.</div>
+    </section>
+
+    <section class="frame dark" id="lineage">
+      <div class="section-head"><h2>This was not a new thought.<br><em>You have a lineage.</em></h2><p>Original BPO/Linear records, ordered by the architectural capability they introduced.</p></div>
+      <div class="timeline">
+        <article class="moment prime"><time>2026-07-02 · TODO-69</time><b>Personal fleet + shared-context bus</b><p>BPO proposed as a context-builder repo, with machine/account/harness stamps and the chat no longer load-bearing.</p><a href="https://linear.app/nomad-code/issue/TODO-69/bpo-init">Open journal ↗</a></article>
+        <article class="moment"><time>2026-07-26 · TODO-288</time><b>Soul vs throne</b><p>An agent identity is its context repo, scoped memberships, and accounts; hardware is an interchangeable throne. One worker user runs three agents headless.</p><a href="https://linear.app/nomad-code/issue/TODO-288/bpo-alias-crew">Open journal ↗</a></article>
+        <article class="moment"><time>2026-07-27 · TODO-294</time><b>Active-active, single-active task</b><p>M3 and M5 may work concurrently, while a single task has exactly one owner. Handoffs carry semantic state, not copied runtime databases.</p><a href="https://linear.app/nomad-code/issue/TODO-294/etc-m3-m5-teleport-claude">Open journal ↗</a></article>
+        <article class="moment"><time>2026-07-27 · TODO-305</time><b>Loops + graphs + runner</b><p>Linear URL as loop context across Codex, Gemini, Claude, Pi, Hermes, Slack, and artifacts; GitHub/BPO as the grounding graph; device as execution verb.</p><a href="https://linear.app/nomad-code/issue/TODO-305/code-linear-loops-github-graphs">Open journal ↗</a></article>
+        <article class="moment"><time>2026-08-02 · TODO-345</time><b>Portable continuity kernel</b><p>Linear graph + Git truth + SQLite outbox + deterministic capsules. Ninety-one active tasks resumed M3→M5 in 16.83 seconds without copying Codex databases.</p><a href="https://linear.app/nomad-code/issue/TODO-345/code-codex-state-init">Open journal ↗</a></article>
+        <article class="moment"><time>2026-08-04 · TODO-354</time><b>Do not collapse identities</b><p>Semantic route, workflow reference, runtime reference, and projection reference remain four linked addresses with different owners.</p><a href="https://linear.app/nomad-code/issue/TODO-354/codeetc-abstractions">Open journal ↗</a></article>
+        <article class="moment"><time>2026-08-04 · TODO-356</time><b>Slugs as typed graph routes</b><p>Exact Git-backed routing happens before fuzzy retrieval: world, area, context, topic, mode, intent, then tools and broad search.</p><a href="https://linear.app/nomad-code/issue/TODO-356/code-context-route-slugs">Open journal ↗</a></article>
+        <article class="moment"><time>2026-08-05 · TODO-359</time><b>Context forks, outcome promotion</b><p>Branch = isolation; RIFF = maturity; archive = retention; Linear = promoted commitment. Preserve the leap, not every token of scaffolding.</p><a href="https://linear.app/nomad-code/issue/TODO-359/coderiffetc-linear-teams-initiatives">Open journal ↗</a></article>
+      </div>
+    </section>
+
+    <section class="frame" id="compare">
+      <div class="section-head"><h2>BPO and XIRP are <em>similar at the seams</em></h2><p>They diverge in audience, product surface, and what each treats as canonical.</p></div>
+      <div class="comparison" role="table" aria-label="BPO and XIRP comparison">
+        <div class="row" role="row"><div>Dimension</div><div>BPO now</div><div>XIRP + Portal</div><div>Edge</div></div>
+        <div class="row"><div class="dim">Purpose</div><div>Sovereign personal operating system spanning life, code, and multiple privacy worlds.</div><div>Enterprise agentic development environment for engineering organizations.</div><div class="edge draw">Different</div></div>
+        <div class="row"><div class="dim">Shared context</div><div>Git-backed AGENT routes, DNA, projects, Linear journal, artifacts; exact load-on-demand.</div><div>Portal software catalog: architecture, ownership, dependencies, decisions, sessions, docs.</div><div class="edge draw">Draw</div></div>
+        <div class="row"><div class="dim">Model neutrality</div><div>Conceptually routes Claude, Gemini, Codex, Pi, Hermes; state lives outside harness.</div><div>Product feature: Claude Code, Gemini CLI, Codex, self-hosted models; switch mid-project.</div><div class="edge xirp">XIRP</div></div>
+        <div class="row"><div class="dim">Concurrency</div><div>Active-active hosts, task lease, GOAT handoff; limited unified session orchestration.</div><div>Worktree per session; 50+ parallel sessions; command-center visibility.</div><div class="edge xirp">XIRP</div></div>
+        <div class="row"><div class="dim">Continuity</div><div>Deterministic offline capsule, outbox, patches/bundles, hard privacy boundary.</div><div>Working state persists across sessions/tools; metadata and transcripts return to Portal.</div><div class="edge bpo">BPO</div></div>
+        <div class="row"><div class="dim">Truth model</div><div>Explicit: Git semantic truth; Linear workflow; runtime private; artifact projection.</div><div>Portal becomes the shared catalog and Workspace stores sessions/docs.</div><div class="edge bpo">BPO</div></div>
+        <div class="row"><div class="dim">Learning loop</div><div>Human-distilled markdown + Linear RESPONSE + artifact. High quality, high manual cost.</div><div>Sessions generate living documentation that feeds future sessions.</div><div class="edge xirp">XIRP</div></div>
+        <div class="row"><div class="dim">Identity / brand</div><div>Grove visual system, world rules, personas, soul/throne split, scoped credentials.</div><div>Organization and system context; not primarily an agent-persona system.</div><div class="edge bpo">BPO</div></div>
+        <div class="row"><div class="dim">Privacy</div><div>World isolation, no cross-world credentials, human-held high-blast-radius powers, local-first state.</div><div>Enterprise governance and shared visibility; published material is light on data-boundary detail.</div><div class="edge bpo">BPO</div></div>
+        <div class="row"><div class="dim">Scale proof</div><div>91-task handoff, 2 Macs, several harnesses, one human operator.</div><div>Thousands of engineers, 36,000+ sessions, 50+ concurrent sessions (self-reported).</div><div class="edge xirp">XIRP</div></div>
+      </div>
+      <div class="scores">
+        <article class="score-card"><h3>BPO current strength</h3>
+          <div class="score"><b>SOVEREIGNTY</b><div class="bar"><i style="width:96%"></i></div><span>9.6</span></div>
+          <div class="score"><b>PRIVACY MODEL</b><div class="bar"><i style="width:92%"></i></div><span>9.2</span></div>
+          <div class="score"><b>CONTEXT RIGOR</b><div class="bar"><i style="width:88%"></i></div><span>8.8</span></div>
+          <div class="score"><b>SESSION UX</b><div class="bar"><i style="width:39%"></i></div><span>3.9</span></div>
+          <div class="score"><b>AUTO LEARNING</b><div class="bar"><i style="width:34%"></i></div><span>3.4</span></div>
+        </article>
+        <article class="score-card spotify"><h3>XIRP published strength</h3>
+          <div class="score"><b>SESSION UX</b><div class="bar"><i style="width:91%"></i></div><span>9.1</span></div>
+          <div class="score"><b>CONCURRENCY</b><div class="bar"><i style="width:94%"></i></div><span>9.4</span></div>
+          <div class="score"><b>ORG RETRIEVAL</b><div class="bar"><i style="width:89%"></i></div><span>8.9</span></div>
+          <div class="score"><b>SOVEREIGNTY</b><div class="bar"><i style="width:67%"></i></div><span>6.7</span></div>
+          <div class="score"><b>BOUNDARY DETAIL</b><div class="bar"><i style="width:46%"></i></div><span>4.6</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="frame dark" id="architecture">
+      <div class="section-head"><h2>The BPO answer:<br><em>six planes, one constitution</em></h2><p>Do not build a Portal clone. Build the thinnest sovereign control plane that joins the pieces you already proved.</p></div>
+      <div class="architecture">
+        <article class="layer"><small>01 · FAMILY</small><b>Brand kernel</b><p>Voice, Grove, proof standard, privacy laws, closeout grammar. Shared by every agent and artifact.</p></article>
+        <article class="layer"><small>02 · MEMORY</small><b>Context compiler</b><p>Typed route → ordered files, prior decisions, dependencies, budget, freshness, capability envelope.</p></article>
+        <article class="layer"><small>03 · ACTION</small><b>Session runtime</b><p>Harness, model, host, repo, isolated worktree, lease, permissions, cost, live status.</p></article>
+        <article class="layer"><small>04 · FLOW</small><b>Linear journal</b><p>Outcome, state, owner, prompt, plan, response. Workflow never impersonates semantic truth.</p></article>
+        <article class="layer"><small>05 · PROOF</small><b>Git + artifact</b><p>Durable decision, code, provenance, screenshot, readable synthesis. Promote outcomes, not transcripts.</p></article>
+        <article class="layer"><small>06 · LEARNING</small><b>Evaluation</b><p>Reuse, rework, context misses, stale facts, token reconstruction, merge conflict, human correction.</p></article>
+      </div>
+      <div class="hard-truth">
+        <div class="quote">BPO has an architecture. It does not yet have a single operable product surface.</div>
+        <div class="note"><b>That is the gap XIRP makes obvious.</b><p>You can reconstruct the system from seven tickets, several scripts, multiple artifacts, and your own memory. A new agent cannot. The next milestone is not more ontology. It is a compiler + registry + cockpit that makes the ontology executable.</p></div>
+      </div>
+    </section>
+
+    <section class="frame" id="upgrades">
+      <div class="section-head"><h2>What to do <em>better</em></h2><p>Ranked by compounding value, not novelty.</p></div>
+      <div class="upgrades">
+        <article class="upgrade"><div class="num">01</div><div><h3>Compile context; stop “letting agents browse”</h3><p>Add <code>scripts/route</code> / <code>bpoctl context ROUTE</code>. Return a deterministic manifest: world, ordered reads, decision hashes, workflow link, capabilities, exclusions, token estimate, freshness. Exact first; fuzzy only as fallback.</p></div></article>
+        <article class="upgrade"><div class="num">02</div><div><h3>Create one append-only session registry</h3><p>Normalize task ID, route, harness, model, host, repo, worktree, owner, lease, start/end, parent/fork, artifact, cost, outcome hash. This becomes the source for a local command-center view.</p></div></article>
+        <article class="upgrade"><div class="num">03</div><div><h3>Make worktree-per-session the default</h3><p>Your host-level lease prevents split brain, but XIRP's sharper unit is the session. Spawn an isolated worktree, bind it to TODO + route + agent, and require a merge/handoff receipt before release.</p></div></article>
+        <article class="upgrade"><div class="num">04</div><div><h3>Distill automatically; publish deliberately</h3><p>At wrap, propose decision diffs, stale-doc repairs, route additions, and reusable instructions. A human or policy gate promotes them to Git. Never pour raw transcripts into the knowledge base.</p></div></article>
+        <article class="upgrade"><div class="num">05</div><div><h3>Measure context quality, not output volume</h3><p>Track rediscovery tokens, duplicate attempts, stale inputs, human corrections, failed handoffs, context reuse, and time-to-first-valid-action. “More PRs” without lower rework is entropy.</p></div></article>
+        <article class="upgrade"><div class="num">06</div><div><h3>Generate a world catalog from truth</h3><p>Build the Backstage-like layer as a projection: repos, projects, owners, machines, dependencies, policies, data sensitivity, active tasks. Generate it from Git; never hand-maintain a second ontology.</p></div></article>
+        <article class="upgrade"><div class="num">07</div><div><h3>Codify the brand kernel</h3><p>Create a small versioned agent constitution: voice, visual tokens, privacy boundaries, escalation rules, artifact/evidence contract, and human-control policy. Agents inherit it; souls extend it.</p></div></article>
+        <article class="upgrade"><div class="num">08</div><div><h3>Build a cockpit only after the contracts</h3><p>A local static/Web UI should show live sessions, leases, worktrees, costs, blockers, stale context, handoffs, and artifacts. The UI reads the registry; it does not become truth.</p></div></article>
+      </div>
+    </section>
+
+    <section class="frame" id="roadmap">
+      <div class="section-head"><h2>Go-ham sequence:<br><em>30 / 60 / 90</em></h2><p>The first 30 days should make the architecture executable. The next 60 make it legible and compounding.</p></div>
+      <div class="roadmap">
+        <article class="phase"><small>0–30 DAYS · CONTRACTS</small><h3>Make one golden path</h3><ol><li>Ship route → context-manifest compilation.</li><li>Ship append-only session ledger with stable IDs.</li><li>Bind TODO, route, agent, host, repo, worktree, lease.</li><li>Extend GOAT capsule with manifest + session receipt.</li><li>Dogfood one route across Codex, Claude, and Gemini.</li></ol></article>
+        <article class="phase"><small>31–60 DAYS · COCKPIT</small><h3>See the whole fleet</h3><ol><li>Render local command-center artifact from the ledger.</li><li>Add session spawn, park, resume, wrap, handoff.</li><li>Show conflict risk and ownership before dispatch.</li><li>Add context freshness + budget report.</li><li>Instrument rework and rediscovery.</li></ol></article>
+        <article class="phase"><small>61–90 DAYS · COMPOUNDING</small><h3>Make sessions improve the system</h3><ol><li>Generate proposed docs/decision diffs at wrap.</li><li>Build curated skill/rule catalog without MCP sprawl.</li><li>Route tasks by capability, cost, and trust tier.</li><li>Compare models on the same bounded work packet.</li><li>Graduate proven patterns across worlds—never souls.</li></ol></article>
+      </div>
+      <div class="command-deck" aria-label="Proposed command surface">
+        <div class="command"><b>bpoctl context</b><span>Compile the smallest sufficient, provenance-stamped context packet.</span></div>
+        <div class="command"><b>bpoctl spawn</b><span>Create session ID, worktree, lease, harness, and journal binding.</span></div>
+        <div class="command"><b>bpoctl status</b><span>Render agents, owners, blockers, costs, freshness, and merge risk.</span></div>
+        <div class="command"><b>bpoctl wrap</b><span>Checkpoint, propose durable diffs, publish proof, release lease.</span></div>
+        <div class="command"><b>bpoctl eval</b><span>Score context misses, rework, reuse, cost, and human correction.</span></div>
+      </div>
+    </section>
+
+    <section class="frame" id="steal">
+      <div class="section-head"><h2>Steal the <em>mechanics</em>, not the dependency</h2><p>XIRP is validation and a design reference—not a reason to make Portal the owner of your life.</p></div>
+      <div class="steal">
+        <article class="list-card yes"><h3>Steal aggressively</h3><ul><li>Worktree isolation per concurrent session.</li><li>Model/harness switching without reconstructing context.</li><li>One registry for sessions, owners, work items, and resume points.</li><li>Organization/world catalog injected at session start.</li><li>Wrap-time knowledge capture and reusable rule discovery.</li><li>Start with one team and one project; prove reuse before scale.</li></ul></article>
+        <article class="list-card no"><h3>Do not import blindly</h3><ul><li>Portal as a second semantic truth store.</li><li>Raw transcripts promoted as “institutional memory.”</li><li>Automatic documentation writes without review or provenance.</li><li>One global context pool across BPO, BOB, BRE, and client worlds.</li><li>Marketplace/MCP surface area before repeated pain earns it.</li><li>Parallel agents without leases, isolated worktrees, and merge receipts.</li></ul></article>
+      </div>
+    </section>
+
+    <section class="frame" id="sources">
+      <div class="section-head"><h2>Evidence, not vibes</h2><p>Spotify claims are sourced to Spotify. BPO claims are sourced to the private workflow records linked here.</p></div>
+      <div class="sources">
+        <article class="source-list"><h3>Spotify primary sources</h3>
+          <a href="https://portal.spotify.com/blog/introducing-xirp">XIRP announcement · 2026-08-10<span>36k sessions, 50+ concurrency, worktrees, vendor neutrality, Portal multiplier</span></a>
+          <a href="https://xirp.spotify.com/">XIRP product page<span>Agent, Workspace, living documentation, context layer, model selector</span></a>
+          <a href="https://engineering.atspotify.com/2025/11/context-engineering-background-coding-agents-part-2">Honk · context engineering<span>Spotify's earlier account of reliable background-agent context packaging</span></a>
+        </article>
+        <article class="source-list"><h3>BPO prior records</h3>
+          <a href="https://nomad-code.github.io/todo-288_bpo-alias-crew_2026-07-26_08-26">TODO-288 · alias crew artifact<span>Soul/throne, shared resources, headless concurrency, scoped powers</span></a>
+          <a href="https://nomad-code.github.io/todo-345_goat-state-architecture_2026-08-02_12-41">TODO-345 · GOAT architecture<span>Portable state, Linear graph, Git truth, offline continuity</span></a>
+          <a href="https://nomad-code.github.io/todo-356_code-context-route-slugs_2026-08-04_09-10">TODO-356 · context routes<span>Typed slugs and separate semantic/workflow/runtime/projection addresses</span></a>
+          <a href="https://nomad-code.github.io/todo-359_code-context_forks_2026-08-05_08-58">TODO-359 · context forks<span>Branch isolation, outcome promotion, archive hygiene</span></a>
+        </article>
+      </div>
+    </section>
+
+    <section class="final"><p>Your best move is not “build a personal XIRP.” It is: <span>turn BPO's existing laws into a small executable control plane</span>—then let every agent wear the brand without owning the brain.</p><small>Next irreversible decision: none. Next reversible build: route compiler + session ledger + worktree receipt on one golden-path task.</small></section>
+
+    <footer><span>TODO-392 · BPO × Spotify XIRP · generated 2026-08-12 00:56 Z</span><span class="stamp">private source · gated projection · model claims current to 2026-08-11 ET</span></footer>
+  </main>
+</body>
+</html>

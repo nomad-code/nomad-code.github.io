@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>code · layers · LOG vs SRT</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+<style>
+  body{background:var(--bg);color:var(--body);font-family:var(--font-ui)}
+  .wrap{max-width:780px;margin:0 auto;padding:28px 20px 40px}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--forest);font-weight:600}
+  h1{font-size:clamp(28px,6.4vw,40px);line-height:1.05;letter-spacing:-.027em;
+    color:var(--ink);font-weight:800;margin:9px 0 12px;text-wrap:balance}
+  .lede{font-size:16px;line-height:1.55;color:var(--muted);margin:0 0 4px}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  h2{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;margin:34px 0 14px;padding-top:20px;border-top:1px solid var(--line)}
+  .stats{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:22px 0 4px}
+  .st{border-radius:var(--r-panel);padding:15px 16px;border:1px solid var(--line);
+    background:var(--card)}
+  .st .t{font-family:var(--font-mono);font-size:30px;font-weight:700;line-height:1;
+    color:var(--ink);font-variant-numeric:tabular-nums}
+  .st .s{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--faint);font-weight:700;margin-top:9px}
+  .rules{background:#14201d;border-radius:var(--r-panel);padding:22px 24px;margin:20px 0 6px}
+  .rules .rh{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:#7fbfae;font-weight:700;margin-bottom:14px}
+  .rules ol{margin:0;padding-left:19px;color:#dfeae6}
+  .rules li{font-size:14px;line-height:1.55;margin-bottom:10px}
+  .rules li:last-child{margin-bottom:0}
+  .rules code{font-family:var(--font-mono);font-size:.87em;background:#1e2e2a;
+    padding:1px 5px;border-radius:5px;color:#a8ddcd}
+  .foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:11px;color:var(--faint);
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">code · layers · log / srt</div>
+  <h1>Measured, not asserted</h1>
+  <p class="lede">LOG preserves, SRT processes. One script now reads the
+  History register and ranks every gap — LOG first, because an index over
+  lost originals is not coverage. First unattended all-green nightly.</p>
+  <div class="stats">
+    <div class="st"><div class="t">12/12</div><div class="s">nightly steps</div></div>
+    <div class="st"><div class="t">12→5</div><div class="s">LOG missing</div></div>
+    <div class="st"><div class="t">11→21</div><div class="s">SRT ok</div></div>
+    <div class="st"><div class="t">178k</div><div class="s">timeline files indexed</div></div>
+  </div>
+  <h2>What landed</h2>
+  <div class="rules"><div class="rh">bpo main · 33 tests passing</div><ol>
+    <li><code>scripts/code-layers --gaps</code> — LOG = worst(capture, backup), SRT = index; live probes only under 2 h old</li>
+    <li>Timeline file index — 144 GiB searchable, rebuilt nightly, unreadable walks never delete rows</li>
+    <li>Photos Vision OCR from 09-06 on — 5.7k images, nightly, offsite</li>
+    <li>First verified offsite: iMessage, WhatsApp, m5 Hindsight, Apple Notes, Apple Calendar, frozen m5 OCR</li>
+    <li>Text indexes: 19.5k messages (4.1k decoded from attributedBody), 429 notes, AI prompts from both Macs</li>
+    <li>AI transcripts offsite, BPO world only — Found / Dhamma sessions held, classified on each host</li>
+    <li>Strava current to 09-29; fitness state rebuilt; verdict follows medical availability</li>
+    <li>disk-guard on main, notify-only — auto would delete 17 GiB, mostly cross-world</li>
+  </ol></div>
+  <h2>Your calls</h2>
+  <div class="rules"><div class="rh">open</div><ol>
+    <li>Drive remote runs on rclone's shared Google quota — make a personal OAuth client; Timeline re-push crawls until then</li>
+    <li>Replace the first m3 transcript pack (21 sessions the stricter rule now holds)?</li>
+    <li>disk-guard: allow auto-delete of regenerable dirs?</li>
+  </ol></div>
+  <div class="foot"><span>BPO · m3</span><span>2026-09-30</span></div>
+</div>
+</body>
+</html>

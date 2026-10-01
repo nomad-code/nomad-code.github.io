@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BPO slug system: one address across Linear, agent sessions, files, and artifacts.">
+  <title>TODO-258 · bpo-slugs</title>
+  <style>
+    :root {
+      --paper:#f3f1e8; --card:#fffdf6; --ink:#18231f; --muted:#65716b;
+      --line:#d8d9cf; --forest:#164c3b; --lime:#c9f36a; --blue:#c9e7ff;
+      --amber:#ffd47a; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { width:min(100% - 32px, 980px); margin:auto; padding:56px 0 72px; }
+    header { display:grid; gap:18px; padding-bottom:30px; border-bottom:1px solid var(--line); }
+    .eyebrow,.label { font:700 11px/1.2 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--forest); }
+    h1 { margin:0; font:700 clamp(34px,7vw,72px)/.95 var(--mono); letter-spacing:-.065em; }
+    .lede { max-width:680px; margin:0; color:var(--muted); font-size:18px; }
+    .address { display:block; width:max-content; max-width:100%; padding:12px 16px; border-radius:9px; background:var(--ink); color:white; font:700 clamp(17px,4vw,26px)/1.2 var(--mono); overflow-wrap:anywhere; }
+    section { margin-top:36px; }
+    h2 { margin:5px 0 16px; font-size:24px; letter-spacing:-.03em; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .card { min-width:0; padding:20px; background:var(--card); border:1px solid var(--line); border-radius:14px; }
+    .card strong { display:block; margin:8px 0 5px; font-size:18px; }
+    .card p { margin:0; color:var(--muted); }
+    code { font-family:var(--mono); font-size:.9em; }
+    .rule { display:grid; grid-template-columns:72px 1fr; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--line); }
+    .rule:last-child { border-bottom:0; }
+    .mark { display:grid; place-items:center; width:58px; height:52px; border-radius:10px; background:var(--card); border:1px solid var(--line); font:700 30px/1 var(--mono); }
+    .rule p { margin:2px 0 0; color:var(--muted); }
+    .flow { display:grid; gap:10px; }
+    .flow-row { display:grid; grid-template-columns:110px 1fr; gap:12px; align-items:baseline; }
+    .flow-row span:first-child { color:var(--muted); font:700 11px/1 var(--mono); text-transform:uppercase; letter-spacing:.08em; }
+    .flow-row code { padding:9px 12px; border-radius:8px; background:var(--card); border:1px solid var(--line); overflow-wrap:anywhere; }
+    .lab { padding:22px; border-radius:16px; background:var(--forest); color:white; }
+    .lab .label { color:var(--lime); }
+    .lab h2 { margin-bottom:8px; }
+    .lab p { margin:0 0 16px; color:#c9d9d2; }
+    input { width:100%; padding:14px 15px; border:1px solid #6b8a7e; border-radius:9px; background:#0e392d; color:white; font:600 16px/1.2 var(--mono); outline:none; }
+    input:focus { border-color:var(--lime); box-shadow:0 0 0 3px #c9f36a35; }
+    output { display:block; margin-top:10px; padding:12px 15px; border-radius:9px; background:var(--lime); color:#11241d; font:700 16px/1.2 var(--mono); overflow-wrap:anywhere; }
+    .decision-list { display:grid; grid-template-columns:1fr 1fr; gap:10px 28px; margin:0; padding:0; list-style:none; }
+    .decision-list li { position:relative; padding-left:20px; }
+    .decision-list li::before { content:"→"; position:absolute; left:0; color:var(--forest); font-weight:800; }
+    .slugs { display:flex; flex-wrap:wrap; gap:8px; }
+    .slug { padding:6px 10px; border-radius:999px; background:var(--blue); font:700 13px/1 var(--mono); }
+    footer { display:flex; justify-content:space-between; gap:16px; margin-top:48px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font:12px/1.5 var(--mono); }
+    a { color:inherit; }
+    @media (max-width:720px) {
+      main { padding-top:34px; }
+      .grid,.decision-list { grid-template-columns:1fr; }
+      .flow-row { grid-template-columns:1fr; gap:4px; }
+      footer { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">TODO-258 · BPO system decision</div>
+    <h1>bpo-slugs</h1>
+    <p class="lede">One small vocabulary that survives Linear, Codex, terminal agents, URLs, and the filesystem—without rebuilding the context debt of <em>ji</em>.</p>
+    <code class="address">TODO_258-bpo-slugs</code>
+  </header>
+
+  <section>
+    <div class="label">One address · three projections</div>
+    <h2>The name travels; the role changes.</h2>
+    <div class="grid">
+      <article class="card"><span class="label">Linear</span><strong>Log</strong><p>Verbatim prompts, real timestamps, compressed guidance, decisions, and workflow.</p></article>
+      <article class="card"><span class="label">Git</span><strong>Accepted work</strong><p>Code, documents, configuration, and durable state—not conversational exhaust.</p></article>
+      <article class="card"><span class="label">BPO</span><strong>Artifact</strong><p>An intentional output when the work benefits from one. This page is that output.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Boundary hierarchy</div>
+    <h2>Precision when available; usability when lost.</h2>
+    <div class="card">
+      <div class="rule"><span class="mark">/</span><div><strong>Hard boundary</strong><p>Separates address levels: issue identity from title.</p></div></div>
+      <div class="rule"><span class="mark">-</span><div><strong>Universal fallback</strong><p>The most portable separator. It can carry either neighboring role.</p></div></div>
+      <div class="rule"><span class="mark">_</span><div><strong>Tight binding</strong><p>Joins a specific unit such as <code>TODO_258</code>. It may safely degrade to a hyphen.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Graceful degradation</div>
+    <h2>Structure can flatten without breaking identity.</h2>
+    <div class="card flow">
+      <div class="flow-row"><span>Linear</span><code>TODO-258 / bpo-slugs</code></div>
+      <div class="flow-row"><span>Flattened</span><code>TODO_258-bpo-slugs</code></div>
+      <div class="flow-row"><span>Normalized</span><code>todo-258-bpo-slugs</code></div>
+    </div>
+  </section>
+
+  <section class="lab">
+    <div class="label">Normalization lab</div>
+    <h2>Try an address</h2>
+    <p>Both rich separators collapse to the transport-safe hyphen.</p>
+    <input id="source" value="TODO_258-bpo-context_debt" aria-label="Address to normalize">
+    <output id="result" for="source">todo-258-bpo-context-debt</output>
+  </section>
+
+  <section>
+    <div class="label">Vocabulary</div>
+    <h2>Short slugs, composed in ordinary strings.</h2>
+    <div class="slugs">
+      <span class="slug">cafe</span><span class="slug">fit</span><span class="slug">people</span>
+      <span class="slug">golf</span><span class="slug">ai</span><span class="slug">code</span>
+      <span class="slug">ja</span><span class="slug">jp</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Cleanup direction</div>
+    <h2>Subtract the machinery; preserve the history.</h2>
+    <div class="card">
+      <ul class="decision-list">
+        <li>Retire <code>ji/oji/nji</code> and the canonical ontology.</li>
+        <li>Remove generated Git session provenance.</li>
+        <li>Stop writing new <code>ji:</code> frontmatter.</li>
+        <li>Move <code>body → fit</code> and <code>lang-jp → ja</code>.</li>
+        <li>Let paths supply obvious primary classification.</li>
+        <li>Keep historical notes and intentional artifacts.</li>
+        <li>Generalize prompt journaling across Codex, Claude, and Pi.</li>
+        <li>Decide whether <code>dna → context</code> in a later pass.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span><a href="https://linear.app/nomad-code/issue/TODO-258/bpo-slugs">Linear · TODO-258</a></span>
+    <span>2026-07-20 17:43 UTC · bpo</span>
+  </footer>
+</main>
+<script>
+  const input = document.getElementById('source');
+  const output = document.getElementById('result');
+  function normalize(value) {
+    return value.trim().toLowerCase().replace(/[\/_]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  }
+  function render() { output.value = normalize(input.value); output.textContent = output.value; }
+  input.addEventListener('input', render);
+  render();
+</script>
+</body>
+</html>

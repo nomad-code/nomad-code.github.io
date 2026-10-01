@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-294 · Claude supervisor live</title>
+  <meta name="description" content="Codex-controlled active-active Claude Code nodes on M3 and M5">
+  <script>
+  (function(){var K='bpo-unlocked',ok=false,h;try{ok=localStorage.getItem(K)==='true'||sessionStorage.getItem(K)==='true'}catch(e){}if(!ok){h=document.createElement('style');h.id='__pw_gate_hide__';h.textContent='html > body > *:not(#__pw_gate__){visibility:hidden!important}';document.head.appendChild(h)}window.__BPO_GATE__={label:'bpo · Private',key:K};var p=['','../','../../','../../../'],i=0;(function n(){if(i>=p.length){if(h)h.remove();return}var s=document.createElement('script');s.src=p[i++]+'password-wall/gate.js';s.onerror=n;document.head.appendChild(s)})()})();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{
+      --paper:#f0eee5;--ink:#14221d;--muted:#61706a;--forest:#124b38;
+      --forest2:#0b3327;--lime:#c7f36b;--line:#d1d7ce;--card:#fffdf6;
+      --sky:#dcecf3;--sand:#eee2cf;--orange:#f3a35c;--ok:#6fd19a
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:inherit}button{font:inherit}.wrap{width:min(100% - 30px,1120px);margin:auto;padding:46px 0 76px}
+    .mono,.eyebrow{font:750 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.105em;text-transform:uppercase}
+    .eyebrow{display:flex;align-items:center;gap:9px;color:var(--forest)}.live{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 5px #6fd19a26}
+    h1{max-width:930px;margin:16px 0 17px;font:800 clamp(44px,8.7vw,96px)/.88 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.08em}
+    h1 span{color:var(--forest)}.lede{max-width:780px;margin:0;color:var(--muted);font-size:clamp(18px,2.5vw,23px)}
+    .address{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:30px 0 16px;padding:14px 16px;border-radius:14px;background:var(--ink);color:white;font:720 clamp(13px,2vw,19px)/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+    .copy{border:0;border-radius:999px;padding:9px 13px;background:var(--lime);color:var(--ink);font-weight:850;cursor:pointer;white-space:nowrap}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 42px}.metric{padding:17px;border:1px solid var(--line);border-radius:15px;background:var(--card)}
+    .metric b{display:block;font:790 clamp(25px,4vw,38px)/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.05em}.metric span{color:var(--muted);font-size:13px}
+    .cockpit{position:relative;overflow:hidden;padding:28px;border-radius:24px;background:var(--forest2);color:#fff;box-shadow:0 22px 55px #113d2f28}
+    .cockpit:after{content:"";position:absolute;width:380px;height:380px;right:-120px;top:-170px;border-radius:50%;background:radial-gradient(circle,#c7f36b3d,transparent 65%);pointer-events:none}
+    .cockpit-head{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:20px}.cockpit h2{margin:7px 0 0;font:780 clamp(31px,5vw,55px)/.95 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.06em}
+    .phone{display:grid;place-items:center;width:70px;height:70px;border:2px solid var(--lime);border-radius:20px;color:var(--lime);font-size:34px;transform:rotate(3deg)}
+    .nodes{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch;margin-top:27px}.node{padding:21px;border:1px solid #ffffff24;border-radius:17px;background:#ffffff0d}
+    .node-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.node h3{margin:8px 0 10px;font:770 28px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.node p{margin:0;color:#cbd9d3}
+    .chip{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border-radius:999px;background:#ffffff12;font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace}.chip i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+    .bridge{display:grid;place-items:center;color:var(--lime);font:800 18px ui-monospace,SFMono-Regular,Menlo,monospace}.bridge span{writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.08em}
+    .ownership{position:relative;z-index:1;margin-top:14px;padding:15px 17px;border-radius:13px;background:var(--lime);color:var(--ink);font-weight:760;text-align:center}
+    .section{margin-top:52px}.section-title{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:19px}.section h2{margin:0;font:770 clamp(29px,4.7vw,50px)/.98 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.055em}.section-title p{max-width:430px;margin:0;color:var(--muted)}
+    .rail{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.step{min-height:200px;padding:19px;border:1px solid var(--line);border-radius:16px;background:var(--card)}.step:nth-child(2){background:var(--sky)}.step:nth-child(3){background:var(--sand)}.step:nth-child(4){background:#e8f1e9}.step:nth-child(5){background:var(--lime)}
+    .num{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:var(--ink);color:#fff;font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace}.step h3{margin:18px 0 7px;font-size:19px}.step p{margin:0;color:#52615b;font-size:14px}
+    .terminal{overflow:hidden;border:1px solid #263730;border-radius:19px;background:#101a16;color:#dce8e2;box-shadow:0 18px 42px #14221d1c}.terminal-top{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid #ffffff14;background:#17241f}.lights{display:flex;gap:6px}.lights i{width:9px;height:9px;border-radius:50%;background:#607169}.lights i:first-child{background:#ef7e6e}.lights i:nth-child(2){background:#efc66e}.lights i:nth-child(3){background:var(--ok)}
+    .tabs{display:flex;gap:7px;flex-wrap:wrap}.tab{border:0;border-radius:999px;padding:7px 10px;background:#ffffff0e;color:#b9c9c2;cursor:pointer;font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace}.tab.active{background:var(--lime);color:var(--ink)}
+    .command{display:none;min-height:168px;padding:23px;font:650 clamp(13px,2.1vw,17px)/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.command.active{display:block}.prompt{color:var(--lime)}.comment{color:#7e948a}.terminal-copy{float:right;margin:0 14px 14px;border:1px solid #ffffff24;border-radius:999px;padding:7px 10px;background:transparent;color:#dce8e2;cursor:pointer;font-size:12px}
+    .proof{display:grid;grid-template-columns:1.1fr .9fr;gap:13px}.proof-main{padding:25px;border-radius:20px;background:var(--forest);color:#fff}.proof-main h3{margin:9px 0 20px;font:770 28px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.check{display:grid;grid-template-columns:27px 1fr;gap:11px;padding:12px 0;border-bottom:1px solid #ffffff24}.check:last-child{border:0}.tick{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900}.check small{color:#c9dad3}
+    .proof-side{display:grid;gap:13px}.evidence{padding:21px;border:1px solid var(--line);border-radius:18px;background:var(--card)}.evidence strong{display:block;margin:8px 0;font:760 22px/1.1 ui-monospace,SFMono-Regular,Menlo,monospace}.evidence p{margin:0;color:var(--muted)}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .safety{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.safe{padding:20px;border:1px solid var(--line);border-radius:17px;background:var(--card)}.safe .icon{font-size:26px}.safe h3{margin:10px 0 5px}.safe p{margin:0;color:var(--muted)}
+    .links{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}.links a{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-weight:750;text-decoration:none}
+    details{margin-top:14px;border:1px solid var(--line);border-radius:16px;background:var(--card)}summary{padding:17px 19px;cursor:pointer;font-weight:800}.detail-body{padding:0 19px 18px;color:var(--muted)}
+    footer{display:flex;justify-content:space-between;gap:18px;margin-top:45px;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+    @media(max-width:900px){.metrics{grid-template-columns:1fr 1fr}.rail{grid-template-columns:1fr 1fr}.step:last-child{grid-column:1/-1}.proof{grid-template-columns:1fr}}
+    @media(max-width:680px){.wrap{width:min(100% - 22px,1120px);padding-top:32px}.cockpit{padding:20px}.cockpit-head,.section-title,.address,footer{align-items:flex-start;flex-direction:column}.nodes{grid-template-columns:1fr}.bridge span{writing-mode:initial}.metrics,.rail,.safety{grid-template-columns:1fr}.step:last-child{grid-column:auto}.step{min-height:auto}.phone{display:none}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <div class="eyebrow"><span class="live"></span> nomad-code / bpo · operational release</div>
+  <h1>Teleport is <span>live.</span></h1>
+  <p class="lede">Codex on the always-carried iPhone now supervises Claude Code across M3 and M5: observe both nodes, dispatch work, read structured output, and move recoverable task ownership without touching unrelated tmux panes.</p>
+
+  <div class="address"><span id="address">TODO_294-etc-m3_m5_teleport_claude</span><button class="copy" data-copy="#address">Copy address</button></div>
+
+  <section class="metrics" aria-label="Release metrics">
+    <article class="metric"><b>2</b><span>active-active Mac nodes</span></article>
+    <article class="metric"><b>2-way</b><span>snapshot canary passed</span></article>
+    <article class="metric"><b>7/7</b><span>supervisor tests green</span></article>
+    <article class="metric"><b>0</b><span>existing panes disturbed</span></article>
+  </section>
+
+  <section class="cockpit" aria-label="Codex control plane">
+    <div class="cockpit-head">
+      <div><div class="mono" style="color:var(--lime)">King device · control plane</div><h2>iPhone → Codex → Claude</h2></div>
+      <div class="phone" aria-hidden="true">⌁</div>
+    </div>
+    <div class="nodes">
+      <article class="node">
+        <div class="node-top"><span class="mono">M3 · edge</span><span class="chip"><i></i> online</span></div>
+        <h3>nearby + mobile</h3>
+        <p>Claude 2.1.220 · tmux 3.6a · five existing panes observed and preserved.</p>
+      </article>
+      <div class="bridge"><span>TAILSCALE + SSH</span></div>
+      <article class="node">
+        <div class="node-top"><span class="mono">M5 · fortress</span><span class="chip"><i></i> online</span></div>
+        <h3>always on</h3>
+        <p>Claude 2.1.212 · tmux 3.7b · clean idle capacity in Virginia.</p>
+      </article>
+    </div>
+    <div class="ownership">Both machines can work. One Linear task has one active owner.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>The handoff rail</h2><p>“Teleport” means a recoverable work-state transition—not pretending process memory can cross two kernels.</p></div>
+    <div class="rail">
+      <article class="step"><span class="num">1</span><h3>Prepare</h3><p>Capture tracked, staged, unstaged, and untracked work through a temporary Git index. The source branch and index do not move.</p></article>
+      <article class="step"><span class="num">2</span><h3>Record</h3><p>Push an epoch-named GitHub handoff ref as the durable checkpoint and coordination record.</p></article>
+      <article class="step"><span class="num">3</span><h3>Carry</h3><p>Send a minimal incremental Git bundle over verified Tailscale/SSH. Headless Keychain access is not required.</p></article>
+      <article class="step"><span class="num">4</span><h3>Recreate</h3><p>Build an isolated <code>~/dev/teleport/&lt;task&gt;/&lt;epoch&gt;</code> worktree on the target.</p></article>
+      <article class="step"><span class="num">5</span><h3>Own</h3><p>Only after confirmation and a safe source state does the target Claude launch from the reviewed handoff brief.</p></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Phone-facing control</h2><p><code>cct</code> and <code>handoff</code> are short aliases on M3; the full CLI is installed on both nodes.</p></div>
+    <div class="terminal">
+      <div class="terminal-top">
+        <div class="lights"><i></i><i></i><i></i></div>
+        <div class="tabs">
+          <button class="tab active" data-tab="status">status</button>
+          <button class="tab" data-tab="dispatch">dispatch</button>
+          <button class="tab" data-tab="teleport">teleport</button>
+          <button class="tab" data-tab="tail">tail</button>
+        </div>
+      </div>
+      <div class="command active" id="status"><span class="prompt">$</span> cc-supervisor status
+
+HOST  STATE      RTT  CLAUDE                    PANES
+m3    online     0ms  2.1.220 (Claude Code)        5
+m5    online  ~4.5s  2.1.212 (Claude Code)        0</div>
+      <div class="command" id="dispatch"><span class="prompt">$</span> cc-supervisor dispatch TODO_294-example \
+  --host m5 --cwd ~/dev/bpo \
+  --prompt "Inspect the task and report."
+
+<span class="comment"># Named tmux worker + structured stream log</span></div>
+      <div class="command" id="teleport"><span class="prompt">$</span> cc-supervisor prepare TODO_294-example \
+  --to m5 --cwd ~/dev/repo
+
+<span class="prompt">$</span> cc-supervisor transfer &lt;capsule-id&gt; \
+  --confirm TODO_294-example</div>
+      <div class="command" id="tail"><span class="prompt">$</span> cc-supervisor tail TODO_294 --host m5
+
+node-canary-ok
+✓ completed · 8.3s · $0.0915</div>
+      <button class="terminal-copy" id="copy-command">Copy current command</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Proof, not vibes</h2><p>The canary deliberately used no-start transitions first, so transport could be validated without stopping or launching Claude.</p></div>
+    <div class="proof">
+      <article class="proof-main">
+        <div class="mono" style="color:var(--lime)">Release verification</div>
+        <h3>Round trip complete</h3>
+        <div class="check"><span class="tick">✓</span><div><b>M3 → M5</b><br><small>Snapshot recreated in an isolated target worktree.</small></div></div>
+        <div class="check"><span class="tick">✓</span><div><b>M5 → M3</b><br><small>Reverse leg exercised the SSH-bundle path with the GUI Keychain unavailable.</small></div></div>
+        <div class="check"><span class="tick">✓</span><div><b>Managed Claude dispatch</b><br><small>M5 returned <code>node-canary-ok</code>, exit 0, through the structured log.</small></div></div>
+        <div class="check"><span class="tick">✓</span><div><b>Clean teardown</b><br><small>Canary worktrees, branches, and GitHub handoff refs were removed.</small></div></div>
+      </article>
+      <div class="proof-side">
+        <article class="evidence"><div class="mono">Transport</div><strong>GitHub + SSH bundle</strong><p>GitHub holds durable truth. The private link carries exact Git objects when headless credential stores refuse access.</p></article>
+        <article class="evidence"><div class="mono">Observability</div><strong>Lifecycle hooks + state</strong><p>Session start, prompts, waits, stop, failure, and end become task metadata. Raw transcript content stays machine-local.</p></article>
+        <article class="evidence"><div class="mono">Node UX</div><strong><code>m3 · 1-FAI</code></strong><p>The tmux bar now includes hostname, eliminating “which Mac am I touching?” ambiguity on the phone.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Hard boundaries</h2><p>The supervisor treats convenience as subordinate to recoverability and world separation.</p></div>
+    <div class="safety">
+      <article class="safe"><div class="icon">◉</div><h3>Unmanaged means untouched</h3><p>Existing tmux panes are observed only. No terminal scraping, keystroke injection, or broad process kills.</p></article>
+      <article class="safe"><div class="icon">◇</div><h3>BPO ≠ BOB</h3><p>TODO/FEM/ELE/PASS remain personal-world; TECH remains Found-world. Tokens and state are selected independently.</p></article>
+      <article class="safe"><div class="icon">↯</div><h3>No secret-shaped cargo</h3><p>No credentials, ignored files, process memory, raw transcripts, or prompt body enter the capsule manifest or artifact.</p></article>
+    </div>
+    <details>
+      <summary>What still does not “teleport”?</summary>
+      <div class="detail-body">A live tmux process and Claude’s in-memory context remain on their source Mac. The target starts a fresh Claude from the exact Git snapshot plus reviewed handoff brief. Native Claude Remote Control remains an optional escape hatch, but identity tokens, custom endpoints, and Headroom can make it unavailable; the supervisor does not depend on it.</div>
+    </details>
+  </section>
+
+  <div class="links">
+    <a href="https://linear.app/nomad-code/issue/TODO-294/etc-m3-m5-teleport-claude">Linear · TODO-294 ↗</a>
+    <a href="https://github.com/brendobrien/etc/commit/ea4c35e">Supervisor release · ea4c35e ↗</a>
+    <a href="https://github.com/nomad-code/bpo/commit/f89a9a3">Active-active provenance · f89a9a3 ↗</a>
+    <a href="todo-294_etc-m3_m5_teleport_claude_2026-07-27_00-34.html">Original architecture decision ↗</a>
+  </div>
+
+  <footer>
+    <span>cc-supervisor 0.2.0 · operational on M3 + M5<br>Codex task 019fa0c9-efcd-7b33-9860-66c0e2490317</span>
+    <span>2026-07-27 - 01-25-15 Z<br>m3 · BPO private</span>
+  </footer>
+</main>
+<script>
+const tabs=[...document.querySelectorAll('.tab')];
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.toggle('active',x===tab));
+  document.querySelectorAll('.command').forEach(x=>x.classList.toggle('active',x.id===tab.dataset.tab));
+}));
+document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
+  await navigator.clipboard.writeText(document.querySelector(button.dataset.copy).textContent.trim());
+  const old=button.textContent;button.textContent='Copied ✓';setTimeout(()=>button.textContent=old,1400);
+}));
+document.getElementById('copy-command').addEventListener('click',async function(){
+  const current=document.querySelector('.command.active').innerText.trim();
+  await navigator.clipboard.writeText(current);this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy current command',1400);
+});
+</script>
+</body>
+</html>

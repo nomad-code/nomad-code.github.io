@@ -1,0 +1,227 @@
+<!-- bre password wall · self-locating loader (depth-agnostic) -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try { unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true'; } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<title>Maps V3 · landing plan — 6 slices In Review</title>
+<style>
+  :root {
+    --bg:#0f1110; --panel:#161a18; --line:#262c29;
+    --ink:#e8ece9; --quiet:#97a19c; --faint:#6c766f;
+    --teal:#87CAB7; --teal-dim:#5f8f80; --gold:#d7c58a; --red:#d98a8a;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; }
+  body {
+    background:radial-gradient(120% 80% at 85% -10%, #17201c 0%, var(--bg) 55%);
+    color:var(--ink); font-family:var(--sans); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:1000px; margin:0 auto; padding:56px 24px 96px; }
+  .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--teal-dim); }
+  h1 { font-size:clamp(28px,5vw,46px); line-height:1.05; margin:12px 0 4px;
+    letter-spacing:-.02em; font-weight:650; }
+  h1 .dot { color:var(--teal); }
+  .lede { color:var(--quiet); font-size:18px; max-width:70ch; margin:14px 0 0; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 0; }
+  .chip { font-family:var(--mono); font-size:12px; color:var(--quiet);
+    border:1px solid var(--line); border-radius:999px; padding:5px 11px; }
+  .chip b { color:var(--teal); font-weight:600; }
+
+  /* verdict banner */
+  .verdict { margin:30px 0 0; background:linear-gradient(180deg,#17201c,var(--panel));
+    border:1px solid var(--teal-dim); border-left:3px solid var(--teal);
+    border-radius:12px; padding:18px 20px; }
+  .verdict .k { font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--teal); }
+  .verdict p { margin:6px 0 0; font-size:16px; color:var(--ink); }
+  .verdict b { color:var(--gold); font-weight:600; }
+
+  section { margin-top:48px; }
+  h2 { font-size:21px; margin:0 0 4px; font-weight:620; }
+  h2 .n { font-family:var(--mono); font-size:13px; color:var(--teal-dim); margin-right:10px; }
+  .sub { color:var(--faint); font-size:14px; margin:0 0 18px; }
+
+  .scroll { overflow-x:auto; -webkit-overflow-scrolling:touch;
+    border:1px solid var(--line); border-radius:12px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; min-width:560px; }
+  thead th { text-align:left; font-family:var(--mono); font-size:11px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--teal-dim);
+    background:var(--panel); padding:12px 14px; border-bottom:1px solid var(--line);
+    white-space:nowrap; }
+  tbody td { padding:11px 14px; border-bottom:1px solid var(--line);
+    vertical-align:top; color:var(--ink); }
+  tbody tr:last-child td { border-bottom:0; }
+  tbody tr:nth-child(even) td { background:rgba(255,255,255,.012); }
+  td .mono, .mono { font-family:var(--mono); font-size:12.5px; color:var(--quiet); }
+  a { color:var(--teal); text-decoration:none; border-bottom:1px solid transparent; }
+  a:hover { border-bottom-color:var(--teal-dim); }
+  .ok { color:var(--teal); font-weight:600; }
+  .flag { color:var(--gold); font-weight:600; }
+  .no { color:var(--red); font-weight:600; }
+  .yes-self { color:var(--teal); }
+  .num { font-family:var(--mono); color:var(--gold); font-weight:600; }
+  .pill { font-family:var(--mono); font-size:11px; padding:2px 8px; border-radius:999px;
+    border:1px solid var(--line); color:var(--quiet); white-space:nowrap; }
+  .pill.rev { color:var(--gold); border-color:#4a4229; }
+  .pill.done { color:var(--teal); border-color:var(--teal-dim); }
+
+  footer { margin-top:56px; border-top:1px solid var(--line); padding-top:22px;
+    display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:var(--faint); }
+  footer a { font-family:var(--mono); font-size:12.5px; }
+  .stamp { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:18px; }
+</style>
+
+<div class="wrap">
+
+  <div class="eyebrow">dhamma.org · portal-v2 · Old Student</div>
+  <h1>Maps V3 — landing plan<span class="dot">.</span></h1>
+  <p class="lede">Six slices shipped 2026-07-06 and sitting <b style="color:var(--gold)">In Review</b>
+    across two PRs. This scopes every remaining step to take them → Done, plus the
+    i49 scope that hasn't shipped yet.</p>
+  <div class="chips">
+    <span class="chip"><b>6</b> tickets</span>
+    <span class="chip"><b>2</b> PRs · #488 #489</span>
+    <span class="chip"><b>4</b> public issues · i49–i52</span>
+    <span class="chip">both PRs <b>mergeable</b></span>
+    <span class="chip"><b>0</b> reviews</span>
+  </div>
+
+  <div class="verdict">
+    <div class="k">Can we do em?</div>
+    <p>The engineering is <b>done</b> — both PRs are open and mergeable. Landing is
+      gated on <b>team code review</b> (none yet) and <b>one design sign-off</b>
+      (TODO-153 dropped the mobile wordmark). Merge, issue-close, and
+      <span class="mono">linear done</span> are ours to run once those clear.
+      i49 stays open — two of its scope items never shipped.</p>
+  </div>
+
+  <!-- A -->
+  <section>
+    <h2><span class="n">A</span>Slice matrix</h2>
+    <p class="sub">What each ticket shipped, and the gate between it and Done.</p>
+    <div class="scroll"><table>
+      <thead><tr>
+        <th>TODO</th><th>Public</th><th>PR</th><th>Slice shipped</th><th>Done-when</th><th>Gate → Done</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="num">148</td><td class="mono">i50</td><td class="mono">#488</td>
+          <td>ClosestEvents → NearbyEvents; strip rendered below the map (was computed, never shown)</td>
+          <td class="ok">✓ met</td><td>review → merge</td></tr>
+        <tr><td class="num">149</td><td class="mono">i51</td><td class="mono">#488</td>
+          <td>Virtual group sittings = their own toggleable category (added to the single source of truth) + legend + toggle</td>
+          <td class="ok">✓ met</td><td>review → merge</td></tr>
+        <tr><td class="num">150</td><td class="mono">i52</td><td class="mono">#488</td>
+          <td>Category icons inside markers + legend swatches, zoom-scaled. Rec: <b class="mono" style="color:var(--gold)">icons</b> over letters/emoji</td>
+          <td class="ok">✓ met</td><td>review → merge</td></tr>
+        <tr><td class="num">151</td><td class="mono">i49</td><td class="mono">#489</td>
+          <td>Single-finger pan/zoom confirmed (gestureHandling greedy; full-height map removes page-scroll conflict)</td>
+          <td class="ok">✓ met</td><td>review → merge</td></tr>
+        <tr><td class="num">152</td><td class="mono">i49</td><td class="mono">#489</td>
+          <td>Mobile list ↔ map toggle — floating pill, one surface at a time, CSS-only (map never re-inits)</td>
+          <td class="ok">✓ met</td><td>review → merge</td></tr>
+        <tr><td class="num">153</td><td class="mono">i49</td><td class="mono">#489</td>
+          <td>Slim single-layer header (~56px): 40px wheel logo, 40px search, hamburger folds language/profile</td>
+          <td class="flag">✓ met · wordmark dropped</td>
+          <td><span class="flag">design sign-off</span> → review → merge</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- B -->
+  <section>
+    <h2><span class="n">B</span>Key dates</h2>
+    <p class="sub">The prompt ↔ response ↔ state trail. UTC, never guessed.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>When (UTC)</th><th>Event</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">2026-07-06 17:40–17:44</td>
+          <td>All 6 tickets → <b>In Progress</b>; briefs archived as PROMPTs, descriptions blanked</td></tr>
+        <tr><td class="mono">2026-07-06 23:53–23:54</td>
+          <td>RESPONSEs posted → <b>In Review</b>; PRs <span class="mono">#488</span> &amp; <span class="mono">#489</span> opened</td></tr>
+        <tr><td class="mono">2026-07-07</td>
+          <td>This scoping session — landing plan + i49 residual tickets</td></tr>
+        <tr><td class="mono">pending</td>
+          <td>design sign-off → team review → merge → close i50/i51/i52 → <span class="mono">linear done</span> ×6</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- C -->
+  <section>
+    <h2><span class="n">C</span>Action items to land</h2>
+    <p class="sub">Ordered by dependency. "Self-serve" = we can do it from this cockpit; the rest are gated on others.</p>
+    <div class="scroll"><table>
+      <thead><tr>
+        <th>#</th><th>Step</th><th>Target</th><th>Owner</th><th>Blocked by</th><th>Self-serve?</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>Design sign-off on the dropped mobile wordmark</td>
+          <td class="mono">#489 · TODO-153</td><td>design team</td><td>—</td>
+          <td class="no">no — gated</td></tr>
+        <tr><td class="num">2</td><td>Code review</td><td class="mono">#488</td>
+          <td>dhammaorg reviewer</td><td>—</td><td class="flag">request only</td></tr>
+        <tr><td class="num">3</td><td>Code review</td><td class="mono">#489</td>
+          <td>dhammaorg reviewer</td><td class="mono">#1</td><td class="flag">request only</td></tr>
+        <tr><td class="num">4</td><td>Merge → close i50 / i51 / i52</td><td class="mono">#488</td>
+          <td>Brendan</td><td class="mono">#2</td><td class="yes-self">yes, post-merge</td></tr>
+        <tr><td class="num">5</td><td>Merge (i49 stays open — residual below)</td><td class="mono">#489</td>
+          <td>Brendan</td><td class="mono">#1, #3</td><td class="yes-self">yes, post-merge</td></tr>
+        <tr><td class="num">6</td><td><span class="mono">linear done</span> TODO-148 … 153</td><td class="mono">Linear</td>
+          <td>Brendan (human-only)</td><td class="mono">#4, #5</td><td class="yes-self">yes</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- D -->
+  <section>
+    <h2><span class="n">D</span>i49 residual — not yet shipped</h2>
+    <p class="sub">i49's full scope is wider than the 3 mobile slices (151/152/153). These two items remain — now minted as backlog tickets.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Item</th><th>Surface</th><th>Ticket</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Filters surface above the map</td><td>Mobile</td>
+          <td class="mono"><a href="https://linear.app/nomad-code/issue/TODO-161">TODO-161</a> · Backlog</td>
+          <td>Listed in i49 scope; not covered by the shipped slices</td></tr>
+        <tr><td>Desktop split list + map view</td><td>Desktop</td>
+          <td class="mono"><a href="https://linear.app/nomad-code/issue/TODO-162">TODO-162</a> · Backlog</td>
+          <td>Exploratory (Figma 679-1045) — replace or supplement full-bleed map</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer>
+    <a href="https://github.com/dhammaorg/portal-v2/pull/488">PR #488</a>
+    <a href="https://github.com/dhammaorg/portal-v2/pull/489">PR #489</a>
+    <a href="https://github.com/dhammaorg/portal-v2-issues/issues/49">i49</a>
+    <a href="https://github.com/dhammaorg/portal-v2-issues/issues/50">i50</a>
+    <a href="https://github.com/dhammaorg/portal-v2-issues/issues/51">i51</a>
+    <a href="https://github.com/dhammaorg/portal-v2-issues/issues/52">i52</a>
+  </footer>
+  <div class="stamp">bre · private · Maps V3 landing plan · 2026-07-07 09-34 Z</div>
+
+</div>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BPO receipt for a one-off WaniKani review-debt reset: 42 due reviews cleared and the live queue verified at zero.">
+  <title>lang-ja · WaniKani review reset</title>
+  <style>
+    :root{
+      --paper:#f7f4ef;--surface:#fffdf9;--ink:#181b1b;--muted:#66706d;
+      --line:#deded7;--pink:#ed3f72;--pink-dark:#a91f4a;--pink-soft:#fde2eb;
+      --green:#0d7c68;--green-soft:#d8eee8;--yellow:#f4c94c;--night:#172321;
+      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --shadow:0 18px 60px rgba(30,38,35,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 var(--sans)}
+    button,a{font:inherit}a{color:inherit}
+    .page{width:min(1080px,calc(100% - 28px));margin:auto;padding:28px 0 66px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;color:var(--muted);font:700 10px/1.2 var(--mono);letter-spacing:.11em;text-transform:uppercase}
+    .address strong{color:var(--pink-dark)}
+    .verified{display:flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid #b9d8ce;border-radius:999px;background:var(--green-soft);color:#085a4d}
+    .verified i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(13,124,104,.13)}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .intro,.receipt,.panel{border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+    .intro{background:var(--surface);padding:clamp(28px,5vw,54px);min-height:480px;display:flex;flex-direction:column;justify-content:space-between}
+    .eyebrow,.kicker{font:800 10px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase}
+    .eyebrow{color:var(--pink-dark)}
+    h1{max-width:720px;margin:18px 0;font-size:clamp(45px,7vw,78px);line-height:.89;letter-spacing:-.07em}
+    h1 em{font-style:normal;color:var(--pink)}
+    .lede{max-width:56ch;margin:0;color:#484f4c;font-size:17px}
+    .lede strong{color:var(--ink)}
+    .boundary{display:flex;align-items:flex-start;gap:10px;margin-top:30px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+    .boundary b{color:var(--ink)}
+    .boundary span{display:grid;place-items:center;flex:0 0 27px;height:27px;border-radius:9px;background:var(--pink-soft);color:var(--pink-dark);font-weight:900}
+    .receipt{position:relative;overflow:hidden;background:var(--night);color:#f5fbf8;padding:28px;min-height:480px;display:flex;flex-direction:column;justify-content:space-between}
+    .receipt:after{content:"";position:absolute;right:-90px;top:-70px;width:260px;height:260px;border:1px solid rgba(244,201,76,.17);border-radius:50%;box-shadow:0 0 0 42px rgba(244,201,76,.035),0 0 0 84px rgba(244,201,76,.025)}
+    .receipt-label{position:relative;z-index:1;color:#a8c9bf;font:800 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+    .equation{position:relative;z-index:1;display:flex;align-items:center;gap:15px;margin:28px 0}
+    .equation strong{font-size:clamp(70px,10vw,112px);line-height:.8;letter-spacing:-.08em}
+    .equation .from{color:#f6a4bd}.equation .to{color:#8ee1c1}
+    .arrow{color:#7b918a;font-size:36px}
+    .queue-copy{color:#c0d5cf;margin-top:17px}.queue-copy b{color:#fff}
+    .meter{position:relative;z-index:1;display:grid;grid-template-columns:repeat(9,1fr);gap:5px}
+    .meter i{height:9px;border-radius:999px;background:#8ee1c1;transition:background .18s,transform .18s}
+    .meter i.active{background:var(--pink);transform:scaleY(1.45)}
+    .actions{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}
+    .replay{border:1px solid #406058;background:#263a36;color:#eaf7f2;border-radius:12px;padding:10px 13px;font-weight:750;cursor:pointer}
+    .replay:hover{background:#304a44}.timestamp{color:#91aaa3;font:600 9px/1.45 var(--mono);text-align:right}
+    .section{margin-top:38px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:13px}
+    .kicker{color:#8a918e}.section h2{margin:7px 0 0;font-size:31px;line-height:1;letter-spacing:-.045em}
+    .section-head p{max-width:49ch;margin:0;color:var(--muted);font-size:12px;text-align:right}
+    .panels{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .panel{background:var(--surface);padding:21px}
+    .panel .num{display:inline-grid;place-items:center;min-width:38px;height:38px;padding:0 9px;border-radius:11px;background:var(--pink-soft);color:var(--pink-dark);font-weight:900}
+    .panel:nth-child(2) .num{background:#f5ecd0;color:#7d6310}.panel:nth-child(3) .num{background:var(--green-soft);color:#075b4c}
+    .panel h3{margin:13px 0 5px;font-size:16px}.panel p{margin:0;color:var(--muted);font-size:13px}
+    .pipeline{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .lane{border:1px solid var(--line);border-radius:20px;background:var(--surface);padding:22px}
+    .lane header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    .lane h3{margin:0;font-size:17px}.tag{border-radius:999px;padding:5px 9px;font:800 9px/1 var(--mono);text-transform:uppercase;letter-spacing:.07em}
+    .tag.once{background:var(--pink-soft);color:var(--pink-dark)}.tag.keep{background:var(--green-soft);color:#075b4c}
+    .lane ul{list-style:none;padding:0;margin:0}.lane li{position:relative;padding:10px 0 10px 22px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+    .lane li:before{content:"";position:absolute;left:2px;top:17px;width:8px;height:8px;border-radius:50%;background:var(--pink)}
+    .lane.keep li:before{background:var(--green)}
+    .callout{margin-top:12px;border-left:4px solid var(--yellow);border-radius:5px 15px 15px 5px;background:#f7efd6;padding:15px 17px;color:#66531c;font-size:12px}
+    .callout code{font-family:var(--mono);font-weight:800;color:#493b13}
+    footer{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:600 9.5px/1.5 var(--mono)}
+    footer a{color:var(--pink-dark);text-decoration:none;border-bottom:1px solid #e8a1b7}
+    @media(max-width:790px){.hero,.pipeline{grid-template-columns:1fr}.panels{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.section-head p{text-align:left}.intro,.receipt{min-height:420px}}
+    @media(max-width:520px){.page{width:calc(100% - 20px);padding-top:18px}.topbar{align-items:flex-start;flex-direction:column}.intro,.receipt{padding:23px 19px;border-radius:19px}.equation strong{font-size:78px}.actions{align-items:flex-start;flex-direction:column}.timestamp{text-align:left}.section{margin-top:31px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div class="address">bpo · <strong>lang_ja / wani_kani</strong> · clear_reviews</div>
+      <div class="verified"><i></i> API verified · queue zero</div>
+    </div>
+
+    <section class="hero">
+      <article class="intro">
+        <div>
+          <div class="eyebrow">One-off debt reset · July 31, 2026</div>
+          <h1>Forty-two due.<br><em>Nothing left.</em></h1>
+          <p class="lede">The live WaniKani queue was captured once, then every immediately due assignment was submitted through the existing write-enabled client with <strong>zero incorrect answers</strong>.</p>
+        </div>
+        <div class="boundary"><span>≠</span><div><b>This is not the autopilot.</b><br>The recurring worker remains scoped to current-level radicals and kanji. This was an explicitly requested review-state cleanup.</div></div>
+      </article>
+
+      <aside class="receipt" aria-label="Review reset receipt">
+        <div>
+          <div class="receipt-label">Immediately available reviews</div>
+          <div class="equation"><strong class="from" id="fromCount">42</strong><span class="arrow">→</span><strong class="to" id="toCount">0</strong></div>
+          <p class="queue-copy"><b>9 logical batches</b> · sequential writes · no pagination · no retries needed</p>
+        </div>
+        <div>
+          <div class="meter" id="meter" aria-label="Nine completed batches"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="actions">
+            <button class="replay" id="replay" type="button">Replay reset</button>
+            <div class="timestamp">completed 2026-07-31 13:36:42 Z<br>verified from WaniKani API v2</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><div class="kicker">01 · queue composition</div><h2>What moved</h2></div><p>The 42 assignments were the entire immediately available queue returned by the API at execution time.</p></div>
+      <div class="panels">
+        <article class="panel"><span class="num">40</span><h3>Vocabulary</h3><p>The accumulated review debt. Included only because this cleanup explicitly targeted every due assignment.</p></article>
+        <article class="panel"><span class="num">1</span><h3>Kana vocabulary</h3><p>Submitted through the same review endpoint and advanced with zero incorrect answers.</p></article>
+        <article class="panel"><span class="num">1</span><h3>Kanji</h3><p>The sole due kanji assignment was cleared alongside the vocabulary queue.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><div class="kicker">02 · scope boundary</div><h2>Reset once. Keep the guardrail.</h2></div></div>
+      <div class="pipeline">
+        <article class="lane">
+          <header><h3>Clear reviews</h3><span class="tag once">on request</span></header>
+          <ul><li>Reads every assignment due now.</li><li>Includes vocabulary and kana vocabulary.</li><li>Ends only after the API recheck returns zero.</li></ul>
+        </article>
+        <article class="lane keep">
+          <header><h3>Critical-path autopilot</h3><span class="tag keep">unchanged</span></header>
+          <ul><li>Current-level radicals and kanji only.</li><li>Vocabulary remains excluded in code.</li><li>Runs on its existing guarded schedule.</li></ul>
+        </article>
+      </div>
+      <div class="callout"><b>Reusable Codex shorthand:</b> <code>lang_ja-wani_kani-clear_reviews</code> means one-off clear of all currently due reviews with zero incorrect answers, using the existing credential route, without changing the autopilot.</div>
+    </section>
+
+    <footer>
+      <span>lang-ja_wani-kani-clear-reviews_2026-07-31_13-41 · bpo private</span>
+      <span><a href="https://linear.app/nomad-code/issue/TODO-333/lang-ja-wani-kani-clear-reviews">TODO-333</a> · source: WaniKani API v2</span>
+    </footer>
+  </main>
+  <script>
+    (function(){
+      var button=document.getElementById('replay'),from=document.getElementById('fromCount'),to=document.getElementById('toCount'),bars=[].slice.call(document.querySelectorAll('#meter i')),timer;
+      function replay(){
+        clearInterval(timer);var remaining=42,step=0;from.textContent='42';to.textContent='42';bars.forEach(function(bar){bar.classList.add('active')});button.disabled=true;
+        timer=setInterval(function(){step++;remaining=Math.max(0,42-Math.ceil(step*42/9));to.textContent=remaining;bars[Math.min(step-1,8)].classList.remove('active');if(step>=9){clearInterval(timer);to.textContent='0';button.disabled=false}},170);
+      }
+      button.addEventListener('click',replay);
+    })();
+  </script>
+</body>
+</html>
