@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-192 · Medewi file_system</title>
+<script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<style>
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 56px 22px 76px; }
+  .hero { display: grid; grid-template-columns: 1fr 380px; gap: 22px; align-items: stretch; }
+  .panel { background: linear-gradient(180deg,#fff,#fbfbf6); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow-card); }
+  .intro { padding: 28px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kicker { font-family: var(--font-mono); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  h1 { font-size: 48px; line-height: 1; letter-spacing: -.03em; margin: 16px 0 0; max-width: 12ch; }
+  .sub { color: var(--body); line-height: 1.55; font-size: 14px; max-width: 62ch; margin: 14px 0 0; }
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 28px; }
+  .stat { border: 1px solid var(--line); border-radius: 8px; background: var(--card); padding: 14px; }
+  .stat b { display: block; color: var(--forest-d); font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat span { display: block; margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.3; }
+  .side { padding: 20px; }
+  .side h2, .stays h2, .notes h2 { font-size: 18px; margin: 0 0 14px; }
+  .bars { display: grid; gap: 10px; }
+  .bar { display: grid; grid-template-columns: 150px 1fr 64px; gap: 10px; align-items: center; font-size: 12px; }
+  .name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .track { height: 10px; border-radius: 999px; background: var(--well); overflow: hidden; }
+  .fill { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--forest); animation: grow .9s var(--ease) forwards; animation-delay: calc(var(--i) * 55ms); }
+  .n { font-family: var(--font-mono); color: var(--muted); text-align: right; font-size: 11px; }
+  .stays { margin-top: 22px; padding: 20px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th { text-align: left; color: var(--muted); font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid var(--line); padding: 10px 8px; }
+  td { border-bottom: 1px solid #eef0ea; padding: 12px 8px; font-size: 13px; vertical-align: top; }
+  td.num { font-family: var(--font-mono); font-size: 12px; white-space: nowrap; }
+  .pill { display: inline-flex; border-radius: 999px; padding: 4px 9px; font-family: var(--font-mono); font-size: 10px; white-space: nowrap; background: var(--g-lime); color: var(--forest-d); }
+  .pill.now { background: var(--warn-bg); color: var(--warn); }
+  .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; }
+  .note { padding: 20px; }
+  .note ul { margin: 0; padding-left: 18px; color: var(--body); line-height: 1.55; font-size: 13px; }
+  .note li + li { margin-top: 6px; }
+  code { font-family: var(--font-mono); font-size: .92em; }
+  @keyframes grow { to { width: var(--w); } }
+  @media (max-width: 860px) {
+    .hero, .notes { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .bar { grid-template-columns: 1fr; gap: 6px; }
+    .n { text-align: left; }
+    table { display: block; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="panel intro">
+      <div>
+        <div class="kicker">TODO-192 · shipped 2026-07-13</div>
+        <h1>Medewi file_system.</h1>
+        <p class="sub">The Medewi 🇮🇩🪷🖤 Timeline folder is now cataloged: <code>scripts/timeline-manifest</code> walks any place folder read-only and emits a per-file CSV. 959 files across five stays land in <code>dna/places/bali/medewi-file_system.csv</code>, distilled into <code>medewi.md</code>, with the convention written down in <code>timeline-convention.md</code> for the next places.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>959</b><span>files cataloged · 827 MB, five stays 2025-06 → 2026-03</span></div>
+        <div class="stat"><b>6</b><span>stays indexed — incl. the current one, 2026-07-01 → 07-26, folder created</span></div>
+        <div class="stat"><b>TODO-197</b><span>backlog: roll the pattern to Denpasar, Uluwatu, Fukuoka, Tokyo, Taipei, Vienna…</span></div>
+      </div>
+    </div>
+    <div class="panel side">
+      <h2>Where the files live</h2>
+      <div class="bars">
+        <div class="bar"><span class="name">Archive 🗄️</span><span class="track"><span class="fill" style="--w:100%;--i:0"></span></span><span class="n">848</span></div>
+        <div class="bar"><span class="name">People 👫</span><span class="track"><span class="fill" style="--w:8%;--i:1"></span></span><span class="n">53</span></div>
+        <div class="bar"><span class="name">Pics 📸</span><span class="track"><span class="fill" style="--w:5%;--i:2"></span></span><span class="n">30</span></div>
+        <div class="bar"><span class="name">Cooking 🧑‍🍳</span><span class="track"><span class="fill" style="--w:3%;--i:3"></span></span><span class="n">12</span></div>
+        <div class="bar"><span class="name">Other People 👫🌎</span><span class="track"><span class="fill" style="--w:2%;--i:4"></span></span><span class="n">10</span></div>
+        <div class="bar"><span class="name">Vids 🎬</span><span class="track"><span class="fill" style="--w:1.5%;--i:5"></span></span><span class="n">4</span></div>
+        <div class="bar"><span class="name">(stay root)</span><span class="track"><span class="fill" style="--w:1%;--i:6"></span></span><span class="n">2</span></div>
+      </div>
+      <p class="sub" style="margin-top:16px">Archive dominates — screenshots and AI-chat exports are the bulk of what a stay accumulates. People cards are the highest-signal minority.</p>
+    </div>
+  </section>
+
+  <section class="panel stays">
+    <h2>Six stays</h2>
+    <table>
+      <thead><tr><th>stay</th><th>files</th><th>size</th><th>what's in it</th></tr></thead>
+      <tbody>
+        <tr><td class="num">2025-06-30 → 07-01</td><td class="num">65</td><td class="num">147 MB</td><td>First look. Guest letter, Edan Miller contributions, rendang research.</td></tr>
+        <tr><td class="num">2025-07-29 → 08-05</td><td class="num">115</td><td class="num">90 MB</td><td>DJI drone vid, WhatsApp zips (Nat, Nellie 🇦🇺), Chris Reeves 📞 notes.</td></tr>
+        <tr><td class="num">2025-09-29 → 11-10</td><td class="num">161</td><td class="num">186 MB</td><td>Six-week block. Cooking 🧑‍🍳 category born (12 files). Ariya Wakey note.</td></tr>
+        <tr><td class="num">2025-12-16 → 01-07</td><td class="num">616</td><td class="num">404 MB</td><td>The person-capture stay: 23 people cards — Holy Tree, Manor, Bombolino, Yeh Sumbul, travellers.</td></tr>
+        <tr><td class="num">2026-03-10</td><td class="num">2</td><td class="num">1 MB</td><td>Day-trip shape — no category folders, files at stay root.</td></tr>
+        <tr><td class="num">2026-07-01 → 07-26</td><td class="num">0</td><td class="num">—</td><td><span class="pill now">current</span> Folder + four category subdirs created this session; fills as the stay runs.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="notes">
+    <div class="panel note">
+      <h2>Shipped</h2>
+      <ul>
+        <li><code>scripts/timeline-manifest</code> — stdlib, read-only, idempotent; UTC from filename stamps, mtime fallback marked <code>~</code></li>
+        <li><code>dna/places/bali/medewi-file_system.csv</code> — 959 rows, regenerable</li>
+        <li><code>dna/places/bali/medewi.md</code> — per-stay content summaries + current visit</li>
+        <li><code>dna/places/timeline-convention.md</code> — tree, categories, naming, Linear mapping</li>
+        <li>TODO-197 <code>timeline-place-ingest</code> — Backlog, the roll-out ticket</li>
+      </ul>
+    </div>
+    <div class="panel note">
+      <h2>Dial-in questions</h2>
+      <ul>
+        <li>Linear shape: place project (now) vs date-scoped per-stay projects (<code>2025-12-16 - Medewi … to 2026-01-07</code>) — decide after the next place ingest</li>
+        <li>Vids emoji drifted 🎥 → 🎬 between stays; 🎬 is canonical, one legacy folder left as-is</li>
+        <li>Archive 🗄️ is 88% of files — worth an AI-classify pass later (photos.yaml stage-3 pattern)</li>
+        <li>Day trips have no category folders — convention allows it, manifest handles it (<code>-</code> category)</li>
+      </ul>
+    </div>
+  </section>
+</main>
+</body>
+</html>

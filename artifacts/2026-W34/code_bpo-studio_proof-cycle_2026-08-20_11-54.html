@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>BPO Studio · proof cycle</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <script src="../../password-wall/gate.js" data-brand="Nomad Code" data-label="Private proof cycle" data-key="bpo-unlocked"></script>
+  <style>
+    *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--ink);background:radial-gradient(circle at 90% 0,#deeee8 0,transparent 27%),var(--bg)}
+    .shell{width:min(1120px,calc(100% - 32px));margin:auto;padding:44px 0 72px}.eyebrow{margin:0 0 12px;color:var(--forest);font:700 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase}
+    .hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);align-items:end;gap:clamp(28px,7vw,90px);padding:clamp(28px,6vw,62px);border:1px solid var(--line);border-radius:var(--r-hero);background:linear-gradient(145deg,var(--card),#fbfcf8);box-shadow:var(--shadow-hero)}
+    h1{max-width:13ch;margin:0;font-size:clamp(44px,8vw,84px);line-height:.96;letter-spacing:-.06em}h1 em{color:var(--forest);font-style:normal}.lede{max-width:60ch;margin:24px 0 0;color:var(--body);font-size:17px;line-height:1.65}
+    .signal{display:grid;grid-template-columns:1fr auto;gap:11px 20px;margin:0;padding-top:20px;border-top:1px solid var(--line)}.signal dt{color:var(--muted);font-size:13px}.signal dd{margin:0;color:var(--forest);font:500 28px var(--font-mono)}
+    .view-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:58px 0 20px}.view-tabs button{min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:var(--r-chip);background:var(--card);color:var(--body);font:700 12px var(--font-ui);cursor:pointer}.view-tabs button[aria-pressed="true"]{border-color:var(--forest);background:var(--forest);color:#fff}.view-tabs button:focus-visible{outline:3px solid rgba(18,124,112,.28);outline-offset:2px}
+    .panel[hidden]{display:none}.panel-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px}.panel-head h2{margin:0;font-size:clamp(28px,4vw,42px);letter-spacing:-.04em}.panel-head p{max-width:48ch;margin:0;color:var(--muted);line-height:1.5}
+    .flow{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none}.flow:before{content:"";position:absolute;top:25px;left:7%;right:7%;height:2px;background:linear-gradient(90deg,var(--forest),var(--lime),var(--found));opacity:.55}.flow li{position:relative;min-width:0;min-height:158px;padding:58px 15px 18px;border:1px solid var(--line);border-radius:var(--r-panel);background:var(--card)}.flow i{position:absolute;top:12px;left:14px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--g-lime);color:var(--forest-d);font:700 9px var(--font-mono);font-style:normal}.flow b,.flow small{display:block}.flow b{font-size:14px}.flow small{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45}
+    .exclusions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.exclusions article{padding:18px;border:1px solid var(--warn-bd);border-radius:var(--r-panel);background:var(--warn-bg)}.exclusions span{display:block;color:var(--warn);font:700 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase}.exclusions b{display:block;margin-top:5px}.exclusions small{display:block;margin-top:5px;color:var(--body);line-height:1.45}
+    .proof-grid,.queue-grid,.storage-grid{display:grid;gap:10px}.proof-grid{grid-template-columns:repeat(4,1fr)}.metric{padding:22px;border:1px solid var(--line);border-radius:var(--r-panel);background:var(--card)}.metric span{display:block;color:var(--muted);font:11px var(--font-mono);text-transform:uppercase;letter-spacing:.08em}.metric b{display:block;margin:8px 0 5px;color:var(--forest);font:500 clamp(26px,5vw,44px) var(--font-mono)}.metric small{display:block;color:var(--body);line-height:1.45}
+    .queue-grid{grid-template-columns:1.3fr .7fr}.queue-arrow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;padding:34px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card)}.queue-arrow div{text-align:center}.queue-arrow b{display:block;font:500 clamp(36px,7vw,70px) var(--font-mono);letter-spacing:-.06em}.queue-arrow span{display:block;color:var(--muted);font-size:13px}.queue-arrow i{color:var(--forest);font:500 32px var(--font-mono);font-style:normal}.preserve{padding:28px;border-radius:var(--r-card);background:var(--ink);color:#eef5f1}.preserve b{display:block;color:var(--lime-b);font:500 clamp(34px,6vw,58px) var(--font-mono)}.preserve span{display:block;margin-top:7px;line-height:1.5}
+    .storage-grid{grid-template-columns:repeat(2,1fr)}.capacity{padding:26px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card)}.capacity-head{display:flex;align-items:baseline;justify-content:space-between;gap:18px}.capacity h3{margin:0;font-size:18px}.capacity strong{color:var(--forest);font:500 22px var(--font-mono)}.track{height:12px;margin:20px 0 12px;border-radius:99px;background:var(--well);overflow:hidden}.track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--forest),var(--lime));font-style:normal}.capacity p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+    .contract{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:11px/1.6 var(--font-mono)}
+    @media(max-width:900px){.hero{grid-template-columns:1fr}.signal{max-width:420px}.flow{grid-template-columns:repeat(3,1fr)}.flow:before{display:none}.proof-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){.shell{width:min(100% - 22px,1120px);padding-top:22px}.hero{padding:26px 21px}.panel-head{align-items:start;flex-direction:column}.flow{grid-template-columns:1fr}.flow li{min-height:0;padding:18px 16px 18px 58px}.flow i{top:17px}.exclusions,.proof-grid,.queue-grid,.storage-grid{grid-template-columns:1fr}.queue-arrow{padding:24px 16px}.view-tabs button{flex:1 1 42%}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div><p class="eyebrow">CODE · local control plane</p><h1>Change it.<br><em>Prove it.</em></h1><p class="lede">FAI’s useful Studio and evidence loop, rebuilt for BPO with a smaller trust surface: exact files, private receipts, real browser flows, and a human-controlled handoff.</p></div>
+      <dl class="signal"><dt>Remote write surface</dt><dd>0</dd><dt>Playwright viewports</dt><dd>3</dd><dt>Linear project queues</dt><dd>13</dd></dl>
+    </section>
+
+    <nav class="view-tabs" aria-label="Proof-cycle view">
+      <button type="button" data-view="studio" aria-pressed="true">Studio flow</button>
+      <button type="button" data-view="proof" aria-pressed="false">Proof ledger</button>
+      <button type="button" data-view="linear" aria-pressed="false">Linear compression</button>
+      <button type="button" data-view="storage" aria-pressed="false">Storage lane</button>
+    </nav>
+
+    <section class="panel" data-panel="studio">
+      <div class="panel-head"><h2>One honest edit loop</h2><p>The browser can change a projection; it cannot publish, commit, drain prompts, or reach arbitrary files.</p></div>
+      <ol class="flow">
+        <li><i>01</i><b>Browse</b><small>choose an existing publishable HTML artifact</small></li>
+        <li><i>02</i><b>Edit</b><small>inspect, text edit, delete, comment, and undo</small></li>
+        <li><i>03</i><b>Save</b><small>exact-path capability, expected SHA, private backup</small></li>
+        <li><i>04</i><b>Exercise</b><small>Chromium desktop, tablet, phone, reduced motion</small></li>
+        <li><i>05</i><b>Verify</b><small>statuses, retries, files, sizes, hashes, receipt</small></li>
+        <li><i>06</i><b>Review</b><small>human decides whether one exact target publishes</small></li>
+      </ol>
+      <div class="exclusions"><article><span>Excluded</span><b>Public Send</b><small>No forgeable browser-origin intake.</small></article><article><span>Excluded</span><b>Unattended LLM drain</b><small>No free-form text reaches a credentialed agent.</small></article><article><span>Excluded</span><b>Auto-push main</b><small>No Git or deployment endpoint exists.</small></article></div>
+    </section>
+
+    <section class="panel" data-panel="proof" hidden>
+      <div class="panel-head"><h2>Evidence has two verdicts</h2><p>Bundle integrity can be VERIFIED while dirty local source evidence honestly remains EXECUTED.</p></div>
+      <div class="proof-grid"><article class="metric"><span>Unit checks</span><b>15</b><small>paths, concurrent stale writes, capabilities, receipts, symlinks, and retry rejection</small></article><article class="metric"><span>Browser flows</span><b>3</b><small>responsive edit loop, HTTP boundary, and the real password wall</small></article><article class="metric"><span>Visual evidence</span><b>6 + 1</b><small>six reviewed viewport baselines plus one passing WebM flow film</small></article><article class="metric"><span>Retries allowed</span><b>0</b><small>a flaky pass cannot become proof</small></article></div>
+    </section>
+
+    <section class="panel" data-panel="linear" hidden>
+      <div class="panel-head"><h2>Workflow compressed; history preserved</h2><p>The canonical 2026-08-21 audit binds every queue and terminal disposition to before/after workspace snapshots.</p></div>
+      <div class="queue-grid"><div class="queue-arrow"><div><b>614</b><span>workspace issues audited</span></div><i aria-hidden="true">→</i><div><b>13</b><span>sole project queues</span></div></div><div class="preserve"><b>116</b><span>source links retained across the queue descriptions; source issues and journals remain recoverable.</span></div></div>
+      <p class="contract">A later TODO-400 is new work, not consolidation drift · Done is archival workflow state, not deletion.</p>
+    </section>
+
+    <section class="panel" data-panel="storage" hidden>
+      <div class="panel-head"><h2>Archive pressure, not truth</h2><p>Private storage facts remain in the private audit; this publishable projection exposes only the handling contract.</p></div>
+      <div class="storage-grid"><article class="capacity"><div class="capacity-head"><h3>FAI cache cycle</h3><strong>21 exact paths</strong></div><p>35.15 GiB of regenerable file accounting was removed through one digest-bound plan; APFS initially yielded about 4.8 GiB of physical headroom.</p></article><article class="capacity"><div class="capacity-head"><h3>Drive cold lane</h3><strong>BPO only</strong></div><p>The configured private remote is reserved for BPO evidence. No Found, Dhamma, proof, or audit bytes were uploaded automatically.</p></article></div>
+      <p class="contract">Source, worktrees, evidence, client data, and PHI were preserved · company bytes never route to personal Drive.</p>
+    </section>
+  </main>
+  <script>
+    (function(){
+      var buttons=[].slice.call(document.querySelectorAll('[data-view]'));
+      var panels=[].slice.call(document.querySelectorAll('[data-panel]'));
+      buttons.forEach(function(button){button.addEventListener('click',function(){
+        buttons.forEach(function(item){item.setAttribute('aria-pressed',String(item===button));});
+        panels.forEach(function(panel){panel.hidden=panel.dataset.panel!==button.dataset.view;});
+      });});
+    }());
+  </script>
+</body>
+</html>

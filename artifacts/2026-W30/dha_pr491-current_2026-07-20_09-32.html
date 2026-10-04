@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DHA · PR 491 current</title>
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root {
+      --dha-blue: #1e3461;
+      --dha-blue-soft: #e9edf5;
+      --dha-gold: #b78730;
+      --dha-gold-soft: #f8f0df;
+      --ready: #2f6b4f;
+      --ready-soft: #e5f1e9;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 86% 5%, rgba(183, 135, 48, .12), transparent 28rem),
+        var(--page);
+    }
+
+    .shell {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 80px;
+    }
+
+    .mast {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 20px;
+      color: var(--muted);
+      font: 600 11px/1 var(--font-mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .mast::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ready);
+      box-shadow: 0 0 0 5px var(--ready-soft);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 42px;
+      align-items: center;
+      padding: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--r-hero);
+      background: rgba(255, 255, 255, .92);
+      box-shadow: var(--shadow-hero);
+    }
+
+    .eyebrow {
+      color: var(--ready);
+      font: 700 11px/1 var(--font-mono);
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 13px 0 0;
+      color: var(--dha-blue);
+      font-size: clamp(38px, 6vw, 64px);
+      line-height: .96;
+      letter-spacing: -.05em;
+    }
+
+    .lede {
+      max-width: 60ch;
+      margin: 20px 0 0;
+      color: var(--body);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .merge-mark {
+      width: 190px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--ready);
+      box-shadow: 0 20px 45px rgba(47, 107, 79, .22);
+    }
+
+    .merge-mark span {
+      font-size: 74px;
+      line-height: 1;
+      transform: translateY(-4px);
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .badge {
+      padding: 8px 11px;
+      border-radius: var(--r-pill);
+      color: var(--ready);
+      background: var(--ready-soft);
+      font: 700 10px/1 var(--font-mono);
+      letter-spacing: .025em;
+    }
+
+    .section-title {
+      margin: 46px 0 16px;
+      color: var(--ink);
+      font-size: 24px;
+      letter-spacing: -.025em;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .fact {
+      min-height: 128px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--r-card);
+      background: var(--card);
+      box-shadow: var(--shadow-card);
+    }
+
+    .fact strong {
+      display: block;
+      color: var(--dha-blue);
+      font-size: 21px;
+      letter-spacing: -.02em;
+    }
+
+    .fact span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .evidence {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .evidence-card {
+      padding: 22px;
+      border-radius: var(--r-panel);
+      background: var(--well);
+    }
+
+    .evidence-card b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .evidence-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .log-flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .log-step {
+      padding: 21px;
+      border: 1px solid #b8d4c3;
+      border-radius: var(--r-card);
+      background: var(--ready-soft);
+    }
+
+    .log-step span {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      color: #fff;
+      background: var(--ready);
+      font: 700 11px/1 var(--font-mono);
+    }
+
+    .log-step b {
+      display: block;
+      margin-top: 14px;
+      color: var(--dha-blue);
+      font-size: 15px;
+    }
+
+    .log-step p {
+      margin: 7px 0 0;
+      color: var(--body);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    a { color: var(--dha-blue); }
+    code { color: var(--dha-blue); overflow-wrap: anywhere; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .action {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 17px;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--dha-blue);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .action.secondary {
+      color: var(--dha-blue);
+      background: var(--dha-blue-soft);
+    }
+
+    .fine {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font: 400 10.5px/1.7 var(--font-mono);
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 24px, 560px); padding-top: 24px; }
+      .hero { grid-template-columns: 1fr; padding: 28px 22px; }
+      .merge-mark { grid-row: 1; width: 112px; }
+      .merge-mark span { font-size: 46px; }
+      .facts { grid-template-columns: 1fr 1fr; }
+      .evidence, .log-flow { grid-template-columns: 1fr; }
+      .action { width: 100%; }
+    }
+
+    @media (max-width: 430px) {
+      .facts { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="mast">dha · portal-v2 · TODO-198 final log</div>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Current after PR 511</div>
+        <h1>PR 491 is<br>good to go.</h1>
+        <p class="lede">Greg pushed one more merge while this was being checked. Maps v3 was rebased again, now includes <code>main</code> through PR 511, and passed a fresh GitHub run. PR 491 is non-draft, clean, and mergeable.</p>
+        <div class="badges">
+          <span class="badge">up to date</span>
+          <span class="badge">CI green</span>
+          <span class="badge">mergeable</span>
+          <span class="badge">36/36 patches preserved</span>
+        </div>
+      </div>
+      <div class="merge-mark" aria-label="Ready check"><span>✓</span></div>
+    </section>
+
+    <h2 class="section-title">Readiness snapshot</h2>
+    <section class="facts" aria-label="Pull request readiness facts">
+      <div class="fact"><strong>890a420d</strong><span>PR 491 head after the latest rebase</span></div>
+      <div class="fact"><strong>967c8c50</strong><span>current main, including Greg’s PR 511</span></div>
+      <div class="fact"><strong>611 pass</strong><span>16 skipped and zero failed in fresh CI</span></div>
+      <div class="fact"><strong>1m 14s</strong><span>GitHub Format, Lint, Build, Test passed</span></div>
+    </section>
+
+    <h2 class="section-title">Evidence</h2>
+    <section class="evidence">
+      <div class="evidence-card">
+        <b>PR 507 is included</b>
+        <p>Course-history CSV PR 507 is beneath current <code>main</code>. Current <code>main</code> is an ancestor of PR 491’s head, so PR 507 — plus PRs 508, 510, and 511 — is present.</p>
+      </div>
+      <div class="evidence-card">
+        <b>The rebase preserved the branch</b>
+        <p>All 36 Maps v3 commits are patch-equivalent before and after the rebase. No conflicts were encountered, and GitHub reports <code>CLEAN</code> and <code>MERGEABLE</code>.</p>
+      </div>
+    </section>
+
+    <h2 class="section-title">“Log” completed</h2>
+    <section class="log-flow" aria-label="Log contract completion">
+      <article class="log-step"><span>1</span><b>Linear</b><p><code>TODO-198</code> updated with the final commit and CI evidence.</p></article>
+      <article class="log-step"><span>2</span><b>Codex title</b><p>Thread renamed to match the Linear identifier and issue title.</p></article>
+      <article class="log-step"><span>3</span><b>BPO artifact</b><p>This gated closeout was previewed on desktop and mobile, then deployed.</p></article>
+    </section>
+
+    <div class="actions">
+      <a class="action" href="https://github.com/dhammaorg/portal-v2/pull/491">Open PR 491 →</a>
+      <a class="action secondary" href="https://github.com/dhammaorg/portal-v2/pull/507">Verify PR 507</a>
+      <a class="action secondary" href="https://github.com/dhammaorg/portal-v2/pull/511">Latest merge · PR 511</a>
+    </div>
+
+    <p class="fine">Prepared 2026-07-20T09:32:04Z · Linear <code>TODO-198</code> · portal-v2 <code>maps-v3 → main</code> · private DHA artifact.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,872 @@
+[
+    {
+        "id":  11,
+        "date":  "2026-06-19",
+        "course":  "dunes_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+8",
+                            "toParNum":  8,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "+16",
+                            "toParNum":  16,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  20,
+        "date":  "2026-06-19",
+        "course":  "georgiacc_v2_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  null,
+                            "toParNum":  null,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  null,
+                            "toParNum":  null,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  22,
+        "date":  "2026-06-20",
+        "course":  "birkdale_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "-2",
+                            "toParNum":  -2,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "-1",
+                            "toParNum":  -1,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  25,
+        "date":  "2026-06-23",
+        "course":  "dunes_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "+15",
+                            "toParNum":  15,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+23",
+                            "toParNum":  23,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  27,
+        "date":  "2026-06-24",
+        "course":  "royalqueensland_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "E",
+                            "toParNum":  0,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "+3",
+                            "toParNum":  3,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  29,
+        "date":  "2026-06-26",
+        "course":  "hamiltongcc_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "+18",
+                            "toParNum":  18,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+22",
+                            "toParNum":  22,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  30,
+        "date":  "2026-06-27",
+        "course":  "royalqueensland_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "-6",
+                            "toParNum":  -6,
+                            "thru":  12,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "E",
+                            "toParNum":  0,
+                            "thru":  12,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "FLE",
+                            "toPar":  "+16",
+                            "toParNum":  16,
+                            "thru":  12,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  31,
+        "date":  "2026-06-28",
+        "course":  "dunes_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+22",
+                            "toParNum":  22,
+                            "thru":  14,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "+26",
+                            "toParNum":  26,
+                            "thru":  14,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "FLE",
+                            "toPar":  "+59",
+                            "toParNum":  59,
+                            "thru":  14,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  32,
+        "date":  "2026-06-29",
+        "course":  "royaloaks_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+6",
+                            "toParNum":  6,
+                            "thru":  18,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "+8",
+                            "toParNum":  8,
+                            "thru":  18,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  34,
+        "date":  "2026-06-30",
+        "course":  "royaloaks_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+6",
+                            "toParNum":  6,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRU",
+                            "toPar":  "+8",
+                            "toParNum":  8,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "FLE",
+                            "toPar":  "+24",
+                            "toParNum":  24,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  35,
+        "date":  "2026-07-03",
+        "course":  "royaloaks_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+5",
+                            "toParNum":  5,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+6",
+                            "toParNum":  6,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "FLE",
+                            "toPar":  "+13",
+                            "toParNum":  13,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  39,
+        "date":  "2026-07-06",
+        "course":  "pebblebeach_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+5",
+                            "toParNum":  5,
+                            "thru":  12,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+9",
+                            "toParNum":  9,
+                            "thru":  12,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "FLE",
+                            "toPar":  "+27",
+                            "toParNum":  27,
+                            "thru":  12,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  41,
+        "date":  "2026-07-07",
+        "course":  "royalqueensland_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+7",
+                            "toParNum":  7,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+11",
+                            "toParNum":  11,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  42,
+        "date":  "2026-07-07",
+        "course":  "mammoth_dunes_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  null,
+                            "toParNum":  null,
+                            "thru":  10,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  45,
+        "date":  "2026-07-07",
+        "course":  "dunes_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+12",
+                            "toParNum":  12,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+13",
+                            "toParNum":  13,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "FLE",
+                            "toPar":  "+24",
+                            "toParNum":  24,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  51,
+        "date":  "2026-07-08",
+        "course":  "3s_greenville",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  null,
+                            "toParNum":  null,
+                            "thru":  18,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  52,
+        "date":  "2026-07-08",
+        "course":  "dpc-espanollinks_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+5",
+                            "toParNum":  5,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+11",
+                            "toParNum":  11,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  53,
+        "date":  "2026-07-09",
+        "course":  "bandon_v2_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+1",
+                            "toParNum":  1,
+                            "thru":  1,
+                            "sgTotal":  -0.95
+                        }
+                    ]
+    },
+    {
+        "id":  54,
+        "date":  "2026-07-10",
+        "course":  "dpc_sodgrass_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+38",
+                            "toParNum":  38,
+                            "thru":  18,
+                            "sgTotal":  -37.52
+                        }
+                    ]
+    },
+    {
+        "id":  55,
+        "date":  "2026-07-10",
+        "course":  "Shadow_Ridge_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "E",
+                            "toParNum":  0,
+                            "thru":  1,
+                            "sgTotal":  0.05
+                        }
+                    ]
+    },
+    {
+        "id":  57,
+        "date":  "2026-07-10",
+        "course":  "Shadow_Ridge_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "-2",
+                            "toParNum":  -2,
+                            "thru":  6,
+                            "sgTotal":  4.64
+                        }
+                    ]
+    },
+    {
+        "id":  58,
+        "date":  "2026-07-10",
+        "course":  "Portrush_GM_GSP",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+15",
+                            "toParNum":  15,
+                            "thru":  11,
+                            "sgTotal":  -15.31
+                        },
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+16",
+                            "toParNum":  16,
+                            "thru":  11,
+                            "sgTotal":  -16.31
+                        }
+                    ]
+    },
+    {
+        "id":  59,
+        "date":  "2026-07-10",
+        "course":  "Shadow_Ridge_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "-5",
+                            "toParNum":  -5,
+                            "thru":  13,
+                            "sgTotal":  3.13
+                        }
+                    ]
+    },
+    {
+        "id":  60,
+        "date":  "2026-07-10",
+        "course":  "Shadow_Ridge_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+7",
+                            "toParNum":  7,
+                            "thru":  18,
+                            "sgTotal":  -7.82
+                        }
+                    ]
+    },
+    {
+        "id":  62,
+        "date":  "2026-07-11",
+        "course":  "BD_GM_GSP",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+24",
+                            "toParNum":  24,
+                            "thru":  18,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  63,
+        "date":  "2026-07-12",
+        "course":  "triggs_memorial_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+9",
+                            "toParNum":  9,
+                            "thru":  18,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  64,
+        "date":  "2026-07-13",
+        "course":  "TheRenaissance_tournament_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+18",
+                            "toParNum":  18,
+                            "thru":  18,
+                            "sgTotal":  -18.82
+                        }
+                    ]
+    },
+    {
+        "id":  66,
+        "date":  "2026-07-13",
+        "course":  "bandon_v2_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+6",
+                            "toParNum":  6,
+                            "thru":  9,
+                            "sgTotal":  -6.41
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+11",
+                            "toParNum":  11,
+                            "thru":  9,
+                            "sgTotal":  -11.41
+                        }
+                    ]
+    },
+    {
+        "id":  67,
+        "date":  "2026-07-13",
+        "course":  "RoyalQueensland_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+5",
+                            "toParNum":  5,
+                            "thru":  9,
+                            "sgTotal":  -5.41
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+9",
+                            "toParNum":  9,
+                            "thru":  9,
+                            "sgTotal":  -9.41
+                        }
+                    ]
+    },
+    {
+        "id":  68,
+        "date":  "2026-07-14",
+        "course":  "The_Wilds_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+12",
+                            "toParNum":  12,
+                            "thru":  18,
+                            "sgTotal":  -12.82
+                        }
+                    ]
+    },
+    {
+        "id":  69,
+        "date":  "2026-07-14",
+        "course":  "Skyglass_GSP",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+8",
+                            "toParNum":  8,
+                            "thru":  9,
+                            "sgTotal":  -8.41
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+16",
+                            "toParNum":  16,
+                            "thru":  9,
+                            "sgTotal":  -16.41
+                        }
+                    ]
+    },
+    {
+        "id":  70,
+        "date":  "2026-07-14",
+        "course":  "Norwegian_GSP",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+3",
+                            "toParNum":  3,
+                            "thru":  9,
+                            "sgTotal":  -3.41
+                        },
+                        {
+                            "alias":  "P",
+                            "toPar":  "+13",
+                            "toParNum":  13,
+                            "thru":  9,
+                            "sgTotal":  -13.41
+                        }
+                    ]
+    },
+    {
+        "id":  71,
+        "date":  "2026-07-15",
+        "course":  "cdanational_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+17",
+                            "toParNum":  17,
+                            "thru":  18,
+                            "sgTotal":  -17.83
+                        }
+                    ]
+    },
+    {
+        "id":  75,
+        "date":  "2026-07-16",
+        "course":  "georgiacc_v2_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+1",
+                            "toParNum":  1,
+                            "thru":  1,
+                            "sgTotal":  -0.95
+                        }
+                    ]
+    },
+    {
+        "id":  76,
+        "date":  "2026-07-16",
+        "course":  "LookOutPoint_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "-5",
+                            "toParNum":  -5,
+                            "thru":  18,
+                            "sgTotal":  2.18
+                        }
+                    ]
+    },
+    {
+        "id":  77,
+        "date":  "2026-07-17",
+        "course":  "LookOutPoint_gsp",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+5",
+                            "toParNum":  5,
+                            "thru":  18,
+                            "sgTotal":  -5.82
+                        }
+                    ]
+    },
+    {
+        "id":  78,
+        "date":  "2026-07-17",
+        "course":  "dunes_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+10",
+                            "toParNum":  10,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "MAR",
+                            "toPar":  "+20",
+                            "toParNum":  20,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  79,
+        "date":  "2026-07-18",
+        "course":  "Portrush_GM_GSP",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+6",
+                            "toParNum":  6,
+                            "thru":  3,
+                            "sgTotal":  -6.28
+                        }
+                    ]
+    },
+    {
+        "id":  80,
+        "date":  "2026-07-19",
+        "course":  "Portrush_GM_GSP",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+5",
+                            "toParNum":  5,
+                            "thru":  4,
+                            "sgTotal":  -5.23
+                        }
+                    ]
+    },
+    {
+        "id":  84,
+        "date":  "2026-07-19",
+        "course":  "3s_greenville",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  null,
+                            "toParNum":  null,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "BRA",
+                            "toPar":  null,
+                            "toParNum":  null,
+                            "thru":  9,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "RIC",
+                            "toPar":  null,
+                            "toParNum":  null,
+                            "thru":  9,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  85,
+        "date":  "2026-07-20",
+        "course":  "Portrush_GM_GSP",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+13",
+                            "toParNum":  13,
+                            "thru":  12,
+                            "sgTotal":  -18.26
+                        }
+                    ]
+    },
+    {
+        "id":  87,
+        "date":  "2026-07-21",
+        "course":  "TheBridgesGCC_GSP",
+        "scoreOnly":  false,
+        "players":  [
+                        {
+                            "alias":  "BPO",
+                            "toPar":  "+45",
+                            "toParNum":  45,
+                            "thru":  18,
+                            "sgTotal":  -45.82
+                        }
+                    ]
+    },
+    {
+        "id":  89,
+        "date":  "2026-07-21",
+        "course":  "atkinson_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+18",
+                            "toParNum":  18,
+                            "thru":  18,
+                            "sgTotal":  null
+                        }
+                    ]
+    },
+    {
+        "id":  90,
+        "date":  "2026-07-22",
+        "course":  "torreypines-north_gsp",
+        "scoreOnly":  true,
+        "players":  [
+                        {
+                            "alias":  "P",
+                            "toPar":  "+21",
+                            "toParNum":  21,
+                            "thru":  15,
+                            "sgTotal":  null
+                        },
+                        {
+                            "alias":  "MAR",
+                            "toPar":  "+41",
+                            "toParNum":  41,
+                            "thru":  15,
+                            "sgTotal":  null
+                        }
+                    ]
+    }
+]

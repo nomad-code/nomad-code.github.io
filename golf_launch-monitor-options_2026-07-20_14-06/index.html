@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>Launch monitor options · play anywhere</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <style>
+    :root { --golf:#176844; --golf-soft:#e4efe7; --no:#b3423a; --no-bg:#f8e9e7; --ok-bg:#e4efe7; --maybe-bg:#f5edd8; --maybe:#8a6d1f; }
+    * { box-sizing:border-box; }
+    body { min-height:100vh; background:var(--bg); }
+    main { width:min(1100px, calc(100% - 36px)); margin:0 auto; padding:34px 0 80px; }
+    .eyebrow { display:flex; align-items:center; gap:9px; font:600 11px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--golf); }
+    .eyebrow::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--lime); box-shadow:0 0 0 5px rgba(132,194,65,.16); }
+    h1 { max-width:860px; margin:18px 0 12px; font:800 clamp(38px,6.5vw,70px)/.96 var(--font-display); letter-spacing:-.055em; color:var(--ink); }
+    h1 em { color:var(--golf); font-style:normal; }
+    .lede { max-width:760px; color:var(--body); font:450 17px/1.6 var(--font-ui); }
+
+    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:14px; margin-top:30px; }
+    .panel { grid-column:span 6; padding:22px; border:1px solid var(--line); border-radius:var(--r-card); background:var(--card); box-shadow:var(--shadow-card); }
+    .panel.wide { grid-column:1/-1; }
+    .panel.third { grid-column:span 4; }
+    .kicker { color:var(--golf); font:650 10px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase; }
+    h3 { margin:8px 0 14px; color:var(--ink); font:750 22px/1.1 var(--font-display); letter-spacing:-.025em; }
+    .sub { margin:-6px 0 16px; color:var(--muted); font:450 12.5px/1.5 var(--font-ui); }
+    p, li { color:var(--body); font:450 13.5px/1.6 var(--font-ui); }
+    ul { margin:0; padding-left:18px; display:grid; gap:7px; }
+    b { color:var(--ink); }
+
+    table { width:100%; border-collapse:collapse; font:450 13px/1.45 var(--font-ui); }
+    th { padding:8px 10px; text-align:left; color:var(--muted); font:650 10px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; border-bottom:1px solid var(--line); }
+    td { padding:10px; border-bottom:1px solid var(--line); color:var(--body); vertical-align:top; }
+    tr:last-child td { border-bottom:0; }
+    .pill { display:inline-block; padding:4px 9px; border-radius:99px; font:650 11px/1 var(--font-mono); white-space:nowrap; }
+    .yes { background:var(--ok-bg); color:var(--golf); }
+    .no { background:var(--no-bg); color:var(--no); }
+    .maybe { background:var(--maybe-bg); color:var(--maybe); }
+
+    .tier { display:grid; gap:9px; }
+    .tier-row { display:grid; grid-template-columns:110px 1fr; gap:12px; align-items:center; padding:12px 14px; border:1px solid var(--line); border-radius:var(--r-panel); background:var(--well); }
+    .tier-row .name { font:750 14px/1.1 var(--font-display); color:var(--ink); }
+    .tier-row .why { font:450 12px/1.5 var(--font-ui); color:var(--muted); }
+    .tier-row:first-child { background:var(--golf-soft); }
+
+    .rig { padding:16px; border:1px solid var(--line); border-radius:var(--r-panel); background:var(--well); }
+    .rig + .rig { margin-top:10px; }
+    .rig b { display:block; margin-bottom:4px; font:700 14px/1.2 var(--font-display); }
+    .rig .chain { font:600 11.5px/1.5 var(--font-mono); color:var(--golf); }
+
+    .next { counter-reset:step; display:grid; gap:10px; padding:0; margin:0; list-style:none; }
+    .next li { display:grid; grid-template-columns:30px 1fr; gap:12px; align-items:baseline; }
+    .next li::before { counter-increment:step; content:counter(step); display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--golf); color:#fff; font:750 12px/1 var(--font-display); }
+
+    footer { margin-top:34px; color:var(--muted); font:500 11px/1.6 var(--font-mono); }
+    @media (max-width:840px){ .panel, .panel.third { grid-column:1/-1; } }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">bpo · golf · 2026-07-20 14:06 Z</div>
+  <h1>Three phones, a Spica&nbsp;3, and a brother with a TrackMan — <em>what plays where</em></h1>
+  <p class="lede">Session theory: which launch monitors drive which sim software, whether phones can be
+  launch monitors at all, and what the truly portable "range shots become real shots" rig looks like.
+  Grounded against golf-spica (data recovered from a Spica 3 that isn't Brendan's), golf-swingnerds, golf-gspro, and the range-rig ticket (TODO-189).</p>
+
+  <div class="grid">
+    <section class="panel wide">
+      <div class="kicker">Compatibility</div>
+      <h3>Who talks to whom</h3>
+      <p class="sub">The Spica 3 is not GSPro-only — but TrackMan and GOLFZON are closed at the software end, so the openness only runs one way.</p>
+      <table>
+        <thead><tr><th>Hardware</th><th>GSPro</th><th>E6 Connect</th><th>TrackMan Virtual Golf</th><th>GOLFZON software</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>GolfJoy Spica 3</b> (the one you hit on — not yours)</td>
+            <td><span class="pill yes">native</span></td>
+            <td><span class="pill yes">native adapter</span></td>
+            <td><span class="pill no">closed — TM hardware only</span></td>
+            <td><span class="pill no">closed — GZ bays only</span></td>
+          </tr>
+          <tr>
+            <td><b>TrackMan 4</b> (brother's)</td>
+            <td><span class="pill maybe">unofficial hacks only</span></td>
+            <td><span class="pill no">no</span></td>
+            <td><span class="pill yes">native</span></td>
+            <td><span class="pill no">no</span></td>
+          </tr>
+          <tr>
+            <td><b>Phone camera apps</b> (Golfboy / ShotVision / GolfTrak)</td>
+            <td><span class="pill yes">via Open Connect API</span></td>
+            <td><span class="pill yes">some (GolfTrak)</span></td>
+            <td><span class="pill no">no</span></td>
+            <td><span class="pill no">no</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:14px">Consequence: <b>the ecosystems meet at the vault, not at the sim.</b>
+      TrackMan sessions export the same CSV grammar as the 4.7G already in Timeline; Spica/GSPro shots
+      already land in <code>~/ark/golf/</code> via SwingNerds. A session at your brother's joins as a
+      CSV ingest, never as a live connection.</p>
+    </section>
+
+    <section class="panel">
+      <div class="kicker">Accuracy honesty</div>
+      <h3>The measurement tier list</h3>
+      <div class="tier">
+        <div class="tier-row"><span class="name">TrackMan 4</span><span class="why">Radar + camera; measured spin; the reference standard.</span></div>
+        <div class="tier-row"><span class="name">Spica 3</span><span class="why">27 data points, real reads; a tier below radar but trustworthy for practice evidence.</span></div>
+        <div class="tier-row"><span class="name">Phone apps</span><span class="why">Ball speed + launch decent; spin is <b>modeled, not measured</b>. Tripod + ultra-wide lens required for long shots.</span></div>
+      </div>
+      <p style="margin-top:14px">So the three phones' best role isn't launch monitor — it's the current rig:
+      <b>face-on + down-the-line video synced to the Spica's numbers</b>. Phone-as-monitor is the
+      forgot-the-Spica fallback, not the upgrade path.</p>
+    </section>
+
+    <section class="panel">
+      <div class="kicker">Play anywhere</div>
+      <h3>Three portable rigs</h3>
+      <p class="sub">Rigs A and B assume buying or borrowing a Spica-class unit (~consumer photometric tier) — the Spica 3 in golf-spica isn't Brendan's.</p>
+      <div class="rig">
+        <b>A · The known-good rig</b>
+        <span class="chain">net/mat → Spica 3 → Windows laptop → GSPro → SwingNerds → strokes gained</span>
+        <p>Real simulated rounds anywhere. Friction: GSPro is Windows-only, so a gaming laptop rides in the bag.</p>
+      </div>
+      <div class="rig">
+        <b>B · The no-laptop dream (verify first)</b>
+        <span class="chain">net/mat → Spica 3 → E6 Connect on iPad</span>
+        <p>E6 runs on iOS; GolfJoy's adapter docs describe a PC path. If the iOS route works, the rig collapses to Spica + iPad + net.</p>
+      </div>
+      <div class="rig">
+        <b>C · The premium freebie</b>
+        <span class="chain">brother's TrackMan bay → TrackMan Virtual Golf / Range</span>
+        <p>Superimposed range-shots-as-real-shots is TrackMan's built-in experience. Export CSVs afterward for the vault.</p>
+      </div>
+    </section>
+
+    <section class="panel wide">
+      <div class="kicker">The moat</div>
+      <h3>Why this rig is yours and not just another sim setup</h3>
+      <p>Anything that emits shots into GSPro flows through SwingNerds into the per-shot join and
+      strokes-gained pipeline. A random Tuesday net session in a parking lot becomes SG evidence in
+      <code>~/ark/golf/combined/</code> with zero ceremony — the piece nobody selling launch monitors offers,
+      and it's already built (TODO-186/187/188).</p>
+      <ol class="next" style="margin-top:16px">
+        <li><span>Verify Spica 3 ↔ E6 Connect on iOS — kills the laptop requirement for rig B.</span></li>
+        <li><span>Define the TrackMan-CSV ingest path so sessions at your brother's land in the vault like SwingNerds rounds do.</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <footer>golf_launch-monitor-options · 2026-07-20 14:06 Z · sources: golfjoy.com (Spica 3 + FAQ), trackman.com, gsprogolf.com (Open Connect v1), beyondgolf.com (GOLFZON vs TrackMan), playbetter.com compatibility guide, rsgolf.com phone-app test</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-138 · wispr-outcome · One Move Today + Fleet Map</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* the calming anchor */
+  .today {
+    border: 1px solid var(--forest);
+    background: linear-gradient(180deg, var(--g-lime), var(--card) 60%);
+    border-radius: var(--r-hero);
+    padding: 22px 24px;
+    box-shadow: var(--shadow-card);
+  }
+  .today-kick { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--forest-d); margin-bottom: 6px; }
+  .today h2 { font-size: 22px; line-height: 1.2; color: var(--ink); margin: 0 0 14px; }
+  .steps { counter-reset: s; display: grid; gap: 10px; }
+  .step { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start;
+    font-size: 14.5px; color: var(--body); }
+  .step:before { counter-increment: s; content: counter(s); font-family: var(--font-mono);
+    font-size: 13px; color: var(--card); background: var(--forest); width: 24px; height: 24px;
+    border-radius: 999px; display: grid; place-items: center; font-weight: 500; }
+  .step b { color: var(--ink); }
+  .today-foot { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--muted); }
+
+  /* fleet table (reused .pmap idiom from TODO-132) */
+  .pmap { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .pmap th { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--muted); text-align: left;
+    padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .pmap td { padding: 11px 12px; border-bottom: 1px solid var(--line); color: var(--body);
+    vertical-align: top; }
+  .pmap tr:last-child td { border-bottom: 0; }
+  .pmap td:first-child { font-family: var(--font-mono); color: var(--forest);
+    font-weight: 500; white-space: nowrap; }
+  .pmap .role { color: var(--ink); font-weight: 600; }
+  .fleet-wrap { overflow-x: auto; }
+
+  .tag-capture { color: var(--found); font-family: var(--font-mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em; }
+  .breathe { border-left: 3px solid var(--lime); padding-left: 14px; color: var(--body);
+    font-size: 15px; line-height: 1.55; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand">bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx">TODO-138 · wispr-outcome</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-07 · iterating on TODO-132</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">you already built the rig — this is just the first step onto it</div>
+    <h1>A good outcome, today</h1>
+    <p class="hero-sub">The playbook (TODO-132) is not a to-do list you owe — it's a map you
+    already own. Intimidation is what a complete plan feels like before the first move. So
+    forget the two-week block for a second. Today has exactly <b>one move</b>, it takes ten
+    minutes, needs no pedal and no new install — and the pile of devices with mismatched Apple
+    IDs turns out to be a non-problem the moment you see why.</p>
+    <div class="hero-chips">
+      <span class="hchip">one move · ~10 min</span>
+      <span class="hchip">Claude Code on the web · Apple-ID-agnostic</span>
+      <span class="hchip">native voice on every device</span>
+      <span class="hchip">pedal optional</span>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">1</div><div class="kpi-l">device to start — not six</div></div>
+    <div class="kpi"><div class="kpi-n">0</div><div class="kpi-l">new apps needed to win today</div></div>
+    <div class="kpi"><div class="kpi-n">1</div><div class="kpi-l">login covers every device you own</div></div>
+    <div class="kpi"><div class="kpi-n">any</div><div class="kpi-l">Apple ID — the browser doesn't care</div></div>
+  </div>
+
+  <p class="breathe">The whole reason the fleet feels heavy is that you're picturing setting up
+  <em>each device</em>. You never have to. You sign into <b>claude.ai</b> in a browser once per
+  device, the work lives in the cloud, and whatever voice keyboard that device already has does
+  the talking. That's it. The rest of this page is just naming which device does what — so it's
+  a system, not a pile.</p>
+
+  <div class="sec-head"><span class="sec-n">00</span><span class="sec-kick">do this now — the only thing today asks</span></div>
+  <div class="today">
+    <div class="today-kick">the one move · ~10 minutes · M3</div>
+    <h2>Voice one real prompt into Claude Code on the web, and send it.</h2>
+    <div class="steps">
+      <div class="step"><span>On the <b>M3</b>, open <b>claude.ai/code</b> in the browser and start (or open) a session — this exact kind of session, living in the cloud.</span></div>
+      <div class="step"><span>Put the cursor in the prompt box. Press the built-in dictation key (<code>fn fn</code> on macOS, or bind <code>F13</code>/hyper later) — <b>no superwhisper needed to win today.</b></span></div>
+      <div class="step"><span><b>Ramble one real ask out loud.</b> A messy sentence is fine — that's the point of voice. Don't edit while speaking.</span></div>
+      <div class="step"><span>Touch up with the keyboard for ≤10 seconds, then <b>hit send.</b> That's the whole loop: speak → tiny touch-up → send.</span></div>
+    </div>
+    <div class="today-foot">Done = the intimidation is broken. You've now voiced a prompt into
+    Claude with zero rig. Everything else — superwhisper, modes, the pedal — is an
+    <em>upgrade</em> to a loop that already works, not a prerequisite you were missing.</div>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">01</span><span class="sec-kick">why the fleet stops being scary</span></div>
+  <div class="grid3">
+    <div class="card">
+      <h3>Browser, not App Store</h3>
+      <p>Claude Code on the web is a <b>website</b>. You log into claude.ai — <b>one Claude
+      account</b> — in Safari / Chrome on any device. Different Apple IDs, a Pixel on Android,
+      the virgin iPhone with nothing installed: none of it matters. No per-ID purchase, no
+      license to move, no ecosystem lock-in to fight.</p>
+    </div>
+    <div class="card">
+      <h3>Cloud sessions, not device state</h3>
+      <p>The session lives in the cloud (this one does). So you <b>start on the M3 and keep
+      prompting the same work from the iPhone on a walk</b>, then glance at the output later.
+      Nothing to sync, nothing to hand off. The device is just a window onto work that lives
+      somewhere else.</p>
+    </div>
+    <div class="card">
+      <h3>Native voice per OS</h3>
+      <p>Every device already ships a voice keyboard — <b>iOS dictation, Gboard voice on the
+      Pixel, Watch dictation.</b> That's your engine everywhere you're not at a Mac. The local
+      superwhisper rig from TODO-132 is the <em>premium</em> tier for the desk; it isn't
+      required to prompt from a phone.</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">02</span><span class="sec-kick">the fleet map — one role per device, so it's a system</span></div>
+  <div class="card">
+    <div class="fleet-wrap">
+    <table class="pmap">
+      <tr><th>device</th><th>its one role</th><th>voice engine</th><th>reaches Claude via</th></tr>
+      <tr>
+        <td>M3</td>
+        <td class="role">Primary rig</td>
+        <td>superwhisper + Parakeet v3 (local)</td>
+        <td>Claude Code CLI + claude.ai/code — the elite loop from TODO-132</td>
+      </tr>
+      <tr>
+        <td>M5 · tailscale</td>
+        <td class="role">Always-on / heavy box</td>
+        <td>superwhisper local</td>
+        <td>reach over tailscale; or cloud web sessions that outlive either Mac</td>
+      </tr>
+      <tr>
+        <td>iPhone 15 Pro</td>
+        <td class="role">Daily walk-prompting</td>
+        <td>iOS dictation (Wispr Flow when online, later)</td>
+        <td>claude.ai/code in Safari — continue the M3's session</td>
+      </tr>
+      <tr>
+        <td>iPhone 17 Pro Max</td>
+        <td class="role">Clean deep-work phone</td>
+        <td>iOS dictation</td>
+        <td>browser session — keep it uncluttered, one bookmark</td>
+      </tr>
+      <tr>
+        <td>Google Pixel</td>
+        <td class="role">Off-ecosystem proof</td>
+        <td>Gboard voice</td>
+        <td>claude.ai/code in Chrome — proves the Apple-ID point end to end</td>
+      </tr>
+      <tr>
+        <td>3× Apple&nbsp;Watch</td>
+        <td class="role"><span class="tag-capture">capture, not prompting</span></td>
+        <td>Watch dictation</td>
+        <td>voice a thought → note / Linear inbox; feed it to a session later</td>
+      </tr>
+    </table>
+    </div>
+  </div>
+  <p class="note">The Watches are a <b>capture surface, not a prompting surface</b> — the screen
+  is too small to steer an agent, but perfect for catching a thought before it's gone. One rule
+  keeps the fleet sane: <b>Macs are where work happens, phones are where you keep it moving,
+  the Watch is where you catch the idea.</b> You don't have to set up all six today — the map is
+  so that when you pick up the Pixel next week, its job is already decided.</p>
+
+  <div class="sec-head"><span class="sec-n">03</span><span class="sec-kick">the pedal + a travel trigger — parked, not blocking</span></div>
+  <div class="card">
+    <p>The pedal is a <b>trigger upgrade, not the skill</b> (TODO-132 §0 / §5 already said this).
+    It makes push-to-talk unconscious — it does not unlock anything you can't do today with a
+    keyboard key or the on-screen mic. So it staying in J&amp;T transit changes nothing about
+    today's move.</p>
+    <p style="margin-top:12px">When you want a mobile trigger to think about — the "travel
+    pedal" question — the shape to evaluate later is a <b>tiny Bluetooth device that sends one
+    keystroke</b>: a pocket BT keyboard with a rebindable key, or even a BT camera-shutter
+    remote (they emit volume-up, which iOS can map). Either becomes a poor-man's PTT for the
+    iPhone/iPad without the MIDI router. <b>Parked as a later evaluation — not a purchase, not a
+    blocker.</b> The skill never waits for hardware.</p>
+  </div>
+
+  <p class="breathe" style="margin-top:24px">If today you do exactly one thing — the ten-minute
+  move above — that's a good outcome. Not because it's small, but because it converts the plan
+  from something you're staring at into something you've already started.</p>
+
+  <div class="foot">bpo · TODO-138 wisper-outcome · iterating on TODO-132 · fleet map at projects/wisper/fleet.md · 2026-07-07 16:01 UTC</div>
+</div>
+</body>
+</html>

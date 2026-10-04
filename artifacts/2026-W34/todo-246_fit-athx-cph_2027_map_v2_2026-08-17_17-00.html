@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The 2027 programme changes the plan · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--new:#b85339;--old:#8a949c;--win:#176b78;--gold:#c59a45}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1040px,calc(100% - 36px));margin:auto;padding:40px 0 56px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(38px,6.2vw,66px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:15ch;margin:16px 0}
+h1 em{color:var(--new);font-weight:400}
+.lede{max-width:72ch;font-size:17px;line-height:1.62;color:#43534a}
+.brief{border-left:4px solid var(--gold);padding:15px 18px;background:#f8f1df;border-radius:0 12px 12px 0;line-height:1.55;margin:22px 0;font-size:15px}
+h2{font:700 25px/1.1 Georgia,serif;margin:34px 0 12px}
+.note{color:var(--muted);margin:-6px 0 14px;max-width:78ch;line-height:1.5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:540px}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font-size:13px;font-weight:700}
+td{font:700 15px Georgia,serif}
+td.mono{font:700 13px ui-monospace,monospace}
+td.old{color:var(--old);text-decoration:line-through}
+td.new{color:var(--new)}
+td small,th small{display:block;font:500 10px ui-monospace,monospace;color:var(--muted);margin-top:3px;font-weight:400}
+tr.hi td,tr.hi th{background:#edf4ef}
+.free{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.f{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:17px}
+.f:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--win)}
+.fl{font:700 10px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--win)}
+.fv{font:750 30px/1 Georgia,serif;margin:8px 0 3px}
+.fn{color:var(--muted);font-size:12.5px;line-height:1.5}
+.week{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.5}
+.week b{font:700 11px ui-monospace,monospace;color:var(--muted);padding-top:2px}
+.week:last-child{border-bottom:0}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:24px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ol{margin:0;padding-left:20px;line-height:1.68;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+@media(max-width:760px){.free{grid-template-columns:1fr}}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · map v2 · built on the published 2027 programme</div>
+<h1>New schemes.<br><em>Same diagnosis.</em></h1>
+<p class="lede">2027 is published, so the plan is rebuilt on it: <b>1RM shoulder to overhead · 2RM back squat · 3RM deadlift (average of two 1-minute attempts)</b>, then a fixed <b>3 KM run into max-distance ski erg</b> — where only the ski scores — and a published MetCon X chipper at heavy Pro loads. Solo Pro at London, Milan, Vienna, Madrid and Dublin; doubles Pro with Chris at Copenhagen, Sat 31 July.</p>
+<div class="brief"><b>The gap didn't move.</b> Converted into the new schemes, our CPH pair strength is <b>700 KG against a ~900 KG median pair</b> — the same ~200 KG hole the old numbers showed. What changed is <i>where the cheap gains are</i>, and three of them are technical.</div>
+<h2>Three gains that cost no strength</h2>
+<section class="free">
+<article class="f"><div class="fl">Shoulder to overhead</div><div class="fv">+15 → 30%</div><div class="fn">It allows a dip and drive. On a 57 KG strict press a trained split jerk is <b>74–80 KG</b>. Free KG — learn it in Phase 0.</div></article>
+<article class="f"><div class="fl">The run buys ski metres</div><div class="fv">+227 m</div><div class="fn">Per minute off the 3 KM run, at 2:12/500 m ski pace. The run isn't scored — it's a bid for ski time, and running is our strength.</div></article>
+<article class="f"><div class="fl">Deadlift is an average</div><div class="fv">2 × 1 min</div><div class="fn">Score is the mean of two 1-minute attempts. Bank lift one, push lift two. Pure rehearsal, no extra strength.</div></article>
+</section>
+<h2>Where we stand, converted</h2>
+<p class="note">Epley e1RM, re-expressed in the 2027 rep schemes; shoulder-to-overhead at a conservative 1.20× strict press. Field = 2026 Pro · Male pair medians converted the same way.</p>
+<div class="panel"><table><thead><tr><th>Lift · 2027 scheme</th><th>Brendan</th><th>Chris</th><th>Pair</th><th>Field median pair</th></tr></thead><tbody>
+<tr><th>1RM shoulder to overhead</th><td class="mono">68</td><td class="mono">86</td><td class="mono">154</td><td class="mono">194 – 210</td></tr>
+<tr><th>2RM back squat</th><td class="mono">113</td><td class="mono">113</td><td class="mono">226</td><td class="mono">314</td></tr>
+<tr><th>3RM deadlift (avg)</th><td class="mono">154</td><td class="mono">164</td><td class="mono">318</td><td class="mono">390</td></tr>
+<tr class="hi"><th>Strength score</th><td class="mono"><b>336</b></td><td class="mono"><b>364</b></td><td class="mono"><b>700</b></td><td class="mono"><b>899 – 915</b></td></tr>
+</tbody></table></div>
+<h2>The ladder — solid path, 2027 schemes</h2>
+<p class="note">Brendan / Chris. Test at every mark, in race order and race format.</p>
+<div class="panel"><table><thead><tr><th>Checkpoint</th><th>STO 1RM</th><th>Squat 2RM</th><th>Deadlift 3RM</th><th>Score</th></tr></thead><tbody>
+<tr><th>Base test · 27 Sep 26</th><td class="mono">70 / 87</td><td class="mono">117 / 117</td><td class="mono">158 / 168</td><td class="mono">345 / 372</td></tr>
+<tr><th>Christmas · 20 Dec 26</th><td class="mono">75 / 92</td><td class="mono">128 / 128</td><td class="mono">168 / 176</td><td class="mono">371 / 396</td></tr>
+<tr class="hi"><th>LONDON · 23 Jan 27<small>first solo Pro</small></th><td class="mono">76 / 94</td><td class="mono">131 / 131</td><td class="mono">171 / 179</td><td class="mono">378 / 404</td></tr>
+<tr><th>MILAN · 6 Mar</th><td class="mono">78 / 96</td><td class="mono">135 / 135</td><td class="mono">175 / 183</td><td class="mono">388 / 414</td></tr>
+<tr><th>VIENNA · 24 Apr</th><td class="mono">80 / 98</td><td class="mono">140 / 140</td><td class="mono">181 / 188</td><td class="mono">401 / 426</td></tr>
+<tr><th>MADRID · 8 May</th><td class="mono">80 / 99</td><td class="mono">142 / 142</td><td class="mono">183 / 190</td><td class="mono">405 / 431</td></tr>
+<tr><th>DUBLIN · 12 Jun</th><td class="mono">81 / 100</td><td class="mono">145 / 145</td><td class="mono">186 / 192</td><td class="mono">412 / 437</td></tr>
+<tr class="hi"><th><b>CPH · 31 Jul 27</b><small>doubles Pro</small></th><td class="mono"><b>83 / 101</b></td><td class="mono"><b>150 / 150</b></td><td class="mono"><b>191 / 196</b></td><td class="mono"><b>423 / 447</b><small>pair 870</small></td></tr>
+</tbody></table></div>
+<p class="note" style="margin-top:12px">If the jerk trains to 1.30× instead of 1.20×, every STO number above gains 7–8 KG for free. Stretch line at Copenhagen: 475 / 490 = <b>965 pair</b>, clear of the median.</p>
+<h2>Endurance — the trade table</h2>
+<div class="panel"><table><thead><tr><th>3 KM run</th><th>Ski time left</th><th>Score @ 2:12/500 m</th></tr></thead><tbody>
+<tr><th>15:00</th><td class="mono">9:00</td><td class="mono">~2045 m</td></tr>
+<tr><th>14:00</th><td class="mono">10:00</td><td class="mono">~2273 m</td></tr>
+<tr><th>13:00</th><td class="mono">11:00</td><td class="mono">~2500 m</td></tr>
+<tr class="hi"><th>12:00</th><td class="mono">12:00</td><td class="mono">~2727 m</td></tr>
+<tr><th>11:00</th><td class="mono">13:00</td><td class="mono">~2955 m</td></tr>
+</tbody></table></div>
+<p class="note" style="margin-top:12px"><b>Copenhagen pair plan:</b> Brendan runs to open the erg early (he out-ran Chris by 421 m at CPH 2026), Chris arrives as relief, then alternate short hard pulls. Phase 0 closes the two unknowns — a real 3 KM time trial and a 12-minute ski test, both athletes.</p>
+<h2>The week that does the work — Phase 1 · 28 Sep – 20 Dec</h2>
+<div class="panel">
+<div class="week"><b>MON</b><span><b>2RM squat</b> heavy doubles · <b>jerk</b> technique 6×2 · DB bench volume @22.5 KG</span></div>
+<div class="week"><b>TUE</b><span><b>Ski</b> intervals 8 × 500 m at target pace · 3 KM run at threshold</span></div>
+<div class="week"><b>WED</b><span><b>3RM deadlift doubles</b> — two 1-min windows, exactly as raced · sandbag squats @70 KG</span></div>
+<div class="week"><b>THU</b><span>Run 5 × 1 KM at 3 KM pace · easy ski 10 min</span></div>
+<div class="week"><b>FRI</b><span><b>Jerk</b> heavy singles · squat volume · sandbag carries 6 × 60 m @70 KG</span></div>
+<div class="week"><b>SAT</b><span>Long mixed: 3 KM run → 15 min ski → row calories</span></div>
+<div class="week"><b>SUN</b><span>Off · mobility</span></div>
+</div>
+<div class="rules"><h3>What changed in the plan, line by line</h3><ol>
+<li><b>Strict press → shoulder to overhead.</b> Train the jerk from week one; it is the single cheapest score on the board.</li>
+<li><b>Row → ski erg.</b> The rower stays only for MetCon X calories (60 + 60 at Pro). Ski becomes the primary erg — and we have never scored one.</li>
+<li><b>3RM deadlift, averaged over two attempts.</b> Rehearse the exact window protocol every Wednesday.</li>
+<li><b>Squat 3RM → 2RM.</b> Heavier doubles, same progression.</li>
+<li><b>Pull-up insurance: cancelled.</b> The published 2027 programme has no pull-up block — that risk is retired.</li>
+<li><b>MetCon X is knowable now.</b> 22.5 KG dual DBs and a 70 KG sandbag. Train the bag itself; it does not transfer from a barbell.</li>
+</ol></div>
+<footer>Programme record: <code>projects/fit-athx/programme-2027.md</code> · plan: <code>plan-to-cph-2027.md</code> · superseded scheme-specific targets flagged in <code>projections-2027.md</code> · conversions: Epley e1RM, STO at 1.20× strict press · toolkit ontology updated with the 2027 blocks</footer>
+</main></body></html>

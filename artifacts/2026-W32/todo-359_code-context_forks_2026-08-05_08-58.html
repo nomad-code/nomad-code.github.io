@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- BPO password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () { var c = document.getElementById('__pw_reveal_pre__'); if (c) c.remove(); }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); if (cover) cover.remove(); return; }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3f0e7">
+  <title>TODO-359 · Context Forks</title>
+  <meta name="description" content="BPO operating model for Codex branches, RIFF exploration, ZYX retention, Linear commitment, and outcome-first knowledge compression.">
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <style>
+    :root{
+      --paper:#f3f0e7;--ink:#17211d;--muted:#66736c;--line:#cbd4ce;
+      --forest:#143f31;--deep:#0d2d23;--mint:#b9ee7c;--lime:#e3ffac;
+      --coral:#e77759;--amber:#f2ca55;--sky:#b8dfe7;--white:#fffdf8;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.48 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 32px,1180px);margin:auto;padding:42px 0 64px}.mono,.eyebrow,.pill,.kicker,.node b,.stage b,.map-card b,.capsule b,footer{font-family:var(--mono)}
+    .eyebrow{display:flex;align-items:center;gap:10px;color:var(--forest);font:900 12px var(--mono);letter-spacing:.1em;text-transform:uppercase}.eyebrow::before{width:24px;height:7px;border-radius:8px;background:var(--mint);content:""}
+    h1{max-width:1060px;margin:16px 0 18px;font:950 clamp(46px,7vw,76px)/.92 var(--mono);letter-spacing:-.074em}h1 span{color:var(--coral)}
+    .lede{max-width:780px;margin:0;color:var(--muted);font-size:20px}.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.pill{padding:7px 11px;border:1px solid var(--line);border-radius:99px;background:var(--white);font-size:11px;font-weight:850}.pill.primary{border-color:var(--forest);background:var(--forest);color:white}.pill.primary i{color:var(--mint);font-style:normal}
+    .frame{margin-top:46px;padding:26px;border:1px solid var(--line);border-radius:26px;background:#f7f5ee}.frame.dark{background:var(--deep);color:white;border-color:var(--deep)}.frame h2{margin:0;font:900 34px/1 var(--mono);letter-spacing:-.052em}.frame>.intro{max-width:850px;margin:9px 0 22px;color:var(--muted)}.frame.dark>.intro{color:#bfd0c7}
+    .formula{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.formula article{min-height:168px;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--white);position:relative;overflow:hidden}.formula article:first-child{background:var(--forest);border-color:var(--forest);color:white}.formula article:nth-child(2){border-top:7px solid var(--amber)}.formula article:nth-child(3){border-top:7px solid var(--sky)}.formula article:nth-child(4){border-top:7px solid var(--coral)}.formula .n{color:var(--muted);font:900 10px var(--mono);letter-spacing:.08em}.formula article:first-child .n{color:var(--mint)}.formula b{display:block;margin:16px 0 7px;font:900 20px/1.05 var(--mono);letter-spacing:-.035em}.formula p{margin:0;color:var(--muted);font-size:13px}.formula article:first-child p{color:#d3e2da}
+    .flow{display:grid;grid-template-columns:1.1fr 50px 1.1fr 50px 1.1fr;align-items:stretch;gap:8px}.stage{min-height:210px;padding:20px;border:1px solid #ffffff1f;border-radius:18px;background:#ffffff0c}.stage .kicker{color:var(--mint);font-size:10px;letter-spacing:.1em}.stage b{display:block;margin:14px 0 8px;font-size:21px;letter-spacing:-.04em}.stage p{margin:0;color:#c4d4cc;font-size:13px}.stage.branch{background:#ffffff17}.stage.gate{background:var(--white);color:var(--ink)}.stage.gate .kicker{color:var(--coral)}.stage.gate p{color:var(--muted)}.arrow{display:grid;place-items:center;color:var(--mint);font:900 28px var(--mono)}
+    .choices{display:grid;gap:7px;margin-top:16px}.choice{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:9px;background:#eef1ea;color:var(--ink);font:800 11px var(--mono)}.choice em{color:var(--muted);font-style:normal;font-weight:700}
+    .mechanics{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.steps{display:grid;gap:8px}.step{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--white)}.step span{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:var(--forest);color:var(--mint);font:900 11px var(--mono)}.step b{font:850 15px var(--mono)}.step p{margin:3px 0 0;color:var(--muted);font-size:13px}
+    .context-box{display:grid;align-content:center;padding:22px;border-radius:18px;background:var(--coral);color:#2a1711}.context-box h3{margin:0;font:900 23px/1 var(--mono);letter-spacing:-.045em}.meter{height:17px;margin:20px 0 8px;border:2px solid #572b20;border-radius:99px;overflow:hidden}.meter span{display:block;width:68%;height:100%;background:#572b20}.context-box p{margin:0;color:#5a2c21;font-size:13px}.context-box strong{display:block;margin-top:15px;font:900 13px var(--mono)}
+    .map{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.map-card{min-height:185px;padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--white)}.map-card:nth-child(1){background:var(--forest);color:white;border-color:var(--forest)}.map-card:nth-child(1) p{color:#d0dfd7}.map-card:nth-child(2){border-top:7px solid var(--amber)}.map-card:nth-child(3){border-top:7px solid var(--coral)}.map-card:nth-child(4){border-top:7px solid var(--sky)}.map-card:nth-child(5){border-top:7px solid var(--mint)}.map-card .kicker{color:var(--muted);font-size:9px;letter-spacing:.09em}.map-card:nth-child(1) .kicker{color:var(--mint)}.map-card b{display:block;margin:15px 0 7px;font-size:18px;letter-spacing:-.04em}.map-card p{margin:0;color:var(--muted);font-size:12px}.map-card small{display:block;margin-top:16px;color:var(--muted);font:800 10px var(--mono)}.map-card:nth-child(1) small{color:#b9cec3}
+    .case{display:grid;grid-template-columns:1fr 48px 1fr 48px 1fr;gap:8px;align-items:center}.node{min-height:150px;padding:18px;border:1px solid var(--line);border-radius:17px;background:var(--white)}.node.source{background:#f8e9c6}.node.branch{background:var(--forest);border-color:var(--forest);color:white}.node.result{background:#e5f2dc}.node .kicker{color:var(--muted);font-size:9px;letter-spacing:.09em}.node.branch .kicker{color:var(--mint)}.node b{display:block;margin:14px 0 7px;font-size:17px;line-height:1.1;overflow-wrap:anywhere}.node p{margin:0;color:var(--muted);font-size:12px}.node.branch p{color:#d3e2da}.case .arrow{color:var(--forest)}
+    .lower{display:grid;grid-template-columns:1fr 1fr;gap:12px}.capsule,.guard{padding:22px;border-radius:20px}.capsule{background:#111b17;color:#dfeae4}.capsule h3,.guard h3{margin:0 0 15px;font:900 22px/1 var(--mono);letter-spacing:-.045em}.capsule dl{display:grid;grid-template-columns:105px 1fr;gap:8px 14px;margin:0;font:13px/1.45 var(--mono)}.capsule dt{color:var(--mint);font-weight:900}.capsule dd{margin:0;color:#d2dfd8}.guard{border:1px solid var(--line);background:var(--white)}.rule{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.rule:first-of-type{border-top:0}.rule span{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#ffe1d7;color:#7a2f1e;font:900 10px var(--mono)}.rule p{margin:2px 0 0;color:var(--muted);font-size:13px}.rule strong{color:var(--ink)}
+    .hook-note{margin-top:12px;padding:16px 18px;border:1px dashed var(--line);border-radius:16px;background:#eef0e9}.hook-note b{font:900 13px var(--mono)}.hook-note p{margin:5px 0 0;color:var(--muted);font-size:12px}.hook-note code{color:var(--forest)}
+    .final{margin-top:46px;padding:26px;border-radius:24px;background:var(--coral);color:#2b1711}.final p{max-width:1030px;margin:0;font:950 clamp(26px,4vw,46px)/1.04 var(--mono);letter-spacing:-.055em}.final small{display:block;margin-top:14px;color:#5f2e22;font-size:13px}
+    footer{display:flex;justify-content:space-between;gap:18px;margin-top:38px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}footer a{color:var(--forest);text-decoration:none}
+    @media(max-width:940px){.formula{grid-template-columns:1fr 1fr}.flow,.case{grid-template-columns:1fr}.arrow{min-height:30px;transform:rotate(90deg)}.mechanics,.lower{grid-template-columns:1fr}.map{grid-template-columns:1fr 1fr}.map-card:last-child{grid-column:1/-1}}
+    @media(max-width:580px){main{width:min(100% - 20px,1180px);padding-top:28px}.lede{font-size:17px}.frame{padding:18px;margin-top:32px}.frame h2{font-size:28px}.formula,.map{grid-template-columns:1fr}.map-card:last-child{grid-column:auto}.formula article,.map-card{min-height:0}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">nomad-code / TODO-359 · operating-system primitive</div>
+    <h1>Fork the thought.<br><span>Ship the outcome.</span></h1>
+    <p class="lede">A branch preserves enough context to explore a tangent without contaminating the outcome trunk. RIFF carries uncertainty. ZYX carries cheap retention. Linear receives only promoted commitments.</p>
+    <div class="pills"><span class="pill primary"><i>●</i> BPO synthesis logged</span><span class="pill">world · BPO</span><span class="pill">area · CODE</span><span class="pill">mode · RIFF</span><span class="pill">projection · artifact + screenshots</span></div>
+  </header>
+
+  <section class="frame" id="frame-lifecycle">
+    <h2>Four distinct operators</h2>
+    <p class="intro">The system stays legible when divergence, maturity, retention, and commitment are modeled independently.</p>
+    <div class="formula">
+      <article><span class="n">CONTEXT</span><b>Branch</b><p>Copy history through one turn into a new thread. Future turns diverge; the parent remains untouched.</p></article>
+      <article><span class="n">MATURITY</span><b>RIFF</b><p>Exploration with no obligation to survive. It may sharpen into an outcome or evaporate.</p></article>
+      <article><span class="n">RETENTION</span><b>ZYX / Archive</b><p>Searchable, inactive, cheap reference. Archived conversations do not enter another thread’s active context.</p></article>
+      <article><span class="n">COMMITMENT</span><b>Linear</b><p>A named outcome, decision, artifact, owner, trigger, or next action—not an attic for every spark.</p></article>
+    </div>
+  </section>
+
+  <section class="frame dark">
+    <h2>The outcome-first lifecycle</h2>
+    <p class="intro">One coherent chat owns the trunk. A tangent branches at the earliest useful context boundary, explores independently, then passes through a promotion gate.</p>
+    <div class="flow">
+      <article class="stage"><span class="kicker">01 · TRUNK</span><b>Vague outcome</b><p>Start broad. Let the conversation discover the real problem while preserving one coherent objective.</p></article>
+      <div class="arrow">→</div>
+      <article class="stage branch"><span class="kicker">02 · FORK</span><b>Specific tangent</b><p>Branch when the thought becomes independently valuable, independently risky, or likely to derail the trunk.</p></article>
+      <div class="arrow">→</div>
+      <article class="stage gate"><span class="kicker">03 · GATE</span><b>What escaped?</b><p>Retain the result at the durability it earned.</p><div class="choices"><div class="choice">PROMOTE <em>Linear / Git / artifact</em></div><div class="choice">ARCHIVE <em>ZYX reference</em></div><div class="choice">DELETE <em>compost</em></div></div></article>
+    </div>
+  </section>
+
+  <section class="frame">
+    <h2>What Codex actually does</h2>
+    <p class="intro">Branching is a stored-history fork, not a pointer and not a Git operation. It arrived in the Codex app in March 2026.</p>
+    <div class="mechanics">
+      <div class="steps">
+        <article class="step"><span>1</span><div><b>Select a prior response</b><p>The chosen turn is the semantic branch point.</p></div></article>
+        <article class="step"><span>2</span><div><b>Create a new thread ID</b><p>Codex copies stored history through that turn and records the parent thread.</p></div></article>
+        <article class="step"><span>3</span><div><b>Diverge independently</b><p>New branch turns never enter the parent. The original path remains recoverable.</p></div></article>
+        <article class="step"><span>4</span><div><b>Compact when needed</b><p>The child starts with inherited context; automatic compaction can later summarize long history.</p></div></article>
+      </div>
+      <aside class="context-box"><h3>Isolation is not zero context.</h3><div class="meter"><span></span></div><p>The child carries the selected prefix. Fork early enough to preserve signal without hauling unrelated history.</p><strong>PARENT STAYS LEAN · CHILD PAYS FOR ITS PREFIX</strong></aside>
+    </div>
+  </section>
+
+  <section class="frame" id="frame-policy">
+    <h2>Do not collapse the abstractions</h2>
+    <p class="intro">Teams, initiatives, RIFF, and ZYX answer different questions. Making one of them impersonate the others recreates the context bloat the system is meant to prevent.</p>
+    <div class="map">
+      <article class="map-card"><span class="kicker">OWNERSHIP</span><b>Team</b><p>A stable operating domain with enduring permissions and workflow.</p><small>EXAMPLE · MONEY · CODE · FIT</small></article>
+      <article class="map-card"><span class="kicker">OUTCOME</span><b>Initiative</b><p>A committed result spanning multiple pieces of work.</p><small>NOT · AN IDEA BUCKET</small></article>
+      <article class="map-card"><span class="kicker">EPISTEMIC STATE</span><b>RIFF</b><p>Still discovering whether the thought deserves an outcome.</p><small>MAY DISAPPEAR</small></article>
+      <article class="map-card"><span class="kicker">RETENTION</span><b>ZYX</b><p>The zoo: inactive or unclassified, searchable, and disposable.</p><small>NOT · A WORKFLOW TEAM</small></article>
+      <article class="map-card"><span class="kicker">TRACE</span><b>Issue</b><p>The promoted capsule tying route, outcome, evidence, and projection together.</p><small>THIS RECORD · TODO-359</small></article>
+    </div>
+
+    <div class="case" style="margin-top:18px">
+      <article class="node source"><span class="kicker">OUTCOME TRUNK</span><b>MONEY/robinhood_fix</b><p>Repair the closed-account fallout and make the financial system legible and automatic.</p></article>
+      <div class="arrow">→</div>
+      <article class="node branch"><span class="kicker">CONTEXT FORK</span><b>CODE/RIFF/etc-linear_teams_initiatives</b><p>Explore how BPO, Linear teams, initiatives, branches, and ZYX should compose.</p></article>
+      <div class="arrow">→</div>
+      <article class="node result"><span class="kicker">PROMOTED TRACE</span><b>TODO-359 + artifact</b><p>The operating model escaped. The conversation may now be archived without losing the result.</p></article>
+    </div>
+  </section>
+
+  <section class="frame">
+    <div class="lower">
+      <article class="capsule"><h3>Minimum durable capsule</h3><dl><dt>route</dt><dd>CODE/RIFF/etc-linear_teams_initiatives</dd><dt>seed</dt><dd>MONEY exposed ambiguity between domains, teams, initiatives, and idea retention.</dd><dt>outcome</dt><dd>Branch = isolation · Archive = retention · Linear = commitment.</dd><dt>projection</dt><dd>TODO-359 · this artifact · private screenshots</dd><dt>retention</dt><dd>archive branch after promotion; delete only after descendants are disposable.</dd></dl></article>
+      <article class="guard"><h3>Safety and hygiene</h3><div class="rule"><span>1</span><p><strong>Branch early.</strong> Carry only the context the tangent actually needs.</p></div><div class="rule"><span>2</span><p><strong>Promote outcomes, not transcripts.</strong> Preserve the seed and result; let scaffolding decay.</p></div><div class="rule"><span>3</span><p><strong>Archive before delete.</strong> Deleting a parent can remove spawned descendants.</p></div><div class="rule"><span>4</span><p><strong>Keep Git truthful.</strong> Linear owns workflow; the artifact is a readable projection.</p></div></article>
+    </div>
+    <aside class="hook-note"><b>⚓ HOOK STATUS, NOT ANOTHER ACTION</b><p>The anchor icon reports hooks that already ran—count, source, blocks, errors, feedback. In <code>~/dev</code>, the prompt-journal hook only posts when a thread is explicitly bound to <code>TODO-NNN</code>; the earlier MONEY riff was unbound and produced no Linear write.</p></aside>
+  </section>
+
+  <section class="final"><p>The prompt is causal scaffolding. The outcome is durable state. Preserve enough lineage to reproduce the leap—then let the rest become compost.</p><small>Branching keeps exploration cheap; promotion keeps the system honest.</small></section>
+
+  <footer><span>TODO-359 · generated 2026-08-05 08:58 Z</span><span><a href="https://linear.app/nomad-code/issue/TODO-359/coderiffetc-linear-teams-initiatives">Linear journal</a> · Codex branch 019fd0ed…ca1</span></footer>
+</main>
+</body>
+</html>

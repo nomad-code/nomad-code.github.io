@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Public-safe implementation receipt for the BPO-first GOAT State kernel.">
+  <title>TODO-345 · GOAT State proof</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <style>
+    body{min-height:100vh;background:radial-gradient(circle at 88% 4%,rgba(132,194,65,.17),transparent 30rem),var(--bg)}.shell{width:min(1150px,calc(100% - 32px));margin:auto;padding:26px 0 50px}.mast,.nav,.top,.control{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.mast{justify-content:space-between;font:600 10px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.nav a{color:var(--forest-d);border-bottom:1px solid var(--forest)}
+    .top{margin:48px 0 22px;display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:stretch}.hero{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:34px}.hero span{font:600 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.11em;color:var(--forest)}.hero h1{font-size:clamp(54px,8vw,96px);line-height:.86;letter-spacing:-.075em;margin:20px 0;max-width:8ch}.hero p{font-size:14px;line-height:1.65;color:var(--muted);max-width:54ch}
+    .receipt{background:var(--ink);border-radius:28px;padding:30px;color:white;display:flex;flex-direction:column;justify-content:space-between}.receipt .label{font:600 10px/1 var(--font-mono);letter-spacing:.1em;color:#aebbb5}.receipt .pass{font-size:78px;font-weight:850;letter-spacing:-.08em;color:var(--lime-b)}.receipt p{font:500 11px/1.6 var(--font-mono);color:#c1cbc7}
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}.kpi{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}.kpi b{display:block;font-size:34px;letter-spacing:-.055em}.kpi span{font:500 10px/1.5 var(--font-mono);color:var(--muted)}
+    .proof{margin-top:16px;background:#111b17;border-radius:28px;padding:25px;color:white}.proof-head{display:flex;justify-content:space-between;gap:16px;align-items:end}.proof h2{font-size:27px;letter-spacing:-.04em}.proof-head p{font:500 10px/1.5 var(--font-mono);color:#91a199}.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:20px}.step{border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px;min-height:150px;color:#aebbb5;transition:.25s}.step.on{border-color:rgba(163,224,111,.58);background:rgba(163,224,111,.09);color:white;transform:translateY(-3px)}.step .n{font:600 9px/1 var(--font-mono);color:var(--lime-b)}.step h3{font-size:15px;margin:14px 0 7px}.step p{font-size:10.5px;line-height:1.5;color:inherit}.control{margin-top:16px}.replay{background:var(--lime-b);color:#173326;border-radius:99px;padding:10px 14px;min-height:44px;font:700 10px/1 var(--font-mono)}.trace{font:500 10px/1.5 var(--font-mono);color:#91a199}
+    .contract{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.contract article{border:1px solid var(--line);background:var(--card);border-radius:22px;padding:22px}.contract h2{font-size:22px;letter-spacing:-.035em}.contract ul{display:grid;gap:10px;margin-top:15px}.contract li{font-size:12.5px;line-height:1.5;padding-left:18px;position:relative}.contract li:before{content:"✓";position:absolute;left:0;color:var(--forest);font-weight:800}.contract .never li:before{content:"×";color:#a44a39}
+    footer{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font:500 10px/1.5 var(--font-mono);color:var(--faint)}
+    @media(max-width:860px){.top{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:1fr 1fr}.contract{grid-template-columns:1fr}}@media(max-width:500px){.shell{width:calc(100% - 22px)}.hero,.receipt,.proof{padding:21px}.kpis,.steps{grid-template-columns:1fr}.step{min-height:0}}
+  </style>
+</head>
+<body><main class="shell"><header class="mast"><span>TODO-345 · implementation receipt</span><nav class="nav"><a href="https://nomad-code.github.io/todo-345_goat-state-architecture_2026-08-02_12-41">architecture</a><a href="https://nomad-code.github.io/todo-345_goat-state-airplane_2026-08-02_12-41">airplane</a><a href="https://nomad-code.github.io/todo-345_goat-state-boundaries_2026-08-02_12-41">boundaries</a></nav></header>
+  <section class="top"><article class="hero"><span>Build receipt · 2 Aug 2026 UTC</span><h1>The kernel is alive.</h1><p>A real BPO Linear graph is cached on M3, a private capsule resumes on M5, checkpoint events replay idempotently, and the whole repository test suite stays green.</p></article><aside class="receipt"><span class="label">M3 → M5 ROUND-TRIP</span><div class="pass">PASS</div><p>commit d1046d5 · stdlib only · no runtime DB copy</p></aside></section>
+  <section class="kpis"><article class="kpi"><b>91</b><span>active TODO nodes</span></article><article class="kpi"><b>6</b><span>task graph edges</span></article><article class="kpi"><b>13</b><span>GOAT State tests</span></article><article class="kpi"><b>76</b><span>BPO tests green</span></article><article class="kpi"><b>16.8s</b><span>real M3 → M5 handoff</span></article></section>
+  <section class="proof"><div class="proof-head"><div><span class="eyebrow">Live proof chain</span><h2>From SaaS graph to offline resume</h2></div><p id="trace">01 · verified BPO Linear</p></div><div class="steps" id="steps"><article class="step on"><span class="n">01 / INGEST</span><h3>Resolve world</h3><p>Verified nomad-code credential; fetched active TODOs.</p></article><article class="step"><span class="n">02 / STORE</span><h3>Cache graph</h3><p>SQLite snapshot plus append-only device sequence.</p></article><article class="step"><span class="n">03 / SEAL</span><h3>Pack capsule</h3><p>Hashes, strict permissions, safe Git evidence.</p></article><article class="step"><span class="n">04 / RESUME</span><h3>Empty store</h3><p>Validate, import, and print the same next action.</p></article><article class="step"><span class="n">05 / REPLAY</span><h3>Linear outbox</h3><p>Event marker prevents duplicate checkpoint comments.</p></article></div><div class="control"><button class="replay" id="replay">Replay proof</button><span class="trace">No network is needed for steps 2—4.</span></div></section>
+  <section class="contract"><article><h2>Shipped</h2><ul><li>doctor, ingest, graph, status</li><li>checkpoint and idempotent flush</li><li>pack, inspect, resume, reconcile</li><li>SSH handoff command for trusted Macs</li></ul></article><article class="never"><h2>Deliberately excluded</h2><ul><li>Codex and ChatGPT databases</li><li>credentials or raw key values</li><li>implicit untracked file contents</li><li>automatic patch application</li></ul></article></section>
+  <footer><span>proof receipt · public-safe explainer</span><span>source commit d1046d5 · BPO main</span></footer></main>
+  <script>(function(){var s=[].slice.call(document.querySelectorAll('#steps .step')),t=['01 · verified BPO Linear','02 · cached task graph','03 · sealed private capsule','04 · resumed empty store','05 · replayed checkpoint once'];document.getElementById('replay').onclick=function(){var i=0,b=this;b.disabled=true;function n(){s.forEach(function(x,j){x.classList.toggle('on',j===i)});document.getElementById('trace').textContent=t[i++];if(i<s.length)setTimeout(n,540);else setTimeout(function(){b.disabled=false},600)}n()}})()</script>
+</body></html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>lang-ja · WaniKani autopilot</title>
+  <script>
+  (function(){var K='bpo-unlocked',u=false,r=false;try{u=localStorage.getItem(K)==='true'||sessionStorage.getItem(K)==='true';r=sessionStorage.getItem(K+'::reveal')==='1'}catch(e){}var h,c;if(!u){h=document.createElement('style');h.id='__pw_gate_hide__';h.textContent='html > body > *:not(#__pw_gate__){visibility:hidden!important}';(document.head||document.documentElement).appendChild(h)}else if(r){c=document.createElement('style');c.id='__pw_reveal_pre__';c.textContent='html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';(document.head||document.documentElement).appendChild(c);setTimeout(function(){if(c)c.remove()},4000)}window.__BPO_GATE__={label:'bpo · Private',key:K};var p=['','../','../../','../../../','../../../../'],i=0;(function n(){if(i>=p.length){if(h)h.remove();if(c)c.remove();return}var s=document.createElement('script');s.src=p[i++]+'password-wall/gate.js';s.onerror=n;document.head.appendChild(s)})()})();
+  </script>
+  <style>
+    :root{--paper:#f4f4ef;--card:#fff;--ink:#15201d;--body:#43433c;--muted:#6f7a76;--line:#e4eae6;--forest:#127c70;--forest-d:#0c5a50;--mint:#d8eee8;--lime:#9bd457;--pink:#f05b78;--pink-bg:#fde7ed;--amber:#9a7a1f;--amber-bg:#f3ead2;--night:#13231f;--mono:'SF Mono',ui-monospace,Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--shadow:0 1px 2px rgba(20,23,15,.04),0 14px 38px rgba(20,23,15,.06)}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 var(--sans)}.wrap{width:min(1080px,calc(100% - 28px));margin:auto;padding:30px 0 68px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font:600 10px var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:22px}.top b{color:var(--pink)}.armed{display:flex;gap:7px;align-items:center;background:var(--mint);color:var(--forest-d);border:1px solid #bdd9cf;border-radius:999px;padding:5px 10px}.armed i{width:7px;height:7px;border-radius:50%;background:var(--forest);box-shadow:0 0 0 4px rgba(18,124,112,.12)}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.main,.clock,.card{border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.main{background:linear-gradient(145deg,#fff,#fffafc);padding:clamp(26px,4.5vw,50px)}.eyebrow,.kick{font:700 10px var(--mono);letter-spacing:.13em;text-transform:uppercase}.eyebrow{color:var(--pink)}h1{font-size:clamp(43px,6.5vw,72px);line-height:.91;letter-spacing:-.065em;margin:15px 0 18px}h1 span{color:var(--forest)}.lede{max-width:60ch;color:var(--body);font-size:17px}.lede b{color:var(--ink)}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:25px}.fact{border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.75)}.fact strong{display:block;font-size:24px;line-height:1;letter-spacing:-.04em}.fact small{display:block;color:var(--muted);font:600 8.5px var(--mono);text-transform:uppercase;letter-spacing:.07em;margin-top:6px}
+    .clock{background:var(--night);color:#f5faf7;padding:25px;display:flex;flex-direction:column;justify-content:space-between;min-height:430px;position:relative;overflow:hidden}.clock:after{content:'';position:absolute;width:250px;height:250px;border:1px solid rgba(155,212,87,.15);border-radius:50%;right:-120px;bottom:-115px;box-shadow:0 0 0 42px rgba(155,212,87,.035)}.clock .label{font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#a9cfc3}.clock h2{font-size:29px;line-height:1.02;letter-spacing:-.04em;margin:22px 0 8px}.clock p{color:#bdd1c8;margin:0}.clock p b{color:#fff}.count{position:relative;z-index:1}.count strong{display:block;color:var(--lime);font-size:clamp(43px,5vw,61px);line-height:.9;letter-spacing:-.06em}.count span{display:block;color:#a9cfc3;font:500 10px var(--mono);margin-top:9px}.batches{display:flex;gap:5px;margin-top:17px}.batches i{height:8px;flex:1;border-radius:999px;background:var(--lime)}
+    .section{margin-top:42px}.head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:13px}.kick{color:#98a29d}.head h2{font-size:30px;line-height:1;letter-spacing:-.045em;margin:6px 0 0}.head p{max-width:48ch;color:var(--muted);font-size:12px;text-align:right;margin:0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:var(--card);padding:19px}.card h3{font-size:16px;margin:8px 0 5px}.card p{color:var(--muted);font-size:13px;margin:0}.icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--mint);color:var(--forest-d);font-weight:850}.card.warn .icon{background:var(--amber-bg);color:var(--amber)}.card.blocked .icon{background:var(--pink-bg);color:#b73554}
+    .flow{background:#fff;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:var(--shadow)}.step{display:grid;grid-template-columns:110px 24px 1fr;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border:0}.step time{font:700 10px var(--mono);color:var(--forest-d)}.dot{width:12px;height:12px;border-radius:50%;background:var(--forest);box-shadow:0 0 0 5px var(--mint);margin-top:2px}.step.pending .dot{background:var(--pink);box-shadow:0 0 0 5px var(--pink-bg)}.step b{display:block;font-size:13px}.step p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}th{color:var(--muted);font:700 9px var(--mono);text-transform:uppercase;letter-spacing:.08em}td{font-size:13px}tr:last-child td{border:0}td strong{color:var(--forest-d)}.note{margin-top:13px;padding:13px 15px;background:var(--amber-bg);border-left:3px solid var(--amber);border-radius:5px 12px 12px 5px;color:#665019;font-size:12px}footer{margin-top:42px;padding-top:15px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font:500 9.5px var(--mono)}
+    @media(max-width:780px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.head{align-items:start;flex-direction:column}.head p{text-align:left}.clock{min-height:360px}}@media(max-width:520px){.wrap{width:calc(100% - 20px);padding-top:18px}.top{align-items:flex-start;flex-direction:column}.main{padding:24px 19px}.facts{grid-template-columns:1fr}.step{grid-template-columns:85px 18px 1fr}th,td{padding:10px 9px;font-size:11px}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><div>bpo · <b>lang_ja / wani_kani</b> · autopilot</div><div class="armed"><i></i>local worker armed</div></div>
+  <header class="hero">
+    <section class="main">
+      <div class="eyebrow">Critical path · current level only</div>
+      <h1>The next gate<br><span>will not be missed.</span></h1>
+      <p class="lede">A write-enabled worker now checks every 15 minutes and advances <b>current-level radicals and kanji</b>. Vocabulary is excluded in code and fails closed if it ever enters the plan.</p>
+      <div class="facts"><div class="fact"><strong>35</strong><small>kanji at A4</small></div><div class="fact"><strong>7 × 5</strong><small>write groups</small></div><div class="fact"><strong>0</strong><small>vocabulary touched</small></div></div>
+    </section>
+    <aside class="clock">
+      <div><div class="label">Level 13 → 14</div><h2>Guru review window</h2><p>All 35 kanji are aligned for <b>July 23 at 20:00 WITA</b>.</p></div>
+      <div class="count"><strong id="countdown">—</strong><span id="countcopy">until the gate opens</span><div class="batches" aria-label="seven five-item batches"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </aside>
+  </header>
+
+  <section class="section"><div class="head"><div><div class="kick">01 · status</div><h2>What is wired now</h2></div><p>The account has not been mutated yet because nothing is currently due.</p></div><div class="grid">
+    <article class="card"><div class="icon">✓</div><h3>Write token verified</h3><p>The API authenticated the review-write endpoint. The token is encrypted in macOS Keychain, never in a plaintext file.</p></article>
+    <article class="card"><div class="icon">15</div><h3>Local scheduler active</h3><p>launchd runs the execute path every 15 minutes. The first live run exited cleanly with zero due actions.</p></article>
+    <article class="card blocked"><div class="icon">!</div><h3>Always-on host pending</h3><p>A sleeping Mac still cannot run. Personal cloud-secret authorization is the final guarantee boundary.</p></article>
+  </div></section>
+
+  <section class="section"><div class="head"><div><div class="kick">02 · worker loop</div><h2>Fail closed, then move fast</h2></div></div><div class="flow">
+    <div class="step"><time>EVERY 15 MIN</time><div class="dot"></div><div><b>Read current level and assignments</b><p>Server-side filter requests radicals and kanji; local validation rejects vocabulary and unknown types.</p></div></div>
+    <div class="step"><time>WHEN UNLOCKED</time><div class="dot"></div><div><b>Start critical lessons</b><p>New current-level radical and kanji assignments enter Apprentice immediately.</p></div></div>
+    <div class="step"><time>WHEN DUE</time><div class="dot"></div><div><b>Submit zero-error reviews</b><p>Writes run sequentially in logical groups of five with retry handling and structured logs.</p></div></div>
+    <div class="step pending"><time>KILL SWITCH</time><div class="dot"></div><div><b>One file stops everything</b><p><code>~/Library/Application Support/WaniKaniAutopilot/DISABLED</code> exits before any API access.</p></div></div>
+  </div></section>
+
+  <section class="section"><div class="head"><div><div class="kick">03 · December</div><h2>The deterministic line</h2></div></div>
+    <table><thead><tr><th>Cadence from L14</th><th>Level on Dec 1</th><th>Next milestone</th></tr></thead><tbody><tr><td>Strict 7 days</td><td><strong>Level 32</strong></td><td>L33 · Dec 3, 20:00</td></tr><tr><td>Mechanical 6d20h</td><td><strong>Level 33</strong></td><td>L33 · Nov 30, 16:00</td></tr></tbody></table>
+    <div class="note"><b>Current promise:</b> local execution is real, but “works while asleep” is not yet true. The active Google Cloud project is company infrastructure and has deliberately not received this personal token.</div>
+  </section>
+  <footer><span>lang-ja_wani-kani-autopilot_2026-07-22_15-42 · bpo private</span><span>live API snapshot · 2026-07-22 23:33 WITA</span></footer>
+</main>
+<script>
+(function(){var target=new Date('2026-07-23T20:00:00+08:00'),el=document.getElementById('countdown'),copy=document.getElementById('countcopy');function tick(){var ms=target-Date.now();if(ms<=0){el.textContent='Gate open';copy.textContent='the worker will act on its next run';return}var h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);el.textContent=h+'h '+String(m).padStart(2,'0')+'m';copy.textContent=String(s).padStart(2,'0')+'s · until the gate opens'}tick();setInterval(tick,1000)})();
+</script>
+</body>
+</html>

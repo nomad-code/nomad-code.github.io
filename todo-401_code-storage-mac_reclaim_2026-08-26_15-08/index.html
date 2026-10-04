@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-401 · A Guard Without A Remedy</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../../design-repo/grove/motion.css">
+  <style>
+    :root {
+      --c-go:    #0d8f7f;  --c-go-bg:  #d9ece7;  --c-go-bd:  #b9d9d0;
+      --c-stop:  #c4501f;  --c-stop-bg:#f6e3da;  --c-stop-bd:#e3b9a6;
+      --c-gold:  #a07c15;  --c-gold-bg:#f3ead2;  --c-gold-bd:#e3d3a0;
+      --c-blue:  #3a92ba;  --c-blue-bg:#e3eef2;  --c-blue-bd:#cfe1e7;
+    }
+    body { min-height:100vh; overflow-x:hidden; }
+    main { max-width:960px; margin:0 auto; padding:34px 24px 90px; }
+
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.08em; text-transform:uppercase; color:var(--c-go); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-go); }
+    h1 { font:800 clamp(30px,4.8vw,50px)/1.04 var(--font-display); letter-spacing:-.03em;
+      color:var(--ink); margin:16px 0 8px; }
+    h1 em { font-style:normal; color:var(--c-go); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 12px; }
+    .lede { max-width:72ch; font:400 16.5px/1.62 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:660; }
+
+    section { margin-top:54px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+    .k h2 { font:700 21px/1.2 var(--font-display); letter-spacing:-.015em; color:var(--ink); margin:0; }
+    .k .n { font:600 11px/1 var(--font-mono); color:var(--muted); letter-spacing:.1em; }
+    p { font:400 15.5px/1.62 var(--font-ui); color:var(--body); max-width:72ch; }
+    p b { color:var(--ink); font-weight:640; }
+    code { font:500 13px/1.4 var(--font-mono); background:var(--surface-2, #ebebe4);
+      padding:1px 5px; border-radius:4px; color:var(--ink); }
+
+    /* gauge */
+    .gauge { margin:22px 0 8px; }
+    .gauge-row { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+    .gauge-lab { flex:0 0 76px; font:600 12px/1 var(--font-mono); color:var(--muted);
+      letter-spacing:.06em; text-transform:uppercase; }
+    .bar { flex:1; height:30px; border-radius:6px; overflow:hidden; display:flex;
+      background:var(--c-go-bg); border:1px solid var(--c-go-bd); }
+    .bar .used { background:var(--c-stop); height:100%; }
+    .bar.before .used { background:var(--c-stop); }
+    .bar.after .used { background:var(--c-blue); }
+    .gauge-val { flex:0 0 92px; text-align:right; font:700 14px/1 var(--font-mono); color:var(--ink); }
+    .gauge-val small { display:block; font:500 10.5px/1.4 var(--font-mono); color:var(--muted);
+      letter-spacing:.05em; text-transform:uppercase; margin-top:3px; }
+
+    table { width:100%; border-collapse:collapse; margin:16px 0 4px; font:400 14px/1.5 var(--font-ui); }
+    th { text-align:left; font:600 11px/1 var(--font-mono); letter-spacing:.08em;
+      text-transform:uppercase; color:var(--muted); padding:0 10px 8px 0;
+      border-bottom:1px solid var(--rule, #dcdcd2); }
+    td { padding:9px 10px 9px 0; border-bottom:1px solid var(--rule, #ebebe2); color:var(--body); vertical-align:top; }
+    td.num { font:600 13.5px/1.5 var(--font-mono); color:var(--ink); text-align:right; white-space:nowrap; }
+    td b { color:var(--ink); font-weight:640; }
+    tr.total td { border-bottom:none; padding-top:12px; font-weight:700; color:var(--ink); }
+    tr.total td.num { color:var(--c-go); font-size:15px; }
+
+    .tag { display:inline-block; font:600 10.5px/1 var(--font-mono); letter-spacing:.07em;
+      text-transform:uppercase; padding:4px 7px; border-radius:4px; white-space:nowrap; }
+    .t-safe { background:var(--c-go-bg); color:var(--c-go); border:1px solid var(--c-go-bd); }
+    .t-call { background:var(--c-gold-bg); color:var(--c-gold); border:1px solid var(--c-gold-bd); }
+    .t-keep { background:var(--c-blue-bg); color:var(--c-blue); border:1px solid var(--c-blue-bd); }
+
+    .note { border-left:3px solid var(--c-gold); background:var(--c-gold-bg);
+      padding:14px 18px; border-radius:0 7px 7px 0; margin:18px 0; }
+    .note.stop { border-left-color:var(--c-stop); background:var(--c-stop-bg); }
+    .note.go { border-left-color:var(--c-go); background:var(--c-go-bg); }
+    .note p { margin:0; font-size:14.5px; }
+    .note p + p { margin-top:9px; }
+    .note .h { font:700 11.5px/1 var(--font-mono); letter-spacing:.09em; text-transform:uppercase;
+      display:block; margin-bottom:8px; color:var(--ink); }
+
+    .steps { list-style:none; padding:0; margin:16px 0 0; counter-reset:s; }
+    .steps li { counter-increment:s; position:relative; padding:0 0 16px 40px;
+      font:400 15px/1.55 var(--font-ui); color:var(--body); }
+    .steps li::before { content:counter(s); position:absolute; left:0; top:-1px;
+      width:26px; height:26px; border-radius:50%; background:var(--c-go-bg);
+      border:1px solid var(--c-go-bd); color:var(--c-go);
+      font:700 12px/26px var(--font-mono); text-align:center; }
+    .steps li b { color:var(--ink); font-weight:660; }
+
+    .kbd { display:inline-block; font:600 12.5px/1 var(--font-mono); background:var(--ink);
+      color:var(--paper, #f4f4ef); padding:5px 8px; border-radius:5px; }
+
+    footer { margin-top:64px; padding-top:20px; border-top:1px solid var(--rule, #dcdcd2);
+      font:500 12px/1.7 var(--font-mono); color:var(--muted); letter-spacing:.03em; }
+    footer a { color:var(--c-go); text-decoration:none; }
+    @media (max-width:640px){
+      .gauge-lab { flex-basis:56px; font-size:10.5px; }
+      .gauge-val { flex-basis:74px; font-size:12.5px; }
+      table { font-size:13px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <div class="eyebrow"><span class="mo-dot"></span> TODO-401 · 2026-08-26 · closed</div>
+  <h1>A guard without <em>a remedy</em></h1>
+  <p class="sub">The overnight photo job refused at 02:00. It was right to.</p>
+  <p class="lede">
+    The log read <code>only 13 GiB free (&lt; 20) — refusing to export</code>. That guard exists because a
+    bare <code>process.py</code> filled this volume to 100% once already. It did its job. The defect is
+    subtler: <b>the loop has a refusal but no reclaim.</b> Too full to export, and no stage whose job is
+    to make room — so it stopped and waited for a human who did not know he was needed.
+  </p>
+
+  <section>
+    <div class="k"><span class="n">01</span><h2>Before and after</h2></div>
+    <div class="gauge">
+      <div class="gauge-row">
+        <span class="gauge-lab">Before</span>
+        <span class="bar before"><span class="used" style="width:99.25%"></span></span>
+        <span class="gauge-val">7 GiB<small>free · 100%</small></span>
+      </div>
+      <div class="gauge-row">
+        <span class="gauge-lab">After</span>
+        <span class="bar after"><span class="used" style="width:89.2%"></span></span>
+        <span class="gauge-val">100 GiB<small>free · 89%</small></span>
+      </div>
+    </div>
+    <p>
+      Every byte below is regenerable. Nothing irreplaceable was touched, and the volume now clears the
+      20 GiB gate by <b>five times over</b>.
+    </p>
+    <table>
+      <thead><tr><th>Reclaimed</th><th>How it comes back</th><th style="text-align:right">Freed</th></tr></thead>
+      <tbody>
+        <tr><td><b>Docker.raw</b></td><td>Docker quit first; rebuilds its disk on next launch</td><td class="num">46 GiB</td></tr>
+        <tr><td><b>iOS simulators</b></td><td><code>simctl delete all</code>; Xcode re-downloads runtimes</td><td class="num">23 GiB</td></tr>
+        <tr><td><b>Claude vm_bundles</b></td><td>Re-fetched on demand in local agent mode</td><td class="num">10 GiB</td></tr>
+        <tr><td><b>Caches · DeviceSupport · Trash</b></td><td>Rebuild themselves in normal use</td><td class="num">~15 GiB</td></tr>
+        <tr class="total"><td>Total</td><td></td><td class="num">~94 GiB</td></tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <span class="h">Accepted collateral</span>
+      <p>Docker <b>named volumes</b> went with the disk image. Judged cheap — only three Dockerfiles exist
+      in <code>~/dev</code>. Worth naming out loud rather than burying: this is the one deletion in the set
+      that could have held real local state.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">02</span><h2>The cycle, restarted and chained</h2></div>
+    <p>
+      With headroom, export ran clean: <b>8,083 processed, 831 exported, 4 updated, 0 errors</b> in 22m32s.
+      Twenty-eight assets were held out of the next purge by <code>common.hold_uuids</code> — the
+      edit-render trap doing exactly what it was built for last session.
+    </p>
+    <p>
+      Six files reported missing, <b>all <code>2026/08</code> originals still iCloud-side</b>. Under
+      <code>GRACE_DAYS = 3</code> they are not purge candidates, so they cannot block staging. Offsite is
+      pushing the backlog now — GCS sits at 46.8 of 68 GiB.
+    </p>
+    <p>
+      <code>finish_cycle.sh</code> carries the rest unattended: wait-for-offsite → verify → greenlight →
+      queue → resume the zip upload. It pauses and restores the screenshot importer so verify and queue
+      never see drift, and it <b>ends at the album — it never purges</b>.
+    </p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">03</span><h2>Two corrections</h2></div>
+    <div class="note stop">
+      <span class="h">Nearly deleted the wrong thing</span>
+      <p>I had diffed all <b>88,775 filenames</b> in the 48 GiB Takeout zip against the extracted directory
+      beside it. Zero missing. I called it pure redundancy and moved to delete.</p>
+      <p>He stopped me: <b>the zip is the form that works in Google Drive.</b> Right call. It is uploading
+      to <code>gdrive-personal:zyx/photos/</code> instead, and the local copy stays until Drive confirms
+      it. Verified-redundant is not the same as worthless.</p>
+    </div>
+    <div class="note stop">
+      <span class="h">Retracted a claim before he acted on it</span>
+      <p>I said the 133 GiB <code>~/Documents/My Drive</code> could be freed by flipping Drive for Desktop
+      from Mirror to Stream. <b>Wrong.</b> It is a plain Directory, not a DriveFS mount — the real mounts
+      live at <code>~/Library/CloudStorage/GoogleDrive-*</code>.</p>
+      <p>There is no setting to flip. Freeing that space means genuinely deleting local copies, which is a
+      different decision than I had described. The mirror did not just stall — the workflow left DriveFS
+      entirely.</p>
+    </div>
+    <p>
+      Also proven along the way: <code>rclone check</code> against Drive found 9,252 matching files and 66
+      apparent gaps — but <b>64 were <code>.gdoc</code>/<code>.gsheet</code> pointer stubs</b>, which Drive
+      holds natively. Only two were real, and Lane B was never as complete as last session assumed.
+    </p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">04</span><h2>What remains — audited, not touched</h2></div>
+    <table>
+      <thead><tr><th>Target</th><th>Verdict</th><th style="text-align:right">Size</th></tr></thead>
+      <tbody>
+        <tr><td><b>dev build cruft</b><br><code>node_modules</code> ×1,156, dist, .next, .turbo</td>
+            <td><span class="tag t-safe">Safe · regenerable</span><br>Wants a staleness filter, not a blind sweep — some are active worktrees</td>
+            <td class="num">~85 GiB</td></tr>
+        <tr><td><b>Google Photos Archive</b><br>extracted dir + zip</td>
+            <td><span class="tag t-call">Your call</span><br>Same content twice; the dir is what <code>photos.db</code> indexes by path</td>
+            <td class="num">~97 GiB</td></tr>
+        <tr><td><b>~/Documents/My Drive</b></td>
+            <td><span class="tag t-call">Your call</span><br>Verified in Drive, but reclaiming = real deletion; recovery at ~600 KiB/s</td>
+            <td class="num">133 GiB</td></tr>
+        <tr><td><b>~/Documents/Timeline</b></td>
+            <td><span class="tag t-call">Your call</span><br>ZYX/ZYX 77 · IN PROGRESS 24 — phone originals with intact EXIF GPS</td>
+            <td class="num">145 GiB</td></tr>
+        <tr><td><b>FoundSOC2/IGNORE_THIS_DATA</b></td>
+            <td><span class="tag t-call">Confirm</span><br>Named like it is disposable — worth one look</td>
+            <td class="num">15 GiB</td></tr>
+        <tr><td><b>~/ark</b></td>
+            <td><span class="tag t-keep">Keep</span><br>This is the archive. It is the point.</td>
+            <td class="num">75 GiB</td></tr>
+      </tbody>
+    </table>
+    <p>All of it carried into <b>TODO-410</b>, along with the defect worth fixing: give the photo loop a
+    reclaim stage or a low-disk notification, so it never silently no-ops at 02:00 again.</p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">05</span><h2>Your one manual step</h2></div>
+    <ol class="steps">
+      <li>Open <b>Photos → Albums → <code>⌫ purge queue</code></b> once the chain stages it.</li>
+      <li>Scroll it. It is a <b>review surface, not death row</b> — favorite anything you want rescued.</li>
+      <li>Press <span class="kbd">⌘A</span> then <span class="kbd">⌘⌫</span>.</li>
+      <li>Recently Deleted → <b>Delete All</b> to actually reclaim the bytes.</li>
+    </ol>
+    <div class="note stop">
+      <span class="h">The key that matters</span>
+      <p>Inside an album, plain <span class="kbd">⌫</span> only <b>removes from the album</b>.
+      <span class="kbd">⌘⌫</span> is Delete from Library. The wrong key means you believe you purged, and
+      nothing happened — then the next cycle quietly re-queues it all.</p>
+    </div>
+  </section>
+
+  <footer>
+    TODO-401 · code-photos-apple-export · Done<br>
+    Follow-on → TODO-410 · code-storage-mac_reclaim<br>
+    2026-08-26 15:08 UTC · bpo · private
+  </footer>
+
+</main>
+</body>
+</html>

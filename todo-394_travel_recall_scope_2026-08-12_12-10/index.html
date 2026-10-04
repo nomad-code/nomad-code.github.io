@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TODO-394 · travel recall</title>
+<meta name="description" content="Scope card: geo-slice the photo archive per upcoming destination, stage into Apple Photos, purge reclaims after">
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+<style>:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6;--amber:#b3720a}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{width:min(100% - 32px,880px);margin:auto;padding:30px 0 34px}.eyebrow{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}h1{margin:10px 0 8px;font:700 clamp(28px,5.5vw,44px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.05em}.lede{max-width:700px;color:var(--muted);font-size:15.5px;margin:0 0 16px}.loop{padding:13px 18px;border-radius:14px;background:var(--ink);color:#fff;font:600 13px/1.9 ui-monospace,monospace;text-align:center}.loop b{color:var(--lime)}table{width:100%;margin-top:12px;border-collapse:collapse;font:600 12.5px/1.5 ui-monospace,monospace;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}th{background:var(--forest);color:#fff;padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em}td{padding:7px 12px;border-top:1px solid var(--line)}td.n{text-align:right;font-weight:700}td.hit{color:var(--forest)}td.miss{color:var(--muted)}.note{margin-top:12px;padding:13px 16px;border-radius:14px;background:var(--forest);color:#fff;font-size:12.5px}.note b{color:var(--lime)}footer{display:flex;justify-content:space-between;margin-top:18px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}</style></head>
+<body><main>
+<div class="eyebrow">nomad-code / bpo · TODO-394 · scoped from TODO-384's index</div>
+<h1>walking memory:<br>recall photos per destination</h1>
+<p class="lede">6 weeks, 16 cities on the calendar. The archive already knows some of them. recall.py geo-slices the index per upcoming stop, stages matches into Apple Photos as ref/ albums, and iCloud carries 2017 to the phone standing in 2026.</p>
+<div class="loop">archive → purge → <b>recall on demand</b> → re-purge &nbsp;·&nbsp; reference photos self-clean by construction</div>
+<table>
+<tr><th>upcoming stop</th><th>when</th><th>past photos</th><th>from</th></tr>
+<tr><td>Vienna</td><td>NOW–Aug 14 · Sep 27</td><td class="n hit">46</td><td>Aug 2017 — 9 yrs ago this week</td></tr>
+<tr><td>Budapest</td><td>Sep 9–12 · 26</td><td class="n hit">164</td><td>Jul–Aug 2017, 3-week stint</td></tr>
+<tr><td>London</td><td>Sep 7–9</td><td class="n hit">2</td><td>2009 + non-geo backlog</td></tr>
+<tr><td>Copenhagen</td><td>Aug 14–17</td><td class="n miss">0*</td><td>trip real, no sidecar GPS</td></tr>
+<tr><td>Tromsø area</td><td>Sep 12–24 (12d, car)</td><td class="n miss">0*</td><td>trip real, no sidecar GPS</td></tr>
+<tr><td>Oslo · HYROX</td><td>Sep 24–26</td><td class="n miss">0*</td><td>trip real, no sidecar GPS</td></tr>
+<tr><td>Riga · Vilnius · Tallinn · Tirana · Malta · Milan · Larnaca · Sofia · Bucharest · Tenerife</td><td>Aug 17–Sep 7</td><td class="n miss">0</td><td>first visits</td></tr>
+</table>
+<div class="note"><b>* the zeros are the milestone:</b> only 34% of the Takeout archive has sidecar geo. M2 backfills GPS straight from EXIF (pillow, venv already has it) and re-runs the join — Copenhagen, Tromsø, Oslo should light up. M0 quick win: 210 Vienna+Budapest photos on the phone while the human is literally there.</div>
+<footer><span>TODO_394-code-photos-travel_recall</span><span>2026-08-12 · 12-10 Z</span></footer>
+</main></body></html>
