@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>Crystal Bridges · Putting the Art in Heartland</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    /* Chart-scope palette — grove hues chroma-snapped to pass the six checks
+       (validated on the sibling essay: L-band ✓ · chroma ✓ · protan ΔE ✓ · contrast ✓) */
+    :root {
+      --c-art:     #0d8f7f;  /* the art / the objects themselves     (forest, snapped) */
+      --c-art-bg:  #d9ece7;
+      --c-comp:    #c4501f;  /* the comparison / the flattening frame (warn, snapped)  */
+      --c-comp-bg: #f6e3da;
+      --c-schl:    #3a92ba;  /* the scholars / critical apparatus     (found, snapped)  */
+      --c-schl-bg: #e3eef2;
+      --c-era:     #a07c15;  /* nature / time accents                 (amber, snapped)  */
+      --c-era-bg:  #f3ead2;
+      --c-lime:    #84c241;  /* ONE moment: art let speak for itself                    */
+    }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    main { max-width: 1060px; margin: 0 auto; padding: 30px 24px 80px; }
+
+    /* ---------- header ---------- */
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--c-comp); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-comp); }
+    h1 { font:800 clamp(34px, 5.4vw, 54px)/1.02 var(--font-display); letter-spacing:-.025em;
+      color:var(--ink); margin:16px 0 6px; }
+    h1 em { font-style:normal; color:var(--c-comp); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 14px; }
+    .sub a { color: var(--forest-d); text-decoration-color: var(--line); }
+    .lede { max-width:70ch; font:400 16.5px/1.6 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:640; }
+
+    .pullquote { margin:26px 0 6px; padding:18px 22px; border-left:3px solid var(--c-comp);
+      background:var(--card); border-radius: 0 var(--r-panel) var(--r-panel) 0;
+      box-shadow: var(--shadow-card); }
+    .pullquote p { font:500 clamp(17px, 2.2vw, 21px)/1.45 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .pullquote cite { display:block; margin-top:8px; font:500 11.5px/1 var(--font-mono);
+      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 58px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(22px,3vw,28px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .k h2 em { font-style: normal; color: var(--forest-d); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:18px; }
+    .blurb b { color:var(--ink); font-weight:620; }
+
+    /* ---------- legend ---------- */
+    .lgd { display:flex; gap:16px 22px; flex-wrap:wrap; margin:14px 2px 0;
+      font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+    .lgd span { display:inline-flex; align-items:center; gap:8px; }
+    .lgd i { width:11px; height:11px; border-radius:50%; }
+
+    /* ---------- hero viz ---------- */
+    .hero-card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-hero); overflow:hidden; }
+    .comp-bar { display:flex; align-items:center; gap:10px; padding:14px 16px 0; flex-wrap:wrap; }
+    .comp-btn { font:600 12px/1 var(--font-mono); letter-spacing:.04em; padding:9px 14px;
+      border-radius:var(--r-pill); border:1px solid var(--line); background:var(--bg);
+      color:var(--muted); cursor:pointer; transition:all .35s var(--ease); }
+    .comp-btn:hover { border-color:var(--faint); color:var(--ink); }
+    .comp-btn[aria-pressed="true"] { color:#fff; background:var(--c-comp); border-color:var(--c-comp); }
+    .comp-note { flex:1 1 260px; min-width:220px; position:relative; height:38px; }
+    .comp-note p { position:absolute; inset:0; display:flex; align-items:center;
+      font:400 13px/1.35 var(--font-ui); color:var(--muted); opacity:0;
+      transition:opacity .7s var(--ease); }
+    .comp-note p b { color:var(--ink); font-weight:620; margin-right:5px; }
+    [data-comp="nature"]  .comp-note .n-nat,
+    [data-comp="tech"]    .comp-note .n-tec,
+    [data-comp="science"] .comp-note .n-sci { opacity:1; }
+
+    .stage svg { display:block; width:100%; height:auto; }
+    #compNature, #compTech, #compScience { transition: opacity .8s var(--ease); }
+    [data-comp="nature"]  #compTech, [data-comp="nature"]  #compScience,
+    [data-comp="tech"]    #compNature, [data-comp="tech"]    #compScience,
+    [data-comp="science"] #compNature, [data-comp="science"] #compTech { opacity:0; }
+    .hero-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:12px 18px 15px; border-top:1px solid var(--line); }
+    .hero-cap b { color:var(--forest-d); font-weight:600; }
+
+    .ax-label { font:500 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; fill:var(--muted); }
+    .ax-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* ---------- stat tiles ---------- */
+    .tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:12px; margin-top:16px; }
+    .tile { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px 14px; box-shadow:var(--shadow-card); position:relative; overflow:hidden; }
+    .tile::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tc,var(--forest)); }
+    .tile .v { font:800 34px/1 var(--font-display); letter-spacing:-.03em; color:var(--ink);
+      font-variant-numeric:tabular-nums; }
+    .tile .v small { font:700 17px/1 var(--font-display); color:var(--tc,var(--forest)); margin-left:2px; }
+    .tile .l { margin-top:6px; font:500 11px/1.45 var(--font-mono); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- comparison split ---------- */
+    .split { margin-top:18px; }
+    .split .bar { display:flex; gap:2px; height:34px; border-radius:8px; overflow:hidden; }
+    .split .seg { display:flex; align-items:center; padding:0 14px; font:700 12px var(--font-mono);
+      color:#fff; letter-spacing:.03em; min-width:0; white-space:nowrap; }
+    .split .seg.temple { background:var(--c-comp); flex:1; }
+    .split .seg.school  { background:var(--c-art);  flex:1; }
+    .split .cap { display:flex; justify-content:space-between; margin-top:8px;
+      font:500 11px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- label ledger ---------- */
+    .rooms { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+    .room { grid-column: span var(--sp,2); background:var(--card); border:1.5px solid var(--rc-bd);
+      border-radius:var(--r-tile); padding:14px 16px; cursor:default; position:relative;
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease); outline:none; }
+    .room:hover, .room:focus-visible { transform:translateY(-3px); box-shadow:var(--shadow-lift); z-index:3; }
+    .room .nm { font:700 15px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--ink); }
+    .room .nm small { display:block; font:500 10px/1.3 var(--font-mono); letter-spacing:.03em;
+      text-transform:none; color:var(--muted); margin-top:4px; }
+    .room .vc { display:inline-flex; align-items:center; gap:6px; margin-top:9px;
+      font:600 9.5px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--rc); background:var(--rc-bg); border:1px solid var(--rc-bd);
+      padding:5px 8px; border-radius:var(--r-chip); }
+    .room .vc i { width:7px; height:7px; border-radius:50%; background:var(--rc); }
+    .room.comp { --rc:var(--c-comp); --rc-bg:var(--c-comp-bg); --rc-bd:#e3b9a6; }
+    .room.art  { --rc:var(--c-art);  --rc-bg:var(--c-art-bg);  --rc-bd:#b9d9d0; }
+    .room q { display:block; margin-top:10px; font:400 12px/1.5 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .room q::before, .room q::after { color:var(--rc); font-weight:700; }
+
+    /* ---------- bespoke figs ---------- */
+    .fig { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); overflow:hidden; }
+    .fig svg { display:block; width:100%; height:auto; }
+    .fig-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:11px 18px 14px; border-top:1px solid var(--line); }
+    .fig-cap b { color:var(--forest-d); font-weight:600; }
+    .node { cursor:pointer; }
+    .node circle.c { transition: r .25s var(--spring); }
+    .node:hover circle.c, .node:focus-visible circle.c { r:7.5; }
+    .rt-label { font:500 10.5px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; fill:var(--muted); }
+    .rt-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* draw-in for long paths */
+    .draw { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); }
+    .shown .draw { animation: drawin 2.2s var(--ease) forwards; animation-delay: var(--d,0ms); }
+    @keyframes drawin { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .draw { stroke-dasharray:none; stroke-dashoffset:0; } }
+
+    /* ---------- scholars ---------- */
+    .chorus { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px; }
+    .voice { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:9px; }
+    .voice .who { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .voice .who b { font:700 14.5px/1.1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .voice .role { font:600 9.5px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); color:var(--vr); background:var(--vr-bg); flex:none; }
+    .voice q { font:400 13.5px/1.55 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .voice q::before, .voice q::after { color:var(--vr); font-weight:700; }
+    .voice .note { font:400 11.5px/1.5 var(--font-ui); color:var(--muted); margin-top:auto; }
+    .voice.framework { --vr:var(--c-schl); --vr-bg:var(--c-schl-bg); }
+    .voice.evidence  { --vr:var(--c-comp); --vr-bg:var(--c-comp-bg); }
+    .voice.hearing   { --vr:var(--c-art);  --vr-bg:var(--c-art-bg); }
+    .voice.path      { --vr:#5a8a1e; --vr-bg:#e8f3d8; }
+
+    /* ---------- table view ---------- */
+    details.tbl { margin-top:18px; border:1px solid var(--line); border-radius:var(--r-panel);
+      background:var(--card); overflow:hidden; }
+    details.tbl summary { cursor:pointer; padding:13px 18px; font:600 12.5px var(--font-mono);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--forest-d); list-style:none; }
+    details.tbl summary::-webkit-details-marker { display:none; }
+    details.tbl summary::before { content:"▸ "; }
+    details.tbl[open] summary::before { content:"▾ "; }
+    details.tbl table { width:100%; border-collapse:collapse; font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    details.tbl th, details.tbl td { text-align:left; padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+    details.tbl th { font:600 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+    details.tbl td:first-child { font-family:var(--font-mono); font-weight:500; color:var(--ink); white-space:nowrap; }
+
+    /* ---------- closing ---------- */
+    .close-quote { margin:22px 0 0; padding:20px 24px; border-radius:var(--r-card);
+      background:linear-gradient(150deg,#15201d,#0c5a50 130%); color:#eef3ef;
+      box-shadow:var(--shadow-hero); }
+    .close-quote p { font:500 clamp(16px,2.1vw,20px)/1.5 var(--font-display); letter-spacing:-.01em; }
+    .close-quote p em { font-style:normal; color:var(--lime-b); }
+    .close-quote cite { display:block; margin-top:10px; font:500 11px var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:#9fb5ac; font-style:normal; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      font:400 11.5px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.02em; }
+    footer a { color:var(--muted); text-decoration-color:var(--line); }
+
+    /* ---------- tooltip ---------- */
+    .tip { position:fixed; z-index:60; max-width:290px; background:var(--ink); color:#f0f4f1;
+      font:400 12.5px/1.5 var(--font-ui); padding:10px 13px; border-radius:10px;
+      box-shadow:var(--shadow-lift); pointer-events:none; opacity:0;
+      transform:translateY(5px); transition:opacity .18s var(--ease), transform .18s var(--ease); }
+    .tip.on { opacity:1; transform:none; }
+    .tip b { color:#fff; font-weight:640; }
+
+    @media (max-width: 720px) {
+      .rooms { grid-template-columns:repeat(2,1fr); }
+      .room { grid-column: span 1 !important; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ================= header ================= -->
+  <header class="mo-reveal">
+    <div class="eyebrow"><span class="mo-dot"></span> essay reading · look sharp! · nolan patrick · 2025-11-08</div>
+    <h1>Putting the art in <em>Heartland</em></h1>
+    <p class="sub">Alice Walton's Crystal Bridges Museum of American Art, Bentonville, Arkansas — the essay's argument, drawn.
+      Source: <a href="https://nolanpatrick.substack.com/p/crystal-bridges-putting-the-art-in">nolanpatrick.substack.com</a></p>
+    <p class="lede">Opened in <b>2011</b> and set to expand in <b>2026</b>, Crystal Bridges was built to make the middle of the
+      country <b>comfortable with art</b> — its mission, “to welcome all to celebrate the American spirit in a setting that
+      unites the power of art with the beauty of nature.” Patrick's essay argues the museum keeps its promise by a single
+      device: <b>comparison</b>. It steadies the visitor by likening art to what they already trust — nature, technology,
+      science — and in doing so flattens the art, stripping it of the individuality that made it worth showing.</p>
+    <div class="pullquote">
+      <p>The museum “fails both the audience and the art,” dipping into condescension in the very act of trying to welcome.</p>
+      <cite>Nolan Patrick · the essay's verdict</cite>
+    </div>
+    <div class="lgd" role="list">
+      <span role="listitem"><i style="background:var(--c-art)"></i> the art · the objects themselves</span>
+      <span role="listitem"><i style="background:var(--c-comp)"></i> the comparison · the flattening frame</span>
+      <span role="listitem"><i style="background:var(--c-schl)"></i> the scholars</span>
+      <span role="listitem"><i style="background:var(--c-lime)"></i> art let speak for itself <em style="font-style:normal;color:var(--faint)">(once)</em></span>
+    </div>
+  </header>
+
+  <!-- ================= 01 · the comparison bridge ================= -->
+  <section id="bridge">
+    <div class="k mo-reveal"><span class="n">01</span><h2>The comparison <em>bridge</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Glass walls and spring-fed ponds sit at the museum's heart, equating the art
+      with the landscape around it — assuming visitors already know how to appreciate nature, and nudging that appreciation
+      toward art. The same move repeats with <b>technology</b> and <b>science</b>. Each comparison is a bridge that carries the
+      visitor across; but meaning travels with them, and the object is left standing for something other than itself.
+      Toggle the far bank — watch what the art is asked to become.</p>
+
+    <div class="hero-card mo-reveal" style="--d:140ms" data-comp="nature" id="heroCard">
+      <div class="comp-bar">
+        <button class="comp-btn" id="btn-nature"  aria-pressed="true">art ≈ nature</button>
+        <button class="comp-btn" id="btn-tech"    aria-pressed="false">art ≈ technology</button>
+        <button class="comp-btn" id="btn-science" aria-pressed="false">art ≈ science</button>
+        <div class="comp-note" aria-live="polite">
+          <p class="n-nat"><b>Nature.</b> Ponds and glass frame the art as scenery — beauty you already know how to feel.</p>
+          <p class="n-tec"><b>Technology.</b> Art likened to industry and engineering — a made thing among made things.</p>
+          <p class="n-sci"><b>Science.</b> Art likened to medical training — a specimen to study, not an expression to meet.</p>
+        </div>
+      </div>
+      <figure class="stage" role="img"
+        aria-label="Diagram: an art pavilion on the left bank holds a framed work (forest). A bridge spans a pond to the right bank, which cycles among three comparanda — nature, technology, science. As the visitor crosses, the artwork is re-rendered in the far bank's terms, losing its distinctness.">
+        <svg viewBox="0 0 960 400">
+          <!-- ground + pond -->
+          <line class="vz-gridline" x1="30" y1="330" x2="930" y2="330"/>
+          <path d="M300,344 q13,-7 26,0 t26,0 t26,0 t26,0 t26,0 t26,0 t26,0 t26,0 t26,0 t26,0 t26,0"
+                fill="none" stroke="var(--c-era)" stroke-width="1.4" opacity=".4" stroke-linecap="round"/>
+
+          <!-- ============ the art pavilion (constant, left) ============ -->
+          <g id="pavilion">
+            <rect x="70" y="150" width="150" height="180" rx="7" fill="#fff"
+                  stroke="var(--ink)" stroke-width="1.85" opacity=".92"/>
+            <line x1="70" y1="150" x2="220" y2="150" stroke="var(--ink)" stroke-width="1.85" opacity=".5"/>
+            <!-- the framed work inside -->
+            <rect x="112" y="196" width="66" height="86" rx="3" fill="var(--c-art-bg)"
+                  stroke="var(--c-art)" stroke-width="1.85"/>
+            <circle class="vz-dot breathe" cx="145" cy="239" r="7" style="--vz-c:var(--c-art); --d:-1s"/>
+            <text class="ax-label strong" x="70" y="130">the art</text>
+            <text class="ax-label" x="70" y="146">an object, made to be met</text>
+          </g>
+
+          <!-- ============ the bridge (the comparison) ============ -->
+          <g id="bridge-g">
+            <path class="vz-path flow draw" style="--vz-c:var(--c-comp); --vz-dash:14; --len:520"
+                  d="M220,244 C360,244 380,214 480,214 S620,244 740,244"/>
+            <!-- deck posts -->
+            <line x1="300" y1="228" x2="300" y2="270" stroke="var(--c-comp)" stroke-width="1.4" opacity=".5"/>
+            <line x1="480" y1="214" x2="480" y2="270" stroke="var(--c-comp)" stroke-width="1.4" opacity=".5"/>
+            <line x1="660" y1="228" x2="660" y2="270" stroke="var(--c-comp)" stroke-width="1.4" opacity=".5"/>
+            <polyline points="726,234 746,244 726,254" fill="none" stroke="var(--c-comp)"
+                      stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+            <text class="ax-label" x="360" y="200">the comparison — a bridge across</text>
+            <!-- meaning travelling off the object toward the far bank -->
+            <circle class="vz-mote" r="3.4" style="--vz-c:var(--c-comp); --mote-path:path('M220,244 C360,244 380,214 480,214 S620,244 740,244'); --d:0s"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-comp); --mote-path:path('M220,244 C360,244 380,214 480,214 S620,244 740,244'); --d:-3.4s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-comp); --mote-path:path('M220,244 C360,244 380,214 480,214 S620,244 740,244'); --d:-6.4s"/>
+          </g>
+
+          <!-- ============ far bank · NATURE ============ -->
+          <g id="compNature">
+            <!-- hills -->
+            <path d="M760,330 L812,262 L852,290 L900,244 L930,266 L930,330 Z"
+                  fill="var(--c-era)" opacity=".12"/>
+            <path d="M760,330 L812,262 L852,290 L900,244 L930,266"
+                  fill="none" stroke="var(--c-era)" stroke-width="1.85"
+                  stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+            <!-- tree -->
+            <line x1="800" y1="330" x2="800" y2="286" stroke="var(--c-era)" stroke-width="1.85" stroke-linecap="round"/>
+            <circle cx="800" cy="272" r="16" fill="none" stroke="var(--c-era)" stroke-width="1.85"/>
+            <!-- the art re-rendered as scenery -->
+            <rect x="852" y="196" width="52" height="66" rx="3" fill="none"
+                  stroke="var(--c-era)" stroke-width="1.85" opacity=".8"/>
+            <circle class="vz-dot" cx="878" cy="229" r="5" style="--vz-c:var(--c-era)" opacity=".7"/>
+            <text class="ax-label strong" x="800" y="374" text-anchor="middle" fill="var(--c-era)">nature</text>
+          </g>
+
+          <!-- ============ far bank · TECHNOLOGY ============ -->
+          <g id="compTech">
+            <!-- interlocking gears -->
+            <g stroke="var(--c-comp)" stroke-width="1.85" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".8">
+              <circle cx="812" cy="280" r="26"/>
+              <circle cx="812" cy="280" r="9"/>
+              <path d="M812,246 v-10 M812,314 v10 M778,280 h-10 M846,280 h10 M788,256 l-7,-7 M836,304 l7,7 M836,256 l7,-7 M788,304 l-7,7"/>
+              <circle cx="878" cy="238" r="17"/>
+              <circle cx="878" cy="238" r="6"/>
+              <path d="M878,214 v-7 M878,262 v7 M854,238 h-7 M902,238 h7"/>
+            </g>
+            <!-- the art re-rendered as apparatus -->
+            <rect x="846" y="288" width="52" height="42" rx="3" fill="none"
+                  stroke="var(--c-comp)" stroke-width="1.85" opacity=".6"/>
+            <circle class="vz-dot" cx="872" cy="309" r="5" style="--vz-c:var(--c-comp)" opacity=".6"/>
+            <text class="ax-label strong" x="838" y="374" text-anchor="middle" fill="var(--c-comp)">technology</text>
+          </g>
+
+          <!-- ============ far bank · SCIENCE ============ -->
+          <g id="compScience">
+            <!-- molecule / specimen lattice -->
+            <g stroke="var(--c-schl)" stroke-width="1.85" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+              <line x1="806" y1="248" x2="860" y2="230"/>
+              <line x1="806" y1="248" x2="792" y2="300"/>
+              <line x1="792" y1="300" x2="850" y2="312"/>
+              <line x1="860" y1="230" x2="910" y2="262"/>
+              <line x1="850" y1="312" x2="910" y2="262"/>
+            </g>
+            <circle cx="806" cy="248" r="8" fill="var(--c-schl)" opacity=".85"/>
+            <circle cx="860" cy="230" r="8" fill="var(--c-schl)" opacity=".85"/>
+            <circle cx="792" cy="300" r="8" fill="var(--c-schl)" opacity=".85"/>
+            <circle cx="850" cy="312" r="8" fill="var(--c-schl)" opacity=".85"/>
+            <circle cx="910" cy="262" r="8" fill="none" stroke="var(--c-schl)" stroke-width="1.85"/>
+            <text class="ax-label strong" x="852" y="374" text-anchor="middle" fill="var(--c-schl)">science</text>
+          </g>
+        </svg>
+      </figure>
+      <div class="hero-cap"><b>The device, in the museum's own words:</b> a setting that “unites the power of art with the
+        beauty of nature.” Patrick's objection is that the comparison never stops — art is steadied against nature, then
+        technology, then science — so the visitor is always looking <i>through</i> the art at something more familiar, and
+        never quite at the art itself.</div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · two contradictory functions ================= -->
+  <section id="functions">
+    <div class="k mo-reveal"><span class="n">02</span><h2>Two contradictory <em>functions</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Alice Walton is often framed as an independent, self-taught collector at odds
+      with the “East Coast art establishment.” But choosing Arkansas didn't escape the museum's oldest bind — it reproduced it.
+      Tony Bennett, quoting Eilean Hooper-Greenhill, describes the museum as holding <b>“two deeply contradictory functions”</b>:
+      an elite temple of the arts and an instrument of democratic education. Crystal Bridges tries to be both at once, and
+      comparison is how it papers over the seam.</p>
+
+    <div class="split mo-reveal" style="--d:140ms" role="img"
+      aria-label="One institution split evenly between two contradictory functions: an elite temple of the arts, and an instrument of democratic education.">
+      <div class="bar">
+        <div class="seg temple">elite temple of the arts</div>
+        <div class="seg school">instrument of democratic education</div>
+      </div>
+      <div class="cap"><span>“two deeply contradictory functions” — Hooper-Greenhill, via Bennett</span><span>one institution</span></div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-comp); --d:60ms">
+        <div class="v"><span data-count="3">0</span></div>
+        <div class="l">comparanda the museum leans on · nature · technology · science</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--ink); --d:140ms">
+        <div class="v"><span data-count="2">0</span></div>
+        <div class="l">contradictory functions · temple + school</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:220ms">
+        <div class="v"><span data-count="15">0</span><small>yrs</small></div>
+        <div class="l">opened 2011 → expansion opens 2026</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-lime); --d:300ms">
+        <div class="v"><span data-count="1">0</span></div>
+        <div class="l">room where the art speaks for itself</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · the label ledger ================= -->
+  <section id="labels">
+    <div class="k mo-reveal"><span class="n">03</span><h2>Labels that read art <em>as document</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">In the <b>Foundations of American Art</b> exhibition, object labels turn works
+      into evidence about history rather than acts of expression. A sculpture becomes a data point on prejudice; a painting
+      becomes a biography of its maker's exile; an abstraction becomes proof of an engineer's training. Each label is true —
+      and each quietly declines to say what the object <i>does</i> as art. Hover a work for its label move.</p>
+
+    <div class="rooms">
+      <div class="room comp mo-reveal" tabindex="0" style="--sp:3; --d:60ms"
+        data-tip="&lt;b&gt;Free (1876).&lt;/b&gt; Sculpted by Emma Marie Cadawalader-Guild, carved by Otto Braun. The label reads the figure as testimony — freed slaves &lt;i&gt;faced ongoing prejudice&lt;/i&gt; — a document of history rather than a made thing.">
+        <div class="nm">Free <small>Cadawalader-Guild / Braun · 1876</small></div>
+        <span class="vc"><i></i>treated as: document</span>
+        <q>his posture suggests a more complicated reality</q>
+      </div>
+      <div class="room comp mo-reveal" tabindex="0" style="--sp:3; --d:120ms"
+        data-tip="&lt;b&gt;The Good Shepherd (1917).&lt;/b&gt; Henry Ossawa Tanner. The label frames the work through his biography abroad — reading the painting as a record of a career, not as the picture it is.">
+        <div class="nm">The Good Shepherd <small>Henry Ossawa Tanner · 1917</small></div>
+        <span class="vc"><i></i>treated as: biography</span>
+        <q>relative freedom from racism helped him earn a level of success unavailable in the United States</q>
+      </div>
+      <div class="room comp mo-reveal" tabindex="0" style="--sp:3; --d:180ms"
+        data-tip="&lt;b&gt;Configuration (1914).&lt;/b&gt; Manierre Dawson, a trained civil engineer. The abstraction is explained by his profession — art made legible by being cast as applied engineering.">
+        <div class="nm">Configuration <small>Manierre Dawson · 1914</small></div>
+        <span class="vc"><i></i>treated as: engineering</span>
+        <q>an abstraction explained by the artist's training as a civil engineer</q>
+      </div>
+      <div class="room art mo-reveal" tabindex="0" style="--sp:3; --d:240ms"
+        data-tip="&lt;b&gt;The exhibition's framing text&lt;/b&gt; promises breadth but defines nothing — 'multiple viewpoints' with no viewpoint named. Patrick: this depoliticizes the history it claims to open up.">
+        <div class="nm">The framing text <small>Foundations of American Art</small></div>
+        <span class="vc"><i></i>multiple viewpoints, none defined</span>
+        <q>the artworks present multiple viewpoints and interpretations of a wide array of historical American experiences</q>
+      </div>
+    </div>
+    <p class="note" style="font:400 12.5px/1.55 var(--font-ui); color:var(--muted); margin-top:14px;">
+      The museum does credit Indigenous priority where the modernist story usually claims novelty — noting that
+      “Indigenous American artists had been practicing abstraction for millennia.” Patrick reads even this as absorbed into
+      the same flattening: another comparison that keeps the art from standing on its own terms.</p>
+  </section>
+
+  <!-- ================= 04 · the circle of timelessness ================= -->
+  <section id="circle">
+    <div class="k mo-reveal"><span class="n">04</span><h2>The circle of <em>timelessness</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The <b>Foundations</b> galleries open and close with <b>identical introductory
+      text</b> — a loop, not a line. Modernism is framed as continuous with everything before it (“Long before Modernism,
+      artists innovated in their own ways”), so nothing ever breaks or begins. Bending chronology into a circle makes the
+      art feel timeless and safe; it also erases the ruptures that make individual works matter. Hover the loop.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="circleObserve">
+      <svg viewBox="0 0 960 320" role="img"
+        aria-label="A closed loop: the exhibition's introductory text appears at both the entrance and the exit, identical. Along the ring sit Modernism and 'innovation before Modernism', framed as continuous. Because the path returns to its start, no rupture or beginning is marked — history rendered timeless.">
+        <!-- the loop -->
+        <ellipse class="vz-ring draw" cx="480" cy="160" rx="300" ry="118"
+                 style="--vz-c:var(--c-art); --len:1300; stroke-width:1.85; opacity:.85"/>
+        <!-- flow motes around the loop -->
+        <circle class="vz-mote" r="3.2" style="--vz-c:var(--c-art); --mote-path:path('M780,160 A300,118 0 1 1 180,160 A300,118 0 1 1 780,160'); --d:0s"/>
+        <circle class="vz-mote" r="2.6" style="--vz-c:var(--c-art); --mote-path:path('M780,160 A300,118 0 1 1 180,160 A300,118 0 1 1 780,160'); --d:-5s"/>
+
+        <!-- entrance intro (left) -->
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;Entrance.&lt;/b&gt; The gallery opens with an introductory text setting the frame for American art.">
+          <circle class="c" cx="180" cy="160" r="6.5" fill="var(--ink)"/>
+          <text class="rt-label strong" x="164" y="140" text-anchor="end">intro text</text>
+          <text class="rt-label" x="164" y="154" text-anchor="end">at the entrance</text>
+        </g>
+        <!-- exit intro (right) — identical -->
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;Exit.&lt;/b&gt; The gallery closes with the &lt;i&gt;same&lt;/i&gt; introductory text. The route is a loop, not a line — you leave where you came in.">
+          <circle class="c" cx="780" cy="160" r="6.5" fill="var(--ink)"/>
+          <text class="rt-label strong" x="796" y="140">intro text</text>
+          <text class="rt-label" x="796" y="154">at the exit — identical</text>
+        </g>
+        <!-- Modernism, top of the loop -->
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;Modernism&lt;/b&gt; is framed as continuous with tradition: 'Long before Modernism, artists innovated in their own ways.' No rupture is allowed to register.">
+          <circle class="c" cx="480" cy="42" r="6" fill="var(--c-comp)"/>
+          <text class="rt-label strong" x="480" y="28" text-anchor="middle" fill="var(--c-comp)">modernism — “continuous”</text>
+        </g>
+        <!-- 'before Modernism', bottom -->
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;Before Modernism.&lt;/b&gt; Innovation is projected backward without end, so the modern moment never actually arrives as a break.">
+          <circle class="c" cx="480" cy="278" r="6" fill="var(--c-comp)"/>
+          <text class="rt-label" x="480" y="298" text-anchor="middle" fill="var(--c-comp)">“long before modernism…”</text>
+        </g>
+        <!-- center legend -->
+        <text class="ax-label" x="480" y="156" text-anchor="middle">a loop, not a line</text>
+        <text class="ax-label strong" x="480" y="174" text-anchor="middle">history made timeless</text>
+      </svg>
+      <div class="fig-cap"><b>Read honestly:</b> the loop is the essay's reading of the gallery's structure, not a measured
+        path count. The point is qualitative — <b>a circular narrative undermines art's uniqueness</b>, because a work that
+        was continuous with all that came before it was never quite new, and never quite itself.</div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · art in a supporting role ================= -->
+  <section id="subordinate">
+    <div class="k mo-reveal"><span class="n">05</span><h2>Art in a <em>supporting role</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The comparison always runs one way. Art is likened to <b>industry</b>,
+      <b>engineering</b>, and <b>medical training</b> — never the reverse — so the familiar field stays the subject and the art
+      becomes its illustration. What starts as a welcome ends as a demotion: the objects hold up meanings that belong to
+      something else. Hover a domain.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="subObserve">
+      <svg viewBox="0 0 960 240" role="img"
+        aria-label="A base bar labelled ART sits at the bottom. Three arrows rise from it to three elevated nodes — industry, engineering, medical training — showing art placed beneath and in service of each comparison.">
+        <!-- the art base -->
+        <rect x="120" y="188" width="720" height="30" rx="7" fill="var(--c-art-bg)"
+              stroke="var(--c-art)" stroke-width="1.85"/>
+        <text class="ax-label strong" x="480" y="208" text-anchor="middle" fill="var(--forest-d)">art — the base that holds meaning up</text>
+
+        <!-- risers to three domains -->
+        <path class="vz-path flow draw" style="--vz-c:var(--c-comp); --vz-dash:14; --len:150"
+              d="M260,188 L260,74"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-comp); --vz-dash:14; --len:150; --d:200ms"
+              d="M480,188 L480,58"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-comp); --vz-dash:14; --len:150; --d:400ms"
+              d="M700,188 L700,74"/>
+        <polyline points="252,86 260,70 268,86" fill="none" stroke="var(--c-comp)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="472,70 480,54 488,70" fill="none" stroke="var(--c-comp)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="692,86 700,70 708,86" fill="none" stroke="var(--c-comp)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;Industry.&lt;/b&gt; Art likened to the making of goods — the museum's welcome to a region built on enterprise.">
+          <circle class="c" cx="260" cy="62" r="6" fill="var(--c-comp)"/>
+          <text class="rt-label strong" x="260" y="44" text-anchor="middle" fill="var(--c-comp)">industry</text>
+        </g>
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;Engineering.&lt;/b&gt; Manierre Dawson's abstraction is explained by his civil-engineering training — the artwork made legible as applied structure.">
+          <circle class="c" cx="480" cy="46" r="6.5" fill="var(--c-comp)"/>
+          <text class="rt-label strong" x="480" y="28" text-anchor="middle" fill="var(--c-comp)">engineering</text>
+        </g>
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;Medical training.&lt;/b&gt; Looking at art is compared to the trained clinical gaze — a skill to be drilled, not an encounter to be had.">
+          <circle class="c" cx="700" cy="62" r="6" fill="var(--c-comp)"/>
+          <text class="rt-label strong" x="700" y="44" text-anchor="middle" fill="var(--c-comp)">medical training</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>The direction is the argument:</b> because the comparison is never reversed — no engineer is asked
+        to become more comfortable with their craft by likening it to a Tanner — the art is always the junior partner. Welcome
+        curdles into condescension.</div>
+    </div>
+  </section>
+
+  <!-- ================= 06 · the scholars' chorus ================= -->
+  <section id="chorus">
+    <div class="k mo-reveal"><span class="n">06</span><h2>The scholars' <em>chorus</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick builds the reading from a small bench of museum scholars, museum
+      journalism, and the museum's own founder — a framework, a fair hearing, the evidence, and a way out.</p>
+    <div class="chorus">
+      <div class="voice framework mo-reveal" style="--d:60ms">
+        <div class="who"><b>Tony Bennett</b><span class="role">framework</span></div>
+        <q>two deeply contradictory functions</q>
+        <div class="note"><i>The Birth of the Museum</i> (1995): the museum is at once an elite temple of the arts and an instrument of democratic education.</div>
+      </div>
+      <div class="voice framework mo-reveal" style="--d:120ms">
+        <div class="who"><b>Eilean Hooper-Greenhill</b><span class="role">framework</span></div>
+        <q>the museum contains two deeply contradictory functions</q>
+        <div class="note">Quoted through Bennett — the source of the bind Crystal Bridges inherits by trying to be both temple and school.</div>
+      </div>
+      <div class="voice hearing mo-reveal" style="--d:180ms">
+        <div class="who"><b>Alice Walton</b><span class="role">fair hearing</span></div>
+        <q>become comfortable and familiar with art and to better learn the history of this country</q>
+        <div class="note">In a 2014 <i>Arkansas Business</i> interview (Jan Cottingham) — the sincere democratic aim the essay takes seriously before critiquing its method.</div>
+      </div>
+      <div class="voice evidence mo-reveal" style="--d:240ms">
+        <div class="who"><b>Richard Brettell</b><span class="role">evidence</span></div>
+        <q>a collector at odds with the East Coast art establishment</q>
+        <div class="note"><i>Southwest Review</i> (2012) — the “independent, self-taught” framing the essay complicates: Arkansas reproduced the old dual role rather than escaping it.</div>
+      </div>
+      <div class="voice evidence mo-reveal" style="--d:300ms">
+        <div class="who"><b>Nile K. Blunt</b><span class="role">evidence</span></div>
+        <q>the museum's educational program and interpretive strategy</q>
+        <div class="note"><i>Journal of Museum Education</i> (2020) — on how Crystal Bridges frames the encounter for a first-time art audience.</div>
+      </div>
+      <div class="voice path mo-reveal" style="--d:360ms">
+        <div class="who"><b>Nolan Patrick</b><span class="role">the way out</span></div>
+        <q>What emotions or feelings do certain works spark?</q>
+        <div class="note">The one prompt the essay praises: don't explain the art away by comparison — invite the visitor to meet it directly, as the behind-the-scenes room already does.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 · the room where it works ================= -->
+  <section id="participation">
+    <div class="k mo-reveal"><span class="n">07</span><h2>The room where <em>it works</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The essay isn't a demolition — it points at the museum's own best moment. A
+      temporary <b>behind-the-scenes contemporary installation</b> invites visitors to “get an inside look at our process” and
+      asks, “What emotions or feelings do certain works spark?” No bridge, no comparison — the visitor becomes an
+      <b>active participant</b> rather than a pupil to be reassured. This is the single lime moment: art let speak for itself.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="partObserve">
+      <svg viewBox="0 0 960 240" role="img"
+        aria-label="Artworks as forest dots arranged in an arc. A visitor, drawn as a lime ring and dot, sits among them and connects to each directly — no bridge, no comparison mediating the encounter.">
+        <line class="vz-gridline" x1="30" y1="206" x2="930" y2="206"/>
+        <!-- the works, as themselves -->
+        <circle class="vz-dot breathe" cx="300" cy="72"  r="6" style="--vz-c:var(--c-art); --d:-.4s"/>
+        <circle class="vz-dot breathe" cx="228" cy="132" r="6" style="--vz-c:var(--c-art); --d:-1.5s"/>
+        <circle class="vz-dot breathe" cx="360" cy="150" r="6" style="--vz-c:var(--c-art); --d:-2.4s"/>
+        <circle class="vz-dot breathe" cx="700" cy="72"  r="6" style="--vz-c:var(--c-art); --d:-1.1s"/>
+        <circle class="vz-dot breathe" cx="734" cy="140" r="6" style="--vz-c:var(--c-art); --d:-3s"/>
+        <circle class="vz-dot breathe" cx="636" cy="150" r="6" style="--vz-c:var(--c-art); --d:-2s"/>
+        <!-- direct lines from the visitor to each work (no bridge) -->
+        <g stroke="var(--c-lime)" stroke-width="1.85" stroke-linecap="round" opacity=".55">
+          <line x1="480" y1="120" x2="300" y2="72"/>
+          <line x1="480" y1="120" x2="228" y2="132"/>
+          <line x1="480" y1="120" x2="360" y2="150"/>
+          <line x1="480" y1="120" x2="700" y2="72"/>
+          <line x1="480" y1="120" x2="734" y2="140"/>
+          <line x1="480" y1="120" x2="636" y2="150"/>
+        </g>
+        <!-- the visitor, active, at center -->
+        <g class="node" tabindex="0"
+          data-tip="&lt;b&gt;The visitor, active.&lt;/b&gt; 'Get an inside look at our process.' 'What emotions or feelings do certain works spark?' The one place the museum trusts the audience to meet the art without a comparison.">
+          <circle class="vz-ring orbit" cx="480" cy="120" r="22" style="--vz-c:var(--c-lime)"/>
+          <circle class="c vz-dot breathe" cx="480" cy="120" r="8" style="--vz-c:var(--c-lime); --d:0s"/>
+          <text class="rt-label strong" x="480" y="176" text-anchor="middle" fill="#5a8a1e">the visitor — an active participant</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>The proof of concept is already inside the building.</b> Where the museum drops the comparison and
+        asks the visitor what they feel, the art is finally allowed to be itself — and the audience is trusted, not managed.</div>
+    </div>
+
+    <div class="close-quote mo-reveal" style="--d:220ms">
+      <p>By reaching so hard for comfort, the museum “fails both the audience and the art” — but the fix is already on its
+        walls: <em>drop the bridge, and let the work spark what it sparks.</em></p>
+      <cite>Nolan Patrick · Look Sharp! · on Crystal Bridges' conclusion</cite>
+    </div>
+
+    <details class="tbl mo-reveal" style="--d:280ms">
+      <summary>data table · every work, claim &amp; source drawn above</summary>
+      <table>
+        <thead><tr><th>Work / element</th><th>Year</th><th>The flattening move (per the essay)</th></tr></thead>
+        <tbody>
+          <tr><td>Free</td><td>1876</td><td>Cadawalader-Guild / Braun — label reads the figure as testimony of prejudice, a document not an expression</td></tr>
+          <tr><td>Configuration</td><td>1914</td><td>Manierre Dawson — abstraction explained by the artist's civil-engineering training</td></tr>
+          <tr><td>The Good Shepherd</td><td>1917</td><td>Henry Ossawa Tanner — read through his biography of relative freedom abroad</td></tr>
+          <tr><td>Foundations of American Art</td><td>exhibition</td><td>“multiple viewpoints,” none defined; identical intro text at entrance and exit</td></tr>
+          <tr><td>The comparisons</td><td>—</td><td>art likened to nature, technology, science; to industry, engineering, medical training</td></tr>
+          <tr><td>Behind-the-scenes install</td><td>temporary</td><td>the one success — “get an inside look at our process”; visitor as active participant</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Source</th><th>Where</th><th>Role in the argument</th></tr></thead>
+        <tbody>
+          <tr><td>Tony Bennett</td><td><i>The Birth of the Museum</i>, 1995</td><td>Framework: “two deeply contradictory functions”</td></tr>
+          <tr><td>Eilean Hooper-Greenhill</td><td>quoted via Bennett</td><td>Framework: temple vs. democratic education</td></tr>
+          <tr><td>Alice Walton</td><td><i>Arkansas Business</i> (J. Cottingham), 2014</td><td>Fair hearing: the sincere democratic aim</td></tr>
+          <tr><td>Richard Brettell</td><td><i>Southwest Review</i>, 2012</td><td>Evidence: the “at odds with the East Coast establishment” framing</td></tr>
+          <tr><td>Nile K. Blunt</td><td><i>Journal of Museum Education</i>, 2020</td><td>Evidence: interpretive strategy for new audiences</td></tr>
+          <tr><td>Patricia Failing · Carol Vogel</td><td><i>Artnews</i> 2012 · <i>NYT</i> 2005, 2011</td><td>Context: museum's founding and reception</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    <span>bpo · essay reading · crystal bridges, putting the art in heartland</span>
+    <span><a href="https://nolanpatrick.substack.com/p/crystal-bridges-putting-the-art-in">source essay</a> · built 2026-07-14 13-35 utc</span>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- staggered reveals ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.mo-reveal').forEach(function (el) { io.observe(el); });
+  if (reduce) document.querySelectorAll('.mo-reveal').forEach(function (el) { el.classList.add('shown'); });
+
+  /* ---- count-up tiles ---- */
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, target = +el.getAttribute('data-count');
+      if (reduce) { el.textContent = target; return; }
+      var t0 = null, dur = 1300;
+      function step(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * ease);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+
+  /* ---- comparison toggle: auto-cycle nature → tech → science until the reader takes over ---- */
+  var card = document.getElementById('heroCard');
+  var order = ['nature', 'tech', 'science'];
+  var btn = {
+    nature:  document.getElementById('btn-nature'),
+    tech:    document.getElementById('btn-tech'),
+    science: document.getElementById('btn-science')
+  };
+  var userDrove = false, timer = null;
+  function setComp(c) {
+    card.setAttribute('data-comp', c);
+    order.forEach(function (k) { btn[k].setAttribute('aria-pressed', k === c); });
+  }
+  order.forEach(function (k) {
+    btn[k].addEventListener('click', function () { userDrove = true; clearInterval(timer); setComp(k); });
+  });
+  if (!reduce) {
+    timer = setInterval(function () {
+      if (userDrove) return clearInterval(timer);
+      var cur = card.getAttribute('data-comp');
+      setComp(order[(order.indexOf(cur) + 1) % order.length]);
+    }, 4200);
+  }
+
+  /* ---- one tooltip for all [data-tip] ---- */
+  var tip = document.getElementById('tip');
+  function showTip(el) {
+    tip.innerHTML = el.getAttribute('data-tip');
+    tip.classList.add('on');
+    tip.setAttribute('aria-hidden', 'false');
+    var r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+    var x = r.left + r.width / 2 - tr.width / 2;
+    x = Math.max(10, Math.min(x, window.innerWidth - tr.width - 10));
+    var y = r.top - tr.height - 12;
+    if (y < 8) y = r.bottom + 12;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.classList.remove('on'); tip.setAttribute('aria-hidden', 'true'); }
+  document.querySelectorAll('[data-tip]').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { showTip(el); });
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('focus', function () { showTip(el); });
+    el.addEventListener('blur', hideTip);
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

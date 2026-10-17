@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-355 · Codex session audit — riff-strava-m5-i17pm</title>
+  <meta name="description" content="Audit of Codex thread 019fcb05: strava-m5 bootstrap, abstraction riff, 4-layer architecture — and the platform mapping for BPO · BOB · BRE.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f0e6;--ink:#13221c;--muted:#64716b;--forest:#123e31;--moss:#2d684f;--lime:#d4f778;--line:#cbd2c8;--card:#fffdf7;--blue:#c4e5ed;--sand:#ebd9b8;--coral:#f3c5ae}
+    *{box-sizing:border-box}html{scroll-behavior:auto;overflow-x:hidden}
+    body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:inherit}
+    main{width:min(100% - 32px,1120px);margin:auto;padding:52px 0 76px}
+    .mono,.eyebrow{font:750 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}
+    .eyebrow{color:var(--moss)}
+    h1{max-width:980px;margin:14px 0 18px;font:780 clamp(40px,7vw,78px)/.9 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.07em}
+    .lede{max-width:840px;margin:0;color:var(--muted);font-size:clamp(17px,2.4vw,22px)}
+    .address{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:30px 0;padding:15px 17px;border-radius:14px;background:var(--ink);color:#fff;font:700 clamp(13px,2vw,18px)/1.25 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden}
+    .address span{min-width:0;overflow-wrap:anywhere}
+    .pill{border-radius:999px;padding:8px 13px;background:var(--lime);color:var(--ink);font-weight:850;white-space:nowrap;text-decoration:none;font-size:13px}
+    .section{margin-top:56px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:22px;margin-bottom:18px;flex-wrap:wrap}
+    .section h2{margin:0;font:750 clamp(28px,4.6vw,46px)/.96 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.05em}
+    .section-head p{max-width:480px;margin:0;color:var(--muted)}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+    .cards article{min-width:0;padding:20px;border:1px solid var(--line);border-radius:17px;background:var(--card);overflow-wrap:anywhere}
+    .cards article.sand{background:var(--sand)}.cards article.blue{background:var(--blue)}.cards article.coral{background:var(--coral)}.cards article.limec{background:var(--lime)}
+    .cards h3{margin:0 0 8px;font:750 13px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.05em}
+    .cards p{margin:0;color:#42504a;font-size:14px}
+    .timeline{display:flex;flex-direction:column;gap:10px}
+    .turn{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+    .turn .ts{font:750 12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--moss)}
+    .turn h3{margin:0 0 4px;font-size:16px}
+    .turn p{margin:0;color:#4e5b55;font-size:14px}
+    .turn.hot{background:var(--forest);color:#e9f4ef;border-color:var(--forest)}
+    .turn.hot p{color:#c8ddd4}.turn.hot .ts{color:var(--lime)}
+    table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+    .tablewrap{overflow-x:auto;border-radius:14px}
+    th{background:var(--ink);color:#fff;text-align:left;padding:10px 14px;font:750 11px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.06em}
+    td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
+    td.k{font:700 13px ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+    pre{max-width:100%;margin:0;padding:18px;border-radius:15px;background:var(--forest);color:#e9f4ef;overflow-x:auto;font:500 13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
+    pre b{color:var(--lime);font-weight:750}
+    .stack{padding:22px;border-radius:21px;background:var(--forest);color:#fff}
+    .envelope{padding:14px;border:1px solid var(--lime);border-radius:14px;color:var(--lime);font:750 13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;overflow-wrap:anywhere}
+    .layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px;margin-top:12px}
+    .layer{min-width:0;padding:16px;border-radius:13px;background:#fff;color:var(--ink)}
+    .layer b{display:block;margin-bottom:8px;font:800 12px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}
+    .layer p{margin:0;color:var(--muted);font-size:13px}
+    .ledger td a{text-decoration:underline}
+    footer{margin-top:64px;color:var(--muted);font:600 12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
+    @media (max-width:640px){.turn{grid-template-columns:1fr}.turn .ts{order:-1}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">BPO · Code · audit · 2026-08-04</p>
+  <h1>Codex session audit</h1>
+  <p class="lede">What thread <strong>CODE/riff-strava-m5-i17pm</strong> actually did across five turns — the strava-m5 bootstrap, the abstraction riff, the 4-layer architecture audit — and where it lands for the one app serving BPO, BOB and BRE.</p>
+  <div class="address"><span>codex://threads/019fcb05-702f-7992-8854-4c1b24472348</span><a class="pill" href="https://linear.app/nomad-code/issue/TODO-355">TODO-355</a></div>
+
+  <section class="section" id="timeline">
+    <div class="section-head">
+      <h2>Timeline</h2>
+      <p>Five turns on one thread, 04:26→09:08 UTC. Model gpt-5.6-sol, cwd ~/dev, sandbox danger-full-access, approval never.</p>
+    </div>
+    <div class="timeline">
+      <div class="turn"><span class="ts">04:26Z</span><div><h3>strava-m5 bootstrap</h3><p>iPhone 17 Pro Max as M5 interface. Verified Strava app 164335 + Linear creds on M3; M5 reachable only via DERP relay, every SSH path timed out. Taildrop of bpo-linear.env + Strava tokens sent but never acknowledged — treated as NOT installed. Edited 5 bpo docs; chmod 600 on strava-nix secrets.</p></div></div>
+      <div class="turn"><span class="ts">07:03Z</span><div><h3>why is fleet.md in wisper?</h3><p>Conceded: the Codex/credential contract belongs in etc (machine-blueprint context), not Wisper. "Truth by prior mention" named as the misplacement pattern.</p></div></div>
+      <div class="turn"><span class="ts">07:06Z</span><div><h3>Rollback</h3><p>One turn interrupted at 2.1s and rolled back.</p></div></div>
+      <div class="turn"><span class="ts">07:06Z</span><div><h3>Abstractions riff</h3><p>CODE/etc-abstractions: full Linear + GitHub object ontologies, live GraphQL counts across both workspaces, FIT verdict, bpo/projects taxonomy proposal. Read-only; 8&nbsp;KB final answer.</p></div></div>
+      <div class="turn hot"><span class="ts">09:04Z</span><div><h3>4-layer architecture audit</h3><p>User pasted Workflows / Capability Ports / Gateways / Provider Adapters + TS interfaces. Sibling thread codex-m5_routing delegated its slug-grammar context mid-turn. Verdict delivered 09:08Z. Thread then logged itself as TODO-354 and renamed to TODO_354-code/etc_abstractions.</p></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="changes">
+    <div class="section-head">
+      <h2>What it changed</h2>
+      <p>Zero git commits, branches or PRs from this thread. Its writes were doc edits (still uncommitted at audit time), permission fixes, and one unconfirmed Taildrop.</p>
+    </div>
+    <div class="tablewrap"><table>
+      <tr><th>Write</th><th>Detail</th></tr>
+      <tr><td class="k">workouts/README.md +SPEC</td><td>"Blocked-on — reactivate Strava app" → "Runtime status"; added the single-token-owner rule (one refresh-token holder per Strava app).</td></tr>
+      <tr><td class="k">voice-memos/README.md +SPEC</td><td>LINEAR_API_KEY_BPO preferred over _NC; new "Per-Mac bootstrap (M5 worker)" 4-layer checklist.</td></tr>
+      <tr><td class="k">wisper/fleet.md</td><td>New "Codex contract · i17pm interface → M5 worker" section with pinch points. Misplaced — belongs in etc (conceded turn 2).</td></tr>
+      <tr><td class="k">chmod 600</td><td>strava-nix/.env.brendan and strava_tokens_brendan.json were world-readable 0644.</td></tr>
+      <tr><td class="k">Taildrop → M5</td><td>bpo-linear.env + Strava env + tokens sent; never acknowledged. Correctly treated as not installed.</td></tr>
+    </table></div>
+  </section>
+
+  <section class="section" id="pinch">
+    <div class="section-head">
+      <h2>Pinch points</h2>
+      <p>What actually blocked the i17pm → M5 lane.</p>
+    </div>
+    <div class="cards">
+      <article class="coral"><h3>M5 unreachable</h3><p>Online only via DERP relay; tailscale ssh, direct ssh, and keyed ssh all timed out. Every downstream step (creds, worker) is blocked on this.</p></article>
+      <article class="sand"><h3>Creds unconfirmed</h3><p>Taildrop is fire-and-forget: no receipt. A credential transfer with no verification step must be treated as failed.</p></article>
+      <article class="blue"><h3>Wrong host assumption</h3><p>The iPhone was steering tasks on M3, not M5. Runtime identity was inferred, not resolved.</p></article>
+      <article><h3>Truth by prior mention</h3><p>fleet.md became "the" M5 doc because it already mentioned M5. Deterministic routing without typed edges institutionalizes such accidents.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="model">
+    <div class="section-head">
+      <h2>The abstraction model</h2>
+      <p>Each layer answers a different question. FIT verdict: an area wearing a project costume — promote to team only when it needs its own operating system.</p>
+    </div>
+    <div class="tablewrap"><table>
+      <tr><th>Layer</th><th>Question</th><th>Example</th></tr>
+      <tr><td class="k">World</td><td>Whose rules and credentials?</td><td>BPO · Found · Dhamma</td></tr>
+      <tr><td class="k">Area</td><td>What facet of life/work?</td><td>FIT, CODE, GOLF, LANG</td></tr>
+      <tr><td class="k">Context</td><td>Where does durable knowledge live?</td><td>etc, workouts, voice-memos</td></tr>
+      <tr><td class="k">Initiative</td><td>Why are several projects happening?</td><td>2027 athletic performance</td></tr>
+      <tr><td class="k">Project</td><td>What bounded outcome will finish?</td><td>ATHX 2027 season</td></tr>
+      <tr><td class="k">Issue / riff</td><td>Current unit of thought/work</td><td>riff-strava-m5-i17pm</td></tr>
+      <tr><td class="k">Change</td><td>What modifies source?</td><td>branch, commit, PR</td></tr>
+      <tr><td class="k">Runtime</td><td>Where does execution happen?</td><td>M3, M5, i17pm</td></tr>
+    </table></div>
+    <div class="cards" style="margin-top:12px">
+      <article class="limec"><h3>nomad-code live</h3><p>5 teams · 17 projects · 0 initiatives · 333 issues (276 in TODO). Only 2 projects dated. Code/Fit/Golf/Travel = area labels in project costumes.</p></article>
+      <article><h3>found-ai live</h3><p>1 visible team (TECH) · 45 projects · 8 initiatives · ~34 dated projects. Already initiative → dated project shaped.</p></article>
+      <article class="sand"><h3>Mnemonics</h3><p>Linear: team=who/how · initiative=why · project=what/when · issue=next thing. GitHub: org=owner · repo=source boundary · PR=change transaction · Actions=automation.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="arch">
+    <div class="section-head">
+      <h2>Architecture verdict</h2>
+      <p>The 4-layer ports-and-adapters stack is sound; semantic routing wraps it as an addressing envelope. Slugs stay aliases — they resolve into typed route objects.</p>
+    </div>
+    <div class="stack">
+      <div class="envelope">route context { world · area · context · topic · intent · runtime preference }</div>
+      <div class="layers">
+        <div class="layer"><b>Workflows</b><p>plan · code · review · deploy · meet · summarize · archive</p></div>
+        <div class="layer"><b>Capability ports</b><p>LLM · Tasks · Code · Collaborate · Store — plus the missing one: Runtime/Execute</p></div>
+        <div class="layer"><b>Control plane</b><p>provider selection · identity mapping · policy · sync. Auth/retries/pagination move into adapters.</p></div>
+        <div class="layer"><b>Provider adapters</b><p>Linear · GitHub Issues · Forgejo · GitHub · GCP · Slack · Drive …</p></div>
+      </div>
+    </div>
+    <div class="cards" style="margin-top:12px">
+      <article class="coral"><h3>world is mandatory</h3><p>ResourceRef without world lets a Found id and a BPO id collide across the privacy boundary. world: "bpo" | "found" | "dhamma" — identity, not metadata.</p></article>
+      <article class="sand"><h3>Capability ≠ identity</h3><p>A GitHub PR reached via Tasks and via Code must stay one resource. Drop capability from ResourceRef; keep ExecutionRef separate (host, taskId, lane).</p></article>
+      <article class="blue"><h3>Gateway was a junk drawer</h3><p>Split it: routing/policy/identity → control plane; auth/retries/rate limits → adapter transport; normalization → port boundary.</p></article>
+      <article><h3>Feature negotiation</h3><p>Linear initiatives ≠ GitHub milestones ≠ Jira epics. Ports need supported-feature discovery or explicit UnsupportedCapability — never silent CRUD reduction.</p></article>
+    </div>
+    <div class="tablewrap" style="margin-top:12px"><table>
+      <tr><th>Surface</th><th>Owns</th><th>Must not own</th></tr>
+      <tr><td class="k">Git / BPO</td><td>Semantic truth, ontology, provenance</td><td>Live task state</td></tr>
+      <tr><td class="k">Linear</td><td>Workflow identity, lifecycle, journal</td><td>Canonical knowledge, runtime host</td></tr>
+      <tr><td class="k">Codex</td><td>Running task identity, host, approvals</td><td>Durable semantic truth</td></tr>
+      <tr><td class="k">Artifact</td><td>Human-readable projection</td><td>Canonical state</td></tr>
+    </table></div>
+  </section>
+
+  <section class="section" id="oneapp">
+    <div class="section-head">
+      <h2>One app · three worlds</h2>
+      <p>Where this lands: ~/dev/fai/rob/platform grows the Tasks + Code capability ports; each world routes through its own account edge.</p>
+    </div>
+    <pre><b>platform/</b>
+├── apps/fai-x            ← already has an idempotent Linear write path
+│     └── api/admin/linear/route.ts · lib/log/linear.ts
+├── packages/<b>capability-tasks</b>     Tasks port + Linear · GitHub Issues · Forgejo adapters
+├── packages/<b>capability-code</b>      Code port + GitHub · Forgejo adapters
+└── docs/plans/2026-08-04-task-capability-port.md   ← drafted with this audit
+
+world routing
+  <b>BPO</b>  nomad-code   LINEAR_API_KEY_BPO   TODO team · bpo Pages artifacts
+  <b>BOB</b>  found-ai     LINEAR_API_KEY_BOB   TECH team · initiatives → dated projects
+  <b>BRE</b>  dha/bre      codex journaler      prompt journal → Linear on session end</pre>
+  </section>
+
+  <section class="section" id="ledger">
+    <div class="section-head">
+      <h2>Write ledger</h2>
+      <p>Everything the two Codex threads and this audit wrote — dedupe verified, no collisions.</p>
+    </div>
+    <div class="tablewrap"><table class="ledger">
+      <tr><th>Actor</th><th>Write</th></tr>
+      <tr><td class="k">codex sibling 019fcb4f</td><td>TODO-271 + bpo commit cad7556 (context route address model) + artifact fdd4835</td></tr>
+      <tr><td class="k">codex main 019fcb05</td><td>5 bpo doc edits (uncommitted) · chmod 600 · TODO-354 code/etc_abstractions (born Done via linear log)</td></tr>
+      <tr><td class="k">this audit</td><td>TODO-355 (In Review — Done is human-only) · this artifact · platform plan doc draft</td></tr>
+    </table></div>
+  </section>
+
+  <footer>todo-355 · riff-strava-m5-i17pm · audited by claude fable 5 · 2026-08-04 11:57 UTC · sources: rollout 019fcb05 (594 lines) · rollout 019fcb4f · bpo git · linear graphql</footer>
+</main>
+</body>
+</html>

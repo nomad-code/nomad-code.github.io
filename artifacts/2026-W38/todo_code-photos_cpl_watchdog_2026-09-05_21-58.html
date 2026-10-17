@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>photos · cpl · the 38-hour silence</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+<style>
+  body{background:var(--bg);color:var(--body);font-family:var(--font-ui)}
+  .wrap{max-width:780px;margin:0 auto;padding:28px 20px 40px}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--forest);font-weight:600}
+  h1{font-size:clamp(28px,6.4vw,40px);line-height:1.05;letter-spacing:-.027em;
+    color:var(--ink);font-weight:800;margin:9px 0 12px;text-wrap:balance}
+  .lede{font-size:16px;line-height:1.55;color:var(--muted);margin:0 0 4px}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  h2{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;margin:34px 0 14px;padding-top:20px;border-top:1px solid var(--line)}
+  .stats{display:grid;gap:10px;grid-template-columns:repeat(4,1fr);margin:22px 0 4px}
+  .st{border-radius:var(--r-panel);padding:15px 16px;border:1px solid var(--line);
+    background:var(--card)}
+  .st .t{font-family:var(--font-mono);font-size:30px;font-weight:700;line-height:1;
+    color:var(--ink);font-variant-numeric:tabular-nums}
+  .st .s{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--faint);font-weight:700;margin-top:9px}
+  .rules{background:#14201d;border-radius:var(--r-panel);padding:22px 24px;margin:20px 0 6px}
+  .rules .rh{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:#7fbfae;font-weight:700;margin-bottom:14px}
+  .rules ol{margin:0;padding-left:19px;color:#dfeae6}
+  .rules li{font-size:14px;line-height:1.55;margin-bottom:10px}
+  .rules li:last-child{margin-bottom:0}
+  .rules code{font-family:var(--font-mono);font-size:.87em;background:#1e2e2a;
+    padding:1px 5px;border-radius:5px;color:#a8ddcd}
+  .foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:11px;color:var(--faint);
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">code · photos · cpl</div>
+  <h1>Sync was wedged for 38 hours and nothing said a word.</h1>
+  <p class="lede">One CPL call owned the push phase and never returned. The only
+  symptom was a number in the Photos UI that did not move — found by irritation,
+  not by any alarm. So the alarm now exists.</p>
+
+  <div class="stats">
+    <div class="st"><div class="t">38h</div><div class="s">call wedged</div></div>
+    <div class="st"><div class="t">1.13<span style="font-size:17px">GB</span></div><div class="s">frozen queue</div></div>
+    <div class="st"><div class="t">8</div><div class="s">never pushed</div></div>
+    <div class="st"><div class="t">4</div><div class="s">checks now</div></div>
+  </div>
+
+  <h2>The signature</h2>
+  <p class="mono" style="font-size:12.5px;line-height:1.6;color:var(--muted)">
+  -[CPLEngineDerivativesCache generateDerivativesForChange:<br>
+  &nbsp;&nbsp;derivativesFilter:fingerprintScheme:completionHandler:]<br>
+  has not completed after <strong style="color:var(--ink)">136133s</strong><br><br>
+  [session #957] uploadSize: 1.13 GB, largestResource: <strong style="color:var(--ink)">Zero KB</strong>
+  </p>
+  <p style="font-size:14.5px;line-height:1.6;margin-top:14px"><code>largestResource: Zero KB</code>
+  against a non-zero <code>uploadSize</code> is the poison state: queued work with
+  no readable bytes behind it. A reboot cleared it; the same generator then
+  returned in <span class="mono">8.29s</span>.</p>
+
+  <div class="rules">
+    <div class="rh">what ships · cpl.py + CPL.md + hourly launchd</div>
+    <ol>
+      <li><strong>stale</strong> — <code>lastSyncDate</code> older than 6h, or over quota. One plist read, no daemon poking.</li>
+      <li><strong>hang</strong> — any <code>has not completed after Ns</code> over 3600. The exact 38h signature.</li>
+      <li><strong>queue</strong> — non-zero <code>uploadSize</code> behind <code>largestResource: Zero KB</code>.</li>
+      <li><strong>unpushed</strong> — <code>ZCLOUDLOCALSTATE = 0</code>. Eight assets, oldest stuck since March.</li>
+    </ol>
+  </div>
+
+  <h2>Two traps, now encoded so they cannot recur</h2>
+  <p style="font-size:14.5px;line-height:1.6"><code>?immutable=1</code> silently skips
+  the WAL — 17,382 assets read where the truth was 18,020. And originals carry the
+  <em>source</em> mtime, so <code>find -newermt</code> finds nothing and looks like mass
+  corruption. Both faked a confident root cause tonight. <code>connect()</code> and
+  <code>original_path()</code> are the fix.</p>
+
+  <div class="foot">
+    <span>bpo · projects/photos · cpl</span>
+    <span>2026-09-05 · i17pm iOS 26.6 · Opus 5</span>
+  </div>
+</div>
+</body>
+</html>

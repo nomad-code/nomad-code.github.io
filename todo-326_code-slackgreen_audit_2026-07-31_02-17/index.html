@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-326 · slackgreen audit</title>
+  <meta name="description" content="The slackgreen keep-alive alias never worked — AppleScript syntax error every cycle. Rebuilt as a zsh function with a real input event.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f4f1e8;--ink:#18231f;--muted:#647069;--forest:#164b3c;--mint:#d8f0df;--lime:#d8f56d;--card:#fffdf8;--line:#ccd4cc;--violet:#6f57a8;--rust:#b0492f}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 30px,1000px);margin:auto;padding:52px 0 72px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .eyebrow{color:var(--forest);font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}
+    h1{max-width:900px;margin:14px 0 18px;font:850 clamp(43px,7.5vw,78px)/.94 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.07em}
+    h1 span{color:var(--forest)}.lede{max-width:800px;margin:0;color:var(--muted);font-size:21px}
+    .verdict{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;margin:32px 0;padding:24px;border-radius:20px;background:var(--forest);color:white}
+    .badge{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--lime);color:var(--forest);font-size:24px;font-weight:900}.verdict b{display:block;margin-bottom:5px;font:800 21px ui-monospace,SFMono-Regular,Menlo,monospace}.verdict p{margin:0;color:#dce9e3}
+    h2{margin:48px 0 18px;font:800 34px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.04em}
+    .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:stretch}.step,.card{border:1px solid var(--line);border-radius:17px;background:var(--card)}
+    .step{padding:21px}.step small{display:block;margin-bottom:10px;color:var(--rust);font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}.step b{display:block;margin-bottom:7px;font-size:19px}.step p,.card p{margin:0;color:var(--muted)}
+    .arrow{display:grid;place-items:center;color:var(--forest);font-size:27px}.outcomes{display:grid;grid-template-columns:1fr 1fr;gap:13px}.card{padding:23px}.card.primary{border:2px solid var(--forest)}.card .tag{display:inline-block;margin-bottom:12px;padding:4px 9px;border-radius:99px;background:var(--mint);color:var(--forest);font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase}.card h3{margin:0 0 8px;font-size:21px}
+    ol,ul{margin:14px 0 0;padding-left:21px;color:var(--muted)}li+li{margin-top:8px}.note{margin-top:14px;padding:17px 19px;border-left:5px solid var(--violet);border-radius:5px 14px 14px 5px;background:#f0ecf8;color:#4f4565}
+    .evidence{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.evidence div{padding:17px;border-top:3px solid var(--forest);background:var(--card)}.evidence b{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.evidence span{color:var(--muted);font-size:14px}
+    pre{overflow-x:auto;margin:14px 0 0;padding:18px;border:1px solid var(--line);border-radius:14px;background:#101c17;color:#d8f0df;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}
+    pre .c{color:#7d9488}pre .k{color:#d8f56d}
+    footer{display:flex;justify-content:space-between;gap:20px;margin-top:47px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}a{color:inherit}
+    @media(max-width:760px){.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.outcomes,.evidence{grid-template-columns:1fr}.verdict{grid-template-columns:1fr}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / TODO-326 · bug audit</div>
+  <h1>It never jiggled.<br><span>Not even once.</span></h1>
+  <p class="lede">The <code class="mono">slackgreen</code> alias promised a mouse-jiggle keep-alive. The AppleScript inside has been a syntax error since the day it was pasted — error -2740 every ten minutes, while the echo line cheerfully reported success. Only <code class="mono">caffeinate</code> was ever real.</p>
+
+  <section class="verdict" aria-label="Verdict">
+    <div class="badge">✓</div>
+    <div><b>Rebuilt as a zsh function with a real input event</b><p>slackgreen() now sends an F15 key press — a key no Mac keyboard has — every 5 minutes via System Events. Genuine synthetic HID event, working 10-hour cap (override: <code class="mono">slackgreen &lt;hours&gt;</code>), and caffeinate dies with the shell. Verified end-to-end including Ctrl-C teardown through a real pty.</p></div>
+  </section>
+
+  <h2>Three bugs in one line</h2>
+  <section class="flow" aria-label="Bug anatomy">
+    <article class="step"><small>Bug 1 · the jiggle</small><b>Invalid AppleScript</b><p>System Events has no <code class="mono">mouse location</code> property. “set the mouse location to (get the mouse location)” cannot parse — that's the -2740 on every cycle.</p></article>
+    <div class="arrow">→</div>
+    <article class="step"><small>Bug 2 · the lie</small><b>Fake success line</b><p>The <code class="mono">echo</code> runs unconditionally after osascript fails, so “Slack Keep-Alive Active” printed for months over a dead jiggler.</p></article>
+    <div class="arrow">→</div>
+    <article class="step"><small>Bug 3 · the cap</small><b>-t 36000 ignored</b><p>caffeinate discards <code class="mono">-t</code> when wrapping a utility. The “10hr cap” was fiction; the loop ran until Ctrl-C.</p></article>
+  </section>
+  <p class="note"><strong>Bonus:</strong> even if the AppleScript had parsed, setting the mouse to its <em>current</em> position generates no input event. Slack reads OS idle time from the last HID event — the design could never have worked. Net effect of the old alias: the Mac stayed awake, but presence still went away.</p>
+
+  <h2>The fix</h2>
+  <section class="outcomes">
+    <article class="card primary">
+      <span class="tag">Riff · verdict</span>
+      <h3>Good idea, copypasta execution</h3>
+      <ul>
+        <li>The concept earns its place — keep the name.</li>
+        <li>Upgraded alias → function: duration argument, real cap, cleanup.</li>
+        <li>F15 (key code 113) exists on no Mac keyboard, so no app reacts to it — safer than moving the mouse.</li>
+        <li>Zero dependencies: cliclick and Python/Quartz aren't installed; osascript + Accessibility (already granted) is enough.</li>
+        <li>Cadence tightened 10 → 5 min; Slack's idle window is ~10 min, so the old cadence was borderline even in theory.</li>
+      </ul>
+    </article>
+    <article class="card">
+      <span class="tag">~/.zshrc:139 → function</span>
+      <h3>slackgreen()</h3>
+<pre>slackgreen() {
+    local hours="${1:-10}"
+    local end=$(( $(date +%s) + hours * 3600 ))
+    caffeinate -di -w $$ &amp;  <span class="c"># dies with shell</span>
+    local caf=$!
+    trap "kill $caf 2>/dev/null; return" INT TERM
+    echo "slackgreen: active for ${hours}h"
+    while (( $(date +%s) &lt; end )); do
+        osascript -e '<span class="k">tell application
+          "System Events" to key code 113</span>'
+        echo "Slack Keep-Alive Active: $(date)"
+        sleep 300
+    done
+    kill $caf 2>/dev/null
+}</pre>
+    </article>
+  </section>
+  <p class="note"><strong>Loose end:</strong> the old broken instance was still running during the audit (<code class="mono">caffeinate -id -t 36000 bash -c 'while true…'</code>, PID 40327). Kill it and start fresh: <code class="mono">kill 40327 &amp;&amp; source ~/.zshrc &amp;&amp; slackgreen</code>.</p>
+
+  <h2>Evidence</h2>
+  <section class="evidence">
+    <div><b>-2740 → exit 0</b><span>Live cycles of the new function log cleanly; the F15 osascript returns success under the terminal's existing Accessibility grant.</span></div>
+    <div><b>pty Ctrl-C test</b><span>Interactive zsh under <code class="mono">script</code>: ^C fired the trap — “terminated caffeinate -di -w $$”, zero orphans.</span></div>
+    <div><b>man caffeinate</b><span>-t is documented as ignored with a utility; the new cap is an end-time check inside the loop, plus -w $$ as a lifetime backstop.</span></div>
+  </section>
+
+  <footer>
+    <div>TODO-326 · code-slackgreen_audit<br>2026-07-31 02:17 Z</div>
+    <div>~/dev/etc/zsh/.zshrc (symlinked to ~/.zshrc)<br>fix: alias → slackgreen() function</div>
+  </footer>
+</main>
+</body>
+</html>

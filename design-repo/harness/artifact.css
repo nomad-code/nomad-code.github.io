@@ -1,0 +1,58 @@
+:root {
+  --font-ui: var(--body);
+  --font-display: var(--body);
+  --font-mono: var(--font-mono-stack);
+  --well: var(--panel);
+  --faint: var(--ink-3);
+  --r-card: 12px;
+  --r-chip: 6px;
+}
+html { background: var(--bg); }
+body { margin: 0; color: var(--ink); font-family: var(--body); }
+#tc-app.harness-document {
+  position: relative;
+  inset: auto;
+  display: block;
+  min-height: 100dvh;
+  overflow: visible;
+}
+#tc-app.harness-document main {
+  display: block;
+  width: min(100%, 1120px);
+  min-width: 0;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 64px) clamp(18px, 4vw, 48px);
+}
+.harness-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px clamp(18px, 4vw, 48px);
+  border-bottom: 1px solid var(--line);
+  font: 600 11px/1.5 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.harness-kicker { color: var(--muted); font: 600 10px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.harness-title { margin: 12px 0 20px; font-size: clamp(28px, 4vw, 44px); line-height: 1.12; letter-spacing: -.035em; font-weight: 550; }
+.harness-lede { max-width: 70ch; margin: 0 0 28px; color: var(--ink-2); font-size: 16px; line-height: 1.65; }
+.harness-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.harness-card { min-width: 0; border: 1px solid var(--line); border-radius: 12px; padding: 22px; background: var(--card); box-shadow: var(--shadow-card); }
+.harness-card h2 { margin: 0 0 12px; font-size: 18px; font-weight: 550; letter-spacing: -.02em; }
+.harness-card p { color: var(--ink-2); line-height: 1.65; }
+.harness-card input { width: 100%; min-width: 0; margin: 14px 0; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 8px; font: inherit; background: var(--bg); color: var(--ink); }
+.harness-button { border: 1px solid var(--line-2); border-radius: 7px; background: var(--bg); color: var(--ink); padding: 9px 14px; font: 600 12px/1.4 var(--body); cursor: pointer; }
+.harness-button[aria-pressed=true], .harness-button.primary { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.harness-table-wrap { max-width: 100%; overflow-x: auto; }
+.harness-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.harness-table th, .harness-table td { padding: 12px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+.harness-table th { color: var(--muted); font: 600 10px/1.5 var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+.harness-status { display: inline-block; border: 1px solid var(--line); border-radius: 5px; padding: 3px 7px; color: var(--forest); background: var(--pos-bg); font: 500 10px/1.5 var(--mono); }
+.harness-status.pending { color: var(--neu-ink); background: var(--neu-bg); }
+.harness-document details { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.harness-document summary { cursor: pointer; font-weight: 550; }
+.harness-document a { color: var(--forest); text-underline-offset: 3px; }
+.harness-document :focus-visible { outline: 2px solid var(--forest); outline-offset: 3px; }
+@media(max-width: 640px) { .harness-grid { grid-template-columns: 1fr; } }

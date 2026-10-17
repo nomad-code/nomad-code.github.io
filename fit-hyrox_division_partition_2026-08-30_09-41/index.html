@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>hyrox · division_partition — observed race history</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+<style>
+  body{background:var(--bg);color:var(--body);font-family:var(--font-ui)}
+  .wrap{max-width:1080px;margin:0 auto;padding:34px 30px 110px}
+
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--forest);font-weight:600}
+  h1{font-size:40px;line-height:1.06;letter-spacing:-.025em;color:var(--ink);
+    font-weight:800;margin:10px 0 12px;text-wrap:balance;max-width:22ch}
+  .lede{font-size:16.5px;line-height:1.55;color:var(--muted);max-width:64ch}
+
+  h2{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;margin:0 0 14px}
+  section{margin-top:52px;border-top:1px solid var(--line);padding-top:26px}
+  h3{font-size:19px;color:var(--ink);font-weight:700;letter-spacing:-.01em;margin:0 0 8px}
+  p{line-height:1.6;max-width:66ch;margin:0 0 12px}
+
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;
+    font-weight:600;color:var(--ink)}
+
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  th{text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);font-weight:700;padding:0 12px 8px 0;border-bottom:1px solid var(--line);
+    white-space:nowrap}
+  td{padding:9px 12px 9px 0;border-bottom:1px solid var(--line);vertical-align:baseline}
+  td.r,th.r{text-align:right}
+  tbody tr:last-child td{border-bottom:none}
+  tr.stat td{color:var(--muted);font-size:12.5px;border-top:2px solid var(--line);
+    border-bottom:none;padding-top:10px}
+
+  .grid2{display:grid;gap:26px;grid-template-columns:1fr}
+  @media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);
+    padding:20px 22px}
+  .card h4{margin:0 0 4px;font-size:15px;color:var(--ink);font-weight:700}
+  .card .n{font-family:var(--font-mono);font-size:11px;color:var(--faint);
+    letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+
+  .flag{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:3px solid var(--warn);
+    border-radius:var(--r-tile);padding:18px 20px;margin:20px 0}
+  .flag .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--warn);font-weight:700;margin-bottom:7px}
+  .flag p{margin:0;color:#5c3a2c;max-width:none}
+  .flag p + p{margin-top:9px}
+
+  .ok{background:var(--g-lime);border:1px solid #b9dcd6;border-left:3px solid var(--forest);
+    border-radius:var(--r-tile);padding:18px 20px;margin:20px 0}
+  .ok .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--forest-d);font-weight:700;margin-bottom:7px}
+  .ok p{margin:0;color:#1d4a44;max-width:none}
+
+  .best{color:var(--forest);font-weight:700}
+  .worst{color:var(--warn);font-weight:700}
+  .pill{display:inline-block;font-family:var(--font-mono);font-size:10.5px;
+    padding:2px 8px;border-radius:var(--r-pill);letter-spacing:.06em;font-weight:600}
+  .p-open{background:var(--g-lime);color:var(--forest-d)}
+  .p-pro{background:var(--found-bg);color:var(--found-d)}
+  .p-dbl{background:var(--amber-bg);color:var(--amber)}
+
+  .steps{list-style:none;padding:0;margin:0;counter-reset:s}
+  .steps li{counter-increment:s;position:relative;padding:0 0 16px 40px;line-height:1.55}
+  .steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:1px;
+    font-family:var(--font-mono);font-size:11px;color:var(--forest);font-weight:700;
+    letter-spacing:.06em}
+  .steps li:last-child{padding-bottom:0}
+
+  code{font-family:var(--font-mono);font-size:.9em;background:var(--well);
+    padding:1px 5px;border-radius:5px;color:var(--ink)}
+  .foot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:11.5px;color:var(--faint);line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">fit · hyrox · ontology</div>
+  <h1>Division is the second partition key</h1>
+  <p class="lede">A pooled table carried a filtered statistic, and nobody reading it
+  could tell. Fixing it meant going back to the portal — which held fourteen roxzone
+  measurements per race the repo had been deriving by subtraction, and three races
+  the repo had never seen at all.</p>
+
+  <section>
+    <h2>The catch</h2>
+    <h3>The table said n=6. The number was n=3.</h3>
+    <p><code>CHUNKS.md</code> printed six races in one table with a
+    <span class="mono">stdev, open singles</span> row beneath it. The code was
+    right — <code>model.py:150</code> filters <code>division == "HYROX"</code>.
+    But only three of those six rows are open singles.</p>
+
+    <div class="flag">
+      <div class="k">what was pooled</div>
+      <p><span class="pill p-pro">PRO</span> Osaka and Yokohama carry heavier sled,
+      farmers, sandbag and a heavier wall ball to a higher target.
+      <span class="pill p-dbl">DOUBLES</span> Taipei splits every station between two
+      athletes, and its age group is the <em>team's</em> — 35-39, against 30-34 on
+      every singles record.</p>
+      <p>Reading those six rows as one athlete is reading four years of ageing and
+      three load standards as a single trend.</p>
+    </div>
+
+    <p><strong>The rule now encoded:</strong> division partitions the data
+    <em>before</em> any statistic, exactly as venue does. Authority is the event-id
+    prefix — <code>H_</code>, <code>HPRO_</code>, <code>HE_</code>,
+    <code>HD_</code>, <code>HDP_</code>, <code>HMR_</code> — never a row label,
+    which the portal often leaves blank. A pooled table may never carry a filtered
+    statistic: annotate division and n, or split it. Prefer splitting.</p>
+  </section>
+
+  <section>
+    <h2>Recovery</h2>
+    <h3>Why the sweep had never worked</h3>
+    <p>The repo's <code>events.json</code> held 344 <em>display names</em>
+    — <span class="mono">"2026 Bangkok"</span> — where the portal wants
+    <span class="mono">H_BKK26</span>. The real ids are on the season start page,
+    about 2,400 of them. Once you have those, a name search is one request and
+    400&nbsp;ms.</p>
+
+    <ol class="steps">
+      <li>Harvested <span class="num">2,126</span> real event ids across all nine seasons.</li>
+      <li>Name-swept every one. The portal 403s after roughly 1,400 requests, which
+      the first pass recorded as 689 clean misses — all of season-8 and season-9,
+      exactly where the races are. Added backoff and retried to zero errors.</li>
+      <li>Pulled each detail page and identity-checked it against nationality and
+      age group, writing rejects with reasons rather than dropping them silently.</li>
+      <li>Rebuilt durations from timing-mat crossings. Every race reconciles to
+      <span class="num">adjustment 0</span>.</li>
+    </ol>
+
+    <div class="ok">
+      <div class="k">the payoff</div>
+      <p>A detail row's <code>seconds</code> field is time of day, not a duration —
+      the race clock is in <code>cumulative_seconds</code>. Diffing consecutive
+      crossings yields <strong>14 roxzone rows per race</strong>, where the
+      hand-transcribed files had none. Roxzone is now <strong>observed</strong>
+      everywhere, not derived by subtraction.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Observed history</h2>
+    <h3>Complete for singles and PRO</h3>
+    <p>All 2,126 events swept, every rate-limited event retried, zero unresolved.
+    Five distinct races. The rox column is perfectly <em>anti</em>-correlated with
+    the result — the slowest transitions belong to the fastest race.</p>
+
+    <div class="scroll">
+    <table>
+      <thead><tr>
+        <th>Race</th><th>Division</th><th class="r">Total</th>
+        <th class="r">Runs</th><th class="r">Roxzone</th>
+        <th class="r">RUN+ROX</th><th class="r">Stations</th><th class="r">Adj</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Bangkok</td><td><span class="pill p-open">open</span></td>
+          <td class="r num">1:08:43</td><td class="r mono">32:35</td>
+          <td class="r mono worst">7:46</td><td class="r num best">40:21</td>
+          <td class="r mono">28:22</td><td class="r mono">0</td></tr>
+        <tr><td>Singapore</td><td><span class="pill p-open">open</span></td>
+          <td class="r num">1:13:30</td><td class="r mono">36:31</td>
+          <td class="r mono">5:59</td><td class="r num">42:30</td>
+          <td class="r mono">31:00</td><td class="r mono">0</td></tr>
+        <tr><td>Osaka</td><td><span class="pill p-pro">PRO</span></td>
+          <td class="r num">1:15:20</td><td class="r mono">35:22</td>
+          <td class="r mono">6:35</td><td class="r num">41:57</td>
+          <td class="r mono">33:23</td><td class="r mono">0</td></tr>
+        <tr><td>Valencia</td><td><span class="pill p-open">open</span></td>
+          <td class="r num">1:24:38</td><td class="r mono">41:06</td>
+          <td class="r mono best">5:30</td><td class="r num worst">46:36</td>
+          <td class="r mono">38:02</td><td class="r mono">0</td></tr>
+        <tr><td>Yokohama</td><td><span class="pill p-pro">PRO</span></td>
+          <td class="r num">1:29:21</td><td class="r mono">40:22</td>
+          <td class="r mono">6:11</td><td class="r num">46:33</td>
+          <td class="r mono">42:48</td><td class="r mono">0</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p style="margin-top:16px">Two corrections the observed pull makes to the repo:
+    Valencia is <strong>season-7</strong>, not season-8; and Bangkok's running block
+    is <span class="num">40:21</span> measured, against 40:16 derived.</p>
+  </section>
+
+  <section>
+    <h2>Chunks, re-partitioned</h2>
+    <h3>The finding survives — at an honest n</h3>
+    <p>Chunk share held up under the split. Grind is still the most invariant chunk.
+    What changed is the claim's size: three races, not six.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h4>HYROX open singles</h4>
+        <div class="n">n = 3 · 1:08:43 → 1:24:38</div>
+        <div class="scroll">
+        <table>
+          <thead><tr><th>Race</th><th class="r">Open</th><th class="r">Sleds</th>
+            <th class="r">Grind</th><th class="r">Carry</th><th class="r">Close</th></tr></thead>
+          <tbody>
+            <tr><td>Bangkok</td><td class="r mono">16.7</td><td class="r mono">23.1</td>
+              <td class="r mono">25.4</td><td class="r mono">15.1</td><td class="r mono">19.7</td></tr>
+            <tr><td>Singapore</td><td class="r mono">12.1</td><td class="r mono">23.2</td>
+              <td class="r mono">25.6</td><td class="r mono">16.1</td><td class="r mono">23.1</td></tr>
+            <tr><td>Valencia</td><td class="r mono">10.8</td><td class="r mono">26.4</td>
+              <td class="r mono">26.3</td><td class="r mono">14.9</td><td class="r mono">21.6</td></tr>
+            <tr class="stat"><td>stdev pp</td><td class="r mono">2.55</td><td class="r mono">1.56</td>
+              <td class="r num best">0.39</td><td class="r mono">0.52</td><td class="r mono">1.37</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>HYROX PRO</h4>
+        <div class="n">n = 2 · not a statistic</div>
+        <div class="scroll">
+        <table>
+          <thead><tr><th>Race</th><th class="r">Open</th><th class="r">Sleds</th>
+            <th class="r">Grind</th><th class="r">Carry</th><th class="r">Close</th></tr></thead>
+          <tbody>
+            <tr><td>Osaka</td><td class="r mono">11.1</td><td class="r mono">27.2</td>
+              <td class="r mono">24.9</td><td class="r mono">16.0</td><td class="r mono">20.9</td></tr>
+            <tr><td>Yokohama</td><td class="r mono">10.8</td><td class="r mono">23.3</td>
+              <td class="r mono">23.9</td><td class="r mono">14.9</td><td class="r mono">27.1</td></tr>
+            <tr class="stat"><td>spread pp</td><td class="r mono">0.17</td><td class="r mono">1.94</td>
+              <td class="r num best">0.49</td><td class="r mono">0.53</td><td class="r mono">3.13</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:22px">Three races is thin. What raises confidence is not the
+    stdev but that PRO — a separate division, computed independently, never pooled —
+    puts <em>the same chunk</em> at the stable end. Two small samples agreeing on
+    which chunk is invariant is a structural signal. Neither is a population
+    estimate, and this page will not pretend otherwise.</p>
+  </section>
+
+  <section>
+    <h2>The missing races</h2>
+    <h3>They were all doubles, and doubles cannot be found by name</h3>
+    <p>On <code>HD_</code>, <code>HDP_</code> and <code>HMR_</code> events the ranking
+    list is keyed by <strong>team</strong>. <code>search[name]</code> matches the team;
+    <code>search[lastname]</code>, <code>search[member]</code> and
+    <code>search[team_member]</code> are silently ignored — the portal returns the
+    unfiltered first page and echoes the parameter into all 100 row hrefs, which greps
+    as 100 matches. That is why doubles never surfaced in eight seasons of sweeping.</p>
+
+    <p>Member names <em>are</em> rendered, inside an
+    <code>&lt;h4 class="…type-relay_member"&gt;</code> — not the
+    <code>&lt;div&gt;</code> a first pass assumes, which is its own silent zero.
+    Walking 150 venue aggregates plus every season-9 doubles day found five races,
+    three of them absent from the repo entirely.</p>
+
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Race</th><th>Partner</th><th class="r">Total</th>
+        <th class="r">RUN+ROX</th><th class="r">Stations</th><th>In repo?</th></tr></thead>
+      <tbody>
+        <tr><td>2026 Taipei · Sun</td><td>Justin Prophet</td>
+          <td class="r num best">1:01:19</td><td class="r mono">37:05</td>
+          <td class="r mono">24:14</td><td class="mono">yes</td></tr>
+        <tr><td>2025 Chicago · Sun</td><td>Sean OBrien</td>
+          <td class="r num">1:02:42</td><td class="r mono">39:38</td>
+          <td class="r mono">23:04</td><td class="mono worst">no</td></tr>
+        <tr><td>2026 Chiba · Fri</td><td>Haruka Ihara</td>
+          <td class="r num">1:02:56</td><td class="r mono">40:09</td>
+          <td class="r mono">22:47</td><td class="mono">stub only</td></tr>
+        <tr><td>2026 Jakarta</td><td>Grayson Waataja</td>
+          <td class="r num">1:16:35</td><td class="r mono">53:57</td>
+          <td class="r mono">22:38</td><td class="mono worst">no</td></tr>
+        <tr><td>2026 Chiba · Sun</td><td>Grayson Waataja</td>
+          <td class="r num">1:19:11</td><td class="r mono">53:28</td>
+          <td class="r mono">25:43</td><td class="mono worst">no</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p style="margin-top:16px">Doubles is its own sport and none of these times belong
+    on a singles ladder — the runs are shared and the station reps are split, which is
+    why stations sit near <span class="mono">23:00</span> against
+    <span class="mono">28:22</span> in open. They are recorded with an explicit
+    <code>attribution_boundary</code>.</p>
+
+    <div class="flag">
+      <div class="k">completeness is not claimed</div>
+      <p>Seasons 1–5 and non-aggregate day events outside season-9 were not walked.
+      A doubles race missing from this history is <strong>not</strong> evidence it did
+      not happen — the gap stays typed rather than closed by silence.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    projects/hyrox/ONTOLOGY.md · Rule 2a partition key · 2b pooled tables · 2c doubles · 2d name search<br>
+    projects/hyrox/race-data/{find_races,walk_doubles,pull_details,normalize}.py<br>
+    observed 2026-08-30 · results.hyrox.com · 2,126 events swept, 0 unresolved
+  </div>
+
+</div>
+</body>
+</html>

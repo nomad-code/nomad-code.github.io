@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>41 → 26 · the goal · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--now:#8a949c;--goal:#176b78;--win:#b85339;--gold:#c59a45}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1000px,calc(100% - 36px));margin:auto;padding:40px 0 56px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+.hero{margin:18px 0 8px;display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.hero .n{font:750 clamp(64px,13vw,150px)/.85 Georgia,serif;letter-spacing:-.05em}
+.hero .from{color:var(--now)}
+.hero .arrow{font:400 clamp(34px,6vw,64px)/1 Georgia,serif;color:var(--muted)}
+.hero .to{color:var(--goal)}
+h1{font:700 clamp(26px,3.6vw,40px)/1.05 Georgia,serif;letter-spacing:-.03em;margin:6px 0 14px}
+.lede{max-width:70ch;font-size:17px;line-height:1.62;color:#43534a}
+.strap{font:700 12px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--win);margin-top:6px}
+h2{font:700 25px/1.1 Georgia,serif;margin:34px 0 12px}
+.note{color:var(--muted);margin:-6px 0 14px;max-width:78ch;line-height:1.5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:500px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font-size:13px;font-weight:700}
+td{font:700 16px Georgia,serif}
+td.mono{font:700 14px ui-monospace,monospace}
+td.won{color:var(--win)}td.goal{color:var(--goal)}td.now{color:var(--now)}
+td small,th small{display:block;font:500 10px ui-monospace,monospace;color:var(--muted);margin-top:3px;font-weight:400}
+tr.hi td,tr.hi th{background:#edf4ef}
+tr.us td,tr.us th{background:#f9ece7}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.t{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px}
+.t:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--goal)}
+.tn{font:700 10px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--goal)}
+.tv{font:750 30px/1.05 Georgia,serif;margin:8px 0 4px}
+.tv small{font:700 13px ui-monospace,monospace;color:var(--muted);display:block;margin-top:5px}
+.tf{color:var(--muted);font-size:12.5px;line-height:1.55;border-top:1px solid var(--line);padding-top:9px;margin-top:9px}
+.tiers{display:grid;gap:8px;margin:20px 0}
+.tier{display:grid;grid-template-columns:96px 74px 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:12px 15px}
+.tier.f{--c:var(--now)}.tier.g{--c:var(--goal)}.tier.s{--c:var(--gold)}.tier.d{--c:var(--win)}
+.tier b{font:750 17px Georgia,serif}
+.tier .pts{font:700 12px ui-monospace,monospace;color:var(--c)}
+.tier span{color:var(--muted);font-size:13.5px;line-height:1.5}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:24px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ul{margin:0;padding-left:18px;line-height:1.68;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+@media(max-width:760px){.three{grid-template-columns:1fr}.tier{grid-template-columns:1fr}}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · the goal · ATHX Copenhagen, Sat 31 July 2027 · doubles Pro</div>
+<div class="hero"><span class="n from">41</span><span class="arrow">→</span><span class="n to">26</span></div>
+<h1>Top 8. Fifteen points. Forty-nine weeks.</h1>
+<p class="lede">One number to remember: <b>26 points</b> was 8th place at Copenhagen 2026, and 41 was ours. That gap is the entire goal — the top half of a Pro pairs field, at the same venue, twelve months on.</p>
+<div class="strap">We don't need to be good at anything · we need to be 8th at everything</div>
+<h2>Where the 15 points come from</h2>
+<div class="panel"><table><thead><tr><th>Workout</th><th>CPH 2026</th><th>Goal</th><th>Points won</th></tr></thead><tbody>
+<tr><th>Strength</th><td class="mono now">16th</td><td class="mono goal">8th</td><td class="mono won">8</td></tr>
+<tr><th>Endurance</th><td class="mono now">11th</td><td class="mono goal">8th</td><td class="mono won">3</td></tr>
+<tr><th>MetCon X</th><td class="mono now">14th</td><td class="mono goal">8th</td><td class="mono won">6</td></tr>
+<tr class="hi"><th><b>Points</b></th><td class="mono now"><b>41</b></td><td class="mono goal"><b>24–26</b></td><td class="mono won"><b>17 available</b></td></tr>
+</tbody></table></div>
+<p class="note" style="margin-top:12px">Seventeen points of headroom, fifteen needed — margin in the plan, and not one workout has to crack the top five.</p>
+<h2>The three numbers we control</h2>
+<section class="three">
+<article class="t"><div class="tn">1 · Strength</div><div class="tv">880 KG<small>pair · 2027 schemes</small></div><div class="tf">From <b>700</b> today. Brendan 424 (STO 83 · squat 150 · DL 191) · Chris 457 (105 · 155 · 197). Roughly 7–8 KG each is free the day the jerk beats 1.2× strict press.</div></article>
+<article class="t"><div class="tn">2 · Endurance</div><div class="tv">13:00 &amp; 2:12<small>3 KM run · ski per 500 m</small></div><div class="tf">Only the ski scores, and the run buys ski time — a minute off the run is worth ~227 m. <b>No baseline exists</b>: we alternated run and row in 2026, so those splits were turn allocation, not pace.</div></article>
+<article class="t"><div class="tn">3 · MetCon X</div><div class="tv">Sub-21:00<small>no station in singles</small></div><div class="tf">The 25-minute cap is the real opponent at our loads. Sub-21 means the 70 KG sandbag never drops to singles — a strength outcome, not a willpower one.</div></article>
+</section>
+<h2>The board we're aiming at</h2>
+<div class="panel"><table><thead><tr><th>Place at CPH 2026</th><th>Points</th></tr></thead><tbody>
+<tr><th>1st</th><td class="mono">7</td></tr>
+<tr><th>3rd · podium</th><td class="mono">14</td></tr>
+<tr><th>5th</th><td class="mono">20</td></tr>
+<tr class="hi"><th><b>8th — the goal</b></th><td class="mono goal"><b>26</b></td></tr>
+<tr><th>12th</th><td class="mono">37</td></tr>
+<tr class="us"><th><b>13th — us</b></th><td class="mono now"><b>41</b></td></tr>
+<tr><th>16th</th><td class="mono">47</td></tr>
+</tbody></table></div>
+<h2>Said out loud</h2>
+<section class="tiers">
+<div class="tier f"><b>Floor</b><span class="pts">≤ 40 pts · 12th</span><span>Beat last year. Non-negotiable.</span></div>
+<div class="tier g"><b>THE GOAL</b><span class="pts">≤ 26 pts · 8th</span><span>Top half of a Pro pairs field.</span></div>
+<div class="tier s"><b>Stretch</b><span class="pts">≤ 20 pts · 5th</span><span>Needs one top-five workout.</span></div>
+<div class="tier d"><b>Dream</b><span class="pts">≤ 14 pts · podium</span><span>Two top-three workouts. Not this year's plan — but say it anyway.</span></div>
+</section>
+<h2>Brendan's solo goal — Dublin, 12 June</h2>
+<p class="note">Five solo Pro races lead in. Today on the singles Pro 34-&amp;-under board: 185th of 190 on press, 182nd on squat, 182nd on deadlift — bottom 5%.</p>
+<div class="panel"><table><thead><tr><th>e1RM</th><th>Today</th><th>By Dublin</th><th>Board median</th></tr></thead><tbody>
+<tr><th>Press</th><td class="mono now">59</td><td class="mono goal">71</td><td class="mono">73 – 78</td></tr>
+<tr><th>Squat</th><td class="mono now">121</td><td class="mono goal">160</td><td class="mono">168 – 175</td></tr>
+<tr><th>Deadlift</th><td class="mono now">169</td><td class="mono goal">210</td><td class="mono">210</td></tr>
+</tbody></table></div>
+<p class="note" style="margin-top:12px"><b>Median strength by Dublin</b> — bottom 5% to the middle of the field in one season, measurable at every race on the way.</p>
+<div class="rules"><h3>Gates — miss these and the goal is gone</h3><ul>
+<li><b>27 Sep 2026</b> — every baseline on record: STO, 2RM squat, the deadlift double, 3 KM time trial, 12-minute ski, 500 m row. Both athletes. No guessing after this date.</li>
+<li><b>20 Dec 2026</b> — pair strength ≥ 767. The autumn block either happened or it didn't.</li>
+<li><b>23 Jan 2027</b> — London raced. First real MetCon X data on the sheet.</li>
+<li><b>8 May 2027</b> — pair strength ≥ 836.</li>
+<li><b>12 Jun 2027</b> — Brendan at median solo Pro strength.</li>
+<li><b>11 Jul 2027</b> — full pairs dress rehearsal done, split settled under fatigue.</li>
+<li><b>31 Jul 2027 — 26 points.</b></li>
+</ul></div>
+<footer>Goal record: <code>projects/fit-athx/goal-cph-2027.md</code> · plan: <code>plan-to-cph-2027.md</code> · MetCon: <code>metcon-x-2027.md</code> · programme: <code>programme-2027.md</code> · points ladder from the real CPH 2026 Pro · Male pairs board</footer>
+</main></body></html>

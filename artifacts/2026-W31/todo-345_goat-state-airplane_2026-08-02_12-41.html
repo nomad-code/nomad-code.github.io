@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Public-safe twelve-hour offline continuity flow for GOAT State.">
+  <title>TODO-345 · GOAT State airplane flow</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <style>
+    body{background:linear-gradient(180deg,#eaf2ed 0,#f5f4ed 42%,var(--bg) 100%);min-height:100vh}.shell{width:min(1160px,calc(100% - 32px));margin:auto;padding:26px 0 50px}.mast,.nav,.stage-top,.facts{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.mast{justify-content:space-between;font:600 10px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.nav a{color:var(--forest-d);border-bottom:1px solid var(--forest)}
+    .hero{padding:72px 0 44px;text-align:center}.hero .route{font:600 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.13em;color:var(--forest)}.hero h1{font-size:clamp(60px,11vw,132px);letter-spacing:-.08em;line-height:.82;margin:22px auto;max-width:8.5ch}.hero p{max-width:62ch;margin:auto;font-size:15px;line-height:1.65;color:var(--muted)}
+    .flight{background:var(--ink);border-radius:30px;color:white;padding:28px;overflow:hidden}.stage-top{justify-content:space-between}.stage-top h2{font-size:30px;letter-spacing:-.045em}.clock{font:700 12px/1 var(--font-mono);color:var(--lime-b)}.timeline{height:8px;background:rgba(255,255,255,.14);border-radius:99px;margin:28px 0 12px;overflow:hidden}.fill{height:100%;width:4%;background:var(--lime-b);border-radius:99px;transition:width .65s cubic-bezier(.2,.8,.2,1)}.hours{display:flex;justify-content:space-between;font:500 9px/1 var(--font-mono);color:#8fa099}.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px}.phase{border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:18px;background:rgba(255,255,255,.03);color:#c7d0cc;text-align:left;transition:.25s}.phase.on{background:rgba(163,224,111,.12);border-color:rgba(163,224,111,.55);color:white;transform:translateY(-3px)}.phase .n{font:600 9px/1 var(--font-mono);color:var(--lime-b);letter-spacing:.1em}.phase h3{font-size:17px;margin:14px 0 7px}.phase p{font-size:11.5px;line-height:1.55;color:inherit}.detail{margin-top:18px;border-top:1px solid rgba(255,255,255,.12);padding-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:20px}.detail p{font-size:13px;line-height:1.6;color:#c7d0cc}.detail strong{color:white}.detail code{color:var(--lime-b)}
+    .facts{margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr)}.fact{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}.fact b{font-size:32px;letter-spacing:-.05em;display:block}.fact span{font:500 10px/1.5 var(--font-mono);color:var(--muted)}.power{margin-top:16px;border:1px solid var(--amber-bd);background:var(--amber-bg);border-radius:20px;padding:20px;font-size:13px;line-height:1.6}.power strong{color:#7c5112}
+    footer{margin-top:30px;padding-top:17px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font:500 10px/1.5 var(--font-mono);color:var(--faint)}
+    @media(max-width:760px){.phases,.facts{grid-template-columns:1fr 1fr}.detail{grid-template-columns:1fr}.hero{padding-top:52px}}@media(max-width:480px){.shell{width:calc(100% - 22px)}.phases,.facts{grid-template-columns:1fr}.flight{padding:20px}.hero h1{font-size:62px}}
+  </style>
+</head>
+<body><main class="shell"><header class="mast"><span>TODO-345 · 12h offline test</span><nav class="nav"><a href="https://nomad-code.github.io/todo-345_goat-state-architecture_2026-08-02_12-41">architecture</a><a href="https://nomad-code.github.io/todo-345_goat-state-boundaries_2026-08-02_12-41">boundaries</a><a href="https://nomad-code.github.io/todo-345_goat-state-proof_2026-08-02_12-41">proof</a></nav></header>
+  <section class="hero"><span class="route">M5 home hub → M3 cabin node → M5 reconcile</span><h1>Internet gone. Flow intact.</h1><p>The airplane test is semantic continuity under a hard network cut: the task graph, latest decisions, code state, tools, and next action are already aboard.</p></section>
+  <section class="flight"><div class="stage-top"><div><span class="clock" id="clock">T−30 MIN</span><h2 id="title">Pack the departure capsule</h2></div><span class="clock">NRT → 12H OFFLINE</span></div><div class="timeline"><div class="fill" id="fill"></div></div><div class="hours"><span>gate</span><span>takeoff</span><span>cruise</span><span>landing</span><span>reconnect</span></div><div class="phases"><button class="phase on" data-width="4%" data-clock="T−30 MIN" data-title="Pack the departure capsule" data-detail="Refresh every active TODO, checkpoint the current task, verify Git evidence and local model, then seal one private capsule."><span class="n">01 / PREFLIGHT</span><h3>Pack all</h3><p>No manual task picking.</p></button><button class="phase" data-width="13%" data-clock="HOUR 0" data-title="Prove the network is irrelevant" data-detail="Airplane mode comes on. M3 reads the local SQLite graph and capsule; no Linear, GitHub, M5, or OpenAI request is required to recover state."><span class="n">02 / CUT</span><h3>Go dark</h3><p>Failure is intentional.</p></button><button class="phase" data-width="78%" data-clock="HOUR 1—11" data-title="Work from local state" data-detail="Codex uses the local provider; checkpoints append to the device journal. External actions become an outbox instead of blocking thought and code."><span class="n">03 / CRUISE</span><h3>Keep pumping</h3><p>Events accumulate safely.</p></button><button class="phase" data-width="100%" data-clock="HOUR 12" data-title="Reconcile without guessing" data-detail="The M3 sends its content-addressed capsule to M5. Event IDs deduplicate; Linear comments replay; Git conflicts remain explicit and never auto-apply."><span class="n">04 / LAND</span><h3>Merge home</h3><p>Replay, verify, continue.</p></button></div><div class="detail"><p><strong id="detail">Refresh every active TODO, checkpoint the current task, verify Git evidence and local model, then seal one private capsule.</strong></p><p>Core command: <code>scripts/goat handoff --host m5</code></p></div></section>
+  <section class="facts"><article class="fact"><b>&lt;5m</b><span>incremental preflight target</span></article><article class="fact"><b>0</b><span>network calls during cruise</span></article><article class="fact"><b>ALL</b><span>active tasks in BPO</span></article><article class="fact"><b>0</b><span>lost checkpoint events</span></article></section>
+  <aside class="power"><strong>Power is a separate constraint.</strong> Offline data continuity is solved by the capsule; twelve hours of local inference still requires seat power or a tested battery strategy. A local model existing on disk is not the same as a flight-qualified model.</aside>
+  <footer><span>airplane flow · public-safe explainer</span><span>local-first, append-only, reconnectable</span></footer></main>
+  <script>document.querySelectorAll('.phase').forEach(function(b){b.onclick=function(){document.querySelectorAll('.phase').forEach(function(x){x.classList.toggle('on',x===b)});document.getElementById('fill').style.width=b.dataset.width;document.getElementById('clock').textContent=b.dataset.clock;document.getElementById('title').textContent=b.dataset.title;document.getElementById('detail').textContent=b.dataset.detail}})</script>
+</body></html>

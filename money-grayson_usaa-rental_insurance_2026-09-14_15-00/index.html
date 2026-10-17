@@ -1,0 +1,66 @@
+<!doctype html><html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>USAA renters audit</title><!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="/design-repo/harness/harness.css"><link rel="stylesheet" href="/design-repo/harness/artifact.css"><style>main{max-width:850px;margin:auto;padding:24px}p,li{line-height:1.65;overflow-wrap:anywhere}li{margin-bottom:12px}h2{margin-top:32px}summary{cursor:pointer;padding:12px}a{overflow-wrap:anywhere}@media(max-width:480px){main{padding:14px}ul,ol{padding-left:22px}}</style></head><body id="tc-app" class="harness-document"><header class="harness-header">BPO · Private · Insurance</header><main><p><strong>Logged and accepted · TODO-515</strong> · <a href="https://linear.app/nomad-code/issue/TODO-515/money-grayson-usaa-rental-insurance">Private Linear record</a></p><p>Preliminary review complete by user request. Current-policy verification still requires the 2026 renewal packet. No payment or insurance changes made.</p><h1 class="harness-title">USAA renters insurance · provisional audit</h1><p>As of September 14, 2026. Private BPO / personal. Route: BPO/money-grayson-usaa-rental_insurance.</p><h2>Assessment</h2><p>USAA renters insurance looks useful for a world traveler&#x27;s belongings and potentially personal liability. Retaining it is worth considering if USAA confirms that the current policy fits both travelers&#x27; actual living arrangements and the deductible and limits are appropriate. Worldwide travel protection is not proof of eligibility for indefinite overseas residence. This is a provisional assessment; the current contract has not been retrieved.</p><h2>Your records</h2><ul><li><a href="https://mail.google.com/mail/#all/1a09ee88e1a5709c">September 14, 2026 payment reminder</a>: $115.64 scheduled to a credit card on September 15, 2026. Changes to the automatic payment plan are available before September 15. This is a scheduled payment, not proof that it has processed.</li><li><a href="https://mail.google.com/mail/#all/1994786fd1faf7ba">September 2025 reminder</a>: $114.60. The scheduled amount rose $1.04, about 0.91%. The emails do not establish annual versus installment billing or allocation among policies. If $115.64 is the entire annual renters premium, that is about $9.64/month; this remains conditional.</li><li><a href="https://mail.google.com/mail/#all/18a7c1b69cbe5798">September 9, 2023 certificate</a>: named Brendan Obrien and Grayson Waataja at a Dallas apartment; $11,500 personal property and $100,000 personal liability. Its stated term expired September 17, 2024. These are historical facts, not verified current limits or insured names. No deductible appears in this certificate.</li><li><a href="https://mail.google.com/mail/#all/19f51b29f8dbfdf0">July 11, 2026 renewal notification</a>: a Renters Policy Renewal is in USAA&#x27;s document center; no attachment. The July 10 coverage email identifies Garrison Property and Casualty Insurance Company. The payment email lists both Garrison and USAA EU DAC, which does not establish which contract governs the renters policy.</li></ul><h2>Travel fit</h2><ul><li><strong>Theft while abroad:</strong> USAA advertises protection for belongings taken overseas, including stolen luggage. Actual events, limits and deductible remain subject to your contract. <a href="https://www.usaa.com/insurance/property/renters/coverage/?akredirect=true">USAA coverage</a></li><li><strong>Residence:</strong> The same USAA page expressly limits availability to residents of another country to qualified members. Confirm full-time travel or foreign residence, accurate policy address, countries, and any duration restrictions. Do not assume an old Dallas address is still correct. <a href="https://www.usaa.com/insurance/property/renters/coverage/?akredirect=true">USAA coverage</a></li><li><strong>Electronics:</strong> Standard protection for covered theft/damage differs from extra electronics coverage for drops, spills and loss. Check the actual endorsement, per-item limits, work equipment ownership and business-property restrictions. <a href="https://www.usaa.com/support/insurance/renters/?akredirect=true">USAA policy support</a></li><li><strong>Both travelers and limits:</strong> Verify Grayson remains a named insured and whether separate travel or residences affect coverage. Reprice everything you both own, including storage; compare the total with the current shared property limit. Ask for prices at $300,000 and $500,000 liability to compare with the historical $100,000; this is a quote request, not a conclusion about an adequate limit.</li><li><strong>Hotels and Airbnbs:</strong> Ask specifically about damage you cause to rented premises and their furnishings, and claims brought abroad. A worldwide belongings promise does not settle these questions. For illustration only, USAA&#x27;s EU summary has a rented-property exclusion with exceptions and a limited damage-to-others benefit. That EU form is not established as your contract. <a href="https://static.usaa.com/content/dam/digital/documents/pdf/pc/pc-renters-summary-eusa.pdf">USAA EU summary</a></li><li><strong>Health, evacuation, trip cancellation and vehicles:</strong> Do not count renters coverage as protection for your own illness, evacuation, canceled trips or motor-vehicle liability. Review those separately. USAA describes medical and trip benefits in its separate travel product; its EU renters summary excludes motor-vehicle liability. <a href="https://www.usaa.com/insurance/additional/travel/?akredirect=true&amp;rpctoken=615519922&amp;ucsp=rpctoken">USAA travel insurance</a>, <a href="https://static.usaa.com/content/dam/digital/documents/pdf/pc/pc-renters-summary-eusa.pdf">EU summary</a></li></ul><h2>Finish the audit</h2><p>Obtain the July 2026 renewal packet: declarations, policy contract, all endorsements, and billing breakdown. Confirm actual current living arrangements with Brendan; the question is pending. No connected browser was available to access the USAA portal. Email searches found the renewal notice, not its contents.</p><p>Suggested questions for USAA (not sent):</p><details><summary>Questions to ask USAA</summary><ol><li>Based on our actual current residence and international travel pattern, does this exact policy cover both Brendan and Grayson? What address, residence status, country or time-away restrictions apply? Please identify the applicable policy provisions in writing.</li><li>What are our current property and liability limits, deductible, endorsements, and annual renters premium? Is the September 15 payment solely for this renters policy?</li><li>What applies to theft from hotels, luggage and vehicles; lost or accidentally damaged phones/laptops; business or employer-owned equipment; jewelry and other sublimits?</li><li>What liability coverage applies to foreign claims and damage to hotels/Airbnbs, including furnishings? What do $300,000 and $500,000 limits cost?</li></ol></details><p>No policy changes, cancellation, payment changes or messages to USAA were made. Browser inspection and visual artifact verification were unavailable in this session.</p></main></body></html>

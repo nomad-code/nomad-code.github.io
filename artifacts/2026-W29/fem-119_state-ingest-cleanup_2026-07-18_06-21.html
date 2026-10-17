@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>femfast · state ingest + cleanup · 2026-07-18</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px 64px; }
+  .tablebox { overflow-x: auto; }
+  table.audit { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.audit th { text-align: left; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+    padding: 8px 10px; border-bottom: 1.5px solid var(--line); white-space: nowrap; }
+  table.audit td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.audit td:first-child { white-space: nowrap; font-family: var(--font-mono); font-size: 12px; }
+  .sev { display: inline-block; padding: 2px 9px; border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; }
+  .sev-live { background: #e8f1ea; color: var(--forest-d); border: 1px solid #cfe3d4; }
+  .sev-cut { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-bd); }
+  .sev-new { background: var(--found-bg); color: var(--found-d); border: 1px solid var(--found-bd); }
+  .sev-fix { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+  code { font-family: var(--font-mono); font-size: .92em; background: var(--well);
+    padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="tb-brand">Nomad Code</span><span class="tb-sep">/</span>
+  <span class="tb-ctx">femfast · state ingest + cleanup</span>
+  <span class="tb-spacer"></span>
+  <span class="tb-tag">FEM-119 · 2026-07-18 · 06:21 UTC</span>
+</div>
+<div class="brandstrip"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">femfast · FEM-119 · state ingest → triage → revival</div>
+    <h1>FemFast has no more ambient debt — the board is 13&nbsp;live tickets, the knowledge lives in git.</h1>
+    <p class="hero-sub">One session ingested all three surfaces (iOS repo, web repo, Linear FEM),
+    distilled them into <code>bpo/projects/femfast/</code>, canceled 22 stale 2023 tickets with
+    their content preserved, finished the ChartView refactor loose ends, and rebuilt the web
+    testing ground on Next&nbsp;15. iOS is the product; web is the sandbox.</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">38 → 13</div><div class="kpi-l">FEM tickets (live set)</div></div>
+    <div class="kpi"><div class="kpi-n">22 + 1</div><div class="kpi-l">canceled stale + duplicate</div></div>
+    <div class="kpi"><div class="kpi-n">5</div><div class="kpi-l">new debt tickets filed</div></div>
+    <div class="kpi"><div class="kpi-n">13.4 → 15.5</div><div class="kpi-l">Next.js (build verified)</div></div>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">01</span><span class="sec-kick">Linear FEM — after triage</span></div>
+  <div class="card tablebox">
+    <table class="audit">
+      <tr><th>ticket</th><th>state</th><th>what</th></tr>
+      <tr><td>FEM-119</td><td><span class="sev sev-live">in&nbsp;progress</span></td><td>This session — state ingest + cleanup.</td></tr>
+      <tr><td>FEM-112</td><td><span class="sev sev-live">backlog</span></td><td>FastingRingScreen initial UI (FEM-98 marked its duplicate).</td></tr>
+      <tr><td>FEM-102</td><td><span class="sev sev-live">backlog</span></td><td>0.0.2 release umbrella.</td></tr>
+      <tr><td>FEM-109 / 111 / 117 / 118</td><td><span class="sev sev-live">backlog</span></td><td>Website design refs · App Store screenshots · brand guide · dark mode — normalized from fake Todo/In&nbsp;Progress to Backlog.</td></tr>
+      <tr><td>FEM-120…124</td><td><span class="sev sev-new">new</span></td><td>The real debt, ticketed: chartview-loose-ends · watch-connectivity-dedupe · appstate-persistence-decision · tests-ci · web-testing-ground.</td></tr>
+      <tr><td>22 fossils</td><td><span class="sev sev-cut">canceled</span></td><td>2023 backlog (food lists, Figma, LLC, watch designs, release chores) — full text preserved in <code>projects/femfast/STATE.md</code> + raw JSON dump.</td></tr>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">02</span><span class="sec-kick">iOS — ChartView refactor closed out</span></div>
+  <div class="card tablebox">
+    <table class="audit">
+      <tr><th>loose end</th><th>fix</th></tr>
+      <tr><td><span class="sev sev-fix">naming</span></td><td><code>ChartState.swift</code> → <code>ChartViewState.swift</code>; file now matches the type.</td></tr>
+      <tr><td><span class="sev sev-fix">layering</span></td><td>State file is state-only: views moved to <code>ChartView.swift</code>, data generation + interaction handlers to <code>ChartHelpers.swift</code>.</td></tr>
+      <tr><td><span class="sev sev-fix">globals</span></td><td>Free chart globals became <code>ChartConfig</code> statics.</td></tr>
+      <tr><td><span class="sev sev-fix">previews leak</span></td><td>Date/cycle constants moved from <code>Previews/CycleSamples.swift</code> into <code>Resources/Constants.swift</code> — production no longer imports preview code.</td></tr>
+      <tr><td><span class="sev sev-cut">caveat</span></td><td>Mechanical changes on a Linux container — <strong>needs one local Xcode build to verify</strong> (FEM-120 tracks it).</td></tr>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">03</span><span class="sec-kick">Web — testing ground rebuilt</span></div>
+  <div class="card">
+    <p>femfast-web: Aug-2023 scaffold upgraded in place to <strong>Next 15.5 / React 19</strong>,
+    dev deps separated, dead inline Roboto dropped. Static export → Firebase Hosting
+    (<code>femfast-prod</code>) pipeline untouched and verified: clean build, exported page renders
+    in headless Chromium. Role per FEM-124: sandbox, not product.</p>
+  </div>
+
+  <div class="sec-head"><span class="sec-n">04</span><span class="sec-kick">Where the truth lives now</span></div>
+  <div class="card">
+    <p><code>bpo/projects/femfast/</code> — <code>SPEC.md</code> (goal + done-when),
+    <code>STATE.md</code> (debt map, triage table, business facts: femfast.app / Apple Dev /
+    Firebase costs, LLC research, AASA requirement, open persistence decision),
+    and the raw 38-issue Linear dump. <code>femfast/LOG.md</code> reset to a pointer.
+    Branches: <code>claude/femfast-state-ingest-cleanup-s27kb6</code> in bpo, femfast, femfast-web.</p>
+  </div>
+</div>
+</body>
+</html>

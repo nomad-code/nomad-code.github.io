@@ -1,0 +1,249 @@
+{
+ "schemaVersion": 1,
+ "pr": 491,
+ "generatedAt": "2026-07-28T00:00:00.000Z",
+ "status": "passed",
+ "artifactContract": {
+  "passed": true,
+  "expectedTests": 12,
+  "recordedTests": 12,
+  "missingTests": [],
+  "incompleteEntries": []
+ },
+ "targets": {
+  "application": "http://127.0.0.1:3100 (branch demo/pr491-showcase, PR #514)",
+  "coursesAndSearchChapters": "https://v2-test.dhamma.org",
+  "pwaLaunchCandidate": "http://127.0.0.1:3100",
+  "eventUiFixture": "http://127.0.0.1:3100/dev/pr491-events"
+ },
+ "entries": [
+  {
+   "project": "demo-desktop",
+   "title": "PR491 desktop \u2014 event markers, nearby card, peek-first modal flow",
+   "status": "passed",
+   "durationMs": 7790,
+   "screenshots": [
+    {
+     "file": "demo-desktop__desktop-event-markers-nearby-card-peek-first-modal-flow__events-desktop-peek-first.png",
+     "bytes": 997689,
+     "sha256": "b82634e713e6a80f02d165d7df64a8f8e2c76938de809a59087b1f2cd8d77b0a"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-desktop__desktop-event-markers-nearby-card-peek-first-modal-flow.webm",
+    "bytes": 830506,
+    "sha256": "10dab3845257e441514b95b85fd23e55d2287c8a1a3ebf7b1de0c81637155229"
+   }
+  },
+  {
+   "project": "demo-desktop",
+   "title": "PR491 desktop \u2014 map legend, stable icon pins, and SVG flag peek",
+   "status": "passed",
+   "durationMs": 8983,
+   "screenshots": [
+    {
+     "file": "demo-desktop__desktop-map-legend-stable-icon-pins-and-svg-flag-peek__locations-map-desktop.png",
+     "bytes": 727383,
+     "sha256": "16c56729660f692e910135d73ba01873097b426dd804ab41759597f16dbe31b0"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-desktop__desktop-map-legend-stable-icon-pins-and-svg-flag-peek.webm",
+    "bytes": 593795,
+    "sha256": "5bbc0fbb92b6b74a73586ec09c4e3b7aa15229ce743f01e9b3ec900d4c87b099"
+   }
+  },
+  {
+   "project": "demo-desktop",
+   "title": "PR491 desktop \u2014 Search > Locations tab and connected chrome",
+   "status": "passed",
+   "durationMs": 8104,
+   "screenshots": [
+    {
+     "file": "demo-desktop__desktop-search-locations-tab-and-connected-chrome__search-locations-tab-desktop.png",
+     "bytes": 727771,
+     "sha256": "4141408fe5a92dcdb88302cc26531ad65379a7210ffed83ada1a702d18549820"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-desktop__desktop-search-locations-tab-and-connected-chrome.webm",
+    "bytes": 506854,
+    "sha256": "5e9da9aaf460d6c0bd7ddfe72ef185f9bb87175f5ce02256dcd4fc1dd9d5a08e"
+   }
+  },
+  {
+   "project": "demo-desktop",
+   "title": "PR491 desktop \u2014 wider About pages and closed Q&A accordions",
+   "status": "passed",
+   "durationMs": 7504,
+   "screenshots": [
+    {
+     "file": "demo-desktop__desktop-wider-about-pages-and-closed-q-a-accordions__about-qa-desktop.png",
+     "bytes": 129804,
+     "sha256": "7590098e4c89b7082378ae4a27bdccfd6fe2d6c4c880e32fae99593a1692658b"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-desktop__desktop-wider-about-pages-and-closed-q-a-accordions.webm",
+    "bytes": 555866,
+    "sha256": "c98ca574be2acda5155909e6b15ccd3991c43c5b55427238a2b5676cebe838e9"
+   }
+  },
+  {
+   "project": "demo-mobile",
+   "title": "PR491 mobile \u2014 chips, list/map swap, flag card, peek, and modal",
+   "status": "passed",
+   "durationMs": 9333,
+   "screenshots": [
+    {
+     "file": "demo-mobile__mobile-chips-list-map-swap-flag-card-peek-and-modal__events-mobile-details.png",
+     "bytes": 934870,
+     "sha256": "d0aa6930ef7603b06915ee71b8a2370f0d269bb52e31a55366855f734be0fdc8"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-mobile__mobile-chips-list-map-swap-flag-card-peek-and-modal.webm",
+    "bytes": 759070,
+    "sha256": "e3726cc3937a1c801104c3193088fe4df2d31e4542dba679d76497ef7f8b1308"
+   }
+  },
+  {
+   "project": "demo-mobile",
+   "title": "PR491 mobile \u2014 native Q&A accordions keep multiple answers open",
+   "status": "passed",
+   "durationMs": 3840,
+   "screenshots": [
+    {
+     "file": "demo-mobile__mobile-native-q-a-accordions-keep-multiple-answers-open__qa-mobile.png",
+     "bytes": 284444,
+     "sha256": "5aa728592a3dc619b6c00a2b7fc99f8930170116bfbf65af55044044ef44ea72"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-mobile__mobile-native-q-a-accordions-keep-multiple-answers-open.webm",
+    "bytes": 357865,
+    "sha256": "c51f757a0b81e4c3a9634b4b17a732d95b34583b12f61ebdb5d44cf037bc1a60"
+   }
+  },
+  {
+   "project": "demo-mobile",
+   "title": "PR491 mobile \u2014 online-first PWA manifest, launch, and icons",
+   "status": "passed",
+   "durationMs": 4029,
+   "screenshots": [
+    {
+     "file": "demo-mobile__mobile-online-first-pwa-manifest-launch-and-icons__pwa-maskable-icon.png",
+     "bytes": 48029,
+     "sha256": "c3ddeadd312b2b20c5fb520c58127c6f792b0cd8ba406158a36805ae3971080b"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-mobile__mobile-online-first-pwa-manifest-launch-and-icons.webm",
+    "bytes": 180958,
+    "sha256": "e68cb178c2b3fd6740b88fa02eb7fc0de5787d1fe3ac8f84acb71f8243820160"
+   }
+  },
+  {
+   "project": "demo-mobile",
+   "title": "PR491 mobile \u2014 public map chips, greedy one-finger pan, and SVG flag",
+   "status": "passed",
+   "durationMs": 11458,
+   "screenshots": [
+    {
+     "file": "demo-mobile__mobile-public-map-chips-greedy-one-finger-pan-and-svg-flag__locations-map-mobile.png",
+     "bytes": 1196455,
+     "sha256": "731005f11127953cff30add5dd162f1b06de8b7f35430b1db0be9e7947182570"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-mobile__mobile-public-map-chips-greedy-one-finger-pan-and-svg-flag.webm",
+    "bytes": 947885,
+    "sha256": "2f2b36b54916b7a729343fa27366f122edbca56014539acd57a6471d2be14a58"
+   }
+  },
+  {
+   "project": "demo-mobile",
+   "title": "PR491 mobile \u2014 slim header, signed-in drawer fixture, and language",
+   "status": "passed",
+   "durationMs": 4450,
+   "screenshots": [
+    {
+     "file": "demo-mobile__mobile-slim-header-signed-in-drawer-fixture-and-language__mobile-header-drawer.png",
+     "bytes": 126461,
+     "sha256": "48bf7d92d92947f7495fed4c9e77f7855af1ebe1d9756a224e8174e8e4fddcc5"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-mobile__mobile-slim-header-signed-in-drawer-fixture-and-language.webm",
+    "bytes": 330676,
+    "sha256": "64e565acbd56671ed0c286694ef51ef788117e56768578f2f60e34824a099dc5"
+   }
+  },
+  {
+   "project": "demo-desktop",
+   "title": "PR491 desktop \u2014 Courses redesign and native accordion",
+   "status": "passed",
+   "durationMs": 10086,
+   "screenshots": [
+    {
+     "file": "demo-desktop__desktop-courses-redesign-and-native-accordion__courses-desktop-final.png",
+     "bytes": 149283,
+     "sha256": "47cf0fd90bb0f950a74daa9201fd63db3ab649d6e8c716d937af9d390e5b3601"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-desktop__desktop-courses-redesign-and-native-accordion.webm",
+    "bytes": 589793,
+    "sha256": "43a965bc2f493ff0dbdf04e678f5db65c5ffde93dcd0a622f7a7372e27a6f88c"
+   }
+  },
+  {
+   "project": "demo-mobile",
+   "title": "PR491 mobile \u2014 header search seeds and re-seeds course search",
+   "status": "passed",
+   "durationMs": 5881,
+   "screenshots": [
+    {
+     "file": "demo-mobile__mobile-header-search-seeds-and-re-seeds-course-search__mobile-search-reseed.png",
+     "bytes": 158353,
+     "sha256": "8917e5f5b482d15ebef4e9067dd4c73ce16bbed0f9236abc06cbae7d44a91fd4"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-mobile__mobile-header-search-seeds-and-re-seeds-course-search.webm",
+    "bytes": 309665,
+    "sha256": "3ff60e1b7607e307db70185d1c17993f779c074f147d940f069ae05e27eef697"
+   }
+  },
+  {
+   "project": "demo-mobile",
+   "title": "PR491 mobile \u2014 responsive Courses journey and accordion wrapping",
+   "status": "passed",
+   "durationMs": 9010,
+   "screenshots": [
+    {
+     "file": "demo-mobile__mobile-responsive-courses-journey-and-accordion-wrapping__courses-mobile-final.png",
+     "bytes": 1119530,
+     "sha256": "8b10a3370f325f8352492c19207be4161120df34b71599d1d29215d40799b00e"
+    }
+   ],
+   "artifactErrors": [],
+   "video": {
+    "file": "demo-mobile__mobile-responsive-courses-journey-and-accordion-wrapping.webm",
+    "bytes": 791416,
+    "sha256": "816a7ec9ca28601a9b16079796a814587eabd64ac74d55c427b29a2b517ff65b"
+   }
+  }
+ ]
+}

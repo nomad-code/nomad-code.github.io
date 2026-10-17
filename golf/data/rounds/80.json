@@ -1,0 +1,68 @@
+{
+    "round":  {
+                  "id":  80,
+                  "course":  "Portrush_GM_GSP",
+                  "date":  "2026-07-19",
+                  "updated":  "2026-07-20T11:17:30.0968037+08:00",
+                  "shots":  21
+              },
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "thru":  4,
+                        "strokes":  21,
+                        "toParNum":  5,
+                        "toPar":  "+5",
+                        "sgTotal":  -5.23,
+                        "sg":  {
+                                   "off-tee":  -1.21,
+                                   "approach":  -4.21,
+                                   "around-green":  -0.03,
+                                   "putting":  0.23
+                               },
+                        "holes":  [
+                                      {
+                                          "hole":  4,
+                                          "par":  4,
+                                          "strokes":  6,
+                                          "toPar":  2,
+                                          "sg":  -1.951,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  5,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.051,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  6,
+                                          "par":  3,
+                                          "strokes":  4,
+                                          "toPar":  1,
+                                          "sg":  -0.95,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  7,
+                                          "par":  5,
+                                          "strokes":  7,
+                                          "toPar":  2,
+                                          "sg":  -2.38,
+                                          "complete":  true
+                                      }
+                                  ],
+                        "lastShot":  {
+                                         "hole":  7,
+                                         "shot":  7,
+                                         "ballSpeed":  9,
+                                         "club":  "PT",
+                                         "carry":  null,
+                                         "vla":  4.1,
+                                         "totalDist":  0.3
+                                     }
+                    }
+                ]
+}

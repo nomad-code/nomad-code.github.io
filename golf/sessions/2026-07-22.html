@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO/golf — 2026-07-22</title>
+<style>
+:root{
+  --ground:#F2F4EF; --card:#FBFCF9; --ink:#1C2420; --ink2:#4A564E; --ink3:#79847C;
+  --line:#DCE2D8; --accent:#2E6B45;
+  --gw:#2E6B45; --i9:#3E5F8A; --i7:#C97B2D;
+  --good:#3E7D5A; --warn:#A97F2E; --bad:#A34A33;
+  --chalk:#C8D0C3;
+}
+@media (prefers-color-scheme: dark){:root{
+  --ground:#14201A; --card:#1B2921; --ink:#E6EDE7; --ink2:#A8B5AB; --ink3:#748078;
+  --line:#2C3B31; --accent:#6FBF8E;
+  --gw:#63B586; --i9:#85A8DD; --i7:#E2A65C;
+  --good:#6FBF8E; --warn:#D9AE5F; --bad:#D07A62;
+  --chalk:#33443A;
+}}
+:root[data-theme="light"]{
+  --ground:#F2F4EF; --card:#FBFCF9; --ink:#1C2420; --ink2:#4A564E; --ink3:#79847C;
+  --line:#DCE2D8; --accent:#2E6B45;
+  --gw:#2E6B45; --i9:#3E5F8A; --i7:#C97B2D;
+  --good:#3E7D5A; --warn:#A97F2E; --bad:#A34A33;
+  --chalk:#C8D0C3;
+}
+:root[data-theme="dark"]{
+  --ground:#14201A; --card:#1B2921; --ink:#E6EDE7; --ink2:#A8B5AB; --ink3:#748078;
+  --line:#2C3B31; --accent:#6FBF8E;
+  --gw:#63B586; --i9:#85A8DD; --i7:#E2A65C;
+  --good:#6FBF8E; --warn:#D9AE5F; --bad:#D07A62;
+  --chalk:#33443A;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);margin:0;
+  font:15px/1.5 "Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px}
+.serif{font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin:0 0 6px}
+h1{font-size:34px;margin:0;line-height:1.15;text-wrap:balance;font-weight:600}
+h1 .thin{color:var(--ink2);font-weight:400;font-style:italic}
+.sub{color:var(--ink2);margin:8px 0 0;font-size:14px}
+section{margin-top:36px}
+h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);
+  margin:0 0 14px;font-weight:600;display:flex;align-items:center;gap:10px}
+h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px 12px}
+.tile .num{font-size:30px;font-weight:650;font-variant-numeric:tabular-nums;line-height:1.1}
+.tile .num small{font-size:15px;font-weight:500;color:var(--ink2)}
+.tile .lbl{font-size:12px;color:var(--ink3);margin-top:3px}
+.chartbox{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 12px 8px;position:relative}
+.legend{display:flex;gap:18px;flex-wrap:wrap;padding:4px 10px 10px;font-size:12.5px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:50%;display:inline-block}
+.sw.ring{background:transparent;border:2.5px solid var(--i9)}
+.sw.gw{background:var(--gw)}
+.sw.dia{width:10px;height:10px;border-radius:2px;background:var(--i7);transform:rotate(45deg)}
+#tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--ground);
+  font-size:12px;line-height:1.45;padding:7px 10px;border-radius:5px;opacity:0;
+  transition:opacity .12s;white-space:nowrap;z-index:5;font-variant-numeric:tabular-nums}
+svg{display:block;width:100%;height:auto}
+svg text{font:11.5px "Segoe UI",system-ui,sans-serif;fill:var(--ink3)}
+svg .dl{font-size:11px;font-weight:600;fill:var(--ink2)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;background:var(--card);
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:14px}
+th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:600;
+  text-align:right;padding:10px 14px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+td .clubdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;vertical-align:baseline}
+.tl{display:grid;grid-template-columns:52px 14px 1fr;row-gap:0;font-size:14px}
+.tl .t{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:12.5px;padding-top:2px}
+.tl .rail{position:relative}
+.tl .rail::before{content:"";position:absolute;left:4px;top:8px;bottom:-8px;width:1px;background:var(--line)}
+.tl .row:last-of-type .rail::before{display:none}
+.tl .dot{position:absolute;left:0;top:5px;width:9px;height:9px;border-radius:50%;background:var(--ink3)}
+.dot.good{background:var(--good)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
+.tl .e{padding:0 0 16px 10px}
+.tl .e b{font-weight:600}
+.tl .e .d{color:var(--ink2);font-size:13px}
+.row{display:contents}
+.check{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.check li{background:var(--card);border:1px solid var(--line);border-radius:6px;
+  padding:10px 14px;display:flex;gap:12px;align-items:baseline;font-size:14px}
+.check .n{font-family:"Palatino Linotype",Georgia,serif;font-style:italic;color:var(--accent);
+  font-size:15px;min-width:14px}
+details{margin-top:12px}
+summary{cursor:pointer;font-size:13px;color:var(--ink2)}
+summary:focus-visible,.check li:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--ink3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (prefers-reduced-motion: reduce){#tip{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow">Medewi Manor &middot; Range Session &middot; TODO-233</p>
+  <h1 class="serif">TODO/golf <span class="thin">— Tuesday 22 July 2026</span></h1>
+  <p class="sub">49 shots &middot; 12:34–14:47 &middot; every ball durably captured &middot; three system faults found &amp; fixed mid-session</p>
+</header>
+
+<section>
+  <div class="tiles">
+    <div class="tile"><div class="num">49</div><div class="lbl">shots captured &middot; 0 lost</div></div>
+    <div class="tile"><div class="num">84.2<small> yd</small></div><div class="lbl">GW avg carry (excl. 1 chunk)</div></div>
+    <div class="tile"><div class="num">103.3<small> yd</small></div><div class="lbl">favorited closer — #734</div></div>
+    <div class="tile"><div class="num">25</div><div class="lbl">clips on disk &amp; Drive</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Range view — carry &times; offline</h2>
+  <div class="chartbox" id="box">
+    <div class="legend">
+      <span><i class="sw gw"></i>GW &times;26</span>
+      <span><i class="sw ring"></i>9-iron &times;21</span>
+      <span><i class="sw dia"></i>7-iron &times;1</span>
+      <span style="color:var(--ink3)">hover a ball for detail</span>
+    </div>
+    <svg id="range" viewBox="0 0 640 480" role="img" aria-label="Scatter of 49 shots: carry distance versus offline dispersion"></svg>
+    <div id="tip"></div>
+  </div>
+  <details>
+    <summary>All 49 shots as a table</summary>
+    <div style="overflow-x:auto;margin-top:8px"><table id="shotTable"></table></div>
+  </details>
+</section>
+
+<section>
+  <h2>By club</h2>
+  <table>
+    <thead><tr><th>Club</th><th>Shots</th><th>Avg carry</th><th>Best</th><th>Avg offline</th></tr></thead>
+    <tbody>
+      <tr><td><i class="clubdot" style="background:var(--i7)"></i>7-iron</td><td>1</td><td>138.2</td><td>138.2</td><td>14.0 R</td></tr>
+      <tr><td><i class="clubdot" style="background:var(--i9)"></i>9-iron</td><td>21</td><td>115.4</td><td>126.4</td><td>0.9 R</td></tr>
+      <tr><td><i class="clubdot" style="background:var(--gw)"></i>Gap wedge</td><td>26</td><td>81.6</td><td>103.3</td><td>2.3 L</td></tr>
+      <tr><td><i class="clubdot" style="background:var(--ink3)"></i>Driver</td><td>1</td><td>77.4</td><td>—</td><td>6.2 R</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13px;color:var(--ink2);margin:10px 2px 0">Wedges split into two groups — partials at 72–85, fulls at 90–103. All five double-digit misses on fulls went <b>left</b>.</p>
+</section>
+
+<section>
+  <h2>Ops timeline</h2>
+  <div class="tl">
+    <div class="row"><div class="t">11:27</div><div class="rail"><i class="dot warn"></i></div><div class="e"><b>Daily GitHub 409s traced</b><div class="d">three pushers race at every logon — one failure per day, four days straight</div></div></div>
+    <div class="row"><div class="t">11:58</div><div class="rail"><i class="dot good"></i></div><div class="e"><b>Push mutex + retry shipped</b><div class="d">machine-wide lock in <code>Push-GitHub</code>; staged collision passed clean</div></div></div>
+    <div class="row"><div class="t">12:26</div><div class="rail"><i class="dot bad"></i></div><div class="e"><b>Alpha UI scrambled camera slots</b><div class="d">Logi&harr;phone swapped, impact cam wiped — zero clips cutting</div></div></div>
+    <div class="row"><div class="t">12:37</div><div class="rail"><i class="dot good"></i></div><div class="e"><b>Golden config restored</b><div class="d">3 shots fell in the restart window — recovered in full via sensor log + GSPro export</div></div></div>
+    <div class="row"><div class="t">12:39</div><div class="rail"><i class="dot bad"></i></div><div class="e"><b>Phone stream died silently</b><div class="d">motion detection starved &rarr; clips stopped; app never reconnects on its own</div></div></div>
+    <div class="row"><div class="t">14:35</div><div class="rail"><i class="dot good"></i></div><div class="e"><b>Session re-entry revived the pipeline</b><div class="d">23 face_on clips cut in real time, Logi-driven, no phone needed</div></div></div>
+    <div class="row"><div class="t">14:48</div><div class="rail"><i class="dot good"></i></div><div class="e"><b>Data-clean reset executed</b><div class="d">Drive verified first: 0 differences across 6,723 files &middot; 184 items cleared</div></div></div>
+    <div class="row"><div class="t">14:57</div><div class="rail"><i class="dot warn"></i></div><div class="e"><b>Reinstall rolled app to v1.15.8</b><div class="d">local Setup.exe is older than the 1.16.3 it replaced — see checklist</div></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Next session — first five minutes</h2>
+  <ul class="check">
+    <li><span class="n">i</span>Launch via START_GOLF; confirm the app auto-updated back to 1.16.x</li>
+    <li><span class="n">ii</span>Redraw the swing-zone ROI on the preview — fresh settings have none</li>
+    <li><span class="n">iii</span>Broadcast from both phones; verify which body is on .3 vs .34</li>
+    <li><span class="n">iv</span>Run the Logi-motion test (TODO-233, unit 11) — kill phone broadcast, clip must still cut</li>
+  </ul>
+</section>
+
+<footer>
+  <span>Logged as units 1–14 on nomad-code TODO-233</span>
+  <span>Shot data: 3&times; redundant &middot; Drive: verified &middot; SwingNerds: freshly reset</span>
+</footer>
+</div>
+
+<script>
+const SHOTS = [
+["DR",77.4,6.2,109.4,686,"12:34"],["I9",119.4,-3.2,124.8,687,"12:35"],["I9",82.6,7.5,116.7,688,"12:37"],
+["I9",114.6,0.7,121.3,689,"12:37"],["I9",108.5,8.8,113.3,690,"12:37"],["I9",123.9,-4.7,129.9,691,"12:38"],
+["I9",96.1,-17.0,114.4,692,"12:40"],["I9",114.5,11.6,119.0,693,"12:40"],["I9",123.4,-1.9,129.0,694,"12:41"],
+["I9",118.7,5.2,123.9,695,"12:41"],["I9",115.9,7.8,120.3,696,"12:42"],["I9",120.2,4.0,125.1,697,"12:42"],
+["I9",117.0,3.9,122.2,698,"12:43"],["I9",113.5,7.7,117.8,699,"12:43"],["I9",121.3,-2.1,126.5,700,"12:44"],
+["I9",114.8,-4.5,120.0,701,"12:44"],["I9",119.7,5.1,125.3,702,"12:44"],["I9",121.3,-3.6,126.5,703,"12:45"],
+["I9",126.3,-14.7,132.0,704,"12:45"],["I9",111.2,8.2,115.5,705,"12:46"],["I9",126.4,-8.4,131.8,706,"12:46"],
+["I9",115.7,8.1,120.2,707,"12:47"],["I7",138.2,14.0,146.4,708,"14:17"],
+["GW",84.8,-5.5,94.2,709,"14:37"],["GW",75.1,-0.2,84.5,710,"14:38"],["GW",80.3,-9.6,86.6,711,"14:40"],
+["GW",72.9,0.7,78.3,712,"14:40"],["GW",77.8,-1.3,83.9,713,"14:40"],["GW",75.3,0.9,80.9,714,"14:40"],
+["GW",66.7,3.7,70.5,715,"14:41"],["GW",82.6,-2.6,86.7,716,"14:41"],["GW",96.8,2.7,105.9,717,"14:41"],
+["GW",89.4,-3.3,94.9,718,"14:43"],["GW",80.3,-4.5,85.3,719,"14:43"],["GW",78.0,0.9,82.1,720,"14:43"],
+["GW",94.7,5.5,101.9,721,"14:44"],["GW",77.1,6.3,80.8,722,"14:44"],["GW",70.0,-13.9,79.7,723,"14:44"],
+["GW",71.3,5.8,74.7,724,"14:44"],["GW",15.8,2.4,53.6,725,"14:45"],["GW",96.3,-15.6,100.8,726,"14:45"],
+["GW",95.0,-9.4,99.5,727,"14:45"],["GW",90.4,-11.4,94.4,728,"14:45"],["GW",94.8,1.2,99.0,729,"14:46"],
+["GW",85.3,2.0,89.1,730,"14:46"],["GW",91.2,-8.0,95.6,731,"14:46"],["GW",87.7,-1.6,91.4,732,"14:46"],
+["GW",87.7,-1.9,91.7,733,"14:47"],["GW",103.3,-3.8,107.2,734,"14:47"]
+];
+const NS="http://www.w3.org/2000/svg";
+const svg=document.getElementById("range"), tip=document.getElementById("tip"), box=document.getElementById("box");
+const W=640,H=480,PAD={l:40,r:40,t:16,b:34};
+const teeX=W/2, teeY=H-PAD.b;
+const sx=(W-PAD.l-PAD.r)/44;            // x: -22..+22 yd
+const sy=(H-PAD.t-PAD.b)/150;           // y: 0..150 yd
+const X=o=>teeX+o*sx, Y=c=>teeY-c*sy;
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function el(n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e}
+function draw(){
+  svg.innerHTML="";
+  const chalk=css("--chalk"), C={GW:css("--gw"),I9:css("--i9"),I7:css("--i7"),DR:css("--ink3")};
+  for(let r=25;r<=150;r+=25){                       // chalk yardage arcs (ellipse under anisotropic scale)
+    const p=el("path",{d:`M ${X(-21)} ${Y(Math.sqrt(Math.max(r*r-441,0)))} A ${21*sx} ${r*sy} 0 0 1 ${X(21)} ${Y(Math.sqrt(Math.max(r*r-441,0)))}`,
+      fill:"none",stroke:chalk,"stroke-width":r%50?1:1.6,"stroke-dasharray":r%50?"3 5":"none"});
+    svg.appendChild(p);
+    const t=el("text",{x:X(0)+6,y:Y(r)-4});t.textContent=r;svg.appendChild(t);
+  }
+  svg.appendChild(el("line",{x1:teeX,y1:teeY,x2:teeX,y2:Y(150),stroke:chalk,"stroke-width":1,"stroke-dasharray":"1 6"}));
+  const lab=el("text",{x:X(-19),y:teeY+22});lab.textContent="← left";svg.appendChild(lab);
+  const lab2=el("text",{x:X(15),y:teeY+22});lab2.textContent="right →";svg.appendChild(lab2);
+  svg.appendChild(el("circle",{cx:teeX,cy:teeY,r:3.5,fill:css("--ink2")}));
+  const surf=css("--card");
+  SHOTS.forEach(s=>{
+    const[c,carry,off,total,n,t]=s, x=X(off), y=Y(carry);
+    let m;
+    if(c==="I7"){m=el("rect",{x:x-6,y:y-6,width:12,height:12,rx:2,transform:`rotate(45 ${x} ${y})`,fill:C.I7,stroke:surf,"stroke-width":2});}
+    else if(c==="I9"){m=el("circle",{cx:x,cy:y,r:5,fill:"none",stroke:C.I9,"stroke-width":2.5});}
+    else if(c==="DR"){m=el("circle",{cx:x,cy:y,r:4.5,fill:C.DR,stroke:surf,"stroke-width":2});}
+    else{m=el("circle",{cx:x,cy:y,r:5,fill:C.GW,stroke:surf,"stroke-width":2});}
+    if(n===734){svg.appendChild(el("circle",{cx:x,cy:y,r:10,fill:"none",stroke:C.GW,"stroke-width":1.4,"stroke-dasharray":"2 3"}));}
+    const hit=el("circle",{cx:x,cy:y,r:12,fill:"transparent"});
+    hit.addEventListener("pointerenter",()=>{
+      tip.innerHTML=`<b>#${n} ${c==="GW"?"Gap wedge":c==="I9"?"9-iron":c==="I7"?"7-iron":"Driver"}</b> · ${t}<br>carry ${carry} · total ${total}<br>offline ${Math.abs(off)} ${off<0?"L":"R"}${n===734?" · ★ favorited":""}`;
+      const bb=box.getBoundingClientRect(), sb=svg.getBoundingClientRect();
+      const px=sb.left-bb.left+x/W*sb.width, py=sb.top-bb.top+y/H*sb.height;
+      tip.style.left=Math.min(px+14,bb.width-170)+"px"; tip.style.top=(py-14)+"px"; tip.style.opacity=1;
+    });
+    hit.addEventListener("pointerleave",()=>tip.style.opacity=0);
+    svg.appendChild(m); svg.appendChild(hit);
+  });
+  const dl=el("text",{x:X(14)+10,y:Y(138.2)+4,"class":"dl"});dl.textContent="7-iron";svg.appendChild(dl);
+  const dl2=el("text",{x:X(-3.8)-14,y:Y(103.3)+4,"class":"dl","text-anchor":"end"});dl2.textContent="★ #734";svg.appendChild(dl2);
+}
+draw();
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+if(window.matchMedia){window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);}
+const tb=document.getElementById("shotTable");
+tb.innerHTML="<thead><tr><th>#</th><th>Time</th><th>Club</th><th>Carry</th><th>Total</th><th>Offline</th></tr></thead><tbody>"+
+  SHOTS.map(s=>`<tr><td>${s[4]}</td><td>${s[5]}</td><td style="text-align:left">${s[0]}</td><td>${s[1]}</td><td>${s[3]}</td><td>${Math.abs(s[2])} ${s[2]<0?"L":"R"}</td></tr>`).join("")+"</tbody>";
+</script>
+
+</body>
+</html>

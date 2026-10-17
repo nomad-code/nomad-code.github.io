@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>TODO-296 · Codex log v2</title>
+<style>body{font:16px system-ui;max-width:800px;margin:48px auto;padding:0 20px;color:#17251b}
+article{border:1px solid #cbd8cd;border-radius:16px;padding:24px;background:#fbfcf8}
+code{overflow-wrap:anywhere}a{color:#176b3a}</style></head>
+<body><article><p>Codex logging contract v2</p><h1>TODO-296</h1>
+<p>Implemented Codex logging contract v2 with smart light/checkpoint dispatch, deterministic world and repository routing, redacted prompt receipts, isolated temporary-index checkpoints, dedicated remote checkpoint branches, resumable phase state, dry-run support, hook installation, and automated coverage.</p>
+<p>Linear: <a href="https://linear.app/nomad-code/issue/TODO-296/etc-codex-log-contract-v2">https://linear.app/nomad-code/issue/TODO-296/etc-codex-log-contract-v2</a></p>
+<p>Checkpoint: <a href="https://github.com/brendobrien/etc/commit/be69d5a3a44a6865d4bd1841094cead6b6daaff9">be69d5a3a44a6865d4bd1841094cead6b6daaff9</a></p>
+<p>Session: <code>019fa16f-616d-7bb1-9cea-6a9a983f5654</code><br>
+Receipt: <code>fed76bd1001d15f42d93863972ff31c3a098323fd609ef8656cb7a88b9ff3dc2</code></p></article></body></html>

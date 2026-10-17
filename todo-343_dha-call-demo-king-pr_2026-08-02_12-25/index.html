@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-343 · Portal V2 call bundle</title>
+  <meta name="description" content="Live control room for the August 3 Portal V2 call bundle and stacked draft PR.">
+  <script>
+  (function () {
+    var KEY = 'bpo-unlocked';
+    var unlocked = false, reveal = false;
+    try {
+      unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+      reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+    } catch (e) {}
+    var hide, cover;
+    if (!unlocked) {
+      hide = document.createElement('style');
+      hide.id = '__pw_gate_hide__';
+      hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+      (document.head || document.documentElement).appendChild(hide);
+    } else if (reveal) {
+      cover = document.createElement('style');
+      cover.id = '__pw_reveal_pre__';
+      cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+      (document.head || document.documentElement).appendChild(cover);
+      setTimeout(function () { if (cover) cover.remove(); }, 4000);
+    }
+    window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+    var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+    var i = 0;
+    (function next() {
+      if (i >= prefixes.length) { if (hide) hide.remove(); if (cover) cover.remove(); return; }
+      var s = document.createElement('script');
+      s.src = prefixes[i++] + 'password-wall/gate.js';
+      s.onerror = next;
+      document.head.appendChild(s);
+    })();
+  })();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <link rel="stylesheet" href="../design-repo/grove/local.css">
+  <style>
+    :root {
+      --king-paper: #eef0e8;
+      --king-surface: #fbfbf7;
+      --king-ink: #17231f;
+      --king-muted: #66716c;
+      --king-forest: #123e34;
+      --king-moss: #2f7058;
+      --king-lime: #c8ed74;
+      --king-sky: #c8e4ef;
+      --king-gold: #e8c77e;
+      --king-coral: #e49a82;
+      --king-line: #d2d7ce;
+      --king-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --king-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--king-ink);
+      background:
+        radial-gradient(circle at 88% 2%, rgba(200,228,239,.75), transparent 28rem),
+        var(--king-paper);
+      font: 15px/1.55 var(--king-sans);
+    }
+    a { color: inherit; text-underline-offset: 3px; }
+    code { font-family: var(--king-mono); }
+    .king-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 30px 0 72px; }
+    .king-mast {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding-bottom: 18px; border-bottom: 1px solid rgba(23,35,31,.16);
+      font: 800 11px/1.2 var(--king-mono); letter-spacing: .08em; text-transform: uppercase;
+    }
+    .king-state { display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; border: 1px solid #abc693; border-radius: 999px; background: rgba(200,237,116,.35); }
+    .king-state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--king-moss); box-shadow: 0 0 0 5px rgba(47,112,88,.11); }
+    .king-intro { padding: clamp(52px, 9vw, 98px) 0 44px; }
+    .king-kicker { color: var(--king-moss); font: 850 12px/1 var(--king-mono); letter-spacing: .1em; text-transform: uppercase; }
+    .king-intro h1 { max-width: 930px; margin: 17px 0 0; font: 760 clamp(48px, 8.5vw, 92px)/.92 var(--king-sans); letter-spacing: -.072em; }
+    .king-intro h1 em { color: var(--king-moss); font-style: normal; }
+    .king-lede { max-width: 760px; margin: 27px 0 0; color: var(--king-muted); font-size: clamp(18px, 2vw, 22px); line-height: 1.42; }
+    .king-rule { display: grid; grid-template-columns: 1.35fr .65fr; gap: 14px; margin: 8px 0 64px; }
+    .king-rule-main, .king-rule-side, .king-card, .king-ticket, .king-gate { border: 1px solid var(--king-line); border-radius: 20px; box-shadow: 0 14px 38px rgba(18,62,52,.055); }
+    .king-rule-main { padding: clamp(25px,4vw,38px); background: rgba(251,251,247,.88); }
+    .king-rule-side { padding: 29px; background: var(--king-forest); color: #fff; }
+    .king-label { color: var(--king-moss); font: 850 10px/1.2 var(--king-mono); letter-spacing: .09em; text-transform: uppercase; }
+    .king-rule-side .king-label { color: var(--king-lime); }
+    .king-answer { margin: 13px 0 8px; font-size: clamp(26px,3.5vw,40px); line-height: 1.07; letter-spacing: -.04em; }
+    .king-rule p { margin: 0; color: var(--king-muted); }
+    .king-rule-side strong { display: block; margin: 30px 0 8px; font-size: 42px; letter-spacing: -.055em; }
+    .king-rule-side p { color: rgba(255,255,255,.66); }
+    .king-section { margin-top: 64px; }
+    .king-section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+    .king-section h2 { margin: 7px 0 0; font-size: clamp(30px,4.4vw,48px); line-height: 1; letter-spacing: -.052em; }
+    .king-section-note { max-width: 470px; margin: 0; color: var(--king-muted); text-align: right; }
+    .king-stack { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .king-card { position: relative; min-height: 220px; padding: 22px; background: var(--king-surface); }
+    .king-card:not(:last-child)::after { content: "→"; position: absolute; z-index: 2; top: 39px; right: -19px; display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--king-line); border-radius: 50%; background: var(--king-paper); color: var(--king-moss); font-weight: 900; }
+    .king-index { color: var(--king-muted); font: 800 10px/1 var(--king-mono); }
+    .king-icon { display: grid; place-items: center; width: 43px; height: 43px; margin: 18px 0; border-radius: 13px; background: var(--king-lime); color: var(--king-forest); font-weight: 900; }
+    .king-card:nth-child(2) .king-icon { background: var(--king-sky); }
+    .king-card:nth-child(3) .king-icon { background: var(--king-gold); }
+    .king-card:nth-child(4) .king-icon { background: var(--king-coral); }
+    .king-card h3 { margin: 0; font-size: 19px; letter-spacing: -.025em; }
+    .king-card p { margin: 9px 0 0; color: var(--king-muted); font-size: 13px; }
+    .king-ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .king-ticket { display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 14px; padding: 21px; background: var(--king-surface); }
+    .king-num { color: var(--king-moss); font: 850 13px/1 var(--king-mono); }
+    .king-ticket h3 { margin: -2px 0 5px; font-size: 17px; }
+    .king-ticket p { margin: 0; color: var(--king-muted); font-size: 13px; }
+    .king-badge { padding: 5px 8px; border-radius: 999px; background: #e8eee8; color: var(--king-muted); font: 800 10px/1 var(--king-mono); text-transform: uppercase; white-space: nowrap; }
+    .king-badge.ready { background: rgba(200,237,116,.42); color: var(--king-forest); }
+    .king-gates { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .king-gate { padding: 23px; background: var(--king-surface); }
+    .king-gate strong { display: block; margin: 25px 0 7px; font-size: 24px; letter-spacing: -.04em; }
+    .king-gate p { margin: 0; color: var(--king-muted); font-size: 13px; }
+    .king-log { overflow: hidden; border: 1px solid var(--king-line); border-radius: 20px; background: var(--king-surface); }
+    .king-log-row { display: grid; grid-template-columns: 190px 1fr; gap: 18px; padding: 18px 22px; border-bottom: 1px solid var(--king-line); }
+    .king-log-row:last-child { border-bottom: 0; }
+    .king-log time { color: var(--king-moss); font: 800 11px/1.4 var(--king-mono); }
+    .king-log p { margin: 0; }
+    .king-footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 30px; color: var(--king-muted); font: 12px/1.45 var(--king-mono); }
+    @media (max-width: 850px) {
+      .king-rule, .king-stack, .king-gates { grid-template-columns: 1fr 1fr; }
+      .king-ticket-grid { grid-template-columns: 1fr; }
+      .king-card:nth-child(2)::after { display: none; }
+      .king-section-head { align-items: start; flex-direction: column; }
+      .king-section-note { text-align: left; }
+    }
+    @media (max-width: 580px) {
+      .king-shell { width: min(100% - 22px,1120px); padding-top: 18px; }
+      .king-mast > span:first-child { display: none; }
+      .king-rule, .king-stack, .king-gates { grid-template-columns: 1fr; }
+      .king-card { min-height: auto; }
+      .king-card::after { display: none !important; }
+      .king-ticket { grid-template-columns: auto 1fr; }
+      .king-badge { grid-column: 2; justify-self: start; }
+      .king-log-row { grid-template-columns: 1fr; gap: 7px; }
+      .king-footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="king-shell">
+    <div class="king-mast">
+      <span>Dhamma.org · Portal V2</span>
+      <span class="king-state">Ready · PR #518 draft</span>
+    </div>
+
+    <header class="king-intro">
+      <div class="king-kicker">TODO-343 · August 3 call</div>
+      <h1>One review surface. <em>No main merge.</em></h1>
+      <p class="king-lede">The draft king PR now collects the finished map, evidence, About, Locations, and PWA work. This page is the private control room: branch order, ticket truth, gates, and the exact evidence freeze.</p>
+    </header>
+
+    <section class="king-rule" aria-label="Operating rule">
+      <article class="king-rule-main">
+        <div class="king-label">Operating rule</div>
+        <div class="king-answer">Child PRs may merge into the king. The king does not merge into <code>main</code>.</div>
+        <p>Only green, recorded slices enter the call SHA. Anything unfinished stays a linked draft, never a partial merge.</p>
+      </article>
+      <aside class="king-rule-side">
+        <div class="king-label">Current inventory</div>
+        <strong>6 / 1</strong>
+        <p>Six green child PRs are in the king; one compressed Edge PWA operations ticket remains.</p>
+      </aside>
+    </section>
+
+    <section class="king-section">
+      <div class="king-section-head">
+        <div><div class="king-label">Stack order</div><h2>Small, legible merges</h2></div>
+        <p class="king-section-note">Each layer remains reviewable on its own. The king becomes the combined call diff against <code>main</code>.</p>
+      </div>
+      <div class="king-stack">
+        <article class="king-card"><span class="king-index">01 · PR #517 · merged</span><div class="king-icon">M</div><h3>Warm maps</h3><p>Five-minute ISR, map instance reuse, loader suppression, nightly smoke. Now in the king only.</p></article>
+        <article class="king-card"><span class="king-index">02 · PR #516 · merged</span><div class="king-icon">E</div><h3>Evidence rail</h3><p>Opt-in SharePoint publishing with a green GitHub-artifact fallback. Now in the king only.</p></article>
+        <article class="king-card"><span class="king-index">03 · PR #519 · merged</span><div class="king-icon">A</div><h3>About finish</h3><p>Translated Code title and agreed Amiri structural subheads. Full CI green; now in the king only.</p></article>
+        <article class="king-card"><span class="king-index">04 · PR #520 · merged</span><div class="king-icon">L</div><h3>List + map</h3><p>Shared production split view on wide screens and one-surface mobile toggle. Full CI green; now in the king only.</p></article>
+      </div>
+    </section>
+
+    <section class="king-section">
+      <div class="king-section-head">
+        <div><div class="king-label">Project #26</div><h2>Brendan-owned truth</h2></div>
+        <p class="king-section-note">Other owners' nine Open-column tickets and Grego's PR #513 remain untouched.</p>
+      </div>
+      <div class="king-ticket-grid">
+        <article class="king-ticket"><span class="king-num">#21</span><div><h3>Search → Locations</h3><p>Verified on Test against merged PR #514 and closed as completed.</p></div><span class="king-badge ready">done</span></article>
+        <article class="king-ticket"><span class="king-num">#56</span><div><h3>Windows country flags</h3><p>Verified SVG asset and image-backed component; closed as completed.</p></div><span class="king-badge ready">done</span></article>
+        <article class="king-ticket"><span class="king-num">#55</span><div><h3>Janine's About review</h3><p>Final designer decisions landed through green child PR <a href="https://github.com/dhammaorg/portal-v2/pull/519">#519</a>.</p></div><span class="king-badge ready">in king</span></article>
+        <article class="king-ticket"><span class="king-num">#49</span><div><h3>JustPark-style map UX</h3><p>Group Sittings and Locations now share the responsive list/map shell through green child PR <a href="https://github.com/dhammaorg/portal-v2/pull/520">#520</a>.</p></div><span class="king-badge ready">in king</span></article>
+        <article class="king-ticket"><span class="king-num">#60</span><div><h3>Evidence publication</h3><p>GitHub artifacts are canonical; optional SharePoint publication landed through green child PR <a href="https://github.com/dhammaorg/portal-v2/pull/516">#516</a>.</p></div><span class="king-badge ready">in king</span></article>
+        <article class="king-ticket"><span class="king-num">TODO-346</span><div><h3>Edge PWA config sync</h3><p>One operations-only handoff contains the three public 404 checks, exact sync command, cache verification, and missing host-access prerequisite.</p></div><span class="king-badge">1 remaining</span></article>
+      </div>
+    </section>
+
+    <section class="king-section">
+      <div class="king-section-head">
+        <div><div class="king-label">Evidence gates</div><h2>The call gets one SHA</h2></div>
+        <p class="king-section-note">Every claim links to machine proof and a human-readable recording. SharePoint is a convenience layer, never the only copy.</p>
+      </div>
+      <div class="king-gates">
+        <article class="king-gate"><span class="king-index">GATE 1 · passed</span><strong>Repository green</strong><p>Build green; 619 tests passed; combined king CI green at <code>2429eb36</code>.</p></article>
+        <article class="king-gate"><span class="king-index">GATE 2 · passed</span><strong>Responsive recording</strong><p><a href="https://github.com/dhammaorg/portal-v2/actions/runs/30750971647">Run 30750971647</a>: 6/6 desktop and 8/8 mobile chapters, each with a named screenshot and video.</p></article>
+        <article class="king-gate"><span class="king-index">GATE 3 · passed</span><strong>Immutable freeze</strong><p>Draft king remains open and clean at <code>2429eb36</code>; remote <code>main</code> remains untouched at <code>e6413ae1</code>.</p></article>
+      </div>
+    </section>
+
+    <section class="king-section">
+      <div class="king-section-head">
+        <div><div class="king-label">Journal</div><h2>Live checkpoints</h2></div>
+        <p class="king-section-note">UTC only. This section is updated as work crosses a real boundary.</p>
+      </div>
+      <div class="king-log">
+        <div class="king-log-row"><time>2026-08-02 · 12:25 Z</time><p>Created and started Linear TODO-343; archived the approved plan and user prompt; bound and renamed the Codex task.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 12:25 Z</time><p>Confirmed PRs #516 and #517 are draft, clean, green, and mutually mergeable. Confirmed <code>main</code> remains the only deployed Edge branch.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 12:30 Z</time><p>Opened draft king PR <a href="https://github.com/dhammaorg/portal-v2/pull/518">#518</a>. Retargeted and merged green PR #517 into the king as <code>692761b4</code>; remote <code>main</code> stayed at <code>e6413ae1</code>.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 12:37 Z</time><p>Closed Project #26 issues #21 and #56 with deployed evidence. Revalidated PR #516, then merged it into the king as <code>42d6fc6c</code>; remote <code>main</code> remained <code>e6413ae1</code>.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 12:48 Z</time><p>Finished the About design decisions in child PR <a href="https://github.com/dhammaorg/portal-v2/pull/519">#519</a>. Full CI passed in 1m12s and the slice merged into the king as <code>e1a6cc28</code>; <code>main</code> stayed at <code>e6413ae1</code>.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 13:07 Z</time><p>Shared Group Sittings + Locations shell landed through child PR <a href="https://github.com/dhammaorg/portal-v2/pull/520">#520</a>. GitHub CI passed in 1m13s; full local build and 619 tests passed; two deterministic responsive recordings passed. Merged into the king as <code>e5f70b8a</code>; <code>main</code> remained <code>e6413ae1</code>.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 13:32 Z</time><p>Safety-gated About fixtures landed through child PR <a href="https://github.com/dhammaorg/portal-v2/pull/521">#521</a>, making the recordings exercise production components from the candidate branch rather than stale Test content. Fourteen local showcase chapters and the full repository gate passed.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 13:51 Z</time><p>The first frozen run preserved a Pixel camera-offset assertion failure. Child PR <a href="https://github.com/dhammaorg/portal-v2/pull/522">#522</a> replaced the brittle exact-coordinate check with a bounded near-selection assertion while retaining URL, surface-swap, and visible-peek proof.</p></div>
+        <div class="king-log-row"><time>2026-08-02 · 13:57 Z</time><p>Final evidence run <a href="https://github.com/dhammaorg/portal-v2/actions/runs/30750971647">30750971647</a> passed from exact SHA <code>2429eb36</code>. Both artifact contracts are complete: <a href="https://github.com/dhammaorg/portal-v2/actions/runs/30750971647/artifacts/8834445827">desktop</a> and <a href="https://github.com/dhammaorg/portal-v2/actions/runs/30750971647/artifacts/8834446585">mobile</a>.</p></div>
+        <div class="king-log-row"><time>One handoff</time><p><a href="https://linear.app/nomad-code/issue/TODO-346/dha-edge-pwa-config-sync">TODO-346</a> owns the Edge nginx synchronization. Repository manifest, icons, launch route, and local PWA checks are green; the documented <code>edge-osa</code> host is not resolvable from this Mac.</p></div>
+      </div>
+    </section>
+
+    <footer class="king-footer">
+      <span>Updated 2026-08-02T13:59:21Z · private BRE artifact</span>
+      <span><a href="https://linear.app/nomad-code/issue/TODO-343/dha-call-demo-king-pr">Linear</a> · <a href="https://github.com/dhammaorg/portal-v2/pull/518">King PR #518</a> · <a href="https://linear.app/nomad-code/issue/TODO-346/dha-edge-pwa-config-sync">1 remaining</a></span>
+    </footer>
+  </main>
+</body>
+</html>

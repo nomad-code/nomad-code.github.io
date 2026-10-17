@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#071411;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () { var c = document.getElementById('__pw_reveal_pre__'); if (c) c.remove(); }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'travel / japan · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); if (cover) cover.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071411">
+<title>Tokyo Daypilot · FUK → HND → HYROX Chiba</title>
+<meta name="description" content="A private, live 3D daypilot for Brendan and Haruka's Fukuoka–Tokyo–Chiba travel and HYROX race day.">
+<link rel="preconnect" href="https://js.arcgis.com">
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  :root{
+    --night:#071411;--night-2:#0b211b;--night-3:#123229;--paper:#f2f0e8;--card:#fffdf8;
+    --ink:#14211c;--soft:#d7e2dc;--muted:#91a69d;--muted-2:#5d7068;--line:rgba(196,226,214,.18);
+    --lime:#bdff6b;--mint:#8be8ca;--aqua:#7cd8ed;--coral:#ff7c64;--sun:#ffd66b;--purple:#b6a8ff;
+    --mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --ui:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --display:'Fraunces',Iowan Old Style,Georgia,serif;
+    --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--night);color:#f5f4ec;font-family:var(--ui);-webkit-font-smoothing:antialiased}
+  body{overflow-x:hidden}
+  main{margin:0;padding:0!important}
+  button,a{font:inherit}
+  a{color:inherit}
+  button{color:inherit}
+  .mono{font-family:var(--mono)}
+  .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  .chrome{position:fixed;z-index:50;left:0;right:0;top:0;height:64px;padding:0 clamp(14px,2.5vw,34px);display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line);background:rgba(6,18,15,.78);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
+  .brand{display:flex;align-items:center;gap:10px;white-space:nowrap}
+  .mark{position:relative;width:23px;height:19px;flex:none}
+  .mark::before,.mark::after{position:absolute;width:16px;height:8px;border-radius:2px;content:""}
+  .mark::before{left:0;top:0;background:#f5f4ec}.mark::after{right:0;bottom:0;background:var(--lime)}
+  .brand strong{font:800 12px/1 var(--ui);letter-spacing:.12em;text-transform:uppercase}
+  .brand small{display:block;margin-top:4px;color:var(--muted);font:500 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+  .tripline{height:20px;width:1px;background:var(--line)}
+  .route-title{color:#dfe9e4;font:500 11px/1.2 var(--mono);letter-spacing:.04em}
+  .route-title b{color:var(--lime);font-weight:500}
+  .clock{margin-left:auto;text-align:right;white-space:nowrap}
+  .clock strong{display:block;color:#fff;font:600 14px/1 var(--mono);font-variant-numeric:tabular-nums}
+  .clock small{display:block;margin-top:5px;color:var(--muted);font:500 8px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+  .modes{display:flex;gap:5px;margin-left:8px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.035)}
+  .mode-btn{border:0;border-radius:999px;background:transparent;color:var(--muted);padding:8px 12px;cursor:pointer;font:600 9px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;transition:.22s ease}
+  .mode-btn[aria-selected="true"]{background:var(--lime);color:#14211c;box-shadow:0 0 0 1px rgba(189,255,107,.22)}
+
+  .view{display:none;min-height:100svh;margin:0;width:auto;max-width:none;padding-top:64px}
+  body[data-mode="easy"] .easy-view,body[data-mode="dope"] .dope-view,body[data-mode="bold"] .bold-view{display:block}
+
+  /* EASY · pocket run sheet */
+  .easy-view{background:var(--paper);color:var(--ink)}
+  .easy-shell{width:min(100% - 26px,940px);margin:auto;padding:42px 0 72px}
+  .easy-hero{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;padding-bottom:28px;border-bottom:1px solid #cbd4ce}
+  .eyebrow{font:700 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#326152}
+  .easy-hero h1{margin:12px 0 0;font:560 clamp(38px,7vw,70px)/.92 var(--display);letter-spacing:-.045em}
+  .easy-hero h1 em{color:#1d654f;font-style:italic}
+  .easy-date{text-align:right}.easy-date b{display:block;font:700 25px/1 var(--mono)}.easy-date span{display:block;margin-top:7px;color:var(--muted-2);font-size:12px}
+  .corrections{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}
+  .correction{padding:14px;border:1px solid #d2d8d3;border-radius:13px;background:#fffdf9}
+  .correction b{display:block;color:#1c5c49;font:700 12px/1.2 var(--mono)}
+  .correction span{display:block;margin-top:6px;color:var(--muted-2);font-size:12px;line-height:1.45}
+  .day-head{display:flex;align-items:center;gap:12px;margin:28px 0 10px}
+  .day-head h2{margin:0;font:760 18px/1 var(--mono);letter-spacing:-.04em}.day-head span{height:1px;flex:1;background:#cbd4ce}.day-head small{color:var(--muted-2);font:600 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em}
+  .run-list{display:flex;flex-direction:column}
+  .run-item{display:grid;grid-template-columns:76px 18px 1fr auto;gap:12px;align-items:start;padding:15px 0;border-top:1px solid #d6dcd7}
+  .run-item:first-child{border-top:0}.run-time{font:700 14px/1.3 var(--mono);font-variant-numeric:tabular-nums}.run-dot{width:10px;height:10px;margin-top:4px;border-radius:50%;background:#1f6c54;box-shadow:0 0 0 5px #d6e8df}.run-item.hard .run-dot{background:var(--coral);box-shadow:0 0 0 5px #ffe0d9}.run-copy b{display:block;font-size:15px;line-height:1.25}.run-copy span{display:block;margin-top:5px;color:var(--muted-2);font-size:12.5px;line-height:1.48}.run-copy .ref{color:#386f5e;font:600 10px/1.4 var(--mono);letter-spacing:.03em}.go{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border:1px solid #c7d0ca;border-radius:999px;padding:8px 10px;background:#fff;color:#1b4f3f;font:700 10px/1 var(--mono);white-space:nowrap}.go:hover{border-color:#1d654f}.go:focus-visible,.mode-btn:focus-visible,.stop-btn:focus-visible,.check:focus-visible{outline:3px solid var(--aqua);outline-offset:2px}
+  .easy-footer{display:flex;justify-content:space-between;gap:20px;margin-top:30px;padding-top:16px;border-top:1px solid #cbd4ce;color:var(--muted-2);font:500 10px/1.6 var(--mono)}
+
+  /* MEDIUM · live 3D route story */
+  .dope-view{position:relative;height:100svh;overflow:hidden;background:var(--night)}
+  .dope-view,.bold-view{padding-top:0}
+  #map-stage{position:absolute;inset:64px 0 0;overflow:hidden;background:radial-gradient(circle at 62% 32%,#15392e,#071411 66%)}
+  #poster,#sceneview{position:absolute;inset:0;width:100%;height:100%}
+  #poster{opacity:1;transition:opacity 1s ease}#sceneview{opacity:0;transition:opacity 1.1s ease}
+  .map-shade{position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(5,16,13,.92) 0%,rgba(5,16,13,.58) 28%,rgba(5,16,13,.04) 57%),linear-gradient(0deg,rgba(5,16,13,.46),transparent 35%)}
+  .story{position:relative;z-index:4;width:min(440px,42vw);height:calc(100svh - 64px);padding:clamp(24px,5vh,56px) 24px 24px clamp(20px,4vw,58px);display:flex;flex-direction:column;pointer-events:none}
+  .story-kicker{color:var(--mint);font:600 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase}
+  .story h1{margin:16px 0 12px;font:430 clamp(38px,5.5vw,72px)/.94 var(--display);letter-spacing:-.04em}.story h1 em{color:var(--lime);font-style:italic}
+  .story-lede{max-width:38ch;margin:0;color:#b9cbc3;font-size:14px;line-height:1.55}
+  .stops{margin-top:auto;display:grid;gap:5px;pointer-events:auto}
+  .stop-btn{display:grid;grid-template-columns:25px 54px 1fr auto;gap:8px;align-items:center;width:100%;border:1px solid transparent;border-radius:11px;background:transparent;color:#b2c4bc;padding:9px 10px;text-align:left;cursor:pointer;transition:.2s ease}
+  .stop-btn:hover{background:rgba(255,255,255,.055)}.stop-btn.active{border-color:rgba(189,255,107,.34);background:rgba(189,255,107,.1);color:#fff}
+  .stop-n{color:var(--mint);font:600 9px/1 var(--mono)}.stop-t{font:600 10px/1 var(--mono);font-variant-numeric:tabular-nums}.stop-name{font-size:12px;font-weight:700}.stop-meta{color:var(--muted);font:500 8px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em}
+  .map-status{position:absolute;z-index:5;right:18px;bottom:calc(14px + var(--safe-b));padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(5,16,13,.72);color:#b6c8c0;font:500 8px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;backdrop-filter:blur(8px)}
+
+  /* BOLD · live daypilot */
+  .bold-view{position:relative;height:100svh;overflow:hidden;background:var(--night)}
+  .bold-view .mapclone{position:absolute;inset:64px 0 0;background:radial-gradient(circle at 62% 32%,#15392e,#071411 66%)}
+  .bold-view .mapclone #bold-poster,.bold-view .mapclone #bold-sceneview{position:absolute;inset:0;width:100%;height:100%}
+  #bold-sceneview{opacity:0;transition:opacity 1.1s ease}
+  .bold-vignette{position:absolute;z-index:2;inset:64px 0 0;pointer-events:none;background:linear-gradient(90deg,rgba(5,16,13,.94),rgba(5,16,13,.48) 39%,transparent 65%),linear-gradient(0deg,rgba(5,16,13,.86),transparent 42%)}
+  .pilot{position:relative;z-index:5;height:calc(100svh - 64px);margin-top:64px;padding:clamp(18px,3vh,30px) clamp(14px,3vw,42px) calc(16px + var(--safe-b));display:grid;grid-template-columns:minmax(320px,460px) 1fr minmax(280px,350px);grid-template-rows:auto 1fr auto;gap:16px;pointer-events:none}
+  .glass{pointer-events:auto;border:1px solid var(--line);border-radius:18px;background:rgba(7,24,19,.76);box-shadow:0 22px 50px rgba(0,0,0,.18);backdrop-filter:blur(18px) saturate(1.18);-webkit-backdrop-filter:blur(18px) saturate(1.18)}
+  .now{grid-column:1;grid-row:1 / span 2;padding:22px;align-self:start}
+  .now-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.live-chip{display:inline-flex;align-items:center;gap:7px;color:var(--lime);font:600 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}.live-chip i{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 0 rgba(189,255,107,.5);animation:pulse 2s ease infinite}@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(189,255,107,0)}}
+  .source-chip{color:var(--muted);font:500 8px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em}
+  .now h1{margin:22px 0 0;font:450 clamp(44px,5vw,68px)/.92 var(--display);letter-spacing:-.045em}.now h1 em{color:var(--lime);font-style:italic}.now-action{margin-top:16px;color:#eef5f1;font-size:16px;font-weight:750;line-height:1.35}.now-note{min-height:42px;margin:7px 0 0;color:#a9bdb4;font-size:12.5px;line-height:1.55}
+  .countline{display:flex;align-items:end;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}.countdown{color:var(--lime);font:700 clamp(30px,4vw,46px)/.85 var(--mono);letter-spacing:-.055em;font-variant-numeric:tabular-nums}.count-label{padding-bottom:4px;color:var(--muted);font:500 8px/1.45 var(--mono);text-transform:uppercase;letter-spacing:.1em}
+  .hardline{margin-top:18px;padding:13px 14px;border:1px solid rgba(255,124,100,.35);border-radius:12px;background:rgba(255,124,100,.09);color:#ffd9d1;font-size:12px;line-height:1.45}.hardline b{color:#fff;font-family:var(--mono)}
+  .progress-wrap{margin-top:18px}.progress-top{display:flex;justify-content:space-between;color:var(--muted);font:500 8px/1 var(--mono);text-transform:uppercase;letter-spacing:.1em}.progress{height:5px;margin-top:8px;border-radius:9px;background:rgba(255,255,255,.09);overflow:hidden}.progress i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--mint),var(--lime));transition:width .5s ease}
+  .now-go{display:flex;gap:7px;margin-top:18px}.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;min-height:41px;border-radius:999px;text-decoration:none;font:700 10px/1 var(--mono);letter-spacing:.04em}.primary{flex:1;border:0;background:var(--lime);color:#14211c}.secondary{border:1px solid var(--line);padding:0 14px;background:rgba(255,255,255,.03);color:#d5e3dc}
+
+  .risk{grid-column:3;grid-row:1;padding:14px}.risk-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.risk h2,.checklist h2{margin:0;font:700 13px/1 var(--mono);letter-spacing:-.02em}.risk-head span{color:var(--sun);font:600 8px/1 var(--mono);text-transform:uppercase;letter-spacing:.09em}.risk-list{display:grid;gap:6px;margin-top:10px}.risk-row{display:grid;grid-template-columns:28px 1fr;gap:8px;padding:8px;border-radius:10px;background:rgba(255,255,255,.035)}.risk-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:rgba(255,214,107,.12);font-size:14px}.risk-row b{display:block;font-size:11px}.risk-row span{display:block;margin-top:2px;color:var(--muted);font-size:9.5px;line-height:1.35}
+  .checklist{grid-column:3;grid-row:2;padding:14px;align-self:start}.check-head{display:flex;align-items:center;justify-content:space-between}.reset{border:0;background:transparent;color:var(--muted);cursor:pointer;font:600 8px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}.checks{display:grid;gap:4px;margin-top:10px}.check{display:grid;grid-template-columns:23px 1fr;gap:8px;align-items:center;width:100%;border:0;border-radius:8px;background:rgba(255,255,255,.035);color:#d9e5df;padding:7px;text-align:left;cursor:pointer}.check i{display:grid;place-items:center;width:20px;height:20px;border:1px solid rgba(196,226,214,.25);border-radius:6px;color:transparent;font-style:normal}.check span{font-size:10px;line-height:1.22}.check.done{color:var(--muted);text-decoration:line-through}.check.done i{border-color:var(--lime);background:var(--lime);color:#14211c;text-decoration:none}
+  .rail{position:static;height:auto;min-height:0;grid-column:1 / -1;grid-row:3;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:12px 14px}.rail-title{min-width:92px}.rail-title b{display:block;font:700 10px/1 var(--mono)}.rail-title span{display:block;margin-top:4px;color:var(--muted);font:500 7px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}.rail-stops{display:flex;align-items:center;min-width:0}.rail-stop{position:relative;flex:1;min-width:9px;height:24px;border:0;background:transparent;cursor:pointer;padding:0}.rail-stop::before{position:absolute;left:0;right:0;top:11px;height:2px;background:rgba(255,255,255,.12);content:""}.rail-stop:first-child::before{left:50%}.rail-stop:last-child::before{right:50%}.rail-stop i{position:absolute;z-index:1;left:50%;top:7px;transform:translateX(-50%);width:10px;height:10px;border:2px solid #7b9187;border-radius:50%;background:var(--night-2)}.rail-stop.done i{border-color:var(--lime);background:var(--lime)}.rail-stop.current i{width:14px;height:14px;top:5px;border-color:#fff;background:var(--coral);box-shadow:0 0 0 5px rgba(255,124,100,.14)}.rail-stop span{position:absolute;left:50%;bottom:-15px;transform:translateX(-50%);color:var(--muted);font:500 7px/1 var(--mono);white-space:nowrap}.weather-mini{text-align:right;min-width:110px}.weather-mini b{display:block;color:var(--sun);font:650 11px/1 var(--mono)}.weather-mini span{display:block;margin-top:5px;color:var(--muted);font:500 7px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+
+  @media(max-width:980px){
+    .route-title,.tripline{display:none}.mode-btn{padding:8px 9px}.mode-btn span{display:none}
+    .story{width:min(500px,62vw)}
+    .pilot{grid-template-columns:minmax(300px,1fr) minmax(260px,.76fr);grid-template-rows:1fr auto;overflow-y:auto}
+    .now{grid-column:1;grid-row:1}.risk{grid-column:2;grid-row:1}.checklist{grid-column:2;grid-row:1;margin-top:310px}.rail{position:sticky;bottom:0;grid-column:1 / -1;grid-row:2;margin-bottom:0}
+  }
+  @media(max-width:720px){
+    .chrome{height:58px;padding:0 12px;gap:8px}.brand small,.clock small{display:none}.brand strong{font-size:10px}.clock strong{font-size:11px}.modes{gap:2px;margin-left:2px}.mode-btn{padding:8px 8px;font-size:8px}
+    .view{padding-top:58px}.dope-view,.bold-view{height:100svh;padding-top:0}.dope-view #map-stage{inset:58px 0 0}.map-shade{background:linear-gradient(0deg,rgba(5,16,13,.96),rgba(5,16,13,.15) 70%)}
+    .story{width:100%;height:calc(100svh - 58px);padding:22px 15px 14px;justify-content:flex-end}.story-kicker,.story-lede{display:none}.story h1{margin:0 0 12px;font-size:38px}.stops{display:flex;overflow-x:auto;gap:6px;margin:0 -15px;padding:0 15px 4px;scrollbar-width:none}.stops::-webkit-scrollbar{display:none}.stop-btn{grid-template-columns:22px 1fr;width:145px;min-width:145px;padding:10px}.stop-t,.stop-meta{display:none}
+    .map-status{right:10px;top:68px;bottom:auto}
+    .easy-shell{padding-top:27px}.easy-hero{grid-template-columns:1fr}.easy-date{text-align:left}.corrections{grid-template-columns:1fr}.run-item{grid-template-columns:58px 12px 1fr;gap:9px}.run-item .go{grid-column:3;margin-top:4px;justify-self:start}.easy-footer{flex-direction:column}
+    .bold-view .mapclone{inset:58px 0 0}.bold-vignette{inset:58px 0 0;background:linear-gradient(0deg,rgba(5,16,13,.97),rgba(5,16,13,.4) 68%,transparent)}
+    .pilot{height:calc(100svh - 58px);margin-top:58px;padding:12px 10px calc(10px + var(--safe-b));display:flex;flex-direction:column;gap:10px;overflow-y:auto;scroll-snap-type:y proximity}
+    .now{order:1;padding:17px;margin-top:22vh;scroll-snap-align:end}.now h1{font-size:45px;margin-top:16px}.countline{margin-top:16px}.countdown{font-size:35px}.hardline{margin-top:14px}.risk{order:3;padding:15px}.risk-list{grid-template-columns:1fr}.checklist{order:4;margin:0;padding:15px}.rail{position:static;order:2;width:100%;display:block;padding:13px 12px 22px}.rail-title,.weather-mini{display:none}.rail-stops{width:100%}.rail-stop span{font-size:6px}.glass{border-radius:15px}
+  }
+  @media(max-width:390px){.brand strong{display:none}.modes{margin-left:0}.clock{margin-left:auto}.now h1{font-size:40px}.story h1{font-size:34px}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body data-mode="bold">
+<header class="chrome">
+  <div class="brand"><span class="mark" aria-hidden="true"></span><span><strong>Nomad Code</strong><small>Japan daypilot</small></span></div>
+  <span class="tripline" aria-hidden="true"></span>
+  <div class="route-title"><b>FUK</b> → HND → TOKYO → CHIBA · AUG 6–7</div>
+  <div class="clock"><strong id="jstClock">--:--:--</strong><small>Japan standard time</small></div>
+  <nav class="modes" role="tablist" aria-label="Artifact ambition">
+    <button class="mode-btn" role="tab" data-mode="easy" aria-selected="false">Easy</button>
+    <button class="mode-btn" role="tab" data-mode="dope" aria-selected="false">Dope</button>
+    <button class="mode-btn" role="tab" data-mode="bold" aria-selected="true">Life<span>-changing</span></button>
+  </nav>
+</header>
+
+<main>
+  <section class="view easy-view" aria-label="Easy pocket run sheet">
+    <div class="easy-shell">
+      <header class="easy-hero">
+        <div><div class="eyebrow">Easy artifact · exact facts, zero drama</div><h1>Your <em>pocket run sheet.</em></h1></div>
+        <div class="easy-date"><b>THU 06 → FRI 07</b><span>Fukuoka · Tokyo · Chiba</span></div>
+      </header>
+      <div class="corrections" aria-label="Verified corrections">
+        <article class="correction"><b>11:30 JST · KOFFEE</b><span>The copied calendar’s GMT+8 was one hour wrong. TableCheck confirms 11:30.</span></article>
+        <article class="correction"><b>13:30 JST · AZUKI</b><span>TableCheck confirms 13:30, 40 minutes, two guests, cashless.</span></article>
+        <article class="correction"><b>AUG 6–10 · HOTEL</b><span>Four nights. Check-in is 14:00–00:00; your 14:00–15:00 request was approved.</span></article>
+      </div>
+
+      <div class="day-head"><h2>Tonight</h2><span></span><small>Aug 5</small></div>
+      <div class="run-list">
+        <div class="run-item hard"><div class="run-time">NOW</div><i class="run-dot"></i><div class="run-copy"><b>Confirm Azuki + screenshot the boarding pass</b><span>ANA already issued seat 21C · Group 5 · Gate 9. Keep the 2D barcode offline.</span></div><a class="go" href="https://mail.google.com/mail/u/0/#search/subject%3A%22Delivery%20of%20Mobile%20Boarding%20Pass%22" target="_blank" rel="noopener">Open mail ↗</a></div>
+        <div class="run-item"><div class="run-time">20:45</div><i class="run-dot"></i><div class="run-copy"><b>Bag locked</b><span>Photo ID · HYROX QR · race shoes · AF fob · Suica · electrolytes · compact rain layer.</span></div></div>
+        <div class="run-item"><div class="run-time">21:30</div><i class="run-dot"></i><div class="run-copy"><b>Sleep runway</b><span>Alarm 04:40. Gym kit sits on top; airport kit stays packed.</span></div></div>
+      </div>
+
+      <div class="day-head"><h2>Transit day</h2><span></span><small>Thu · Aug 6</small></div>
+      <div class="run-list">
+        <div class="run-item"><div class="run-time">04:40</div><i class="run-dot"></i><div class="run-copy"><b>Wake · hydrate · move</b><span>Keep the arrival-day training block. Target gym entry 05:25.</span></div><a class="go" href="https://www.google.com/maps/dir/?api=1&amp;origin=33.5840008,130.3905586&amp;destination=33.5972345,130.4469978&amp;travelmode=transit" target="_blank" rel="noopener">To gym ↗</a></div>
+        <div class="run-item hard"><div class="run-time">06:35</div><i class="run-dot"></i><div class="run-copy"><b>Hard out: Anytime Fitness</b><span>Airport is next door. Security target 07:00; ANA boarding starts 07:20.</span></div><a class="go" href="https://www.google.com/maps/dir/?api=1&amp;origin=33.5972345,130.4469978&amp;destination=Fukuoka+Airport+Domestic+Terminal&amp;travelmode=walking" target="_blank" rel="noopener">To FUK ↗</a></div>
+        <div class="run-item"><div class="run-time">07:20</div><i class="run-dot"></i><div class="run-copy"><b>Board NH242 · Gate 9</b><span>Seat 21C · Group 5 · Terminal D · scheduled 07:45 → 09:30 HND T2.</span><span class="ref">ANA ref FLQ7ZG</span></div></div>
+        <div class="run-item hard"><div class="run-time">10:05</div><i class="run-dot"></i><div class="run-copy"><b>Hard out: Haneda Terminal 2</b><span>Go straight to Omotesandō. KOFFEE cancels after 15 minutes late; target door 11:15.</span></div><a class="go" href="https://www.google.com/maps/dir/?api=1&amp;origin=35.5482964,139.7779951&amp;destination=35.6683658,139.7108934&amp;travelmode=transit" target="_blank" rel="noopener">To KOFFEE ↗</a></div>
+        <div class="run-item"><div class="run-time">11:30</div><i class="run-dot"></i><div class="run-copy"><b>KOFFEE MAMEYA · 2 people</b><span>FastPass priority, not instant entry · 45-minute maximum · ¥780 booking fee.</span><span class="ref">TableCheck YYK4X2 · call 03-5413-9422</span></div><a class="go" href="tel:+81354139422">Call</a></div>
+        <div class="run-item"><div class="run-time">12:15</div><i class="run-dot"></i><div class="run-copy"><b>Walk toward Yoyogi</b><span>Leave when the 45-minute KOFFEE window ends. Azuki door target 13:10.</span></div><a class="go" href="https://www.google.com/maps/dir/?api=1&amp;origin=35.6683658,139.7108934&amp;destination=35.6822614,139.6972058&amp;travelmode=walking" target="_blank" rel="noopener">To Azuki ↗</a></div>
+        <div class="run-item"><div class="run-time">13:30</div><i class="run-dot"></i><div class="run-copy"><b>Azuki to Kōri · 2 people</b><span>40-minute limit · one item each · cashless · ¥6,000 refundable deposit · no-show is 100%.</span><span class="ref">TableCheck 76AX52</span></div></div>
+        <div class="run-item"><div class="run-time">14:20</div><i class="run-dot"></i><div class="run-copy"><b>Chiba recovery move</b><span>Go directly to Daiwa Roynet Chiba-chuo. Booking is four nights, through Aug 10.</span></div><a class="go" href="https://www.google.com/maps/dir/?api=1&amp;origin=35.6822614,139.6972058&amp;destination=35.6076726,140.1190199&amp;travelmode=transit" target="_blank" rel="noopener">To hotel ↗</a></div>
+        <div class="run-item"><div class="run-time">20:30</div><i class="run-dot"></i><div class="run-copy"><b>Recovery shutdown</b><span>Dinner, electrolytes, race kit staged, QR + physical ID verified. Chiba may be hot, humid, and stormy.</span></div></div>
+      </div>
+
+      <div class="day-head"><h2>Race day</h2><span></span><small>Fri · Aug 7</small></div>
+      <div class="run-list">
+        <div class="run-item"><div class="run-time">08:50</div><i class="run-dot"></i><div class="run-copy"><b>Leave Chiba-chuo</b><span>Target Makuhari Messe by 09:40. Friday Doubles Men registration opens 10:00.</span></div><a class="go" href="https://www.google.com/maps/dir/?api=1&amp;origin=35.6076726,140.1190199&amp;destination=35.6480005,140.0329808&amp;travelmode=transit" target="_blank" rel="noopener">To race ↗</a></div>
+        <div class="run-item hard"><div class="run-time">10:00</div><i class="run-dot"></i><div class="run-copy"><b>Athlete check-in</b><span>Brendan + Haruka both present · ticket QR + photo ID · timing chip on right ankle · return chip after race.</span></div><a class="go" href="https://hyrox.com/event/hyrox-chiba/" target="_blank" rel="noopener">Event ↗</a></div>
+        <div class="run-item"><div class="run-time">11:50</div><i class="run-dot"></i><div class="run-copy"><b>Warm-up starts</b><span>Hydrate early; venue day is forecast around 33°C and humid with possible morning thunder.</span></div></div>
+        <div class="run-item hard"><div class="run-time">12:50</div><i class="run-dot"></i><div class="run-copy"><b>HYROX Doubles Men Open</b><span>O’Brien + Ihara · bib 125003 · Friday’s first Doubles Men wave.</span></div></div>
+        <div class="run-item"><div class="run-time">14:15</div><i class="run-dot"></i><div class="run-copy"><b>Finish window</b><span>Return timing chip before leaving recovery. Doubles Men ceremony is listed for 19:00.</span></div></div>
+      </div>
+      <footer class="easy-footer"><span>Verified 2026-08-05 JST · sources: ANA + TableCheck + Booking.com email, official HYROX event page.</span><span>Weather changes · recheck before moving.</span></footer>
+    </div>
+  </section>
+
+  <section class="view dope-view" aria-label="Medium dope 3D route story">
+    <div id="map-stage"><canvas id="poster" aria-hidden="true"></canvas><div id="sceneview" aria-label="Live Esri 3D route map"></div><div class="map-shade"></div></div>
+    <div class="story">
+      <div class="story-kicker">Medium artifact · a journey you can touch</div>
+      <h1>Six moves.<br><em>One clean line.</em></h1>
+      <p class="story-lede">The day is geography with deadlines. Tap any stop to fly the live Esri scene from Fukuoka gym to the start arch at Makuhari.</p>
+      <div class="stops" id="storyStops"></div>
+    </div>
+    <div class="map-status" id="mapStatus">Poster ready · loading Esri 3D</div>
+  </section>
+
+  <section class="view bold-view" aria-label="Bold live travel daypilot">
+    <div class="mapclone"><canvas id="bold-poster" aria-hidden="true"></canvas><div id="bold-sceneview" aria-label="Live Esri 3D daypilot map"></div></div><div class="bold-vignette"></div>
+    <div class="pilot">
+      <section class="glass now">
+        <div class="now-top"><span class="live-chip"><i></i> live daypilot</span><span class="source-chip" id="sourceState">verified itinerary</span></div>
+        <h1 id="phaseTitle">Protect the<br><em>morning.</em></h1>
+        <div class="now-action" id="nextAction">Lock the bag and put the boarding pass offline.</div>
+        <p class="now-note" id="nextNote">The trip’s first hard line is the 06:35 gym exit. Everything before it should make that easy.</p>
+        <div class="countline"><div class="countdown" id="countdown">--:--:--</div><div class="count-label">until<br><span id="countTarget">next hard line</span></div></div>
+        <div class="hardline" id="hardline"><b>06:35 HARD OUT</b> from Anytime Fitness → FUK Gate 9.</div>
+        <div class="progress-wrap"><div class="progress-top"><span>FUK → finish arch</span><span id="progressLabel">0%</span></div><div class="progress"><i id="progressBar"></i></div></div>
+        <div class="now-go"><a class="primary" id="primaryNav" href="https://www.google.com/maps/dir/?api=1&amp;origin=33.5840008,130.3905586&amp;destination=33.5972345,130.4469978&amp;travelmode=transit" target="_blank" rel="noopener">Navigate next move ↗</a><button class="secondary" id="flyNext" type="button">Fly there</button></div>
+      </section>
+
+      <section class="glass risk">
+        <div class="risk-head"><h2>Three traps removed</h2><span>confidence ↑</span></div>
+        <div class="risk-list">
+          <div class="risk-row"><div class="risk-icon">⏱</div><div><b>Reservation timezone</b><span>Use 11:30 + 13:30 JST. The calendar copy was one hour early.</span></div></div>
+          <div class="risk-row"><div class="risk-icon">🏨</div><div><b>Hotel duration</b><span>It is Aug 6–10, not one night. Check-in remains open until midnight.</span></div></div>
+          <div class="risk-row"><div class="risk-icon">⚡</div><div><b>Heat + storm</b><span>Chiba Friday: ~33°C, humid, possible morning thunder. Hydrate early.</span></div></div>
+        </div>
+      </section>
+
+      <section class="glass checklist">
+        <div class="check-head"><h2>Zero-regret loadout</h2><button class="reset" id="resetChecks" type="button">reset</button></div>
+        <div class="checks" id="checks"></div>
+      </section>
+
+      <section class="glass rail">
+        <div class="rail-title"><b>48-hour line</b><span>tap to fly</span></div>
+        <div class="rail-stops" id="railStops"></div>
+        <div class="weather-mini"><b id="weatherMini">Tokyo 30° · Chiba 33°</b><span>humid · storm chance</span></div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const MODE_KEY = 'bpo-tokyo-daypilot-mode';
+  const ESRI={ready:false,loading:false,failed:false,views:[],maps:[],Graphic:null};
+  let mode = 'bold';
+  try { mode = localStorage.getItem(MODE_KEY) || 'bold'; } catch(e) {}
+  if (!['easy','dope','bold'].includes(mode)) mode = 'bold';
+  function setMode(next){
+    mode = next; document.body.dataset.mode = next;
+    $$('.mode-btn').forEach(b => b.setAttribute('aria-selected', String(b.dataset.mode === next)));
+    try { localStorage.setItem(MODE_KEY,next); } catch(e) {}
+    setTimeout(resizePosters,40);
+    if ((next === 'dope' || next === 'bold') && ESRI.ready) mountEsri(next);
+  }
+  $$('.mode-btn').forEach(b => b.addEventListener('click',()=>setMode(b.dataset.mode)));
+  setMode(mode);
+
+  const MAPS = {
+    gym:'https://www.google.com/maps/dir/?api=1&origin=33.5840008,130.3905586&destination=33.5972345,130.4469978&travelmode=transit',
+    fuk:'https://www.google.com/maps/dir/?api=1&origin=33.5972345,130.4469978&destination=Fukuoka+Airport+Domestic+Terminal&travelmode=walking',
+    koffee:'https://www.google.com/maps/dir/?api=1&origin=35.5482964,139.7779951&destination=35.6683658,139.7108934&travelmode=transit',
+    azuki:'https://www.google.com/maps/dir/?api=1&origin=35.6683658,139.7108934&destination=35.6822614,139.6972058&travelmode=walking',
+    hotel:'https://www.google.com/maps/dir/?api=1&origin=35.6822614,139.6972058&destination=35.6076726,140.1190199&travelmode=transit',
+    race:'https://www.google.com/maps/dir/?api=1&origin=35.6076726,140.1190199&destination=35.6480005,140.0329808&travelmode=transit'
+  };
+  const STOPS = [
+    {id:'start',name:'Fukuoka start',short:'Start',time:'04:40',date:'Aug 6',lon:130.3905586,lat:33.5840008,z:5200,color:[139,232,202],nav:MAPS.gym},
+    {id:'gym',name:'Anytime Fitness',short:'Gym',time:'05:25',date:'Aug 6',lon:130.4469978,lat:33.5972345,z:2400,color:[189,255,107],nav:MAPS.fuk},
+    {id:'fuk',name:'FUK · Gate 9',short:'FUK',time:'07:20',date:'Aug 6',lon:130.4510,lat:33.5970,z:3200,color:[124,216,237],nav:MAPS.fuk},
+    {id:'hnd',name:'HND · Terminal 2',short:'HND',time:'09:30',date:'Aug 6',lon:139.7779951,lat:35.5482964,z:6500,color:[124,216,237],nav:MAPS.koffee},
+    {id:'koffee',name:'KOFFEE MAMEYA',short:'Koffee',time:'11:30',date:'Aug 6',lon:139.7108934,lat:35.6683658,z:2200,color:[255,214,107],nav:MAPS.azuki},
+    {id:'azuki',name:'Azuki to Kōri',short:'Azuki',time:'13:30',date:'Aug 6',lon:139.6972058,lat:35.6822614,z:2200,color:[182,168,255],nav:MAPS.hotel},
+    {id:'hotel',name:'Daiwa Roynet',short:'Hotel',time:'15:35',date:'Aug 6',lon:140.1190199,lat:35.6076726,z:2600,color:[139,232,202],nav:MAPS.race},
+    {id:'hyrox',name:'HYROX Chiba',short:'HYROX',time:'12:50',date:'Aug 7',lon:140.0329808,lat:35.6480005,z:2600,color:[255,124,100],nav:'https://hyrox.com/event/hyrox-chiba/'}
+  ];
+  const EVENTS = [
+    {at:'2026-08-05T20:45:00+09:00',title:'Bag lock',phase:'Protect the<br><em>morning.</em>',action:'Lock the bag and put the boarding pass offline.',note:'Photo ID, HYROX QR, race shoes, AF fob, Suica, electrolytes. Put the gym kit on top.',hard:'<b>20:45 BAG LOCK</b> · no scavenger hunt at 04:40.',stop:0,nav:'https://mail.google.com/mail/u/0/#search/subject%3A%22Delivery%20of%20Mobile%20Boarding%20Pass%22'},
+    {at:'2026-08-06T04:40:00+09:00',title:'Wake',phase:'Keep the<br><em>first promise.</em>',action:'Wake, hydrate, and move toward the gym.',note:'Arrival-day training stays. The elegant version is short, finished, and out the door on time.',hard:'<b>06:35 HARD OUT</b> from Anytime Fitness → FUK Gate 9.',stop:0,nav:MAPS.gym},
+    {at:'2026-08-06T05:25:00+09:00',title:'Gym entry',phase:'Train.<br><em>Then vanish.</em>',action:'Start the compact training block.',note:'The airport is next door. Give the shower and walk their own protected minutes.',hard:'<b>06:35 HARD OUT</b> · security target 07:00 · boarding 07:20.',stop:1,nav:MAPS.fuk},
+    {at:'2026-08-06T06:35:00+09:00',title:'Gym hard out',phase:'Airside<br><em>before stress.</em>',action:'Leave Anytime Fitness for FUK domestic.',note:'Boarding pass is already issued: seat 21C, Group 5, Gate 9.',hard:'<b>07:20 BOARDING</b> · ANA will not accept a late gate arrival.',stop:2,nav:MAPS.fuk},
+    {at:'2026-08-06T07:20:00+09:00',title:'Board NH242',phase:'Fukuoka<br><em>to Tokyo.</em>',action:'Board NH242 at Gate 9.',note:'Scheduled departure 07:45. Land Haneda Terminal 2 at 09:30.',hard:'<b>10:05 HND HARD OUT</b> · KOFFEE door target 11:15.',stop:2,nav:MAPS.koffee},
+    {at:'2026-08-06T09:30:00+09:00',title:'Land HND',phase:'Tokyo.<br><em>Keep moving.</em>',action:'Exit Haneda Terminal 2 and go straight to Omotesandō.',note:'KOFFEE is 11:30 JST and cancels after 15 minutes late. The copied calendar time was wrong.',hard:'<b>10:05 HND HARD OUT</b> · arrive KOFFEE by 11:15.',stop:3,nav:MAPS.koffee},
+    {at:'2026-08-06T11:15:00+09:00',title:'KOFFEE buffer',phase:'Coffee,<br><em>not chaos.</em>',action:'Arrive at KOFFEE MAMEYA.',note:'FastPass gives priority, not instant service. Booking is for two people; stay is capped at 45 minutes.',hard:'<b>12:15 WALK</b> toward Yoyogi when the 45-minute window ends.',stop:4,nav:MAPS.azuki},
+    {at:'2026-08-06T11:30:00+09:00',title:'KOFFEE MAMEYA',phase:'Taste the<br><em>good part.</em>',action:'KOFFEE MAMEYA · TableCheck YYK4X2.',note:'Relax into it. The next reservation has more than an hour of runway.',hard:'<b>13:10 AZUKI DOOR</b> · reservation 13:30 JST.',stop:4,nav:MAPS.azuki},
+    {at:'2026-08-06T12:15:00+09:00',title:'Walk to Azuki',phase:'Tokyo<br><em>on foot.</em>',action:'Walk from Jingumae toward Yoyogi.',note:'This is the softest leg of the day. The buffer is real; keep it.',hard:'<b>13:10 AZUKI DOOR</b> · late entry may be refused.',stop:5,nav:MAPS.azuki},
+    {at:'2026-08-06T13:30:00+09:00',title:'Azuki to Kōri',phase:'Forty minutes<br><em>of cold.</em>',action:'Azuki to Kōri · TableCheck 76AX52.',note:'Two guests, one item each, cashless, 40-minute seating. The ¥6,000 deposit refunds after dining.',hard:'<b>14:10 FINISH</b> · then move the whole day to Chiba.',stop:5,nav:MAPS.hotel},
+    {at:'2026-08-06T14:20:00+09:00',title:'Move to Chiba',phase:'Recovery<br><em>gets geography.</em>',action:'Go directly to Daiwa Roynet Chiba-chuo.',note:'The hotel is booked for four nights, Aug 6–10. Check-in runs until midnight.',hard:'<b>20:30 SHUTDOWN</b> · dinner, fluids, kit, sleep.',stop:6,nav:MAPS.hotel},
+    {at:'2026-08-06T20:30:00+09:00',title:'Recovery shutdown',phase:'Tomorrow is<br><em>the race.</em>',action:'Stage the race kit and turn the day off.',note:'Both athletes need their own QR and photo ID. Chiba is forecast hot, humid, with possible morning thunder.',hard:'<b>08:50 HOTEL HARD OUT</b> · race registration opens 10:00.',stop:6,nav:MAPS.race},
+    {at:'2026-08-07T08:50:00+09:00',title:'Leave hotel',phase:'The start line<br><em>is next.</em>',action:'Leave Chiba-chuo for Makuhari Messe.',note:'Target venue 09:40. Friday Doubles Men athlete registration opens at 10:00.',hard:'<b>10:00 CHECK-IN</b> · Brendan + Haruka + QR + photo ID.',stop:6,nav:MAPS.race},
+    {at:'2026-08-07T10:00:00+09:00',title:'Athlete check-in',phase:'Turn travel<br><em>into a race.</em>',action:'Check in together at Makuhari Messe.',note:'Timing chip goes on the right ankle and must be returned before leaving recovery.',hard:'<b>11:50 WARM-UP</b> · exact start 12:50.',stop:7,nav:MAPS.race},
+    {at:'2026-08-07T11:50:00+09:00',title:'Warm-up',phase:'One hour<br><em>to ignition.</em>',action:'Warm up, sip, and find the start flow.',note:'Brendan O’Brien + Haruka Ihara · Doubles Men Open · bib 125003.',hard:'<b>12:50 START</b> · first Friday Doubles Men wave.',stop:7,nav:MAPS.race},
+    {at:'2026-08-07T12:50:00+09:00',title:'HYROX start',phase:'Now.<br><em>Race together.</em>',action:'HYROX Chiba · Doubles Men Open.',note:'Eight 1 km runs. Eight stations. One shared line to the finish.',hard:'<b>RETURN THE CHIP</b> before leaving the recovery zone.',stop:7,nav:MAPS.race},
+    {at:'2026-08-07T14:15:00+09:00',title:'Finish',phase:'You made the<br><em>map mean something.</em>',action:'Finish, return the timing chip, recover.',note:'Doubles Men ceremony is listed for 19:00. The hotel remains yours through Aug 10.',hard:'<b>DONE</b> · the line closes at Makuhari.',stop:7,nav:MAPS.race}
+  ].map(e=>({...e,t:new Date(e.at).getTime()}));
+
+  function jstParts(){
+    const f = new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+    return f.format(new Date());
+  }
+  function updateClock(){ $('#jstClock').textContent = jstParts() + ' JST'; }
+  updateClock(); setInterval(updateClock,1000);
+
+  let currentEventIndex = 0;
+  function formatDelta(ms){
+    if(ms <= 0) return '00:00:00';
+    const total = Math.floor(ms/1000), d=Math.floor(total/86400), h=Math.floor(total%86400/3600), m=Math.floor(total%3600/60), s=total%60;
+    const hh = String(h).padStart(2,'0'), mm=String(m).padStart(2,'0'), ss=String(s).padStart(2,'0');
+    return d ? d+'d '+hh+':'+mm : hh+':'+mm+':'+ss;
+  }
+  function updatePilot(){
+    const now=Date.now(); let next=EVENTS.findIndex(e=>e.t>now); if(next<0) next=EVENTS.length-1;
+    const active=Math.max(0,next-1); currentEventIndex=active;
+    const e=EVENTS[next], a=EVENTS[active];
+    $('#phaseTitle').innerHTML=a.phase; $('#nextAction').textContent=a.action; $('#nextNote').textContent=a.note; $('#hardline').innerHTML=a.hard;
+    $('#countdown').textContent=formatDelta(e.t-now); $('#countTarget').textContent=e.title;
+    const tripStart=EVENTS[1].t, tripEnd=EVENTS[EVENTS.length-1].t; const pct=Math.max(0,Math.min(100,(now-tripStart)/(tripEnd-tripStart)*100));
+    $('#progressBar').style.width=pct.toFixed(1)+'%'; $('#progressLabel').textContent=Math.round(pct)+'%';
+    $('#primaryNav').href=a.nav; $('#primaryNav').textContent=a.stop===7?'Open race route ↗':'Navigate next move ↗';
+    $$('.rail-stop').forEach((b,i)=>{b.classList.toggle('done',i<a.stop);b.classList.toggle('current',i===a.stop)});
+  }
+  updatePilot(); setInterval(updatePilot,1000);
+
+  const CHECK_KEY='bpo-tokyo-daypilot-checks-v1';
+  const CHECKS=['ANA boarding pass saved offline','Azuki attendance confirmed','Photo ID + HYROX QR together','AF fob + gym kit separated','Race shoes + timing-chip ankle clear','Suica + cashless payment ready','Electrolytes + compact rain layer'];
+  let checked=[]; try{checked=JSON.parse(localStorage.getItem(CHECK_KEY)||'[]')}catch(e){checked=[]}
+  function renderChecks(){
+    const root=$('#checks');root.innerHTML='';CHECKS.forEach((label,i)=>{const b=document.createElement('button');b.type='button';b.className='check'+(checked.includes(i)?' done':'');b.innerHTML='<i>✓</i><span>'+label+'</span>';b.addEventListener('click',()=>{checked=checked.includes(i)?checked.filter(x=>x!==i):checked.concat(i);try{localStorage.setItem(CHECK_KEY,JSON.stringify(checked))}catch(e){}renderChecks()});root.appendChild(b)})
+  }
+  renderChecks(); $('#resetChecks').addEventListener('click',()=>{checked=[];try{localStorage.removeItem(CHECK_KEY)}catch(e){}renderChecks()});
+
+  function stopMarkup(s,i){return '<span class="stop-n">'+String(i+1).padStart(2,'0')+'</span><span class="stop-t">'+s.time+'</span><span class="stop-name">'+s.name+'</span><span class="stop-meta">'+s.date+'</span>'}
+  const story=$('#storyStops'); STOPS.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.className='stop-btn'+(i===3?' active':'');b.innerHTML=stopMarkup(s,i);b.addEventListener('click',()=>flyTo(i));story.appendChild(b)});
+  const rail=$('#railStops'); STOPS.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.className='rail-stop';b.title=s.name;b.setAttribute('aria-label','Fly to '+s.name);b.innerHTML='<i></i><span>'+s.short+'</span>';b.addEventListener('click',()=>flyTo(i));rail.appendChild(b)});
+  $('#flyNext').addEventListener('click',()=>flyTo(EVENTS[currentEventIndex].stop));
+
+  const posterCanvases=[$('#poster'),$('#bold-poster')];
+  function drawPoster(cv){
+    if(!cv) return; const rect=cv.getBoundingClientRect(); if(rect.width<2||rect.height<2)return; const dpr=Math.min(devicePixelRatio||1,2);cv.width=Math.round(rect.width*dpr);cv.height=Math.round(rect.height*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const w=rect.width,h=rect.height;
+    const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#123229');g.addColorStop(.55,'#0a211a');g.addColorStop(1,'#071411');c.fillStyle=g;c.fillRect(0,0,w,h);
+    const minLon=129.9,maxLon=140.55,minLat=33.0,maxLat=36.25;const x=lon=>(lon-minLon)/(maxLon-minLon)*w*.78+w*.12;const y=lat=>h*.82-(lat-minLat)/(maxLat-minLat)*h*.64;
+    c.strokeStyle='rgba(139,232,202,.07)';c.lineWidth=1;for(let i=0;i<7;i++){c.beginPath();c.moveTo(0,h*(.16+i*.12));c.lineTo(w,h*(.16+i*.12));c.stroke()}for(let i=0;i<8;i++){c.beginPath();c.moveTo(w*(.08+i*.13),0);c.lineTo(w*(.08+i*.13),h);c.stroke()}
+    c.strokeStyle='rgba(189,255,107,.32)';c.lineWidth=2;c.setLineDash([4,7]);c.beginPath();STOPS.forEach((s,i)=>{i?c.lineTo(x(s.lon),y(s.lat)):c.moveTo(x(s.lon),y(s.lat))});c.stroke();c.setLineDash([]);
+    c.font='600 9px '+getComputedStyle(document.documentElement).getPropertyValue('--mono');c.textBaseline='middle';STOPS.forEach((s,i)=>{const px=x(s.lon),py=y(s.lat);c.fillStyle=i===7?'#ff7c64':'#bdff6b';c.beginPath();c.arc(px,py,i===7?5:3.4,0,Math.PI*2);c.fill();c.fillStyle='rgba(245,244,236,.78)';c.fillText(s.short.toUpperCase(),px+9,py)});
+    c.fillStyle='rgba(5,16,13,.25)';const vg=c.createRadialGradient(w*.55,h*.45,h*.15,w*.55,h*.45,h*.75);vg.addColorStop(0,'transparent');vg.addColorStop(1,'rgba(0,0,0,.45)');c.fillStyle=vg;c.fillRect(0,0,w,h)
+  }
+  function resizePosters(){posterCanvases.forEach(drawPoster)}
+  resizePosters();addEventListener('resize',resizePosters,{passive:true});
+
+  function syncEsriSize(){ESRI.views.forEach(v=>{try{v.resize()}catch(e){}})}
+  function mountEsri(targetMode){
+    if(!ESRI.ready||!ESRI.views[0])return;
+    const id=targetMode==='dope'?'sceneview':'bold-sceneview',target=document.getElementById(id);
+    try{if(ESRI.views[0].container!==target)ESRI.views[0].container=target}catch(e){}
+    $('#sceneview').style.opacity=targetMode==='dope'?'1':'0';
+    $('#bold-sceneview').style.opacity=targetMode==='bold'?'1':'0';
+    $('#poster').style.opacity=targetMode==='dope'?'.18':'1';
+    syncEsriSize();
+  }
+  function buildEsriView(container,Map,SceneView,SceneLayer,GraphicsLayer,Graphic,Polyline,GE){
+    const map=new Map({basemap:'satellite',ground:'world-elevation'});
+    try{map.add(new SceneLayer({url:'https://basemaps3d.arcgis.com/arcgis/rest/services/OpenStreetMap3D_Buildings_v1/SceneServer',title:'OSM 3D Buildings'}))}catch(e){}
+    const routes=new GraphicsLayer({elevationInfo:{mode:'absolute-height'}}),pins=new GraphicsLayer({elevationInfo:{mode:'relative-to-ground'}});
+    for(let i=0;i<STOPS.length-1;i++){
+      const a=STOPS[i],b=STOPS[i+1],flight=i===2;let path;
+      if(flight){
+        const line=new Polyline({paths:[[[a.lon,a.lat],[b.lon,b.lat]]],spatialReference:{wkid:4326}});let dens=line;try{dens=GE.geodesicDensify(line,35000,'meters')}catch(e){}const pts=dens.paths[0],n=pts.length;path=pts.map((p,j)=>[p[0],p[1],14000+Math.sin(j/(n-1)*Math.PI)*240000]);
+      }else{path=[[a.lon,a.lat,110],[b.lon,b.lat,110]]}
+      routes.add(new Graphic({geometry:{type:'polyline',paths:[path],spatialReference:{wkid:4326}},symbol:{type:'line-3d',symbolLayers:[{type:'line',size:flight?3:4,material:{color:flight?[124,216,237,220]:[189,255,107,210]}}]}}));
+    }
+    STOPS.forEach((s,i)=>{
+      pins.add(new Graphic({geometry:{type:'point',longitude:s.lon,latitude:s.lat,z:35,spatialReference:{wkid:4326}},attributes:{index:i,name:s.name},symbol:{type:'point-3d',symbolLayers:[{type:'object',resource:{primitive:i===7?'diamond':'sphere'},material:{color:s.color},width:i===7?34:24,height:i===7?55:24}]},popupTemplate:{title:s.name,content:'<b>'+s.date+' · '+s.time+' JST</b><br>'+ (i===7?'HYROX Doubles Men Open':'Travel day stop')}}));
+      pins.add(new Graphic({geometry:{type:'point',longitude:s.lon,latitude:s.lat,z:120,spatialReference:{wkid:4326}},symbol:{type:'point-3d',symbolLayers:[{type:'text',text:s.short,material:{color:[255,255,255]},halo:{color:[4,16,13,.9],size:1.5},size:10}]}}));
+    });
+    map.addMany([routes,pins]);
+    const view=new SceneView({container,map,qualityProfile:matchMedia('(pointer:coarse)').matches?'low':'high',camera:{position:{longitude:136.8,latitude:34.5,z:720000},heading:42,tilt:38},environment:{atmosphere:{quality:'high'},lighting:{directShadowsEnabled:true},starsEnabled:false},ui:{components:['zoom','compass','attribution']}});
+    view.constraints={altitude:{min:450,max:1800000},tilt:{max:78}};return {view,map};
+  }
+  function esriFail(){ESRI.failed=true;ESRI.loading=false;$('#mapStatus').textContent='Poster mode · Esri 3D unavailable';$('#sourceState').textContent='offline route poster'}
+  function loadEsri(){
+    if(ESRI.ready||ESRI.loading||ESRI.failed)return;ESRI.loading=true;const css=document.createElement('link');css.rel='stylesheet';css.href='https://js.arcgis.com/4.30/esri/themes/dark/main.css';document.head.appendChild(css);const sc=document.createElement('script');sc.src='https://js.arcgis.com/4.30/';const watchdog=setTimeout(()=>{if(!ESRI.ready)esriFail()},18000);sc.onerror=()=>{clearTimeout(watchdog);esriFail()};sc.onload=()=>{window.require(['esri/Map','esri/views/SceneView','esri/layers/SceneLayer','esri/layers/GraphicsLayer','esri/Graphic','esri/geometry/Polyline','esri/geometry/geometryEngine'],(Map,SceneView,SceneLayer,GraphicsLayer,Graphic,Polyline,GE)=>{try{ESRI.Graphic=Graphic;const a=buildEsriView(mode==='dope'?'sceneview':'bold-sceneview',Map,SceneView,SceneLayer,GraphicsLayer,Graphic,Polyline,GE);ESRI.views=[a.view];ESRI.maps=[a.map];a.view.when().then(()=>{clearTimeout(watchdog);ESRI.ready=true;ESRI.loading=false;mountEsri(mode);$('#mapStatus').textContent='Live · Esri terrain + OSM 3D buildings';$('#sourceState').textContent='live Esri scene';flyTo(3)}).catch(esriFail)}catch(e){esriFail()}})};document.head.appendChild(sc)
+  }
+  loadEsri();
+  function flyTo(i){
+    const s=STOPS[Math.max(0,Math.min(STOPS.length-1,i))];$$('.stop-btn').forEach((b,n)=>b.classList.toggle('active',n===i));if(!ESRI.ready)return;ESRI.views.forEach(v=>{try{const target=new ESRI.Graphic({geometry:{type:'point',longitude:s.lon,latitude:s.lat,spatialReference:{wkid:4326}}});v.goTo({target,scale:i===3?42000:i<3?26000:18000,heading:i<3?70:35,tilt:58},{speedFactor:2.2,easing:'in-out-coast'}).catch(()=>{})}catch(e){}})
+  }
+})();
+</script>
+</body>
+</html>
