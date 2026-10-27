@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-83 · golf-spica-3 · The Beautiful Swing Lab</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  main { max-width: 1180px; margin: 0 auto; padding: 26px 26px 60px; }
+  .divider { margin: 40px 0; }
+  .hero { grid-template-columns: 1fr; gap: 0; }
+  .hero-sub { max-width: 70ch; }
+
+  .lab { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; align-items: stretch; }
+  @media (max-width: 860px){ .lab { grid-template-columns: 1fr; } }
+
+  /* ---- swing stage ---- */
+  .stage { position: relative; border-radius: var(--r-card); overflow: hidden;
+    border: 1px solid var(--line); box-shadow: var(--shadow-card);
+    background: radial-gradient(120% 100% at 50% 0%, #ffffff, #f4f9f5 60%, #eaf1ec);
+    perspective: 1000px; min-height: 460px; }
+  .floor3d { position: absolute; left: 50%; bottom: 6%; width: 150%; height: 200px;
+    transform: translateX(-50%) rotateX(66deg); transform-origin: bottom center;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 47px, rgba(18,124,112,.10) 47px 48px),
+      repeating-linear-gradient(0deg, transparent 0 47px, rgba(18,124,112,.08) 47px 48px);
+    -webkit-mask-image: radial-gradient(70% 90% at 50% 100%, #000 40%, transparent 78%);
+    mask-image: radial-gradient(70% 90% at 50% 100%, #000 40%, transparent 78%); }
+  .stage svg { position: relative; display: block; width: 100%; height: auto; }
+  .st-badge { position: absolute; top: 14px; left: 16px; z-index: 4; display: flex; gap: 8px; align-items: center; }
+  .st-badge .pchip { font: 700 12px/1 var(--font-mono); letter-spacing: .04em; color: #fff;
+    background: var(--forest); padding: 7px 10px; border-radius: 7px; }
+  .st-badge .plabel { font: 600 12.5px/1 var(--font-ui); color: var(--muted); }
+  .st-tempo { position: absolute; top: 14px; right: 16px; z-index: 4; display: flex; align-items: center; gap: 9px;
+    background: rgba(255,255,255,.8); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 6px 12px; }
+  .st-tempo .pip { width: 9px; height: 9px; border-radius: 50%; background: #cdd8d1; transition: all .12s var(--ease); }
+  .st-tempo .pip.b { background: #bcd3ce; } .st-tempo .pip.d { background: #e6c3b3; }
+  .st-tempo .pip.on { transform: scale(1.5); }
+  .st-tempo .pip.b.on { background: var(--forest); } .st-tempo .pip.d.on { background: var(--warn); }
+  .st-tempo .tsep { width: 1px; height: 14px; background: var(--line); }
+  .st-tempo .tr { font: 700 11px/1 var(--font-mono); color: var(--forest-d); letter-spacing: .03em; }
+
+  /* svg element styles */
+  .plane-ell { fill: none; stroke: var(--found); stroke-width: 1.4; opacity: .34; stroke-dasharray: 3 6; }
+  .arc-ideal { fill: none; stroke: var(--forest); stroke-width: 3.4; stroke-linecap: round; opacity: .92; }
+  .arc-glow { fill: none; stroke: var(--forest); stroke-width: 9; stroke-linecap: round; opacity: .1; }
+  .arc-flat { fill: none; stroke: var(--warn); stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 6 7;
+    opacity: 0; transition: opacity .4s var(--ease); }
+  .arc-flat.show { opacity: .8; }
+  .flat-lab { fill: var(--warn); font: 600 12px var(--font-mono); opacity: 0; transition: opacity .4s var(--ease); }
+  .flat-lab.show { opacity: .95; }
+  .shaft { stroke: #2b3a35; stroke-width: 3; stroke-linecap: round; }
+  .grip { fill: #2b3a35; }
+  .head { fill: #fff; stroke: var(--forest-d); stroke-width: 2.4; }
+  .ball { fill: #fff; stroke: #b8c2bb; stroke-width: 1.5; }
+  .ball-imp { fill: none; stroke: var(--lime); stroke-width: 2; opacity: .0; }
+  .pnode-dot { fill: #fff; stroke: var(--forest); stroke-width: 2; cursor: pointer; }
+  .pnode-dot.hot { stroke: var(--warn); }
+  .pnode-dot.active { fill: var(--forest); r: 8; }
+  .pnode-ring { fill: none; stroke: var(--warn); stroke-width: 1.6; opacity: .5; }
+  .pnode-t { font: 600 9.5px var(--font-mono); fill: var(--muted); text-anchor: middle; pointer-events: none; }
+
+  /* ---- scrubber ---- */
+  .scrub { margin-top: 14px; background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--r-card); padding: 16px 18px; box-shadow: var(--shadow-card); }
+  .scrub-top { display: flex; align-items: center; gap: 12px; }
+  .scrub-top .play { border: 0; cursor: pointer; width: 42px; height: 42px; border-radius: 50%;
+    background: var(--forest); color: #fff; font-size: 16px; display: grid; place-items: center;
+    transition: all .2s var(--spring); flex: none; }
+  .scrub-top .play:hover { background: var(--forest-d); transform: scale(1.06); }
+  .rng { flex: 1; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--g-lime), var(--well)); outline: none; }
+  .rng::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--forest); border: 3px solid #fff; box-shadow: var(--shadow-card); cursor: grab; }
+  .rng::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--forest);
+    border: 3px solid #fff; cursor: grab; }
+  .step { border: 1px solid var(--line); background: var(--card); cursor: pointer; width: 34px; height: 34px;
+    border-radius: 9px; color: var(--body); font-size: 13px; transition: all .18s var(--ease); flex: none; }
+  .step:hover { border-color: #cdd8d1; color: var(--ink); background: var(--well); }
+  .pnodes { display: flex; gap: 5px; margin-top: 14px; }
+  .pn { flex: 1; text-align: center; padding: 8px 2px; border-radius: 8px; cursor: pointer;
+    background: var(--well); transition: all .18s var(--ease); border: 1px solid transparent; }
+  .pn:hover { background: #e4ebe6; }
+  .pn.active { background: var(--g-lime); border-color: #bcd9bf; }
+  .pn.hot { box-shadow: inset 0 -3px 0 var(--warn); }
+  .pn .n { font: 700 11.5px/1 var(--font-mono); color: var(--forest-d); }
+  .pn.active .n { color: var(--forest); }
+  .pn .l { font: 500 8.5px/1.2 var(--font-ui); color: var(--muted); margin-top: 4px; letter-spacing: .01em; }
+
+  /* ---- side: fault + checkpoints ---- */
+  .side { display: flex; flex-direction: column; gap: 14px; }
+  .faults { display: flex; gap: 7px; }
+  .fbtn { flex: 1; border: 1px solid var(--line); background: var(--card); cursor: pointer; text-align: left;
+    padding: 11px 12px; border-radius: 11px; transition: all .2s var(--ease); }
+  .fbtn:hover { border-color: #cdd8d1; transform: translateY(-2px); }
+  .fbtn.act { border-color: var(--warn-bd); background: var(--warn-bg); }
+  .fbtn .fn { font: 700 12.5px/1.2 var(--font-ui); color: var(--ink); }
+  .fbtn .fp { font: 600 9.5px/1 var(--font-mono); color: var(--warn); margin-top: 4px; letter-spacing: .03em; }
+  .fpanel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 18px 20px; box-shadow: var(--shadow-card); flex: 1; }
+  .fpanel .flead { font: 400 13px/1.6 var(--font-ui); color: var(--body); margin: 0 0 12px; }
+  .fpanel .flead b { color: var(--ink); }
+  .fp-row { display: grid; grid-template-columns: 62px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .fp-row .k { font: 700 9.5px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--forest); padding-top: 2px; }
+  .fp-row.drill .k { color: var(--found-d); }
+  .fp-row .v { font: 400 12.5px/1.55 var(--font-ui); color: var(--body); }
+  .fp-row .v b { color: var(--ink); }
+
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .check { border: 1.6px dashed var(--line); border-radius: var(--r-tile); padding: 14px; background: #fbfcfb;
+    position: relative; transition: all .2s var(--ease); }
+  .check.on { border-color: var(--forest); border-style: solid; background: var(--g-lime); }
+  .check .ca { font: 700 10px/1 var(--font-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .check.on .ca { color: var(--forest-d); }
+  .check .cplay { width: 34px; height: 34px; border-radius: 50%; background: var(--card); border: 1px solid var(--line);
+    display: grid; place-items: center; margin: 12px 0 10px; color: var(--forest); font-size: 13px; }
+  .check .cc { font: 400 11px/1.5 var(--font-ui); color: var(--muted); }
+  .check .cchip { position: absolute; top: 12px; right: 12px; font: 700 9.5px/1 var(--font-mono);
+    color: var(--forest); background: #fff; border: 1px solid var(--line); padding: 4px 6px; border-radius: 5px; }
+
+  .note { font: 400 12.5px/1.6 var(--font-ui); color: var(--muted); margin: 10px 0 0; }
+  .note b { color: var(--body); }
+  .sample-tag { display: inline-flex; align-items: center; gap: 7px; font: 600 10.5px/1 var(--font-mono);
+    letter-spacing: .05em; text-transform: uppercase; color: var(--amber); background: var(--amber-bg);
+    border: 1px solid var(--amber-bd); padding: 6px 10px; border-radius: var(--r-pill); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx"><span class="dot"></span>TODO-83 · golf-spica-3</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">the swing · a diff you can see</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow"><span class="d"></span>beautiful surf, for the golf swing</div>
+      <h1>A swing you can <span class="em">see</span> is a swing you can fix.</h1>
+      <p class="hero-sub">You named three faults: the grip is <b>meh</b>, the lead knee doesn't do
+      <b>enough</b>, and you <b>flick</b> — a baseball swing that looks bad. They aren't random; they
+      chain, and each lives at a specific point in the swing. Scrub the club through <b>P1 → P10</b>,
+      watch the head travel the plane, and drop to the frame where your fault lives. The green arc is
+      the shape you're chasing; the dashed red is the flat plane you're fighting.</p>
+      <div class="hero-chips">
+        <span class="hchip v">P1 → P10 · scrub it</span>
+        <span class="hchip q">3:1 tempo</span>
+        <span class="hchip q">grip · lead knee · the flick</span>
+        <span class="hchip q">DTL + face-on</span>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-n">10</div><div class="kpi-l">checkpoints — you fix a frame, not a whole swing</div></div>
+      <div class="kpi"><div class="kpi-n">3</div><div class="kpi-l">faults, and they chain: grip → lead knee → the flick</div></div>
+      <div class="kpi"><div class="kpi-n">3<span class="u">:1</span></div><div class="kpi-l">backswing-to-downswing tempo — the beautiful ratio</div></div>
+      <div class="kpi"><div class="kpi-n">2</div><div class="kpi-l">angles that catch everything: down-the-line + face-on</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sec-head"><span class="sec-kick">the swing stage · scrub P1 → P10</span><span class="sec-n">01 / make it visible</span></div>
+
+    <div class="lab">
+      <div>
+        <div class="stage">
+          <div class="floor3d"></div>
+          <div class="st-badge"><span class="pchip" id="pchip">P7</span><span class="plabel" id="plabel">impact</span></div>
+          <div class="st-tempo" id="tempo">
+            <span class="pip b" data-t="0"></span><span class="pip b" data-t="1"></span><span class="pip b" data-t="2"></span>
+            <span class="tsep"></span><span class="pip d" data-t="3"></span>
+            <span class="tsep"></span><span class="tr">3:1</span>
+          </div>
+          <svg id="swing" viewBox="0 0 640 460" aria-label="A face-on drawing of a golf swing. A green arc traces the ideal club-head path from address up to the top of the backswing, back down through impact, and up to the finish; ten dots mark positions P1 through P10. A dashed red arc shows the flat 'baseball' plane to avoid. The club shaft rotates to the scrubbed position.">
+            <ellipse class="plane-ell" cx="322" cy="250" rx="212" ry="150" transform="rotate(-14 322 250)"></ellipse>
+            <path class="arc-flat" id="arcFlat" d="M322 384 C452 372 556 344 566 300 C556 344 452 372 322 384"></path>
+            <text class="flat-lab" id="flatLab" x="470" y="300">flat · baseball plane</text>
+            <path class="arc-glow" id="arcGlow" d="M322 384 C384 300 474 226 512 96 C500 214 420 332 320 382 C222 330 150 242 138 110"></path>
+            <path class="arc-ideal" id="arc" d="M322 384 C384 300 474 226 512 96 C500 214 420 332 320 382 C222 330 150 242 138 110"></path>
+            <circle class="ball-imp" id="ballImp" cx="320" cy="386" r="10"></circle>
+            <circle class="ball" cx="320" cy="388" r="7"></circle>
+            <g id="pnodes"></g>
+            <line class="shaft" id="shaft" x1="322" y1="176" x2="320" y2="382"></line>
+            <circle class="grip" cx="322" cy="176" r="5"></circle>
+            <circle class="head" id="head" cx="320" cy="382" r="9"></circle>
+          </svg>
+        </div>
+
+        <div class="scrub">
+          <div class="scrub-top">
+            <button class="play" id="play" aria-label="play swing">▶</button>
+            <button class="step" id="prev" aria-label="previous position">◀</button>
+            <input class="rng" id="rng" type="range" min="0" max="9" value="6" step="1" aria-label="swing position P1 to P10">
+            <button class="step" id="next" aria-label="next position">▶</button>
+          </div>
+          <div class="pnodes" id="pnstrip"></div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="faults" id="faults"></div>
+        <div class="fpanel" id="fpanel"></div>
+        <div class="checks">
+          <div class="check" id="chk-dtl">
+            <span class="cchip" id="chip-dtl">P7</span>
+            <div class="ca">down-the-line</div>
+            <div class="cplay">▶</div>
+            <div class="cc" id="cc-dtl">Plane, the flick, and lead-knee movement. Phone behind you, on the target line.</div>
+          </div>
+          <div class="check" id="chk-face">
+            <span class="cchip" id="chip-face">P7</span>
+            <div class="ca">face-on</div>
+            <div class="cplay">▶</div>
+            <div class="cc" id="cc-face">Grip, weight shift, and shaft lean at impact. Phone facing you, hip height.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:18px"><span class="sample-tag">◆ illustrative swing geometry</span></p>
+    <p class="note">The arc is a stylized swing plane, not your capture yet — <b>swap the path and the
+    P-fractions to trace your own filmed swing</b> (drop a clip into Onform or Hudl Technique, mark
+    P1–P10, and read the points off the frames). The faults, positions, and drills are the real ones
+    from your loop; the geometry is the surface you make yours. Same two angles every session so the
+    week-to-week diff stays honest.</p>
+
+    <div class="foot">
+      TODO-83 · golf-spica-3 &nbsp;·&nbsp; <code>bpo · Medewi Manor</code> &nbsp;·&nbsp;
+      the beautiful swing lab &nbsp;·&nbsp; SVG + CSS-3D · zero libraries &nbsp;·&nbsp;
+      ref: TODO-70 surf-flowstate &nbsp;·&nbsp; 2026-07-08 03:56Z
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var reduced = false;
+  try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+  // ---- positions + faults (from the loop) ----
+  var PPOS = [
+    { p: 'P1', l: 'address', hot: ['grip'] },
+    { p: 'P2', l: 'takeaway', hot: [] },
+    { p: 'P3', l: 'lead-arm ∥', hot: [] },
+    { p: 'P4', l: 'top', hot: ['knee'] },
+    { p: 'P5', l: 'transition', hot: ['knee'] },
+    { p: 'P6', l: 'delivery', hot: ['flick', 'knee'] },
+    { p: 'P7', l: 'impact', hot: ['flick'] },
+    { p: 'P8', l: 'extension', hot: [] },
+    { p: 'P9', l: 'follow', hot: [] },
+    { p: 'P10', l: 'finish', hot: [] }
+  ];
+  var PFRAC = [0.0, 0.10, 0.22, 0.33, 0.44, 0.55, 0.66, 0.78, 0.89, 1.0];
+
+  var FAULTS = [
+    { key: 'grip', name: 'The grip is meh', pos: 'P1 · address', pIndex: 0,
+      lead: 'The grip is the steering wheel. A "meh" grip makes the face hard to control, which forces the hands to <b>save it late</b> — that\'s where the flick is born. Fix this first; it\'s upstream of everything.',
+      cause: 'Club in the palms, hands rotated so the face wants to stay open. Weak grip → open face → instinctive flick to close it at the last moment.',
+      fix: 'Neutral: lead hand shows <b>2–2.5 knuckles</b>, both "V"s point at the trail shoulder, club in the <b>fingers</b>. Pressure ~4/10.',
+      drill: 'Grip in a mirror, re-grip <b>20×</b> until neutral is automatic, then slow half-swings on GolfJoy range checking only the grip.',
+      watch: 'Face-on, P1. You can count the knuckles on the frame.' },
+    { key: 'knee', name: 'Lead knee — not enough', pos: 'P4 · top', pIndex: 3,
+      lead: 'The lead knee is your <b>coil and ground anchor</b>. "Not enough" means it collapses in or stands up — you lose the stretch that powers the downswing, so the <b>arms take over</b> (hello, flick).',
+      cause: 'Instead of staying flexed and rotating, the lead knee dives in or straightens early. No stored coil → no lower-body sequence.',
+      fix: 'Keep <b>flex in the lead knee</b> to the top; feel the trail glute load. Coming down, the lead leg <b>posts up</b> — pushes the ground — before the arms fire.',
+      drill: 'Alignment stick across the hips or a chair outside the lead knee: backswings staying flexed and inside the stick, then add the post-up.',
+      watch: 'Down-the-line, P4 → P6. The lead knee stays quiet and flexed, then posts.' },
+    { key: 'flick', name: 'The flick / baseball swing', pos: 'P6 → P7 · release', pIndex: 5,
+      lead: 'The one that "looks bad." A baseball swing = the plane is too <b>flat</b> and the hands <b>flip</b> the head past the handle at the bottom. It scoops, it\'s inconsistent — but it\'s a <b>symptom</b> of the grip + knee above.',
+      cause: 'Arms swing flat and around, no lag, wrists release early — the head passes the hands before impact, adding loft, killing compression.',
+      fix: 'Two feels: (1) <b>steeper, more upright plane</b> — up-and-down over the trail shoulder, not around like a bat. (2) <b>Handle leads the head</b> into impact — forward shaft lean, hands ahead, chest covering it.',
+      drill: 'Pump drill: from the top, pump to P6 (shaft parallel, hands leading) 2–3× feeling lag, then hit. Watch the Spica\'s <b>club path & dynamic loft</b> settle toward neutral.',
+      watch: 'Down-the-line, P6 → P7. The head stays <em>behind</em> the hands into impact — no flip.' }
+  ];
+
+  var svg = document.getElementById('swing');
+  var arc = document.getElementById('arc');
+  var head = document.getElementById('head'), shaft = document.getElementById('shaft');
+  var PIVOT = { x: 322, y: 176 };
+  var arcLen = arc.getTotalLength ? arc.getTotalLength() : 900;
+
+  function ptAt(frac) {
+    if (arc.getPointAtLength) { var p = arc.getPointAtLength(arcLen * frac); return { x: p.x, y: p.y }; }
+    return { x: 320, y: 382 };
+  }
+
+  // ---- build P-nodes on the arc ----
+  var pg = document.getElementById('pnodes');
+  var nodeEls = [];
+  PPOS.forEach(function (pp, i) {
+    var pt = ptAt(PFRAC[i]);
+    var hot = pp.hot.length > 0;
+    if (hot) { var ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); ring.setAttribute('class', 'pnode-ring'); ring.setAttribute('cx', pt.x); ring.setAttribute('cy', pt.y); ring.setAttribute('r', 11); pg.appendChild(ring); }
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('class', 'pnode-dot' + (hot ? ' hot' : '')); c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y); c.setAttribute('r', 6);
+    c.addEventListener('click', function () { setP(i); });
+    pg.appendChild(c); nodeEls.push(c);
+    var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('class', 'pnode-t'); t.setAttribute('x', pt.x); t.setAttribute('y', pt.y - 13); t.textContent = pp.p; pg.appendChild(t);
+  });
+
+  // ---- P strip ----
+  var strip = document.getElementById('pnstrip');
+  PPOS.forEach(function (pp, i) {
+    var d = document.createElement('div'); d.className = 'pn' + (pp.hot.length ? ' hot' : '');
+    d.innerHTML = '<div class="n">' + pp.p + '</div><div class="l">' + pp.l + '</div>';
+    d.addEventListener('click', function () { setP(i); });
+    strip.appendChild(d);
+  });
+
+  // ---- state ----
+  var curP = 6, rng = document.getElementById('rng');
+
+  function place(frac) {
+    var pt = ptAt(frac);
+    head.setAttribute('cx', pt.x); head.setAttribute('cy', pt.y);
+    shaft.setAttribute('x2', pt.x); shaft.setAttribute('y2', pt.y);
+  }
+  function setP(i, fromPlay) {
+    curP = i; rng.value = i;
+    place(PFRAC[i]);
+    document.getElementById('pchip').textContent = PPOS[i].p;
+    document.getElementById('plabel').textContent = PPOS[i].l;
+    Array.prototype.forEach.call(strip.children, function (c, k) { c.classList.toggle('active', k === i); });
+    nodeEls.forEach(function (n, k) { n.classList.toggle('active', k === i); });
+    document.getElementById('chip-dtl').textContent = PPOS[i].p;
+    document.getElementById('chip-face').textContent = PPOS[i].p;
+    // feature the angle that catches this frame
+    var dtlFrames = [3, 4, 5, 6], faceFrames = [0, 6];
+    document.getElementById('chk-dtl').classList.toggle('on', dtlFrames.indexOf(i) !== -1);
+    document.getElementById('chk-face').classList.toggle('on', faceFrames.indexOf(i) !== -1);
+    if (!fromPlay) { var f = faultAtP(i); if (f) selectFault(f, true); }
+  }
+  function faultAtP(i) { for (var k = 0; k < FAULTS.length; k++) if (FAULTS[k].pIndex === i) return FAULTS[k]; return null; }
+
+  rng.addEventListener('input', function () { stop(); setP(parseInt(rng.value, 10)); });
+  document.getElementById('prev').addEventListener('click', function () { stop(); setP(Math.max(0, curP - 1)); });
+  document.getElementById('next').addEventListener('click', function () { stop(); setP(Math.min(9, curP + 1)); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { stop(); setP(Math.max(0, curP - 1)); }
+    else if (e.key === 'ArrowRight') { stop(); setP(Math.min(9, curP + 1)); }
+  });
+
+  // ---- faults ----
+  var faultsEl = document.getElementById('faults'), fpanel = document.getElementById('fpanel');
+  FAULTS.forEach(function (f, i) {
+    var b = document.createElement('button'); b.className = 'fbtn' + (i === 2 ? ' act' : '');
+    b.innerHTML = '<div class="fn">' + f.name + '</div><div class="fp">' + f.pos + '</div>';
+    b.addEventListener('click', function () { selectFault(f); setP(f.pIndex, true); });
+    faultsEl.appendChild(b);
+  });
+  function selectFault(f, keepP) {
+    Array.prototype.forEach.call(faultsEl.children, function (c, k) { c.classList.toggle('act', FAULTS[k].key === f.key); });
+    fpanel.innerHTML =
+      '<p class="flead">' + f.lead + '</p>' +
+      '<div class="fp-row"><div class="k">cause</div><div class="v">' + f.cause + '</div></div>' +
+      '<div class="fp-row"><div class="k">the fix</div><div class="v">' + f.fix + '</div></div>' +
+      '<div class="fp-row drill"><div class="k">drill</div><div class="v">' + f.drill + '</div></div>' +
+      '<div class="fp-row"><div class="k">watch</div><div class="v">' + f.watch + '</div></div>';
+    // the flick reveals the flat-plane ghost
+    var isFlick = f.key === 'flick';
+    document.getElementById('arcFlat').classList.toggle('show', isFlick);
+    document.getElementById('flatLab').classList.toggle('show', isFlick);
+  }
+
+  // ---- play (3:1 tempo) ----
+  var playing = false, raf = 0, t0 = 0;
+  var PLAY = [
+    { from: 0, to: 3, dur: 900, pips: [0, 1, 2] },   // backswing
+    { from: 3, to: 6, dur: 300, pips: [3] },          // downswing (3:1)
+    { from: 6, to: 9, dur: 470, pips: [] }            // through to finish
+  ];
+  var pips = Array.prototype.slice.call(document.querySelectorAll('#tempo .pip'));
+  function setPips(active) { pips.forEach(function (p, i) { p.classList.toggle('on', active.indexOf(i) !== -1); }); }
+  var playBtn = document.getElementById('play');
+  function stop() { if (!playing) return; playing = false; cancelAnimationFrame(raf); playBtn.textContent = '▶'; setPips([]); document.getElementById('ballImp').style.opacity = '0'; }
+  function play() {
+    if (playing) { stop(); return; }
+    playing = true; playBtn.textContent = '❚❚'; t0 = performance.now(); runPhase(0);
+  }
+  function runPhase(pi) {
+    if (!playing) return;
+    if (pi >= PLAY.length) { setPips([]); setP(9, true); flashImpact(); setTimeout(function () { if (playing) { setP(0, true); setTimeout(function () { if (playing) runPhase(0); }, 260); } }, 850); return; }
+    var ph = PLAY[pi]; var start = performance.now(); setPips(ph.pips);
+    (function step(now) {
+      if (!playing) return;
+      var k = Math.min(1, (now - start) / ph.dur);
+      var frac = PFRAC[ph.from] + (PFRAC[ph.to] - PFRAC[ph.from]) * k;
+      place(frac);
+      var np = Math.round(ph.from + (ph.to - ph.from) * k);
+      document.getElementById('pchip').textContent = PPOS[np].p; document.getElementById('plabel').textContent = PPOS[np].l;
+      Array.prototype.forEach.call(strip.children, function (c, kk) { c.classList.toggle('active', kk === np); });
+      nodeEls.forEach(function (n, kk) { n.classList.toggle('active', kk === np); });
+      if (pi === 1 && k > 0.7) flashImpact();
+      if (k < 1) raf = requestAnimationFrame(step); else runPhase(pi + 1);
+    })(start);
+  }
+  function flashImpact() {
+    var r = document.getElementById('ballImp'); r.style.opacity = '1';
+    if (!reduced) { r.animate([{ opacity: .9, r: 8 }, { opacity: 0, r: 22 }], { duration: 520, easing: 'ease-out' }); }
+    setTimeout(function () { r.style.opacity = '0'; }, 520);
+  }
+  playBtn.addEventListener('click', play);
+
+  // ---- boot ----
+  selectFault(FAULTS[2]);   // default to the flick (its ghost + P6 story)
+  setP(6);                  // impact frame reads as a complete still
+  if (!reduced) { setTimeout(play, 700); }
+})();
+</script>
+</body>
+</html>

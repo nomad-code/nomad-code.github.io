@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>The Repointed Axis · Doris Duke at Shangri La</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    /* Chart-scope palette — grove hues chroma-snapped to pass the six checks
+       (validated: L-band ✓ · chroma ✓ · protan ΔE 40.8 ✓ · contrast ✓) */
+    :root {
+      --c-art:     #0d8f7f;  /* the objects / Islamic art          (forest, snapped) */
+      --c-art-bg:  #d9ece7;
+      --c-duke:    #c4501f;  /* Duke's frame / Orientalist axis    (warn, snapped)   */
+      --c-duke-bg: #f6e3da;
+      --c-schl:    #3a92ba;  /* the scholars / critical apparatus  (found, snapped)  */
+      --c-schl-bg: #e3eef2;
+      --c-era:     #a07c15;  /* time / era accents                 (amber, snapped)  */
+      --c-era-bg:  #f3ead2;
+      --c-lime:    #84c241;  /* ONE moment: the offered distance                     */
+    }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    main { max-width: 1060px; margin: 0 auto; padding: 30px 24px 80px; }
+
+    /* ---------- header ---------- */
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--c-duke); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-duke); }
+    h1 { font:800 clamp(34px, 5.4vw, 54px)/1.02 var(--font-display); letter-spacing:-.025em;
+      color:var(--ink); margin:16px 0 6px; }
+    h1 em { font-style:normal; color:var(--c-duke); }
+    h1 .flip { display:inline-block; }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 14px; }
+    .sub a { color: var(--forest-d); text-decoration-color: var(--line); }
+    .lede { max-width:70ch; font:400 16.5px/1.6 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:640; }
+
+    .pullquote { margin:26px 0 6px; padding:18px 22px; border-left:3px solid var(--c-duke);
+      background:var(--card); border-radius: 0 var(--r-panel) var(--r-panel) 0;
+      box-shadow: var(--shadow-card); }
+    .pullquote p { font:500 clamp(17px, 2.2vw, 21px)/1.45 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .pullquote cite { display:block; margin-top:8px; font:500 11.5px/1 var(--font-mono);
+      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 58px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(22px,3vw,28px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .k h2 em { font-style: normal; color: var(--forest-d); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:18px; }
+    .blurb b { color:var(--ink); font-weight:620; }
+
+    /* ---------- legend ---------- */
+    .lgd { display:flex; gap:16px 22px; flex-wrap:wrap; margin:14px 2px 0;
+      font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+    .lgd span { display:inline-flex; align-items:center; gap:8px; }
+    .lgd i { width:11px; height:11px; border-radius:50%; }
+
+    /* ---------- hero viz ---------- */
+    .hero-card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-hero); overflow:hidden; }
+    .era-bar { display:flex; align-items:center; gap:10px; padding:14px 16px 0; flex-wrap:wrap; }
+    .era-btn { font:600 12px/1 var(--font-mono); letter-spacing:.04em; padding:9px 14px;
+      border-radius:var(--r-pill); border:1px solid var(--line); background:var(--bg);
+      color:var(--muted); cursor:pointer; transition:all .35s var(--ease); }
+    .era-btn:hover { border-color:var(--faint); color:var(--ink); }
+    .era-btn[aria-pressed="true"] { color:#fff; }
+    #btn-veramin[aria-pressed="true"] { background:var(--c-art); border-color:var(--c-art); }
+    #btn-shangrila[aria-pressed="true"] { background:var(--c-duke); border-color:var(--c-duke); }
+    .era-note { flex:1 1 260px; min-width:220px; position:relative; height:34px; }
+    .era-note p { position:absolute; inset:0; display:flex; align-items:center;
+      font:400 13px/1.35 var(--font-ui); color:var(--muted); opacity:0;
+      transition:opacity .7s var(--ease); }
+    .era-note p b { color:var(--ink); font-weight:620; margin-right:5px; }
+    [data-era="veramin"]  .era-note .n-ver, [data-era="shangrila"] .era-note .n-sha { opacity:1; }
+
+    .axes svg { display:block; width:100%; height:auto; }
+    #axisQibla, #axisDuke { transition: opacity 1s var(--ease); }
+    [data-era="veramin"]  #axisDuke  { opacity:.13; }
+    [data-era="shangrila"] #axisQibla { opacity:.13; }
+    .hero-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:12px 18px 15px; border-top:1px solid var(--line); }
+    .hero-cap b { color:var(--forest-d); font-weight:600; }
+
+    .ax-label { font:500 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; fill:var(--muted); }
+    .ax-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* ---------- stat tiles ---------- */
+    .tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:12px; margin-top:16px; }
+    .tile { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px 14px; box-shadow:var(--shadow-card); position:relative; overflow:hidden; }
+    .tile::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tc,var(--forest)); }
+    .tile .v { font:800 34px/1 var(--font-display); letter-spacing:-.03em; color:var(--ink);
+      font-variant-numeric:tabular-nums; }
+    .tile .v small { font:700 17px/1 var(--font-display); color:var(--tc,var(--forest)); margin-left:2px; }
+    .tile .l { margin-top:6px; font:500 11px/1.45 var(--font-mono); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- timeline ---------- */
+    .tl-wrap { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); padding:8px 8px 2px; overflow-x:auto; }
+    .tl-wrap svg { display:block; width:100%; min-width:760px; height:auto; }
+    .tl-era { opacity:0; transition:opacity .9s var(--ease); }
+    .shown .tl-era { opacity:1; }
+    .tl-era-label { font:600 10px var(--font-mono); letter-spacing:.09em; text-transform:uppercase; }
+    .tl-spine { stroke:var(--faint); stroke-width:1.5; stroke-linecap:round; }
+    .tl-ev { cursor:pointer; }
+    .tl-ev circle { transition: r .25s var(--spring); }
+    .tl-ev:hover circle.c, .tl-ev:focus-visible circle.c { r:7; }
+    .tl-ev .stem { stroke-width:1; opacity:.55; }
+    .tl-yr { font:600 10.5px var(--font-mono); fill:var(--ink); letter-spacing:.02em; }
+    .tl-tt { font:400 10.5px var(--font-ui); fill:var(--muted); }
+    .tl-pop { opacity:0; transform:translateY(8px); transition:opacity .5s var(--ease), transform .5s var(--spring); transition-delay:var(--d,0ms); }
+    .shown .tl-pop { opacity:1; transform:none; }
+
+    /* ---------- room ledger ---------- */
+    .rooms { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+    .room { grid-column: span var(--sp,2); background:var(--card); border:1.5px solid var(--rc-bd);
+      border-radius:var(--r-tile); padding:13px 15px; cursor:default; position:relative;
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease); outline:none; }
+    .room:hover, .room:focus-visible { transform:translateY(-3px); box-shadow:var(--shadow-lift); z-index:3; }
+    .room .nm { font:700 15px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--ink); }
+    .room .vc { display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+      font:600 9.5px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--rc); background:var(--rc-bg); border:1px solid var(--rc-bd);
+      padding:5px 8px; border-radius:var(--r-chip); }
+    .room .vc i { width:7px; height:7px; border-radius:50%; background:var(--rc); }
+    .room.duke { --rc:var(--c-duke); --rc-bg:var(--c-duke-bg); --rc-bd:#e3b9a6; }
+    .room.art  { --rc:var(--c-art);  --rc-bg:var(--c-art-bg);  --rc-bd:#b9d9d0; }
+    .room q { display:block; margin-top:9px; font:400 12px/1.5 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .room q::before { color:var(--rc); font-weight:700; }
+    .split { margin-top:16px; }
+    .split .bar { display:flex; gap:2px; height:30px; border-radius:8px; overflow:hidden; }
+    .split .seg { display:flex; align-items:center; padding:0 12px; font:700 12px var(--font-mono);
+      color:#fff; letter-spacing:.03em; min-width:0; white-space:nowrap;
+      transform-origin:left center; }
+    .split .seg.duke { background:var(--c-duke); flex:5; }
+    .split .seg.art  { background:var(--c-art);  flex:3; }
+    .split .cap { display:flex; justify-content:space-between; margin-top:8px;
+      font:500 11px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- route + fork + vantage figs ---------- */
+    .fig { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); overflow:hidden; }
+    .fig svg { display:block; width:100%; height:auto; }
+    .fig-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:11px 18px 14px; border-top:1px solid var(--line); }
+    .fig-cap b { color:var(--forest-d); font-weight:600; }
+    .stop { cursor:pointer; }
+    .stop circle.c { transition: r .25s var(--spring); }
+    .stop:hover circle.c, .stop:focus-visible circle.c { r:7.5; }
+    .rt-label { font:500 10.5px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; fill:var(--muted); }
+    .rt-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* draw-in for long paths */
+    .draw { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); }
+    .shown .draw { animation: drawin 2.2s var(--ease) forwards; animation-delay: var(--d,0ms); }
+    @keyframes drawin { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .draw { stroke-dasharray:none; stroke-dashoffset:0; } }
+
+    /* ---------- scholars ---------- */
+    .chorus { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px; }
+    .voice { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:9px; }
+    .voice .who { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .voice .who b { font:700 14.5px/1.1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .voice .role { font:600 9.5px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); color:var(--vr); background:var(--vr-bg); flex:none; }
+    .voice q { font:400 13.5px/1.55 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .voice q::before, .voice q::after { color:var(--vr); font-weight:700; }
+    .voice .note { font:400 11.5px/1.5 var(--font-ui); color:var(--muted); margin-top:auto; }
+    .voice.framework { --vr:var(--c-schl); --vr-bg:var(--c-schl-bg); }
+    .voice.defense   { --vr:var(--c-art);  --vr-bg:var(--c-art-bg); }
+    .voice.evidence  { --vr:var(--c-duke); --vr-bg:var(--c-duke-bg); }
+    .voice.path      { --vr:#5a8a1e; --vr-bg:#e8f3d8; }
+
+    /* ---------- table view ---------- */
+    details.tbl { margin-top:18px; border:1px solid var(--line); border-radius:var(--r-panel);
+      background:var(--card); overflow:hidden; }
+    details.tbl summary { cursor:pointer; padding:13px 18px; font:600 12.5px var(--font-mono);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--forest-d); list-style:none; }
+    details.tbl summary::-webkit-details-marker { display:none; }
+    details.tbl summary::before { content:"▸ "; }
+    details.tbl[open] summary::before { content:"▾ "; }
+    details.tbl table { width:100%; border-collapse:collapse; font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    details.tbl th, details.tbl td { text-align:left; padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+    details.tbl th { font:600 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+    details.tbl td:first-child { font-family:var(--font-mono); font-weight:500; color:var(--ink); white-space:nowrap; }
+
+    /* ---------- closing ---------- */
+    .close-quote { margin:22px 0 0; padding:20px 24px; border-radius:var(--r-card);
+      background:linear-gradient(150deg,#15201d,#0c5a50 130%); color:#eef3ef;
+      box-shadow:var(--shadow-hero); }
+    .close-quote p { font:500 clamp(16px,2.1vw,20px)/1.5 var(--font-display); letter-spacing:-.01em; }
+    .close-quote p em { font-style:normal; color:var(--lime-b); }
+    .close-quote cite { display:block; margin-top:10px; font:500 11px var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:#9fb5ac; font-style:normal; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      font:400 11.5px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.02em; }
+    footer a { color:var(--muted); text-decoration-color:var(--line); }
+
+    /* ---------- tooltip ---------- */
+    .tip { position:fixed; z-index:60; max-width:290px; background:var(--ink); color:#f0f4f1;
+      font:400 12.5px/1.5 var(--font-ui); padding:10px 13px; border-radius:10px;
+      box-shadow:var(--shadow-lift); pointer-events:none; opacity:0;
+      transform:translateY(5px); transition:opacity .18s var(--ease), transform .18s var(--ease); }
+    .tip.on { opacity:1; transform:none; }
+    .tip b { color:#fff; font-weight:640; }
+
+    @media (max-width: 720px) {
+      .rooms { grid-template-columns:repeat(2,1fr); }
+      .room { grid-column: span 1 !important; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ================= header ================= -->
+  <header class="mo-reveal">
+    <div class="eyebrow"><span class="mo-dot"></span> essay reading · look sharp! · nolan patrick · 2026-07-13</div>
+    <h1>The <em>repointed</em> axis</h1>
+    <p class="sub">Doris Duke's presence at the Shangri La Museum of Islamic Art — the essay's argument, drawn.
+      Source: <a href="https://nolanpatrick.substack.com/p/doris-dukes-presence-at-the-shangri">nolanpatrick.substack.com</a></p>
+    <p class="lede">In 1935 a 22-year-old tobacco heiress honeymooned east across “the Orient” and came home with a house.
+      Shangri La — named for the utopia in <b>Hilton's <i>Lost Horizon</i></b>, built on Black Point, Honolulu, 1935–37 —
+      now holds one of the largest collections of Islamic art in the United States. Patrick's essay argues the museum
+      never resolved a founding tension: it calls itself the country's only museum dedicated <b>exclusively</b> to Islamic
+      art, yet its rooms, labels, and sightlines keep asking you to see that art <b>as Doris Duke saw it</b>.</p>
+    <div class="pullquote">
+      <p>“Islamic art regularly competes with Doris Duke herself for the museum's attention.”</p>
+      <cite>Nolan Patrick · the essay's central claim</cite>
+    </div>
+    <div class="lgd" role="list">
+      <span role="listitem"><i style="background:var(--c-art)"></i> the objects · Islamic art</span>
+      <span role="listitem"><i style="background:var(--c-duke)"></i> Duke's frame</span>
+      <span role="listitem"><i style="background:var(--c-schl)"></i> the scholars</span>
+      <span role="listitem"><i style="background:var(--c-lime)"></i> the offered distance <em style="font-style:normal;color:var(--faint)">(once)</em></span>
+    </div>
+  </header>
+
+  <!-- ================= 01 · the axis ================= -->
+  <section id="axis">
+    <div class="k mo-reveal"><span class="n">01</span><h2>One niche, <em>two axes</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The collection's most prominent object is a <b>13th-century mihrab</b>, made
+      for the shrine of a tomb in Veramin, Iran. A mihrab has one job: to orient worshipers along an axis toward
+      <b>Mecca</b>. Installed in Duke's Living Room, it was given a new job — anchoring a <b>visual axis</b> that runs the
+      other way, out through the house to Le'ahi (Diamond Head) and the Pacific, “via Doris Duke's collecting interests.”
+      Toggle the eras; watch the same object serve two different masters.</p>
+
+    <div class="hero-card mo-reveal" style="--d:140ms" data-era="shangrila" id="heroCard">
+      <div class="era-bar">
+        <button class="era-btn" id="btn-veramin"   aria-pressed="false">1265 · Veramin shrine</button>
+        <button class="era-btn" id="btn-shangrila" aria-pressed="true">1938 · Duke's Living Room</button>
+        <div class="era-note" aria-live="polite">
+          <p class="n-ver"><b>Sacred axis.</b> The niche points the room — and everyone praying in it — toward Mecca.</p>
+          <p class="n-sha"><b>Scenic axis.</b> The niche anchors a sightline to the Hawaiian landscape; artworks line the route.</p>
+        </div>
+      </div>
+      <figure class="axes" aria-hidden="false" role="img"
+        aria-label="Diagram: a mihrab niche at center. One axis runs left toward Mecca (its original sacred orientation in Veramin, Iran); a second axis runs right through Duke's Living Room toward Diamond Head, Hawaii (its repurposed visual orientation at Shangri La).">
+        <svg viewBox="0 0 960 400">
+          <!-- ground -->
+          <line class="vz-gridline" x1="30" y1="330" x2="930" y2="330"/>
+
+          <!-- ============ qibla axis (original) ============ -->
+          <g id="axisQibla">
+            <path class="vz-path flow draw" style="--vz-c:var(--c-art); --vz-dash:14; --len:360"
+                  d="M436,250 L96,250"/>
+            <polyline points="112,240 92,250 112,260" fill="none" stroke="var(--c-art)"
+                      stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Kaaba mark -->
+            <rect x="52" y="238" width="24" height="24" rx="2" fill="none" stroke="var(--c-art)" stroke-width="1.85"/>
+            <rect x="52" y="243" width="24" height="4" fill="var(--c-art)" opacity=".5"/>
+            <text class="ax-label strong" x="42" y="292">Mecca · qibla</text>
+            <text class="ax-label" x="42" y="308">the axis of prayer, 1265→</text>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-art); --mote-path:path('M436,250 L100,250'); --d:0s"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-art); --mote-path:path('M436,250 L100,250'); --d:-2.7s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-art); --mote-path:path('M436,250 L100,250'); --d:-5.3s"/>
+          </g>
+
+          <!-- ============ the mihrab (constant) ============ -->
+          <g id="mihrab">
+            <rect x="418" y="146" width="84" height="184" rx="7" fill="#fff"
+                  stroke="var(--ink)" stroke-width="1.85" opacity=".92"/>
+            <path d="M436,330 L436,218 Q436,180 460,169 Q484,180 484,218 L484,330"
+                  fill="var(--c-art-bg)" stroke="var(--forest-d)" stroke-width="1.85"
+                  stroke-linejoin="round" opacity=".95"/>
+            <circle cx="460" cy="160" r="3" fill="var(--forest-d)"/>
+            <!-- hanging lamp: the object breathing inside the niche -->
+            <line x1="460" y1="169" x2="460" y2="212" stroke="var(--forest-d)" stroke-width="1" opacity=".5"/>
+            <circle class="vz-dot breathe" cx="460" cy="220" r="5.5" style="--vz-c:var(--c-era); --d:-1s"/>
+            <text class="ax-label strong" x="416" y="124">the mihrab</text>
+            <text class="ax-label" x="416" y="140">Veramin, Iran · 13th c.</text>
+          </g>
+
+          <!-- ============ Duke's axis (repurposed) ============ -->
+          <g id="axisDuke">
+            <path class="vz-path flow draw" style="--vz-c:var(--c-duke); --vz-dash:14; --len:420; --d:300ms"
+                  d="M484,250 L904,250"/>
+            <polyline points="888,240 908,250 888,260" fill="none" stroke="var(--c-duke)"
+                      stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- living-room doorway the axis passes through -->
+            <line x1="600" y1="188" x2="600" y2="330" stroke="var(--c-duke)" stroke-width="1.85" opacity=".55"/>
+            <line x1="644" y1="188" x2="644" y2="330" stroke="var(--c-duke)" stroke-width="1.85" opacity=".55"/>
+            <line x1="592" y1="188" x2="652" y2="188" stroke="var(--c-duke)" stroke-width="1.85" opacity=".55"/>
+            <text class="ax-label" x="586" y="352">living room</text>
+            <!-- artworks lining the axis -->
+            <circle class="vz-dot breathe" cx="700" cy="250" r="3.4" style="--vz-c:var(--c-duke); --d:-.6s"/>
+            <circle class="vz-dot breathe" cx="736" cy="250" r="3.4" style="--vz-c:var(--c-duke); --d:-1.8s"/>
+            <!-- Le'ahi / Diamond Head -->
+            <path d="M746,330 L792,258 L816,268 L846,240 L876,254 L920,330 Z"
+                  fill="var(--c-duke)" opacity=".13"/>
+            <path d="M746,330 L792,258 L816,268 L846,240 L876,254 L920,330"
+                  fill="none" stroke="var(--c-duke)" stroke-width="1.85"
+                  stroke-linecap="round" stroke-linejoin="round" opacity=".6"/>
+            <!-- ocean -->
+            <path d="M700,344 q11,-7 22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0 t22,0"
+                  fill="none" stroke="var(--c-duke)" stroke-width="1.4" opacity=".35" stroke-linecap="round"/>
+            <text class="ax-label strong" x="790" y="374">Le‘ahi · Diamond Head</text>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-duke); --mote-path:path('M484,250 L900,250'); --d:-1.3s"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-duke); --mote-path:path('M484,250 L900,250'); --d:-4s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-duke); --mote-path:path('M484,250 L900,250'); --d:-6.7s"/>
+          </g>
+        </svg>
+      </figure>
+      <div class="hero-cap"><b>The repurposing, per the museum's own label:</b> the Living Room “frames a visual axis that
+        connects the landscapes of Hawai‘i to the mihrab… Along this axis a multitude of artworks showcase the variety of
+        interests that guided Duke's collecting practice.” Patrick's objection is structural — the museum details the
+        mihrab's origins, but “fails to explain how Duke's vision can be justified as the best way to present the mihrab
+        to a contemporary audience.”</div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · timeline ================= -->
+  <section id="time">
+    <div class="k mo-reveal"><span class="n">02</span><h2>Whose house, <em>when</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The house spent far longer as Duke's private sanctuary than it has spent
+      as anyone's museum — <b>56 years private</b> against <b>24 public</b>. She guarded it from “the prying press”
+      (Proctor-Tiffany), then in 1965 quietly amended her will to hand it over. Hover the dots.</p>
+
+    <div class="tl-wrap mo-reveal" style="--d:140ms" id="tlObserve">
+      <svg viewBox="0 0 960 268" role="img"
+        aria-label="Timeline 1912 to 2026: Duke's birth, Lost Horizon 1933, honeymoon 1935, house complete 1937, Town and Country article 1947, will amended 1965, Duke dies 1993, museum opens 2002, visitor survey 2006, this essay 2026. Eras shaded: private sanctuary 1937 to 1993, closed 1993 to 2002, public museum 2002 on.">
+        <!-- era bands -->
+        <g class="tl-era">
+          <rect x="260" y="118" width="14"  height="66" fill="var(--c-era)"  opacity=".22"/>
+          <rect x="274" y="118" width="395" height="66" fill="var(--c-duke)" opacity=".10"/>
+          <rect x="669" y="118" width="64"  height="66" fill="var(--faint)"  opacity=".18"/>
+          <rect x="733" y="118" width="197" height="66" fill="var(--c-art)"  opacity=".12"/>
+          <text class="tl-era-label" x="278" y="112" fill="var(--c-duke)">private sanctuary · 56 yrs</text>
+          <text class="tl-era-label" x="672" y="112" fill="var(--muted)">dark · 9</text>
+          <text class="tl-era-label" x="737" y="112" fill="var(--forest-d)">public museum · 24 yrs</text>
+          <text class="tl-era-label" x="256" y="112" fill="var(--c-era)" text-anchor="end">built</text>
+        </g>
+        <!-- spine -->
+        <line class="tl-spine draw" style="--len:864" x1="66" y1="151" x2="930" y2="151"/>
+        <!-- events: above -->
+        <g class="tl-ev tl-pop" style="--d:100ms" tabindex="0" data-tip="&lt;b&gt;1912 — born.&lt;/b&gt; Doris Duke, heiress to the American Tobacco fortune.">
+          <line class="stem" x1="98" y1="151" x2="98" y2="66" stroke="var(--ink)"/>
+          <circle class="c" cx="98" cy="151" r="5" fill="var(--ink)"/>
+          <text class="tl-yr" x="98" y="48" text-anchor="middle">1912</text>
+          <text class="tl-tt" x="98" y="61" text-anchor="middle">Duke born</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:180ms" tabindex="0" data-tip="&lt;b&gt;1933 — the name arrives.&lt;/b&gt; James Hilton publishes &lt;i&gt;Lost Horizon&lt;/i&gt;; its mythical Tibetan utopia lends the house its name — 'alluding to its Eastern influences.'">
+          <line class="stem" x1="246" y1="151" x2="246" y2="223" stroke="var(--c-schl)"/>
+          <circle class="c" cx="246" cy="151" r="5" fill="var(--c-schl)"/>
+          <text class="tl-yr" x="252" y="240" text-anchor="end">1933</text>
+          <text class="tl-tt" x="252" y="253" text-anchor="end">Lost Horizon</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:260ms" tabindex="0" data-tip="&lt;b&gt;1935 — the pilgrimage.&lt;/b&gt; Honeymoon across North Africa, the Middle East, India, Southeast Asia. The Taj Mahal 'ignited a passion that led to more than 50 years of collecting Islamic art.'">
+          <line class="stem" x1="260" y1="151" x2="260" y2="66" stroke="var(--c-duke)"/>
+          <circle class="c" cx="260" cy="151" r="5" fill="var(--c-duke)"/>
+          <text class="tl-yr" x="266" y="48" text-anchor="end">1935</text>
+          <text class="tl-tt" x="266" y="61" text-anchor="end">honeymoon east</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:340ms" tabindex="0" data-tip="&lt;b&gt;1937 — house complete.&lt;/b&gt; Shangri La finished on Black Point, Honolulu — a Mughal-inspired suite, later a Playhouse modeled on a 17th-century Iranian palace.">
+          <line class="stem" x1="274" y1="151" x2="274" y2="223" stroke="var(--c-era)"/>
+          <circle class="c" cx="274" cy="151" r="5" fill="var(--c-era)"/>
+          <text class="tl-yr" x="282" y="240" text-anchor="start">1937</text>
+          <text class="tl-tt" x="282" y="253" text-anchor="start">house complete</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:420ms" tabindex="0" data-tip="&lt;b&gt;1947 — the one public word.&lt;/b&gt; In &lt;i&gt;Town &amp; Country&lt;/i&gt;: 'Indeed, it is so hard to be impersonal about [Shangri La] that I'd better stop there.'">
+          <line class="stem" x1="345" y1="151" x2="345" y2="66" stroke="var(--c-duke)"/>
+          <circle class="c" cx="345" cy="151" r="5" fill="var(--c-duke)"/>
+          <text class="tl-yr" x="350" y="48" text-anchor="start">1947</text>
+          <text class="tl-tt" x="350" y="61" text-anchor="start">“…I'd better stop there”</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:500ms" tabindex="0" data-tip="&lt;b&gt;1965 — the turn outward.&lt;/b&gt; Duke amends her will: Shangri La will open to the public, with a foundation for the study of Islamic art and culture.">
+          <line class="stem" x1="472" y1="151" x2="472" y2="223" stroke="var(--c-art)"/>
+          <circle class="c" cx="472" cy="151" r="5" fill="var(--c-art)"/>
+          <text class="tl-yr" x="472" y="240" text-anchor="middle">1965</text>
+          <text class="tl-tt" x="472" y="253" text-anchor="middle">will amended · public access</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:580ms" tabindex="0" data-tip="&lt;b&gt;1993 — Duke dies.&lt;/b&gt; The house goes quiet; her will mandates public access.">
+          <line class="stem" x1="669" y1="151" x2="669" y2="66" stroke="var(--ink)"/>
+          <circle class="c" cx="669" cy="151" r="5" fill="var(--ink)"/>
+          <text class="tl-yr" x="669" y="48" text-anchor="middle">1993</text>
+          <text class="tl-tt" x="669" y="61" text-anchor="middle">Duke dies</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:660ms" tabindex="0" data-tip="&lt;b&gt;2002 — museum opens&lt;/b&gt; as 'the only museum dedicated exclusively to Islamic art in the United States.'">
+          <line class="stem" x1="733" y1="151" x2="733" y2="223" stroke="var(--c-art)"/>
+          <circle class="c" cx="733" cy="151" r="5" fill="var(--c-art)"/>
+          <text class="tl-yr" x="733" y="240" text-anchor="middle">2002</text>
+          <text class="tl-tt" x="733" y="253" text-anchor="middle">museum opens</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:740ms" tabindex="0" data-tip="&lt;b&gt;2006 — the survey.&lt;/b&gt; Setthamalinee finds visitors more interested in learning about Doris Duke than Islamic culture — 'the exoticism of celebrity and the ultra-rich.'">
+          <line class="stem" x1="761" y1="151" x2="761" y2="66" stroke="var(--c-duke)"/>
+          <circle class="c" cx="761" cy="151" r="5" fill="var(--c-duke)"/>
+          <text class="tl-yr" x="775" y="48" text-anchor="middle">2006</text>
+          <text class="tl-tt" x="775" y="61" text-anchor="middle">visitor survey</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:820ms" tabindex="0" data-tip="&lt;b&gt;2026 — this essay.&lt;/b&gt; Patrick: present Duke as a product of the Orientalist lineage — and offer visitors distance from her perspective.">
+          <line class="stem" x1="902" y1="151" x2="902" y2="223" stroke="var(--c-schl)"/>
+          <circle class="c" cx="902" cy="151" r="5" fill="var(--c-schl)"/>
+          <text class="tl-yr" x="896" y="240" text-anchor="middle">2026</text>
+          <text class="tl-tt" x="896" y="253" text-anchor="middle">the essay</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:60ms">
+        <div class="v"><span data-count="50">0</span><small>+ yrs</small></div>
+        <div class="l">of collecting, ignited by one honeymoon</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-duke); --d:140ms">
+        <div class="v"><span data-count="56">0</span><small>yrs</small></div>
+        <div class="l">a private sanctuary · 1937–1993</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-art); --d:220ms">
+        <div class="v"><span data-count="24">0</span><small>yrs</small></div>
+        <div class="l">a public museum · 2002–2026</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--ink); --d:300ms">
+        <div class="v"><span data-count="1">0</span><small>axis</small></div>
+        <div class="l">repointed — Mecca → Diamond Head</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · the label ledger ================= -->
+  <section id="rooms">
+    <div class="k mo-reveal"><span class="n">03</span><h2>The map speaks <em>two languages</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The museum's introductory labels define Islamic art expansively — “a
+      diverse, vibrant and ever-evolving set of artistic styles.” But walk the floor plan and count the names: three
+      spaces carry the vocabulary of Islamic art history; five still answer to <b>Duke's domestic nomenclature</b>.
+      Patrick: “despite introducing Islamic art as an organizing element, Duke and her collecting practice ultimately
+      dominate the museum, prompting visitors to adopt her vision.” Hover a room for its label.</p>
+
+    <div class="rooms">
+      <div class="room duke mo-reveal" tabindex="0" style="--sp:3; --d:60ms">
+        <div class="nm">Living Room</div>
+        <span class="vc"><i></i>Duke's house</span>
+        <q>As envisioned by Doris Duke, the Living Room remains the central space where the art, architecture, and
+          environment of Shangri La combine to create sanctuary.</q>
+      </div>
+      <div class="room duke mo-reveal" tabindex="0" style="--sp:3; --d:120ms">
+        <div class="nm">Mughal Bedroom &amp; Bath</div>
+        <span class="vc"><i></i>Duke's house</span>
+        <q>In this intimate and private space, Doris Duke sought to enchant herself alone.</q>
+      </div>
+      <div class="room art mo-reveal" tabindex="0" style="--sp:2; --d:180ms">
+        <div class="nm">Mughal Gallery</div>
+        <span class="vc"><i></i>Islamic art</span>
+        <q>…yet it holds the lengthiest display devoted solely to Duke: India “ignited a passion that led to more than
+          50 years of collecting.”</q>
+      </div>
+      <div class="room art mo-reveal" tabindex="0" style="--sp:2; --d:240ms">
+        <div class="nm">Qajar Gallery</div>
+        <span class="vc"><i></i>Islamic art</span>
+        <q>Named for the Qajar dynasty of Iran — the historical-region naming the essay wants more of.</q>
+      </div>
+      <div class="room art mo-reveal" tabindex="0" style="--sp:2; --d:300ms">
+        <div class="nm">Ottoman Gallery</div>
+        <span class="vc"><i></i>Islamic art</span>
+        <q>Named for the Ottoman world — vocabulary drawn from Islamic art history, not the household.</q>
+      </div>
+      <div class="room duke mo-reveal" tabindex="0" style="--sp:2; --d:360ms">
+        <div class="nm">Dining Room</div>
+        <span class="vc"><i></i>Duke's house</span>
+        <q>Retains its Duke-era domestic name.</q>
+      </div>
+      <div class="room duke mo-reveal" tabindex="0" style="--sp:2; --d:420ms">
+        <div class="nm">Playhouse</div>
+        <span class="vc"><i></i>Duke's house</span>
+        <q>A former guest house modeled on a seventeenth-century Iranian palace; now hosts events and education.</q>
+      </div>
+      <div class="room duke mo-reveal" tabindex="0" style="--sp:2; --d:480ms">
+        <div class="nm">“Be a guest”</div>
+        <span class="vc"><i></i>Duke's house</span>
+        <q>Shangri La invites you to be a guest — make yourself comfortable and reflect as the space unfolds around you.</q>
+      </div>
+    </div>
+
+    <div class="split mo-reveal" style="--d:540ms" role="img"
+      aria-label="Of eight named spaces discussed, five use Duke's domestic vocabulary, three use Islamic art history vocabulary.">
+      <div class="bar">
+        <div class="seg duke">Duke's vocabulary · 5</div>
+        <div class="seg art">Islamic art's · 3</div>
+      </div>
+      <div class="cap"><span>“the museum identifies with Duke herself”</span><span>spaces named in the essay</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 04 · the pilgrimage ================= -->
+  <section id="route">
+    <div class="k mo-reveal"><span class="n">04</span><h2>The honeymoon as <em>pilgrimage</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Saïd, quoting Schwab, describes nineteenth-century Orientalism as “an
+      amateur or professional enthusiasm for everything Asiatic, which was wonderfully synonymous with the exotic, the
+      mysterious, the profound, the seminal” — and observes that for a century, <b>“the Orient was a place of
+      pilgrimage.”</b> Patrick places Duke's 1935 honeymoon squarely in that lineage: a journey “defined by escapism
+      rather than religiosity” that <b>extended the Orient from North Africa to Hawai‘i</b>, “progressing as far east as
+      possible before a return to the U.S. mainland.” Hover the stops.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="routeObserve">
+      <svg viewBox="0 0 960 212" role="img"
+        aria-label="Route of Duke's 1935 honeymoon: from the U.S. mainland through North Africa, the Middle East, India (where the Taj Mahal ignites her collecting), Southeast Asia, ending in Hawaii where Shangri La is built.">
+        <line class="vz-gridline" x1="30" y1="176" x2="930" y2="176"/>
+        <path id="rtPath" class="vz-path flow draw" style="--vz-c:var(--c-duke); --vz-dash:14; --len:880"
+              d="M70,150 C130,150 190,110 250,110 S350,135 410,135 S500,100 560,100 S650,130 710,130 S820,95 880,95"/>
+                <g class="stop" tabindex="0" data-tip="&lt;b&gt;U.S. mainland — departure, 1935.&lt;/b&gt; The heiress leaves on an extended honeymoon.">
+          <circle class="c" cx="70" cy="150" r="5.5" fill="var(--ink)"/>
+          <text class="rt-label" x="46" y="196">u.s. mainland</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;North Africa.&lt;/b&gt; First leg of the route — where 'the Orient' begins, in the Orientalist imagination.">
+          <circle class="c" cx="250" cy="110" r="5.5" fill="var(--c-duke)"/>
+          <text class="rt-label" x="212" y="88">north africa</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Middle East.&lt;/b&gt; Iran's architecture stays with her — the Playhouse is modeled on a 17th-century Iranian palace; the mihrab will come from Veramin.">
+          <circle class="c" cx="410" cy="135" r="5.5" fill="var(--c-duke)"/>
+          <text class="rt-label" x="376" y="163">middle east</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;India — the spark.&lt;/b&gt; The Taj Mahal: travels here 'ignited a passion that led to more than 50 years of collecting Islamic art and to the design and creation of Shangri La itself.'">
+          <circle class="vz-ring halo" cx="560" cy="100" r="13" style="--vz-c:var(--c-era)"/>
+          <circle class="vz-ring" cx="560" cy="100" r="13" stroke-dasharray="2 8" style="--vz-c:var(--c-era); --vz-dash:10; animation:vz-flow 6s linear infinite"/>
+          <circle class="c" cx="560" cy="100" r="6" fill="var(--c-era)"/>
+          <text class="rt-label strong" x="540" y="76">india · taj mahal</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Southeast Asia.&lt;/b&gt; 'Progressing as far east as possible before a return to the U.S. mainland.'">
+          <circle class="c" cx="710" cy="130" r="5.5" fill="var(--c-duke)"/>
+          <text class="rt-label" x="668" y="158">southeast asia</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Hawai‘i — the return stalls.&lt;/b&gt; The Orient, 'extended… to Hawai‘i.' Shangri La rises on Black Point, 1935–37.">
+          <circle class="c" cx="880" cy="95" r="6" fill="var(--c-duke)"/>
+          <circle class="vz-ring halo" cx="880" cy="95" r="12" style="--vz-c:var(--c-duke)"/>
+          <text class="rt-label strong" x="928" y="70" text-anchor="end">hawai‘i · shangri la</text>
+        </g>
+        <circle class="vz-mote" r="3.2" style="--vz-c:var(--c-duke); --mote-path:path('M70,150 C130,150 190,110 250,110 S350,135 410,135 S500,100 560,100 S650,130 710,130 S820,95 880,95'); --d:0s"/>
+        <circle class="vz-mote" r="2.5" style="--vz-c:var(--c-duke); --mote-path:path('M70,150 C130,150 190,110 250,110 S350,135 410,135 S500,100 560,100 S650,130 710,130 S820,95 880,95'); --d:-3.4s"/>
+      </svg>
+      <div class="fig-cap"><b>Saïd's constraint:</b> “fields of learning, as much as the works of even the most eccentric
+        artist, are constrained and acted upon by society, by cultural traditions, by worldly circumstance…” Even a
+        progressive, independent collector — and the essay grants Duke was one — inherits the pilgrimage's frame.</div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · the attention fork ================= -->
+  <section id="survey">
+    <div class="k mo-reveal"><span class="n">05</span><h2>Where the visitors' <em>attention goes</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The framing works — on the audience. Setthamalinee's <b>2006 visitor
+      survey</b> found people came away more interested in learning about <b>Doris Duke</b> than about Islamic culture;
+      the draw was “the exoticism of celebrity and the ultra-rich,” not “the Orient” itself. The museum leans in,
+      staging visitors “as though they are in attendance at a glamourous Duke gathering.”</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="forkObserve">
+      <svg viewBox="0 0 960 232" role="img"
+        aria-label="Visitors enter the museum and their interest forks: the heavier branch bends toward Doris Duke, the lighter branch toward Islamic culture, per the 2006 survey's qualitative finding.">
+        <text class="rt-label" x="60" y="94">visitors enter</text>
+        <path class="vz-path draw" style="--vz-c:var(--ink); --len:310; opacity:.35" d="M60,116 L360,116"/>
+        <path id="forkDuke" class="vz-path flow draw" style="--vz-c:var(--c-duke); stroke-width:3.4px; opacity:.75; --vz-dash:14; --len:560; --d:250ms"
+              d="M360,116 C470,116 500,66 620,62 S850,58 884,58"/>
+        <path id="forkArt" class="vz-path flow draw" style="--vz-c:var(--c-art); --vz-dash:14; --len:560; --d:250ms"
+              d="M360,116 C470,116 500,168 620,172 S850,176 884,176"/>
+        <circle cx="360" cy="116" r="4.5" fill="var(--ink)"/>
+        <text class="rt-label strong" x="620" y="40" fill="var(--c-duke)">“doris duke” — celebrity, the ultra-rich</text>
+        <text class="rt-label" x="620" y="203" fill="var(--forest-d)">islamic culture</text>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--ink); --mote-path:path('M60,116 L356,116'); --d:0s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--ink); --mote-path:path('M60,116 L356,116'); --d:-4.1s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-duke); --mote-path:path('M360,116 C470,116 500,66 620,62 S850,58 884,58'); --d:-1s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-duke); --mote-path:path('M360,116 C470,116 500,66 620,62 S850,58 884,58'); --d:-3.6s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-duke); --mote-path:path('M360,116 C470,116 500,66 620,62 S850,58 884,58'); --d:-6.2s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-art); --mote-path:path('M360,116 C470,116 500,168 620,172 S850,176 884,176'); --d:-2.3s"/>
+      </svg>
+      <div class="fig-cap"><b>Read honestly:</b> the survey reported a direction of interest, not a percentage split —
+        branch weights here are qualitative, not measured shares. The finding stands either way: at a museum
+        “dedicated exclusively to Islamic art,” the founder out-draws the art.</div>
+    </div>
+  </section>
+
+  <!-- ================= 06 · the chorus ================= -->
+  <section id="chorus">
+    <div class="k mo-reveal"><span class="n">06</span><h2>The scholars' <em>chorus</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick builds the argument from six voices — a framework, a fair hearing
+      for Duke, the evidence against the framing, and a way out.</p>
+    <div class="chorus">
+      <div class="voice framework mo-reveal" style="--d:60ms">
+        <div class="who"><b>Edward Saïd</b><span class="role">framework</span></div>
+        <q>From one end of the nineteenth century to the other… the Orient was a place of pilgrimage.</q>
+        <div class="note">Orientalism: even eccentric individual taste is “constrained and acted upon” by its culture's ideas of the East.</div>
+      </div>
+      <div class="voice framework mo-reveal" style="--d:120ms">
+        <div class="who"><b>Raymond Schwab</b><span class="role">framework</span></div>
+        <q>An amateur or professional enthusiasm for everything Asiatic… wonderfully synonymous with the exotic, the mysterious, the profound, the seminal.</q>
+        <div class="note">Quoted by Saïd — the sensibility Duke's honeymoon inherited.</div>
+      </div>
+      <div class="voice defense mo-reveal" style="--d:180ms">
+        <div class="who"><b>Mariah Proctor-Tiffany</b><span class="role">fair hearing</span></div>
+        <q>[Shangri La was] the manifestation of her personal vision of beauty and the creation of her own identity.</q>
+        <div class="note">Correspondence shows Duke “exercised significant independence and resolve” — no dealer's puppet.</div>
+      </div>
+      <div class="voice defense mo-reveal" style="--d:240ms">
+        <div class="who"><b>Olga Bush</b><span class="role">fair hearing</span></div>
+        <q>…willingness to acquire replicas and… interest in commissioning new works by active artisans.</q>
+        <div class="note">In North Africa, the Middle East, and Asia — collecting that paid living makers, called “progressive and visionary.”</div>
+      </div>
+      <div class="voice evidence mo-reveal" style="--d:300ms">
+        <div class="who"><b>Sugata Ray</b><span class="role">evidence</span></div>
+        <q>…an escape from media attention… a private space in her lifetime, unlike its current status as a public institution.</q>
+        <div class="note">The house was built to construct a self away from the press — a purpose a public museum can't simply inherit.</div>
+      </div>
+      <div class="voice evidence mo-reveal" style="--d:360ms">
+        <div class="who"><b>Suchart Setthamalinee</b><span class="role">evidence</span></div>
+        <q>[Duke] sought and attained through Shangri La… a self whose identity was reinforced by Islamic art.</q>
+        <div class="note">And his 2006 survey shows visitors now chase that self — Duke — more than the art reinforcing it.</div>
+      </div>
+      <div class="voice path mo-reveal" style="--d:420ms">
+        <div class="who"><b>Anne Higonnet</b><span class="role">the way out</span></div>
+        <q>…the complex relationships between private experience and public history.</q>
+        <div class="note">Collection-museums should show the founder's personality <i>and</i> the historical forces that shaped their collecting — at once.</div>
+      </div>
+      <div class="voice path mo-reveal" style="--d:480ms">
+        <div class="who"><b>Nolan Patrick</b><span class="role">the way out</span></div>
+        <q>The story of Shangri La cannot be told without Duke… her person has undeniably become part of the history of the objects.</q>
+        <div class="note">So don't erase her — contextualize her: present the house as a product of the Orientalist lineage, not a lens to look through.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 · the offered distance ================= -->
+  <section id="distance">
+    <div class="k mo-reveal"><span class="n">07</span><h2>The <em>offered distance</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The essay's fix isn't demolition — it's a third position. Keep the house,
+      keep Duke in the story, but move the visitor <b>off her axis</b>: a vantage from which both orientations, the
+      sacred one and the scenic one, are visible as history.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="vantageObserve">
+      <svg viewBox="0 0 960 250" role="img"
+        aria-label="The axis diagram again, faded, with a new lime-colored vantage point above and outside both axes: the visitor, offered critical distance, sees the sacred axis and Duke's scenic axis at once.">
+        <line class="vz-gridline" x1="30" y1="212" x2="930" y2="212"/>
+        <g opacity=".22">
+          <path class="vz-path" stroke-dasharray="4 10" style="--vz-c:var(--c-art)" d="M446,158 L150,158"/>
+          <rect x="118" y="148" width="20" height="20" rx="2" fill="none" stroke="var(--c-art)" stroke-width="1.85"/>
+          <path class="vz-path" style="--vz-c:var(--c-duke)" d="M514,158 L830,158"/>
+          <path d="M760,212 L796,162 L816,170 L840,150 L862,160 L896,212" fill="none"
+                stroke="var(--c-duke)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="446" y="92" width="68" height="120" rx="6" fill="none" stroke="var(--ink)" stroke-width="1.85"/>
+          <path d="M460,212 L460,140 Q460,114 480,106 Q500,114 500,140 L500,212" fill="none"
+                stroke="var(--forest-d)" stroke-width="1.85" stroke-linejoin="round"/>
+        </g>
+        <!-- the single lime moment: the visitor, off-axis -->
+        <g>
+          <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 7" d="M252,70 L446,140"/>
+          <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 7" d="M252,70 L816,146"/>
+          <circle class="vz-ring orbit" cx="236" cy="62" r="15" style="--vz-c:var(--c-lime)"/>
+          <circle class="vz-dot breathe" cx="236" cy="62" r="5.5" style="--vz-c:var(--c-lime)"/>
+          <text class="rt-label strong" x="52" y="36">the visitor, offered distance</text>
+          <text class="rt-label" x="52" y="52">sees both axes as history</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>Both orientations in one field of view</b> — the qibla the mihrab was built for, and the
+        sightline Duke gave it. Neither erased; neither adopted.</div>
+    </div>
+
+    <div class="close-quote mo-reveal" style="--d:220ms">
+      <p>“…rather than positioning its audience within Duke's perspective, it can <em>offer them distance from it</em>,
+        enabling visitors to develop a more critical understanding of the site and its place in the history of Western
+        thought about the East.”</p>
+      <cite>Nolan Patrick · Look Sharp! · conclusion</cite>
+    </div>
+
+    <details class="tbl mo-reveal" style="--d:280ms">
+      <summary>data table · every event &amp; claim drawn above</summary>
+      <table>
+        <thead><tr><th>Year</th><th>Event</th><th>Series</th></tr></thead>
+        <tbody>
+          <tr><td>1265 c.</td><td>Mihrab made for the shrine of a tomb, Veramin, Iran — oriented toward Mecca</td><td>the objects</td></tr>
+          <tr><td>1912</td><td>Doris Duke born, heiress to the American Tobacco fortune</td><td>—</td></tr>
+          <tr><td>1933</td><td>James Hilton publishes <i>Lost Horizon</i>; the name “Shangri-La” enters the lexicon</td><td>the scholars' context</td></tr>
+          <tr><td>1935</td><td>Honeymoon: North Africa → Middle East → India (Taj Mahal) → Southeast Asia → Hawai‘i</td><td>Duke's frame</td></tr>
+          <tr><td>1935–37</td><td>Shangri La built on Black Point, Honolulu, facing Le‘ahi (Diamond Head)</td><td>Duke's frame</td></tr>
+          <tr><td>1947</td><td><i>Town &amp; Country</i>: “so hard to be impersonal about [Shangri La] that I'd better stop there”</td><td>Duke's frame</td></tr>
+          <tr><td>1965</td><td>Will amended: public access + foundation for the study of Islamic art and culture</td><td>the objects</td></tr>
+          <tr><td>1993</td><td>Duke dies; house dark for nine years</td><td>—</td></tr>
+          <tr><td>2002</td><td>Opens as “the only museum dedicated exclusively to Islamic art in the United States”</td><td>the objects</td></tr>
+          <tr><td>2006</td><td>Setthamalinee survey: visitors more interested in Duke than Islamic culture</td><td>Duke's frame</td></tr>
+          <tr><td>2026</td><td>Patrick's essay: contextualize Duke within Orientalism; offer visitors distance</td><td>the scholars</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Space</th><th>Vocabulary</th><th>Label evidence (per the essay)</th></tr></thead>
+        <tbody>
+          <tr><td>Living Room</td><td>Duke's house</td><td>“As envisioned by Doris Duke… combine to create sanctuary”; “Shangri La invites you to be a guest”</td></tr>
+          <tr><td>Dining Room</td><td>Duke's house</td><td>Duke-era domestic name retained</td></tr>
+          <tr><td>Mughal Bedroom &amp; Bath</td><td>Duke's house</td><td>“Doris Duke sought to enchant herself alone”</td></tr>
+          <tr><td>Playhouse</td><td>Duke's house</td><td>Guest house after a 17th-c. Iranian palace; now events/education</td></tr>
+          <tr><td>Mughal Gallery</td><td>Islamic art</td><td>But holds “the lengthiest display devoted solely to Duke”</td></tr>
+          <tr><td>Qajar Gallery</td><td>Islamic art</td><td>Historical-region naming</td></tr>
+          <tr><td>Ottoman Gallery</td><td>Islamic art</td><td>Historical-region naming</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    <span>bpo · essay reading · shangri la, the repointed axis</span>
+    <span><a href="https://nolanpatrick.substack.com/p/doris-dukes-presence-at-the-shangri">source essay</a> · built 2026-07-14 07:50 utc</span>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- staggered reveals ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.mo-reveal').forEach(function (el) { io.observe(el); });
+  if (reduce) document.querySelectorAll('.mo-reveal').forEach(function (el) { el.classList.add('shown'); });
+
+  /* ---- count-up tiles ---- */
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, target = +el.getAttribute('data-count');
+      if (reduce) { el.textContent = target; return; }
+      var t0 = null, dur = 1300;
+      function step(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * ease);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+
+  /* ---- era toggle: auto-alternate until the reader takes over ---- */
+  var card = document.getElementById('heroCard');
+  var bVer = document.getElementById('btn-veramin');
+  var bSha = document.getElementById('btn-shangrila');
+  var userDrove = false, timer = null;
+  function setEra(era) {
+    card.setAttribute('data-era', era);
+    bVer.setAttribute('aria-pressed', era === 'veramin');
+    bSha.setAttribute('aria-pressed', era === 'shangrila');
+  }
+  bVer.addEventListener('click', function () { userDrove = true; clearInterval(timer); setEra('veramin'); });
+  bSha.addEventListener('click', function () { userDrove = true; clearInterval(timer); setEra('shangrila'); });
+  if (!reduce) {
+    timer = setInterval(function () {
+      if (userDrove) return clearInterval(timer);
+      setEra(card.getAttribute('data-era') === 'veramin' ? 'shangrila' : 'veramin');
+    }, 5500);
+  }
+
+  /* ---- one tooltip for all [data-tip] ---- */
+  var tip = document.getElementById('tip');
+  function showTip(el) {
+    tip.innerHTML = el.getAttribute('data-tip');
+    tip.classList.add('on');
+    tip.setAttribute('aria-hidden', 'false');
+    var r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+    var x = r.left + r.width / 2 - tr.width / 2;
+    x = Math.max(10, Math.min(x, window.innerWidth - tr.width - 10));
+    var y = r.top - tr.height - 12;
+    if (y < 8) y = r.bottom + 12;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.classList.remove('on'); tip.setAttribute('aria-hidden', 'true'); }
+  document.querySelectorAll('[data-tip]').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { showTip(el); });
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('focus', function () { showTip(el); });
+    el.addEventListener('blur', hideTip);
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

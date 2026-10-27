@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-167 · tpe-shoppee-justin-p · movie-night order runbook</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --fit: 1000px; }
+    body { min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--ink); }
+    .wrap { max-width: var(--fit); margin: 0 auto; padding: 40px 24px 72px; }
+    .kicker { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      font: 600 12px/1 var(--font-mono, ui-monospace, monospace); letter-spacing:.08em;
+      text-transform:uppercase; color: var(--forest); }
+    .kicker .dot { width:7px; height:7px; border-radius:2px; background: var(--lime); }
+    h1 { margin: 14px 0 6px; font-size: clamp(28px, 4.4vw, 42px); line-height:1.04; letter-spacing:-.01em; }
+    .sub { color: color-mix(in srgb, var(--ink) 62%, transparent); max-width: 64ch; font-size:16px; }
+    .sub b { color: var(--forest); font-weight:700; }
+
+    h2 { margin: 40px 0 4px; font-size: 13px; letter-spacing:.10em; text-transform:uppercase; color: var(--forest); }
+    .h2sub { margin:0 0 16px; font-size:14px; color: var(--muted); }
+
+    .grid2 { display:grid; grid-template-columns: 1.15fr .85fr; gap:18px; }
+    @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } }
+
+    .card { border:1px solid var(--line); border-radius: var(--r-card, 16px);
+      background: var(--card); box-shadow: var(--shadow-card); padding:20px 22px; }
+    .card.reco { border-color: color-mix(in srgb, var(--forest) 40%, var(--line));
+      box-shadow: var(--shadow-hero); }
+    .card h3 { margin:0 0 4px; font-size:17px; }
+    .card .lead { font-size:13px; color: var(--muted); margin:0 0 14px; }
+    .tag { display:inline-block; font:700 10px/1 var(--font-mono, monospace); letter-spacing:.06em;
+      text-transform:uppercase; padding:5px 8px; border-radius:6px; vertical-align:middle; margin-left:8px; }
+    .tag.reco { background: color-mix(in srgb, var(--lime) 28%, transparent); color: var(--forest-d); }
+    .tag.alt  { background: color-mix(in srgb, var(--found) 18%, transparent); color: var(--found-d); }
+
+    /* decision callout */
+    .callout { margin:18px 0 0; border:1px solid var(--g-lime); background: color-mix(in srgb, var(--g-lime) 55%, var(--card));
+      border-radius: var(--r-panel); padding:16px 18px; display:flex; gap:14px; align-items:flex-start; }
+    .callout .big { font:800 15px/1.15 var(--font-mono, monospace); color: var(--forest); flex:none;
+      display:grid; place-items:center; text-align:center; width:74px; }
+    .callout .big span { display:block; font-size:26px; }
+    .callout p { margin:0; font-size:14px; color: var(--body); }
+    .callout b { color: var(--forest-d); }
+
+    /* bundle table */
+    .bundle { width:100%; border-collapse:collapse; border:1px solid var(--line); border-radius:var(--r-card); overflow:hidden; }
+    .bundle th, .bundle td { text-align:left; padding:11px 14px; font-size:14px; border-bottom:1px solid var(--line); vertical-align:top; }
+    .bundle th { font:700 10.5px/1 var(--font-mono, monospace); letter-spacing:.07em; text-transform:uppercase;
+      color: var(--faint); background: color-mix(in srgb, var(--forest) 5%, transparent); }
+    .bundle tr:last-child td { border-bottom:none; }
+    .bundle td.role { font-weight:600; }
+    .bundle td.zh { color: var(--muted); font-size:13px; }
+    .bundle td.px { font:600 12.5px/1.4 var(--font-mono, monospace); color: var(--forest-d); white-space:nowrap; }
+    .bundle tr.total td { background: color-mix(in srgb, var(--lime) 12%, transparent); font-weight:700; }
+    .bundle .why { color: var(--body); font-size:12.5px; }
+
+    /* backward-timed schedule */
+    .timeline { display:grid; grid-template-columns: repeat(4,1fr); gap:12px; }
+    @media (max-width:760px){ .timeline { grid-template-columns:1fr 1fr; } }
+    .node { border:1px solid var(--line); border-radius: var(--r-tile); background: var(--card); padding:13px 15px; position:relative; }
+    .node.key { border-color: color-mix(in srgb, var(--forest) 45%, var(--line)); box-shadow: var(--shadow-card); }
+    .node .when { font:700 11px/1 var(--font-mono, monospace); color: var(--forest); letter-spacing:.04em; }
+    .node .what { font-size:14px; font-weight:600; margin:6px 0 3px; }
+    .node .det { font-size:12.5px; color: var(--muted); line-height:1.45; }
+    .node .pin { position:absolute; top:11px; right:12px; font:700 9px/1 var(--font-mono, monospace);
+      text-transform:uppercase; letter-spacing:.06em; color: var(--forest-d);
+      background: color-mix(in srgb, var(--lime) 30%, transparent); padding:4px 6px; border-radius:5px; }
+
+    /* runbook checklist */
+    ol.run { list-style:none; counter-reset: step; padding:0; margin:0; display:grid; gap:10px; }
+    ol.run li { counter-increment: step; display:flex; gap:12px; align-items:flex-start;
+      border:1px solid var(--line); border-radius: var(--r-tile); background: var(--card); padding:13px 15px; }
+    ol.run li .box { flex:none; width:22px; height:22px; border-radius:6px; border:1.5px solid color-mix(in srgb, var(--forest) 45%, var(--line));
+      background: var(--card); cursor:pointer; display:grid; place-items:center; margin-top:1px; transition:.12s; }
+    ol.run li .box::after { content:""; width:11px; height:11px; border-radius:3px; background: var(--forest); transform:scale(0); transition:.12s; }
+    ol.run li.done .box { background: color-mix(in srgb, var(--lime) 22%, transparent); border-color: var(--forest); }
+    ol.run li.done .box::after { transform:scale(1); }
+    ol.run li .body { font-size:14px; line-height:1.5; }
+    ol.run li .body .n { font:700 11px/1 var(--font-mono, monospace); color: var(--forest-d);
+      background: color-mix(in srgb, var(--forest) 10%, transparent); padding:2px 6px; border-radius:5px; margin-right:7px; }
+    ol.run li.done .body { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--forest) 40%, transparent); }
+    ol.run li.done .body .n { text-decoration:none; }
+    .runbar { display:flex; align-items:center; gap:12px; margin:0 0 12px; }
+    .runbar .prog { flex:1; height:7px; border-radius:5px; background: color-mix(in srgb, var(--forest) 10%, transparent); overflow:hidden; }
+    .runbar .prog i { display:block; height:100%; width:0; background: var(--forest); transition:.2s; }
+    .runbar .lbl { font:600 12px/1 var(--font-mono, monospace); color: var(--muted); }
+    .runbar button { font:600 11px/1 var(--font-mono, monospace); color: var(--muted); background:none;
+      border:1px solid var(--line); border-radius:6px; padding:6px 9px; cursor:pointer; }
+    .runbar button:hover { color: var(--forest); border-color: color-mix(in srgb, var(--forest) 40%, var(--line)); }
+
+    /* copy blocks */
+    .copyblock { border:1px solid var(--line); border-radius: var(--r-tile); background: var(--card); overflow:hidden; margin-top:8px; }
+    .copyblock .top { display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:9px 12px; border-bottom:1px solid var(--line); background: color-mix(in srgb, var(--forest) 5%, transparent); }
+    .copyblock .top .t { font:700 10.5px/1 var(--font-mono, monospace); letter-spacing:.06em; text-transform:uppercase; color: var(--faint); }
+    .copyblock button.copy { font:600 11px/1 var(--font-mono, monospace); color: var(--forest-d);
+      background: color-mix(in srgb, var(--lime) 22%, transparent); border:1px solid color-mix(in srgb, var(--forest) 30%, var(--line));
+      border-radius:6px; padding:6px 10px; cursor:pointer; transition:.12s; }
+    .copyblock button.copy:hover { background: color-mix(in srgb, var(--lime) 40%, transparent); }
+    .copyblock button.copy.ok { background: var(--forest); color:#fff; border-color: var(--forest); }
+    .copyblock pre { margin:0; padding:13px 15px; font: 12.5px/1.65 var(--font-mono, monospace);
+      color: var(--body); white-space:pre-wrap; word-break:break-word; }
+    .fill { background: color-mix(in srgb, var(--warn) 22%, transparent); border-radius:3px; padding:0 3px; font-weight:700; }
+
+    .pro, .con { font-size:13px; margin-top:10px; padding-left:20px; position:relative; }
+    .pro::before { content:"+"; position:absolute; left:4px; color: var(--forest); font-weight:800; }
+    .con::before { content:"–"; position:absolute; left:5px; color: var(--warn); font-weight:800; }
+
+    code { font: 12.5px var(--font-mono, monospace);
+      background: color-mix(in srgb, var(--forest) 9%, transparent); padding:1px 5px; border-radius:5px; }
+    a { color: var(--forest); text-decoration: none; border-bottom:1px solid color-mix(in srgb, var(--forest) 30%, transparent); }
+
+    .foot { margin-top:44px; font-size:12.5px; color: var(--muted);
+      border-top:1px solid var(--line); padding-top:16px; }
+    .foot .row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:10px; }
+    .foot .src { font-size:11.5px; color: var(--faint); line-height:1.7; }
+    .foot .src b { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kicker"><span class="dot"></span> TODO-167 · tpe-shoppee-justin-p · In&nbsp;Progress · 2026-07-08 14-49 Z</div>
+    <h1>Ship Justin the movie-night kit — land it in Taipei by mid-August</h1>
+    <p class="sub">This is the <b>do-it-now runbook</b>, not the menu. <a href="https://nomad-code.github.io/todo-144_ship-justin-p_2026-07-07_17-00/">TODO-144</a>
+      weighed the options; this one commits to <b>one gift and one route</b> and walks you through placing the order.
+      Decision locked: the <b>budget movie-night combo</b> — a hand-crank stovetop popper plus the fixings — bought on
+      Shopee TW through a buying agent and routed straight to the <b>士林克強 店到店</b> counter Justin gave you.</p>
+
+    <div class="callout">
+      <div class="big"><span>🍿</span>&lt; $50</div>
+      <p><b>Why this pick:</b> cheap, indestructible, zero electronics — so the "will it work on Taiwan power?"
+        question that shadowed the Creami simply doesn't exist. The crank is half the fun for a kid, and every piece
+        (popper, kernels, seasoning) sells <b>domestically on Shopee TW</b>, which is the only thing that reaches the
+        店到店 counter. It's the fastest, lowest-friction way to make "arriving in August through Shopee" actually true.</p>
+    </div>
+
+    <h2>The bundle · what to have the agent buy</h2>
+    <p class="h2sub">All on Shopee TW. Prices approximate — confirm the live listings when the agent quotes you.</p>
+    <table class="bundle">
+      <thead>
+        <tr><th>Item</th><th>Search on Shopee TW</th><th>Est.</th><th>Why it's in the box</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="role">Hand-crank stovetop popper</td>
+          <td class="zh">手搖爆米花機 · 轉柄爆米花鍋</td>
+          <td class="px">~NT$400–900<br>(~US$13–29)</td>
+          <td class="why">The centerpiece. Whirly-Pop style — 3-minute stovetop popcorn, nothing to break.</td>
+        </tr>
+        <tr>
+          <td class="role">Kernels + popping oil</td>
+          <td class="zh">爆米花玉米粒 · 椰子油</td>
+          <td class="px">~NT$300</td>
+          <td class="why">A bag of kernels + oil = many movie nights. Bulk it so they don't run out fast.</td>
+        </tr>
+        <tr>
+          <td class="role">Seasoning set</td>
+          <td class="zh">焦糖 / 奶油 / 起司粉</td>
+          <td class="px">~NT$150–250</td>
+          <td class="why">Caramel, butter, cheese powders — the "invent your own flavor" part for the kids.</td>
+        </tr>
+        <tr>
+          <td class="role">Optional add-on</td>
+          <td class="zh">兒童零食箱 / 電影之夜小物</td>
+          <td class="px">~NT$200</td>
+          <td class="why">A small snack box or movie-night trinket to round the bundle into an "activity."</td>
+        </tr>
+        <tr class="total">
+          <td class="role">Items subtotal</td>
+          <td class="zh">— on Shopee TW —</td>
+          <td class="px">~NT$1,050–1,650<br>(~US$33–52)</td>
+          <td class="why">Plus the agent's service fee (a few USD + %) and domestic 店到店 shipping (~NT$60–120). Still lands well under a Creami.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Timing · today is Jul 8, target is Aug 8–11</h2>
+    <p class="h2sub">Plenty of runway. The whole chain is short; the only hard rule is order before the pickup window closes on his end.</p>
+    <div class="timeline">
+      <div class="node">
+        <div class="when">NOW · Jul 8+</div>
+        <div class="what">Set up the agent</div>
+        <div class="det">Register + confirm they'll route to a 店到店 counter. Do this any time this month.</div>
+      </div>
+      <div class="node key">
+        <div class="pin">order-by</div>
+        <div class="when">BY · ~Aug 1</div>
+        <div class="what">Place the order</div>
+        <div class="det">Comfortable buffer. Even Aug 3–4 works — this is the one date that matters.</div>
+      </div>
+      <div class="node">
+        <div class="when">THEN · 1–4 days</div>
+        <div class="what">In transit to 店到店</div>
+        <div class="det">Shopee Xpress domestic delivery to the Shilin counter. Justin gets an SMS pickup code.</div>
+      </div>
+      <div class="node">
+        <div class="when">LANDS · Aug 8–11</div>
+        <div class="what">Justin picks it up</div>
+        <div class="det">5-day pickup window at the counter. Tell him it's there (or coordinate the surprise).</div>
+      </div>
+    </div>
+
+    <h2>Run it · check each step off as you go</h2>
+    <p class="h2sub">Buying agent = your Taiwan-side account + address + local card. Primary pick <b>Buy Taiwan Online</b> (English, takes foreign card/PayPal); backups <b>Two Tree</b>, <b>Taiwan Ezstar</b>, <b>LetsGoBuy</b>.</p>
+    <div class="runbar">
+      <div class="prog"><i id="prog"></i></div>
+      <span class="lbl" id="proglbl">0 / 5</span>
+      <button id="reset" type="button">reset</button>
+    </div>
+    <ol class="run" id="run">
+      <li data-step="1"><span class="box" role="checkbox" aria-checked="false" tabindex="0"></span>
+        <span class="body"><span class="n">01</span>Register with <b>Buy Taiwan Online</b> (buytaiwanonline.com) and confirm they can deliver to a <code>蝦皮店到店</code> pickup counter, not just a home address.</span></li>
+      <li data-step="2"><span class="box" role="checkbox" aria-checked="false" tabindex="0"></span>
+        <span class="body"><span class="n">02</span>Send them the request: the three Shopee TW searches above (popper + kernels/oil + seasoning) and the address block below. Ask them to <b>quote items + service fee + shipping before ordering</b>.</span></li>
+      <li data-step="3"><span class="box" role="checkbox" aria-checked="false" tabindex="0"></span>
+        <span class="body"><span class="n">03</span>Approve the quote and <b>pay the product cost</b> by credit card / PayPal. They procure on Shopee TW in local currency.</span></li>
+      <li data-step="4"><span class="box" role="checkbox" aria-checked="false" tabindex="0"></span>
+        <span class="body"><span class="n">04</span>They route the parcel through Shopee to the <code>士林克強智取店</code> counter. A <b>pickup code SMS</b> goes to the recipient mobile — make sure that's a number you control if it's a surprise.</span></li>
+      <li data-step="5"><span class="box" role="checkbox" aria-checked="false" tabindex="0"></span>
+        <span class="body"><span class="n">05</span>Pay the shipping/service fee, grab the <b>tracking number</b>, and tell Justin (or coordinate the drop) once it lands. Done.</span></li>
+    </ol>
+
+    <h2>Copy-paste · address + agent message</h2>
+    <p class="h2sub">Fill the two highlighted fields before you send. The mobile is where the pickup code lands — use your own number to keep the surprise.</p>
+    <div class="grid2">
+      <div>
+        <div class="copyblock">
+          <div class="top"><span class="t">蝦皮店到店 · pickup address</span>
+            <button class="copy" type="button" data-copy="addr">copy</button></div>
+          <pre id="addr">蝦皮店到店 · 士林克強智取店
+111 台北市士林區蘭興里克強路28號1樓
+No.28, 1F, Keqiang Rd, Lanxing Vil.,
+Shilin Dist., Taipei City 111, Taiwan
+
+店到店代碼 store code: 士林克強智取店  (confirm on spx.tw)
+收件人 recipient: __________  ← FILL IN
+手機 mobile: 09________  ← FILL IN (gets the SMS code)</pre>
+        </div>
+      </div>
+      <div>
+        <div class="copyblock">
+          <div class="top"><span class="t">message to the agent (EN)</span>
+            <button class="copy" type="button" data-copy="msg">copy</button></div>
+          <pre id="msg">Hi! I'd like to use your Shopee Taiwan buying-agent
+service. Please order these from Shopee TW and ship
+them together to a 蝦皮店到店 (store-to-store) counter:
+
+1. Hand-crank stovetop popcorn maker (手搖爆米花機)
+2. Popcorn kernels (爆米花玉米粒) + popping oil
+3. Popcorn seasoning (焦糖 / 奶油 / 起司粉)
+
+Deliver to:
+蝦皮店到店 · 士林克強智取店
+No.28, 1F, Keqiang Rd, Shilin Dist., Taipei City 111
+Recipient: [NAME]   Mobile: [09xx-xxx-xxx]
+
+I'll pay by card / PayPal. Please send the listings you
+pick + the total (items + fee + shipping) before
+ordering. Target: arriving before Aug 11. Thank you!</pre>
+        </div>
+      </div>
+    </div>
+
+    <h2>If something's off</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>No hand-crank popper on Shopee TW? <span class="tag alt">swap</span></h3>
+        <p class="lead">The exact Whirley Pop brand may not be listed domestically.</p>
+        <div class="pro">Swap to any Shopee TW <code>手搖爆米花機</code> equivalent, or an electric <code>自動爆米花機</code> (110V, works there) — keeps the clean 店到店 route.</div>
+        <div class="con">Or have the agent source the real US Whirley Pop to Justin's <b>home address</b> (Path B) — possible import duty, and it skips the counter he gave you.</div>
+      </div>
+      <div class="card reco">
+        <h3>Keep it a surprise <span class="tag reco">tip</span></h3>
+        <p class="lead">The pickup code SMS is the leak risk.</p>
+        <div class="pro">Put <b>your own mobile</b> as the recipient number so the code comes to you; hand it over or arrange the counter pickup on his behalf.</div>
+        <div class="pro">Confirm the <code>士林克強智取店</code> store code on <a href="https://spx.tw/">spx.tw</a> before the agent orders, so it routes to the right counter.</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="row">
+        <span>Descriptor: <code>justin-movie-night-order</code></span>
+        <span>Bucket: <code>todo-167</code></span>
+        <span>Stamp: 2026-07-08 14-49 Z</span>
+      </div>
+      <div class="src">
+        <b>Sources</b> —
+        Shopee TW buying agents &amp; foreign-card flow: buytaiwanonline.com, twotreeteam.com, taiwanezstar.com, letsgobuy-tw.com ·
+        Shopee 店到店 / Shopee Xpress transit (1–4 business days, 5-day pickup): help.shopee.tw, spx.tw ·
+        Popper / kernels / seasoning listings: shopee.tw searches (手搖爆米花機, 爆米花玉米粒, 焦糖/奶油/起司粉).
+        Prices approximate; confirm live listings before ordering. Builds on TODO-144 ship-justin-p.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var KEY = 'todo167-run-v1';
+      var run = document.getElementById('run');
+      var items = Array.prototype.slice.call(run.querySelectorAll('li'));
+      var prog = document.getElementById('prog');
+      var lbl = document.getElementById('proglbl');
+      var state = {};
+      try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+
+      function paint() {
+        var done = 0;
+        items.forEach(function (li) {
+          var s = li.getAttribute('data-step');
+          var on = !!state[s];
+          li.classList.toggle('done', on);
+          li.querySelector('.box').setAttribute('aria-checked', on ? 'true' : 'false');
+          if (on) done++;
+        });
+        prog.style.width = (items.length ? (done / items.length * 100) : 0) + '%';
+        lbl.textContent = done + ' / ' + items.length;
+      }
+      function toggle(li) {
+        var s = li.getAttribute('data-step');
+        state[s] = !state[s];
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+        paint();
+      }
+      items.forEach(function (li) {
+        var box = li.querySelector('.box');
+        box.addEventListener('click', function () { toggle(li); });
+        box.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(li); }
+        });
+      });
+      document.getElementById('reset').addEventListener('click', function () {
+        state = {};
+        try { localStorage.removeItem(KEY); } catch (e) {}
+        paint();
+      });
+      paint();
+
+      // copy-to-clipboard
+      Array.prototype.slice.call(document.querySelectorAll('button.copy')).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var el = document.getElementById(btn.getAttribute('data-copy'));
+          if (!el) return;
+          var text = el.textContent;
+          var done = function () {
+            var was = btn.textContent;
+            btn.textContent = 'copied ✓'; btn.classList.add('ok');
+            setTimeout(function () { btn.textContent = was; btn.classList.remove('ok'); }, 1400);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+          } else { fallback(text, done); }
+        });
+      });
+      function fallback(text, done) {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    })();
+  </script>
+</body>
+</html>

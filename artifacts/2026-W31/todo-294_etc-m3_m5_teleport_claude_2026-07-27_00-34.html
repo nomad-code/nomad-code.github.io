@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-294 · M3 ↔ M5 Claude teleport</title>
+  <meta name="description" content="Active-active Claude Code nodes with Codex on iPhone as the control plane">
+  <script>
+  (function(){var K='bpo-unlocked',ok=false,h;try{ok=localStorage.getItem(K)==='true'||sessionStorage.getItem(K)==='true'}catch(e){}if(!ok){h=document.createElement('style');h.id='__pw_gate_hide__';h.textContent='html > body > *:not(#__pw_gate__){visibility:hidden!important}';document.head.appendChild(h)}window.__BPO_GATE__={label:'bpo · Private',key:K};var p=['','../','../../','../../../'],i=0;(function n(){if(i>=p.length){if(h)h.remove();return}var s=document.createElement('script');s.src=p[i++]+'password-wall/gate.js';s.onerror=n;document.head.appendChild(s)})()})();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{
+      --paper:#f2f0e7;--ink:#17231f;--muted:#66716c;--forest:#164c3b;
+      --lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6;--blue:#dcecf3;
+      --sand:#ede3d3;--orange:#f4a261;--red:#d8664f
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:inherit}
+    main{width:min(100% - 32px,1080px);margin:auto;padding:52px 0 72px}
+    .eyebrow,.mono{font:750 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase}
+    .eyebrow{color:var(--forest)}
+    h1{max-width:900px;margin:14px 0 18px;font:780 clamp(45px,8vw,88px)/.9 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.075em}
+    h1 span{color:var(--forest)}
+    .lede{max-width:780px;margin:0;color:var(--muted);font-size:clamp(18px,2.5vw,23px)}
+    .address{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:30px 0;padding:15px 17px;border-radius:14px;background:var(--ink);color:#fff;font:700 clamp(14px,2.2vw,20px)/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+    .copy{border:0;border-radius:999px;padding:9px 13px;background:var(--lime);color:var(--ink);font-weight:850;cursor:pointer;white-space:nowrap}
+    .topology{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:14px;align-items:stretch;margin-top:38px}
+    .node{padding:22px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+    .node h2{margin:10px 0 8px;font-size:24px;letter-spacing:-.035em}
+    .node p{margin:0;color:var(--muted)}
+    .node .badge{display:inline-block;margin-top:18px;padding:7px 10px;border-radius:999px;background:var(--sand);font:750 11px ui-monospace,SFMono-Regular,Menlo,monospace}
+    .king{display:grid;place-content:center;min-height:340px;padding:32px;border-radius:24px;background:var(--forest);color:#fff;text-align:center;box-shadow:0 18px 42px #16352a22}
+    .king .device{font-size:58px}
+    .king h2{margin:8px 0;font:780 clamp(30px,5vw,54px)/.95 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.065em}
+    .king p{max-width:390px;margin:8px auto 0;color:#dce9e3;font-size:17px}
+    .king .badge{background:var(--lime);color:var(--ink)}
+    .rule{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin-top:16px;padding:22px;border-radius:18px;background:var(--ink);color:#fff}
+    .rule strong{font:780 clamp(25px,4vw,43px)/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.055em}
+    .rule p{margin:0;color:#cbd7d1}
+    .one{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;background:var(--lime);color:var(--ink);font:900 24px ui-monospace,SFMono-Regular,Menlo,monospace}
+    .section{margin-top:52px}
+    .section h2{margin:0 0 18px;font:760 clamp(29px,4.5vw,48px)/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.05em}
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .lane{position:relative;min-height:205px;padding:20px;border:1px solid var(--line);border-radius:17px;background:var(--card)}
+    .lane:nth-child(2){background:var(--blue)}
+    .lane:nth-child(3){background:var(--sand)}
+    .lane:nth-child(4){background:var(--lime)}
+    .lane .n{display:grid;place-items:center;width:31px;height:31px;border-radius:50%;background:var(--ink);color:#fff;font:800 13px ui-monospace,SFMono-Regular,Menlo,monospace}
+    .lane h3{margin:18px 0 7px;font-size:20px}
+    .lane p{margin:0;color:#4f5b55}
+    .truth{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .machine{padding:23px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+    .machine h3{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px;font:760 27px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .dot{width:12px;height:12px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 5px #f4a26125}
+    .machine ul{margin:0;padding-left:19px;color:var(--muted)}
+    .machine li+li{margin-top:8px}
+    .warning{margin-top:14px;padding:18px 20px;border-left:5px solid var(--red);border-radius:12px;background:#fff7f3;color:#684b43}
+    .contract{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    .steps{padding:26px;border-radius:20px;background:var(--forest);color:#fff}
+    .step{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid #ffffff25}
+    .step:last-child{border:0}
+    .step .n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900}
+    .systems{padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+    .systems dl{margin:14px 0 0}
+    .systems dt{font-weight:850}
+    .systems dd{margin:2px 0 13px;color:var(--muted)}
+    .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+    .links a{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-weight:750;text-decoration:none}
+    footer{display:flex;justify-content:space-between;gap:16px;margin-top:44px;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
+    @media(max-width:850px){.topology,.contract{grid-template-columns:1fr}.king{min-height:280px;order:-1}.flow{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){main{width:min(100% - 22px,1080px);padding-top:34px}.address,.rule,footer{align-items:flex-start;flex-direction:column}.truth,.flow{grid-template-columns:1fr}.lane{min-height:auto}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / bpo · architecture decision</div>
+  <h1>Codex is king.<br><span>Macs are nodes.</span></h1>
+  <p class="lede">Use the always-carried iPhone as the cockpit for two active Claude Code workers: M3 as the nearby edge node, M5 as the always-on fortress. Move ownership, code state, and intent—not tmux process memory.</p>
+
+  <div class="address"><span id="address">TODO_294-etc-m3_m5_teleport_claude</span><button class="copy" id="copy">Copy address</button></div>
+
+  <section class="topology" aria-label="Active-active topology">
+    <article class="node">
+      <div class="mono">Edge worker</div>
+      <h2>M3 · nearby</h2>
+      <p>Portable, low-friction local shell and test execution when it is near the operator. Valuable because it is geographically and operationally independent.</p>
+      <span class="badge">Bali / travel node</span>
+    </article>
+    <article class="king">
+      <div class="device">📱</div>
+      <div class="mono" style="color:var(--lime)">Control plane</div>
+      <h2>i17pm · Codex</h2>
+      <p>Choose the worker, inspect state, review output, approve a handoff, and recover a task—without living inside Blink’s terminal UI.</p>
+      <span class="badge">king device</span>
+    </article>
+    <article class="node">
+      <div class="mono">Fortress worker</div>
+      <h2>M5 · always on</h2>
+      <p>Durable Virginia host for unattended work, remote recovery, and tasks that must survive the M3 moving, sleeping, or leaving the network.</p>
+      <span class="badge">Virginia / fallback node</span>
+    </article>
+  </section>
+
+  <div class="rule">
+    <span class="one">1</span>
+    <div><strong>Active-active nodes. Single-active task.</strong><p>Both Macs may run different work concurrently. One Linear task has exactly one Claude owner at a time, preventing split-brain edits.</p></div>
+  </div>
+
+  <section class="section">
+    <h2>The continuity stack</h2>
+    <div class="flow">
+      <article class="lane"><span class="n">1</span><h3>Linear</h3><p>Canonical task address, expected owner, transition journal, and human-readable status.</p></article>
+      <article class="lane"><span class="n">2</span><h3>GitHub</h3><p>Recoverable code snapshot, branch or PR state, and the checkpoint that crosses machines.</p></article>
+      <article class="lane"><span class="n">3</span><h3>Handoff capsule</h3><p>Decisions, next action, tests, source/target, ownership epoch, and private SSH-carried context.</p></article>
+      <article class="lane"><span class="n">4</span><h3>BPO / BOB</h3><p>Durable outcome artifacts. Worlds remain isolated; raw transcripts never publish.</p></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>What is true today</h2>
+    <div class="truth">
+      <article class="machine">
+        <h3>M3 <span class="dot"></span></h3>
+        <ul>
+          <li>Two live tmux sessions and three long-running Claude processes were observed.</li>
+          <li>The Claude executable those processes started from is now missing, so a restart is unsafe until installation is repaired.</li>
+          <li>Several repositories carry active dirty work and must not be swept into a bulk sync.</li>
+        </ul>
+      </article>
+      <article class="machine">
+        <h3>M5 <span class="dot"></span></h3>
+        <ul>
+          <li>Tailscale/SSH, Codex 0.145.0, the managed app-server, and Claude Code 2.1.212 are reachable.</li>
+          <li>No tmux or Claude worker session is currently running there.</li>
+          <li>Its BPO and etc clones contain local state, so handoffs need isolated worktrees.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="warning"><b>The old bridge is only a stub.</b> <code>.zshrc</code> calls <code>~/.config/claude/cc-handoff.py</code>, but that file is absent on both Macs and was never committed. It also assumes identical absolute home paths, which M3 and M5 do not share.</div>
+  </section>
+
+  <section class="section contract">
+    <div class="steps">
+      <div class="mono" style="color:var(--lime)">Confirmed handoff contract</div>
+      <div class="step"><span class="n">1</span><div><b>Observe</b><br>Codex verifies source idle state, target reachability, repository state, and single ownership.</div></div>
+      <div class="step"><span class="n">2</span><div><b>Snapshot</b><br>Git records a recoverable code checkpoint without mutating the source branch or index.</div></div>
+      <div class="step"><span class="n">3</span><div><b>Preview</b><br>The iPhone shows the capsule, exclusions, destination, and exact stop/start actions.</div></div>
+      <div class="step"><span class="n">4</span><div><b>Confirm</b><br>The human authorizes the ownership change; source stops before target starts.</div></div>
+      <div class="step"><span class="n">5</span><div><b>Verify</b><br>Target reports running, source reports stopped, and Linear records the new owner.</div></div>
+    </div>
+    <aside class="systems">
+      <div class="mono">Important distinction</div>
+      <h3>Not Claude’s native <code>/teleport</code></h3>
+      <p>Claude’s command pulls a cloud session into a local checkout. It does not move a live local tmux session between Macs.</p>
+      <dl>
+        <dt>Normal control</dt><dd>Codex iPhone UI; Claude Remote Control as a direct escape hatch.</dd>
+        <dt>True host change</dt><dd>Fresh Claude session from the reviewed handoff capsule.</dd>
+        <dt>Never transferred</dt><dd>Process memory, credentials, ignored secrets, or raw transcript history.</dd>
+        <dt>Later</dt><dd>Apple Watch control and distributed compute experiments.</dd>
+      </dl>
+    </aside>
+  </section>
+
+  <div class="links">
+    <a href="https://linear.app/nomad-code/issue/TODO-294/etc-m3-m5-teleport-claude">Linear · TODO-294 ↗</a>
+    <a href="https://openai.com/index/work-with-codex-from-anywhere/">Codex multi-device model ↗</a>
+    <a href="https://code.claude.com/docs/en/remote-control">Claude Remote Control ↗</a>
+    <a href="https://code.claude.com/docs/en/agent-sdk/sessions">Claude cross-host sessions ↗</a>
+  </div>
+
+  <footer>
+    <span>Decision logged—not yet implemented<br>Codex task 019fa0c9-efcd-7b33-9860-66c0e2490317</span>
+    <span>2026-07-27 - 00-34-38 Z<br>m3 · BPO private</span>
+  </footer>
+</main>
+<script>
+document.getElementById('copy').onclick=async function(){
+  await navigator.clipboard.writeText(document.getElementById('address').textContent);
+  this.textContent='Copied ✓';
+  setTimeout(()=>this.textContent='Copy address',1400);
+};
+</script>
+</body>
+</html>

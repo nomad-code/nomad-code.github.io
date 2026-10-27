@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-301 · portal-v2 monorepo</title>
+  <meta name="description" content="How the portal-v2 monorepo actually works: Turborepo yes, pnpm no — Bun">
+  <script>
+  (function(){var K='bpo-unlocked',ok=false,h;try{ok=localStorage.getItem(K)==='true'||sessionStorage.getItem(K)==='true'}catch(e){}if(!ok){h=document.createElement('style');h.id='__pw_gate_hide__';h.textContent='html > body > *:not(#__pw_gate__){visibility:hidden!important}';document.head.appendChild(h)}window.__BPO_GATE__={label:'bpo · Private',key:K};var p=['','../','../../','../../../'],i=0;(function n(){if(i>=p.length){if(h)h.remove();return}var s=document.createElement('script');s.src=p[i++]+'password-wall/gate.js';s.onerror=n;document.head.appendChild(s)})()})();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 32px,980px);margin:auto;padding:54px 0 70px}.eyebrow,.k{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}
+    h1{margin:14px 0 12px;font:700 clamp(34px,7vw,62px)/.98 ui-monospace,monospace;letter-spacing:-.055em}.lede{max-width:720px;color:var(--muted);font-size:18px}
+    .address{margin-top:24px;padding:15px 17px;border-radius:12px;background:var(--ink);color:#fff;font:700 clamp(15px,3vw,21px)/1.2 ui-monospace,monospace;overflow-wrap:anywhere}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}.card{padding:20px;border:1px solid var(--line);border-radius:15px;background:var(--card)}.card h2{font-size:18px;margin:8px 0}.card p{color:var(--muted);margin:0}
+    section.block{margin-top:34px}section.block>h2{font:700 24px/1.15 ui-monospace,monospace;letter-spacing:-.03em;margin:8px 0 14px}
+    .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:15px;background:var(--card)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);text-align:left}
+    th,td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}td code,p code,li code{font:600 12.5px/1.4 ui-monospace,monospace;background:#00000010;padding:1px 5px;border-radius:5px}
+    .stack{display:grid;gap:10px;margin-top:14px}.layer{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 17px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+    .layer b{font:700 13px/1.3 ui-monospace,monospace;color:var(--forest)}.layer span{color:var(--muted)}
+    .checks{margin-top:34px;padding:22px;border-radius:16px;background:var(--forest);color:#fff}.check{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #ffffff25}.check:last-child{border:0}.dot{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900}
+    .checks code{background:#ffffff22;color:#fff}
+    ul{margin:8px 0;padding-left:20px}li{margin:5px 0}li::marker{color:var(--forest)}
+    a{color:inherit}footer{display:flex;justify-content:space-between;gap:14px;margin-top:38px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}.layer{grid-template-columns:1fr}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">nomad-code / bpo · dha ingest · 1 of 3</div>
+    <h1>portal-v2, the monorepo</h1>
+    <p class="lede">The title questions answered: <b>Turborepo yes. pnpm no — it's Bun.</b> And the interesting part is how little Turbo is asked to do. This is the cognitive-debt fill on how the repo actually works, read from upstream <code>main</code> via the nomad-code mirror.</p>
+    <div class="address">TODO_301-dha-ingest_monorepo</div>
+
+    <section class="grid">
+      <article class="card"><div class="k">package manager</div><h2>Bun 1.3.8</h2><p>Plain npm-style <code>"workspaces": ["apps/*","packages/*","tools/*"]</code> in root package.json, read natively by Bun. <code>bun.lock</code> text lockfile. No pnpm-workspace.yaml anywhere; the only pnpm mentions are vendored docs and scaffold boilerplate.</p></article>
+      <article class="card"><div class="k">orchestrator</div><h2>Turborepo, thin</h2><p>Task fan-out and caching only. There is <b>no <code>^build</code> anywhere</b> — zero topological cross-package ordering expressed in turbo.json. Remote cache via <code>TURBO_TOKEN</code>/<code>TURBO_TEAM</code> in CI.</p></article>
+      <article class="card"><div class="k">toolchain</div><h2>mise above it all</h2><p>Pins node 22, bun 1.3.8, sops, age, plus npm CLIs (sass, rtlcss, clean-css). File-based tasks: <code>db:import</code>, <code>db:anonymize</code>, <code>server:env</code>. Auto-loads app .env into the shell.</p></article>
+    </section>
+
+    <section class="block">
+      <h2>the stack, top to bottom</h2>
+      <div class="stack">
+        <div class="layer"><b>mise</b><span>toolchain versions + ops tasks (db import/export/anonymize, server env assembly). The entry point: <code>mise run setup</code> → mise install + bun install.</span></div>
+        <div class="layer"><b>bun</b><span>installs, workspaces, test runner (<code>bun test</code> + happy-dom preload), script runner, and <code>patchedDependencies</code> (a newrelic double-instrumentation guard patch).</span></div>
+        <div class="layer"><b>turbo</b><span>task graph + cache. <code>bun dev</code> = <code>turbo run dev //#dev:css //#dev:css:trigger</code> — one app dev server plus two root-package watch tasks.</span></div>
+        <div class="layer"><b>biome</b><span>lint + format, run directly at root (not through turbo). Scoped to <code>apps/**</code> and <code>packages/**</code> minus design-standards; <code>tools/**</code> is unlinted.</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>turbo.json, annotated</h2>
+      <div class="tablewrap"><table>
+        <tr><th>task</th><th>config</th><th>what it actually is</th></tr>
+        <tr><td><code>dev</code></td><td>no cache, persistent</td><td>only <code>apps/portal</code> defines it — fan-out of one.</td></tr>
+        <tr><td><code>//#dev:css</code> · <code>//#dev:css:trigger</code></td><td>no cache, persistent</td><td>root-package tasks: sass --watch compiles design-standards SCSS into <code>apps/portal/public/vds/css</code>; the trigger script rewrites <code>.vds-trigger.ts</code> with a timestamp so Next Fast Refresh reloads the stylesheet.</td></tr>
+        <tr><td><code>build</code></td><td>outputs <code>.next/**</code>, cached</td><td>filtered at root: <code>--filter=!vipassana-design-standards</code>.</td></tr>
+        <tr><td><code>ci:run</code></td><td>dependsOn lint, build, test</td><td><b>a virtual task</b> — no package defines the script. Turbo builds the graph node per package, runs the three dependencies, no-ops the missing script. One root command = whole-repo CI with caching.</td></tr>
+        <tr><td><code>test</code></td><td>no cache</td><td><code>bun test</code> in portal + two compare tools. Playwright e2e is separate and dispatch-only.</td></tr>
+      </table></div>
+    </section>
+
+    <section class="block">
+      <h2>the one workspace edge — wired outside turbo</h2>
+      <p class="lede" style="font-size:15px">Exactly one cross-package dependency exists: <code>apps/portal → packages/design-standards</code> (a git subtree of the org-wide Bootstrap theme, also shipped as a RubyGem). Turbo doesn't know about it. It's consumed four ways:</p>
+      <ul>
+        <li><b>Raw source import</b> — portal imports <code>src/javascripts/react-helpers</code> JSX directly; <code>transpilePackages</code> compiles it; types are hand-written in a local <code>.d.ts</code>.</li>
+        <li><b>SCSS load path</b> — next.config adds the package's node_modules to <code>sassOptions.loadPaths</code>.</li>
+        <li><b>postinstall asset copy</b> — portal's postinstall builds the package and copies <code>dist/</code> into <code>public/vds/</code> (dist is gitignored).</li>
+        <li><b>CDN fallback</b> — <code>NEXT_PUBLIC_VDS_BASE_URL</code> flips between the local copy and jsdelivr.</li>
+      </ul>
+      <p style="color:var(--muted)">The lesson: a monorepo doesn't oblige you to route every edge through the build tool. This edge is odd (subtree + gem + asset pipeline), so it gets bespoke wiring, and turbo stays honest about what it manages.</p>
+    </section>
+
+    <section class="block">
+      <h2>workspaces</h2>
+      <div class="tablewrap"><table>
+        <tr><th>workspace</th><th>role</th></tr>
+        <tr><td><code>apps/portal</code></td><td>the product: Next 16 App Router, React 19, <code>pg</code> against the legacy Rails Postgres, pino, newrelic, <code>[locale]/schedule/[subDomain]</code> routing, type-safe SQL templates + <code>Result&lt;T&gt;</code>.</td></tr>
+        <tr><td><code>packages/design-standards</code></td><td>git subtree, shared org theme. No lint/test/dev scripts — hence the filters excluding it.</td></tr>
+        <tr><td><code>tools/schedule-compare</code> · <code>page-compare</code> · <code>search-compare</code></td><td>legacy-parity harnesses: Bun CLIs diffing legacy vs V2 output, run on cron in CI. "Diffs are bugs" is repo policy; these are its enforcement. No workspace deps — they hit HTTP + Postgres directly.</td></tr>
+        <tr><td><code>server/</code> <i>(not a workspace)</i></td><td>checked-in deploy config: layered env (base → env → SOPS/age-encrypted secrets, per-host keys), nginx configs holding the cookie-based legacy↔V2 split, systemd units.</td></tr>
+      </table></div>
+    </section>
+
+    <section class="block">
+      <h2>ship path</h2>
+      <ul>
+        <li><b>PR</b> → one CI job: <code>bun install --frozen-lockfile</code> → <code>bun run ci:run</code> (lint+build+test, turbo remote cache).</li>
+        <li><b>Push to main</b> → self-hosted runner runs <code>scripts/deploy.sh</code>: Capistrano-style timestamped releases (keep 5), <code>output: standalone</code> with <code>outputFileTracingRoot</code> at repo root, rsync + symlinked shared .env, systemd restart. No containers in prod; docker is dev-only (Postgres + pgadmin + devcontainer).</li>
+        <li><b>Rollback</b> → dispatch workflow, <code>rollback.sh &lt;release-timestamp&gt;</code>.</li>
+        <li>Two deploy warts worth remembering: Bun's hoisting needs manual symlinks so <code>NODE_OPTIONS="-r newrelic"</code> resolves, and the OTel bridge needs its deps linked beside the agent.</li>
+      </ul>
+    </section>
+
+    <section class="checks">
+      <div class="k" style="color:var(--lime)">Durable record</div>
+      <div class="check"><span class="dot">1</span><div><b>Turborepo yes, pnpm no.</b><br>Bun 1.3.8 workspaces + bun.lock; mise pins the toolchain; turbo is task fan-out and cache only.</div></div>
+      <div class="check"><span class="dot">2</span><div><b>Turbo carries no dependency graph here.</b><br>No <code>^build</code>; the single cross-package edge is wired via postinstall/transpile/CDN, deliberately outside turbo. <code>ci:run</code> is a virtual aggregate task.</div></div>
+      <div class="check"><span class="dot">3</span><div><b>Parity harnesses are first-class infra.</b><br>Three compare CLIs + cron workflows enforce "diffs are bugs" against the legacy site continuously.</div></div>
+      <div class="check"><span class="dot">4</span><div><b>Deploy is host-based, not containerized.</b><br>Timestamped releases, SOPS/age layered secrets, nginx as the legacy↔V2 seam.</div></div>
+    </section>
+
+    <footer>
+      <a href="https://linear.app/nomad-code/issue/TODO-301/dha-ingest-monorepo">TODO-301 ↗</a>
+      <span>2026-07-27 · ccr</span>
+    </footer>
+  </main>
+</body>
+</html>

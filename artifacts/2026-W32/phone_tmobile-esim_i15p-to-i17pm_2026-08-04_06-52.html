@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#153f35">
+  <title>TODO-266 · T-Mobile eSIM cutover</title>
+  <meta name="description" content="Interactive cutover checklist for moving a T-Mobile eSIM from iPhone 15 Pro to iPhone 17 Pro Max.">
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f2f0e6;--ink:#14231f;--muted:#64706b;--forest:#153f35;--lime:#c9f36a;--line:#d2d7cd;--card:#fffdf7;--red:#b84c3d}
+    *{box-sizing:border-box}html{background:var(--paper)}body{margin:0;color:var(--ink);background:radial-gradient(circle at 90% 0,#dcebd7 0,transparent 31rem),var(--paper);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 28px,780px);margin:auto;padding:42px 0 72px}.eyebrow,.label{font:750 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:var(--forest)}
+    h1{max-width:700px;margin:12px 0 14px;font:750 clamp(38px,9vw,72px)/.94 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.065em}.lede{max-width:630px;margin:0 0 26px;color:var(--muted);font-size:18px}
+    .status{position:sticky;top:10px;z-index:2;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;background:color-mix(in srgb,var(--forest) 95%,transparent);color:white;box-shadow:0 10px 35px #143b3030;backdrop-filter:blur(10px)}
+    .status strong{font:750 13px/1.2 ui-monospace,SFMono-Regular,monospace}.bar{height:7px;margin-top:8px;overflow:hidden;border-radius:99px;background:#ffffff25}.bar span{display:block;width:0;height:100%;border-radius:inherit;background:var(--lime);transition:width .25s ease}.pct{font:800 24px/1 ui-monospace,SFMono-Regular,monospace;color:var(--lime)}
+    .warning{margin:24px 0 12px;padding:18px;border:1px solid #e0b9ad;border-left:5px solid var(--red);border-radius:12px;background:#fff8f3}.warning b{display:block;margin-bottom:4px}.warning p{margin:0;color:#70443c}
+    .phase{margin-top:28px}.phase-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:10px}.phase h2{margin:5px 0 0;font-size:24px;letter-spacing:-.025em}.phase small{color:var(--muted)}
+    .list{overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--card)}.item{display:grid;grid-template-columns:30px 1fr;gap:13px;padding:17px;border-bottom:1px solid var(--line);cursor:pointer}.item:last-child{border-bottom:0}.item:hover{background:#f7f7ee}.item input{position:absolute;opacity:0;pointer-events:none}.box{display:grid;place-items:center;width:28px;height:28px;border:2px solid #93a39b;border-radius:8px;color:transparent;font-weight:900;transition:.15s}.item:has(input:checked) .box{border-color:var(--forest);background:var(--forest);color:var(--lime)}.item:has(input:checked) .copy{text-decoration:line-through;text-decoration-color:#71817a;color:#71817a}.copy b{display:block;margin-bottom:2px}.copy span{color:var(--muted);font-size:14px}
+    .fallback{margin-top:30px;padding:20px;border-radius:16px;background:#e3eadf}.fallback h2{margin:5px 0 8px}.fallback p{margin:0 0 10px}.fallback code{font-size:13px}.sources{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.sources a{color:var(--forest);font-weight:700}.controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}button,a.button{appearance:none;border:0;border-radius:999px;padding:11px 15px;background:var(--forest);color:white;font-weight:750;text-decoration:none;cursor:pointer}.secondary{background:transparent!important;color:var(--forest)!important;border:1px solid var(--forest)!important}footer{display:flex;justify-content:space-between;gap:20px;margin-top:42px;color:var(--muted);font:12px/1.4 ui-monospace,SFMono-Regular,monospace}
+    @media(max-width:600px){main{padding-top:28px}.status{top:6px}.phase-head{align-items:start;flex-direction:column;gap:2px}footer{flex-direction:column;gap:5px}.item{padding:16px 14px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">nomad-code / bpo · TODO-266</div>
+  <h1>Move the line.<br>Keep the lifeline.</h1>
+  <p class="lede">A reversible T-Mobile eSIM cutover from i15p to i17pm. The old phone stays intact until the new one passes every network check.</p>
+
+  <section class="status" aria-live="polite">
+    <div><strong id="count">0 of 12 checks complete</strong><div class="bar"><span id="bar"></span></div></div>
+    <div class="pct" id="pct">0%</div>
+  </section>
+
+  <aside class="warning">
+    <b>Security boundary</b>
+    <p>Temporarily disable <strong>SIM Protection</strong> for this line. Leave <strong>Port Out Protection</strong> enabled. Re-enable SIM Protection immediately after verification.</p>
+  </aside>
+
+  <section class="phase">
+    <div class="phase-head"><div><div class="label">01 · Preflight</div><h2>Make the move boring</h2></div><small>Both phones remain usable here.</small></div>
+    <div class="list">
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Update and power both phones</b><span>Latest iOS, at least 20% charge, preferably plugged in.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Join working Wi-Fi and enable Bluetooth</b><span>Keep the phones unlocked, passcode-protected, and beside each other.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Confirm the i17pm is carrier-unlocked</b><span>Required if it was not purchased from T-Mobile.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Disable T-Mobile SIM Protection</b><span>Disable only for the target line; do not change Port Out Protection.</span></span></label>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="phase-head"><div><div class="label">02 · Transfer</div><h2>Move the eSIM</h2></div><small>The old plan is removed automatically.</small></div>
+    <div class="list">
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Start on the i17pm</b><span>Settings → Cellular → Add eSIM → Transfer From Nearby iPhone.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Approve on the i15p</b><span>Follow the prompt and confirm by double-clicking the side button.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Wait for T-Mobile activation</b><span>Let the new phone finish; do not manually delete the old eSIM.</span></span></label>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="phase-head"><div><div class="label">03 · Prove it</div><h2>Test without Wi-Fi</h2></div><small>No erase until every check passes.</small></div>
+    <div class="list">
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Cellular data</b><span>Turn Wi-Fi off and load a new webpage or map.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Outbound and inbound calls</b><span>Place one call, then have another phone call the transferred number.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Carrier SMS and voicemail</b><span>Send a green-bubble SMS—not only iMessage—and check voicemail.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Restore SIM Protection</b><span>Re-enable it for the transferred line immediately.</span></span></label>
+      <label class="item"><input type="checkbox"><span class="box">✓</span><span class="copy"><b>Hold the old phone for 24 hours</b><span>Check Apple Watch, banking, authenticators, Apple Pay, iMessage, and FaceTime before erasing it.</span></span></label>
+    </div>
+  </section>
+
+  <section class="fallback">
+    <div class="label">Fallback</div>
+    <h2>If “Transfer From Nearby iPhone” fails</h2>
+    <p>On the i17pm, try <code>Settings → Cellular → Add Cellular Plan → T-Mobile New Cellular Plan</code>. Then update/restart both phones and confirm the i17pm is unlocked. Keep the i15p and its eSIM untouched while troubleshooting.</p>
+  </section>
+
+  <div class="controls">
+    <button id="copy">Copy compact runbook</button>
+    <button class="secondary" id="reset">Reset checks</button>
+    <a class="button secondary" href="https://linear.app/nomad-code/issue/TODO-266/phone-214-i17pm">Open Linear ↗</a>
+  </div>
+
+  <div class="sources">Official sources: <a href="https://www.t-mobile.com/support/tutorials/device/apple/iphone-17/topic/esim/how-to-swap-sims-from-an-old-device-to-a-new-device">T-Mobile iPhone 17 eSIM transfer</a> · <a href="https://www.t-mobile.com/support/devices/device-troubleshooting/apple-on-device-activation-troubleshooting/">T-Mobile activation troubleshooting</a> · <a href="https://www.t-mobile.com/support/plans-features/help-with-t-mobile-account-fraud">T-Mobile SIM protection</a> · <a href="https://support.apple.com/en-us/102659">Apple Quick Start</a></div>
+  <footer><span>TODO_266-phone-214_i17pm</span><span>2026-08-04 · 06:52 Z</span></footer>
+</main>
+<script>
+  const key='todo-266-esim-cutover-v1';
+  const checks=[...document.querySelectorAll('input[type="checkbox"]')];
+  const count=document.getElementById('count'),pct=document.getElementById('pct'),bar=document.getElementById('bar');
+  function render(){const n=checks.filter(x=>x.checked).length,p=Math.round(n/checks.length*100);count.textContent=`${n} of ${checks.length} checks complete`;pct.textContent=`${p}%`;bar.style.width=`${p}%`;try{localStorage.setItem(key,JSON.stringify(checks.map(x=>x.checked)))}catch(e){}}
+  try{const saved=JSON.parse(localStorage.getItem(key)||'[]');checks.forEach((x,i)=>x.checked=!!saved[i])}catch(e){}
+  checks.forEach(x=>x.addEventListener('change',render));render();
+  document.getElementById('reset').onclick=()=>{if(confirm('Reset all checklist progress?')){checks.forEach(x=>x.checked=false);render()}};
+  document.getElementById('copy').onclick=async function(){const text=`T-Mobile eSIM cutover · i15p → i17pm\n1. Update, charge, Wi-Fi + Bluetooth, confirm unlocked.\n2. Disable SIM Protection only; leave Port Out Protection enabled.\n3. i17pm: Settings → Cellular → Add eSIM → Transfer From Nearby iPhone.\n4. Approve on i15p; wait for activation; do not delete the old eSIM manually.\n5. With Wi-Fi off, test data, inbound/outbound calls, SMS, and voicemail.\n6. Re-enable SIM Protection. Keep i15p intact for 24 hours before erasing.`;await navigator.clipboard.writeText(text);const old=this.textContent;this.textContent='Copied ✓';setTimeout(()=>this.textContent=old,1400)};
+</script>
+</body>
+</html>

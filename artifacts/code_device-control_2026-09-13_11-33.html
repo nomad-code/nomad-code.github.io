@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phone control · M5 and M3</title>
+  <link rel="stylesheet" href="/design-repo/harness/harness.css">
+  <link rel="stylesheet" href="/design-repo/harness/artifact.css">
+  <script src="/password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <style>main{max-width:56rem;margin:auto;padding:1rem}section{margin-block:1rem}li{margin-block:.7rem}summary{cursor:pointer}code{overflow-wrap:anywhere}</style>
+</head>
+<body id="tc-app" class="harness-document">
+  <header class="harness-header">BPO · Device control · 13 September 2026</header>
+  <main>
+    <div class="harness-kicker">Setup prepared · phone control still needs verification</div>
+    <h1 class="harness-title">Reach either Mac from the phone</h1>
+    <section class="harness-card">
+      <h2>What works</h2>
+      <p>M5 in Virginia coordinates work. M3 supplies its interactive application sessions.</p>
+      <ul>
+        <li>SSH commands verified in both directions.</li>
+        <li>M3’s Codex command path repaired and verified.</li>
+        <li>Checklist and diagnostic snapshot copied to M3 and back; hashes match.</li>
+        <li>A reusable diagnostic and startup routing instructions now preserve this distinction.</li>
+      </ul>
+    </section>
+    <section class="harness-card">
+      <h2>One-time desktop setup</h2>
+      <ol>
+        <li>On M3, open ChatGPT Settings → Connections → Control this Mac. Pair the phone if needed; verify M3 and M5 appear separately.</li>
+        <li>Enable Computer Use and Chrome. Accept the macOS Accessibility and Screen Recording prompts in the desktop session.</li>
+        <li>Enable M3 Screen Sharing for its named user. Configure a compatible iPhone client over Tailscale for both Macs.</li>
+        <li>On the phone over cellular, test an M5 task, an M3 browser task, and an authenticated desktop click on each Mac.</li>
+      </ol>
+      <details><summary>Why desktop setup remains</summary><p>SSH does not grant graphical control or macOS privacy permissions. M5’s screen-sharing port accepts connections; M3’s refused them. Actual phone authentication and control have not been tested.</p></details>
+    </section>
+    <section class="harness-card">
+      <h2>Teams: a major DHA, FAI and CODE deliverable</h2>
+      <p>Target: phone request → durable task → worker progress → specific approval when needed → verified result in the same conversation. Reuse the existing companion with separate organization deployments.</p>
+      <details><summary>Delivery milestones</summary><ol><li>Observe the private documentation card and open every link.</li><li>Prove one phone request → worker → reply.</li><li>Test restart, cancellation, repeated events and uncertain delivery.</li><li>Repeat onboarding separately for DHA and FAI, then prove CODE host control.</li><li>Measure completed tasks and manual interventions against Slack before wider distribution.</li></ol></details>
+      <p>The private documentation test card is ready. Create a Workflow in the authenticated DHA session, store its endpoint privately, send once from M5, and verify the visible message and links. No message has been sent.</p>
+      <p><a href="https://github.com/dhammaorg/portal-v2/pull/581">Documentation PR #581</a></p>
+    </section>
+    <section class="harness-card">
+      <h2>Saved on both machines</h2>
+      <p>M5: <code>/Users/bob/dev/bpo/projects/device-control/</code></p>
+      <p>M3 checklist and snapshot: <code>/Users/brendobrien/.local/share/device-control-20260913/</code></p>
+      <p>Sources: <a href="https://learn.chatgpt.com/docs/remote-connections">Remote connections</a>, <a href="https://learn.chatgpt.com/docs/computer-use">Computer Use</a>, <a href="https://support.apple.com/guide/mac-help/turn-screen-sharing-on-or-off-mh11848/mac">Apple Screen Sharing</a>.</p>
+    </section>
+  </main>
+</body>
+</html>

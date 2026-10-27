@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+  } catch (e) {}
+  var hide;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){display:none!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) { if (hide) hide.remove(); return; }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4f4ef">
+<title>TODO-165 · golf-spica-data · Get all 3,339 shots into one file</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* callouts */
+  .callout { border-radius: var(--r-card); padding: 16px 20px; font-size: 14px; line-height: 1.6;
+    color: var(--body); }
+  .callout b { color: var(--ink); }
+  .callout.warn { background: var(--warn-bg); border: 1px solid var(--warn-bd); border-left: 3px solid var(--warn); }
+  .callout.warn .ck { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--warn); display: block; margin-bottom: 5px; }
+  .callout.found { background: var(--found-bg); border: 1px solid var(--found-bd); border-left: 3px solid var(--found); }
+  .callout code { font-family: var(--font-mono); font-size: 12.5px; background: var(--well);
+    padding: 1px 5px; border-radius: 5px; color: var(--ink); }
+
+  /* playbook: clickable source cards (ported from todo-83 .strata) */
+  .strata { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 4px 0 20px; }
+  .stratum { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+    padding: 15px 16px; cursor: pointer; transition: transform .28s var(--spring),
+    box-shadow .28s var(--ease), border-color .28s; position: relative; }
+  .stratum:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+  .stratum.act { border-color: var(--forest); background: linear-gradient(180deg,#fff,#f6fbf6); }
+  .stratum .code { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--faint); }
+  .stratum h4 { font-size: 14.5px; font-weight: 740; letter-spacing: -.02em; margin: 5px 0 6px; color: var(--ink); line-height: 1.25; }
+  .stratum .likely { position: absolute; top: 13px; right: 13px; font-family: var(--font-mono);
+    font-size: 8.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--forest);
+    background: var(--g-lime); padding: 2px 6px; border-radius: 999px; }
+  .stratum .mini { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+
+  .detail { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--forest);
+    border-radius: var(--r-card); padding: 22px 24px; box-shadow: var(--shadow-card); }
+  .detail h3 { font-size: 19px; font-weight: 760; letter-spacing: -.02em; margin: 0 0 8px; color: var(--ink);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .detail .dsub { font-size: 13px; color: var(--muted); margin: 0 0 16px; line-height: 1.5; }
+  .dgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; }
+  .dblock h5 { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--forest-d); margin: 0 0 8px; }
+  .dblock p, .dblock li { font-size: 13px; line-height: 1.55; color: var(--body); }
+  .dblock ul { margin: 0; padding-left: 16px; display: grid; gap: 5px; }
+  .dblock b { color: var(--ink); }
+  .dblock code { font-family: var(--font-mono); font-size: 11.5px; background: var(--well);
+    padding: 1px 4px; border-radius: 4px; color: var(--ink); word-break: break-all; }
+
+  /* the consolidator tool */
+  .drop { border: 2px dashed var(--line); border-radius: var(--r-card); padding: 34px 24px;
+    text-align: center; cursor: pointer; transition: border-color .2s, background .2s;
+    background: var(--card); }
+  .drop:hover { border-color: var(--forest); }
+  .drop.over { border-color: var(--forest); background: var(--g-lime); }
+  .drop .dt-big { font-size: 16px; font-weight: 700; color: var(--ink); }
+  .drop .dt-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin: 16px 0;
+    font-size: 13px; color: var(--body); }
+  .toolbar label { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
+  .btn { font-family: var(--font-ui); font-size: 13.5px; font-weight: 600; border-radius: var(--r-chip);
+    padding: 9px 18px; cursor: pointer; border: 1px solid var(--forest); background: var(--forest);
+    color: #fff; transition: background .2s, transform .15s var(--spring); }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+  .btn.ghost { background: transparent; color: var(--forest-d); }
+
+  /* live meters */
+  .meters { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px; margin: 4px 0 16px; }
+  .meter { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel); padding: 15px 17px; }
+  .meter .mn { font-family: var(--font-mono); font-size: 27px; color: var(--forest);
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .meter .mn small { font-size: 13px; color: var(--muted); }
+  .meter .ml { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
+  .prog { height: 8px; border-radius: 999px; background: var(--well); overflow: hidden; margin-top: 11px; }
+  .prog > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg,var(--forest),var(--lime));
+    border-radius: 999px; transition: width .5s var(--ease); }
+
+  /* per-source tally */
+  .tally { display: grid; gap: 8px; }
+  .trow { display: grid; grid-template-columns: 150px 1fr 74px; gap: 12px; align-items: center; font-size: 13px; }
+  .trow .tl { color: var(--ink); font-weight: 600; }
+  .trow .tl small { display: block; font-family: var(--font-mono); font-size: 9.5px; color: var(--muted);
+    font-weight: 400; text-transform: uppercase; letter-spacing: .04em; }
+  .tbar { height: 22px; border-radius: 6px; background: var(--well); overflow: hidden; }
+  .tbar > i { display: block; height: 100%; background: var(--found); border-radius: 6px; transition: width .5s var(--ease); }
+  .trow .tn { text-align: right; font-family: var(--font-mono); color: var(--forest); font-variant-numeric: tabular-nums; }
+
+  /* preview + schema tables */
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-panel); }
+  table.tbl { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+  table.tbl th { font-family: var(--font-mono); font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--muted); text-align: left; padding: 8px 10px;
+    border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--card); }
+  table.tbl td { padding: 7px 10px; border-bottom: 1px solid var(--line); color: var(--body);
+    font-variant-numeric: tabular-nums; }
+  table.tbl tr:last-child td { border-bottom: 0; }
+  table.tbl td.neg { color: var(--warn); }
+
+  .log { font-family: var(--font-mono); font-size: 12px; line-height: 1.65; color: var(--body);
+    background: var(--well); border-radius: var(--r-panel); padding: 14px 16px; margin-top: 6px;
+    white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+  .log b { color: var(--ink); }
+  .log .warn { color: var(--warn); }
+  .log .ok { color: var(--forest-d); }
+
+  /* rig / schema table (ported) */
+  .rig { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .rig th { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--muted); text-align: left; padding: 9px 12px;
+    border-bottom: 1px solid var(--line); }
+  .rig td { padding: 10px 12px; border-bottom: 1px solid var(--line); color: var(--body);
+    vertical-align: top; line-height: 1.5; }
+  .rig tr:last-child td { border-bottom: 0; }
+  .rig td:first-child { font-family: var(--font-mono); font-weight: 500; color: var(--ink); white-space: nowrap; }
+  .rig b { color: var(--ink); }
+  .rig-wrap { overflow-x: auto; }
+
+  /* formula blocks */
+  .formula { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-panel);
+    padding: 14px 18px; font-family: var(--font-mono); font-size: 12.5px; color: var(--body);
+    line-height: 1.7; overflow-x: auto; }
+  .formula b { color: var(--forest-d); }
+  .formula .cm { color: var(--muted); }
+
+  pre.code { background: #0d1512; color: #d7e4dd; border-radius: var(--r-panel); padding: 16px 18px;
+    font-family: var(--font-mono); font-size: 12px; line-height: 1.6; overflow-x: auto; }
+  pre.code .cm { color: #6f8a7f; }
+
+  /* north star (ported) */
+  .north { border: 1px solid var(--found-bd); background: linear-gradient(180deg,#fff,#f6fafb);
+    border-radius: var(--r-card); padding: 24px; box-shadow: var(--shadow-card); }
+  .north h3 { font-size: 19px; font-weight: 760; letter-spacing: -.02em; margin: 0 0 4px; color: var(--ink); }
+  .north .layers { display: grid; gap: 9px; margin-top: 16px; }
+  .nlayer { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start;
+    font-size: 13.5px; line-height: 1.5; color: var(--body); }
+  .nlayer .z { font-family: var(--font-mono); font-size: 9px; color: var(--found-d);
+    background: var(--found-bg); border: 1px solid var(--found-bd); border-radius: 6px;
+    padding: 4px 0; text-align: center; font-weight: 600; }
+  .nlayer b { color: var(--ink); }
+  .breathe { border-left: 3px solid var(--lime); padding-left: 15px; color: var(--body);
+    font-size: 15px; line-height: 1.6; margin: 22px 0 0; }
+  .breathe b { color: var(--ink); }
+
+  a.lref { color: var(--found-d); text-decoration: none; border-bottom: 1px solid var(--found-bd); }
+  a.lref:hover { color: var(--found); }
+
+  @media (max-width: 860px) {
+    .strata { grid-template-columns: 1fr 1fr; }
+    .dgrid, .grid2 { grid-template-columns: 1fr; }
+    .meters { grid-template-columns: 1fr; }
+    .trow { grid-template-columns: 120px 1fr 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx"><span class="dot"></span>TODO-165 · golf-spica-data</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">Medewi Manor · Spica 3</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <div class="hero">
+    <div class="hero-eyebrow"><span class="d"></span>3,339 shots, scattered across five apps → one file you own</div>
+    <h1>Get all your shots back. <span class="em">In one file.</span></h1>
+    <p class="hero-sub">The Spica 3 is a <b>photometric</b> monitor: it measures each shot, then
+    <b>broadcasts</b> the numbers to whatever software was running. It keeps no permanent database of
+    its own — so your <b>~3,339</b> swings aren't <em>in</em> the device, they're trapped in the caches
+    and exports of GSPro, the GolfJoy apps, E6, and Creative Golf, in five different formats. This is the
+    plumbing that gets them out and merges them into <b>one clean CSV you own</b> — parsed locally in your
+    browser, nothing uploaded. It's the data companion to the strokes-gained loop in
+    <a class="lref" href="https://linear.app/nomad-code/issue/TODO-83/golf-spica">TODO-83</a>: the loop
+    only compounds if the data lands somewhere durable.</p>
+    <div class="hero-chips">
+      <span class="hchip v">locate → export → normalize → merge</span>
+      <span class="hchip v">runs in-browser · no upload</span>
+      <span class="hchip q">GSPro · GolfJoy · E6 · Creative Golf</span>
+      <span class="hchip q">one master CSV → Git</span>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">~3,339</div><div class="kpi-l">shots to bring home from five fragmented stores</div></div>
+    <div class="kpi"><div class="kpi-n">5</div><div class="kpi-l">likely sources — foregrounding GolfJoy&nbsp;PC + GSPro</div></div>
+    <div class="kpi"><div class="kpi-n">27</div><div class="kpi-l">Spica metrics per shot — the schema keeps all of them</div></div>
+    <div class="kpi"><div class="kpi-n">1</div><div class="kpi-l">master CSV — deduped, normalized, yours forever</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 00 THE GOAL -->
+  <div class="sec-head"><span class="sec-kick">the mission · one CSV you own</span><span class="sec-n">00 / the goal</span></div>
+  <p class="lede">You don't recover shots from the launch monitor — you recover them from the
+  <b>software that was listening</b> when you hit them. Photometric units compute ball & club numbers on
+  impact and stream them out; the record lives wherever that stream landed. So "get all 3,339 shots" is
+  really five smaller jobs: find each store, export it to a flat file, and merge the flat files. The tool
+  in §02 does the merge for real; §01 is the map.</p>
+
+  <div class="callout warn" style="margin:18px 0 8px">
+    <span class="ck">before you start · one correction</span>
+    The research brief pulls in <code>squaregolf-connector</code> and a "SquareGolf bridge." Those are for
+    the <b>Square Golf launch monitor — a different device</b>. Your Spica 3 is a <b>GolfJoy</b> unit that
+    talks to GSPro, E6 Connect, Creative Golf, and GolfJoy's own apps. <b>Skip the SquareGolf path entirely</b>
+    unless you also own that hardware. And treat every exact Windows path / database table name in the brief
+    as <b>"probably right, verify locally"</b> — some are AI-generated. The merge tool below doesn't trust
+    those schemas; it reads whatever columns your <em>actual</em> exports contain.
+  </div>
+
+  <!-- 01 THE PLAYBOOK -->
+  <div class="sec-head"><span class="sec-kick">recovery playbook · locate → extract → export</span><span class="sec-n">01 / where the shots live</span></div>
+  <p class="lede">Six places your shots could be, ordered by where yours most likely are (you flagged
+  <b>GolfJoy PC</b> and <b>GSPro</b>). Click a source for the locate → extract → export steps. The
+  <span class="cpill hi" style="font-size:10px">hi</span> /
+  <span class="cpill mid" style="font-size:10px">mid</span> /
+  <span class="cpill lo" style="font-size:10px">lo</span> pill is my confidence in that path.</p>
+
+  <div class="strata" id="strata"></div>
+  <div id="detail-host"></div>
+
+  <!-- 02 THE TOOL -->
+  <div class="sec-head" style="margin-top:34px"><span class="sec-kick">the consolidator · drop files, get one CSV</span><span class="sec-n">02 / the tool</span></div>
+  <p class="lede">Export each store to <b>CSV or JSON</b> (the playbook says how), then drop the files here.
+  It normalizes every format to one schema, converts <code>L/R</code> and metric units, keeps
+  device-measured carry separate from sim-physics carry, flags duplicate shots logged to two apps, and
+  hands you a single master CSV. Everything runs in this page — <b>no file leaves your machine</b>.</p>
+
+  <div class="card">
+    <div class="drop" id="drop">
+      <div class="dt-big">Drop CSV / JSON exports here</div>
+      <div class="dt-sub">or click to browse · GSPro CSV · GolfJoy export · E6 session · mobile-API JSON</div>
+      <input type="file" id="file-input" multiple accept=".csv,.json,.txt" style="display:none">
+    </div>
+
+    <div class="toolbar">
+      <label><input type="checkbox" id="cross-merge"> Merge mirrored sessions <span style="color:var(--muted)">(collapse the same shot logged to two apps)</span></label>
+      <button class="btn ghost" id="demo-btn" type="button">Load sample data</button>
+      <button class="btn ghost" id="clear-btn" type="button">Clear</button>
+      <span style="flex:1"></span>
+      <button class="btn" id="dl-btn" type="button" disabled>Download master CSV</button>
+    </div>
+
+    <div class="meters">
+      <div class="meter">
+        <div class="mn"><span id="m-total">0</span> <small>/ ~3,339 recovered</small></div>
+        <div class="ml">unique shots across all files after dedup</div>
+        <div class="prog"><i id="m-prog"></i></div>
+      </div>
+      <div class="meter">
+        <div class="mn" id="m-files">0</div>
+        <div class="ml">files ingested</div>
+      </div>
+      <div class="meter">
+        <div class="mn" id="m-dedup">0</div>
+        <div class="ml">duplicates removed / tagged</div>
+      </div>
+    </div>
+
+    <div id="tally-wrap" style="display:none; margin-bottom:18px">
+      <h5 style="font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--forest-d);margin:0 0 10px">per-source tally</h5>
+      <div class="tally" id="tally"></div>
+    </div>
+
+    <div id="preview-wrap" style="display:none">
+      <h5 style="font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--forest-d);margin:0 0 10px">preview · first 50 normalized rows</h5>
+      <div class="tbl-wrap"><table class="tbl" id="preview"></table></div>
+    </div>
+
+    <div id="log-wrap" style="display:none; margin-top:16px">
+      <h5 style="font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--forest-d);margin:0 0 8px">ingest log</h5>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <!-- 03 UNDER THE HOOD -->
+  <div class="sec-head" style="margin-top:34px"><span class="sec-kick">under the hood · why the CSV is honest</span><span class="sec-n">03 / how it normalizes</span></div>
+  <p class="lede">Three rules make the merge trustworthy. First, <b>never invent data</b>: a missing metric is
+  blank, never <code>0</code>. Second, <b>never overwrite meaning</b>: device-measured carry and
+  sim-physics carry get their own columns. Third, <b>never silently delete a shot</b>: cross-source
+  duplicates are tagged and counted, only collapsed when you say so.</p>
+
+  <div class="grid2" style="margin:16px 0">
+    <div class="formula">
+      <span class="cm"># horizontal launch → one signed float</span><br>
+      <b>L1.4</b> → −1.4 &nbsp; <b>R2.5</b> → +2.5 &nbsp; <b>2.5 Right</b> → +2.5<br>
+      <b>−1.4</b> → −1.4 <span class="cm">(already signed, passthrough)</span><br>
+      <span class="cm"># convention (RH golfer): + = right / up / open</span>
+    </div>
+    <div class="formula">
+      <span class="cm"># smash — computed only if absent</span><br>
+      <b>smash</b> = ball_speed_mph / club_speed_mph<br>
+      <br>
+      <span class="cm"># cross-source dedup signature (raw measures only)</span><br>
+      <b>sig</b> = round(ball_speed) | vla±.5 | hla±.5 | backspin±100 | club
+    </div>
+  </div>
+
+  <p class="lede" style="margin-bottom:12px">The dedup key uses only <b>physically invariant</b> measures —
+  never sim-derived distance — because the same shot broadcasts to GSPro and GolfJoy at once with
+  <em>different</em> carries. Two similar wedge shots can look identical, so the default is
+  <b>tag, don't delete</b>; tick "merge mirrored sessions" only when you truly logged one session to two
+  apps. The full 35-column schema keeps every Spica metric, sparse where an export didn't carry it:</p>
+
+  <div class="rig-wrap"><table class="rig" id="schema-table"></table></div>
+
+  <!-- 04 WHERE IT LANDS -->
+  <div class="sec-head" style="margin-top:34px"><span class="sec-kick">the vault · git holds truth</span><span class="sec-n">04 / where it lands</span></div>
+  <p class="lede">A CSV in your Downloads folder is still hostage — to a laptop, a spill, a reinstall. The
+  point of pulling the shots out of five apps is to put them somewhere that <b>outlives all of them</b>.
+  The golf vault already has a home for this.</p>
+
+  <div class="north">
+    <h3>From five app caches to one lifetime shot table</h3>
+    <p style="font-size:13.5px;color:var(--body);line-height:1.55;margin:0">
+    <code style="font-family:var(--font-mono)">dna/golf/</code> already maps a golf corpus built on the
+    <b>4.7&nbsp;GB of TrackMan range data</b> (2023–2025). The Spica master CSV is the <em>sim</em> half of
+    that history — keep them complementary, then join them.</p>
+    <div class="layers">
+      <div class="nlayer"><span class="z">RAW</span><div>Master CSV lands in <b><code>~/ark/golf/spica/</code></b> — the load-bearing artifact, exactly as <code>dna/golf/README.md</code> stages the TrackMan bytes.</div></div>
+      <div class="nlayer"><span class="z">DERIVE</span><div>Per-club, per-metric rollups into <b><code>~/dna/golf/metrics/</code></b> (the layout the README already proposes) — strokes-gained strata fed by real numbers, not the population prior.</div></div>
+      <div class="nlayer"><span class="z">JOIN</span><div>Union the Spica <code>carry_raw</code> with the TrackMan corpus into <b>one lifetime shot table</b> — the same club, indoors vs the range, side by side.</div></div>
+      <div class="nlayer"><span class="z">DRAW</span><div>Feed <code>carry_sim</code> + <code>offline</code> into the Esri 3D shot-trace dream from <a class="lref" href="https://linear.app/nomad-code/issue/TODO-83/golf-spica">TODO-83</a> — every recovered shot, an arc on real terrain.</div></div>
+    </div>
+  </div>
+
+  <h5 style="font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--forest-d);margin:26px 0 10px">machine-side helpers · the two steps a browser can't do</h5>
+  <p class="lede" style="margin-bottom:12px">SQLite caches and raw API payloads need a shell, not a browser.
+  These two stdlib-only scripts turn them into CSV/JSON the tool above ingests. No <code>pip install</code>,
+  nothing to trust but Python.</p>
+
+  <p style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin:0 0 6px">spica_sqlite_dump.py — GolfJoy / sim SQLite cache → CSV</p>
+  <pre class="code"><span class="cm">#!/usr/bin/env python3</span>
+<span class="cm"># spica_sqlite_dump.py — export a GolfJoy/sim SQLite cache to CSV (stdlib only)</span>
+<span class="cm"># usage: python3 spica_sqlite_dump.py cache.db [table|"SELECT ..."] &gt; spica_shots.csv</span>
+import sys, sqlite3, csv
+db = sys.argv[1]; arg = sys.argv[2] if len(sys.argv) &gt; 2 else None
+con = sqlite3.connect(db); con.row_factory = sqlite3.Row; cur = con.cursor()
+if not arg:                                   <span class="cm"># auto-find the shot table — the brief's</span>
+    best, best_n = None, -1                    <span class="cm"># 'tbl_shot_history' name is unverified</span>
+    for (t,) in cur.execute("SELECT name FROM sqlite_master WHERE type='table'"):
+        try: n = cur.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
+        except sqlite3.Error: n = 0
+        print(f"  {t}: {n} rows", file=sys.stderr)
+        if ("shot" in t.lower() or "swing" in t.lower()) and n &gt; best_n: best, best_n = t, n
+    if not best: sys.exit("no shot-like table found; re-run with an explicit table/SQL")
+    query = f'SELECT * FROM "{best}"'
+else:
+    query = arg if arg.strip().lower().startswith("select") else f'SELECT * FROM "{arg}"'
+rows = cur.execute(query).fetchall()
+if not rows: sys.exit("query returned 0 rows")
+w = csv.writer(sys.stdout); w.writerow(rows[0].keys())
+for r in rows: w.writerow([r[k] for k in r.keys()])</pre>
+
+  <p style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin:18px 0 6px">spica_json_to_csv.py — GolfJoy Space API payload → CSV (or drop the .json straight into §02)</p>
+  <pre class="code"><span class="cm">#!/usr/bin/env python3</span>
+<span class="cm"># spica_json_to_csv.py — flatten a GolfJoy Space API payload to CSV (stdlib only)</span>
+<span class="cm"># usage: python3 spica_json_to_csv.py payload.json &gt; spica_shots.csv</span>
+import sys, json, csv
+data = json.load(open(sys.argv[1], encoding="utf-8"))
+def walk(node, ctx=None):
+    ctx = ctx or {}
+    if isinstance(node, dict):
+        scalars = {f"session_{k}": v for k, v in node.items() if not isinstance(v, (list, dict))}
+        merged = {**ctx, **scalars}
+        for k, v in node.items():
+            if isinstance(v, list) and k.lower() in ("shots", "data", "records", "results"):
+                for it in v:
+                    if isinstance(it, dict): yield merged, it
+            else:
+                yield from walk(v, merged)
+    elif isinstance(node, list):
+        for it in node: yield from walk(it, ctx)
+rows = []
+for sctx, shot in walk(data):
+    flat = dict(sctx)
+    for k, v in shot.items(): flat[k] = json.dumps(v) if isinstance(v, (list, dict)) else v
+    rows.append(flat)
+if not rows: sys.exit("no shots[]/data[] arrays found — inspect the JSON shape")
+cols = list(dict.fromkeys(k for r in rows for k in r))
+w = csv.DictWriter(sys.stdout, fieldnames=cols); w.writeheader(); w.writerows(rows)</pre>
+
+  <p class="breathe">The apps hold your swings hostage in five formats. This gets all
+  <b>~3,339</b> of them into one file, in Git, that outlives any single app, laptop, or subscription.
+  <b>Measure everything. Own the record.</b></p>
+
+  <div class="foot">
+    <span>TODO-165 · golf-spica-data</span> · <span>bpo · Medewi Manor</span> ·
+    <span>refs: <a class="lref" href="https://linear.app/nomad-code/issue/TODO-83/golf-spica">TODO-83 golf-spica</a> · dna/golf</span>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   SPICA — the consolidator core. Pure, testable, zero-dependency.
+   Exposed on window.SPICA so it can be driven headless in verification.
+   ========================================================================== */
+var SPICA = (function () {
+  var TARGET = 3339;
+
+  // unified master schema (order = CSV column order)
+  var SCHEMA = [
+    'shot_id','source','source_file','session_id','session_label','timestamp','time_is_local',
+    'shot_index','club','club_raw','ball_speed_mph','club_speed_mph','smash','vla_deg','hla_deg',
+    'back_spin_rpm','side_spin_rpm','total_spin_rpm','spin_axis_deg','club_path_deg','face_angle_deg',
+    'face_to_path_deg','attack_angle_deg','dynamic_loft_deg','carry_raw_yds','carry_sim_yds','total_yds',
+    'roll_yds','offline_yds','peak_height_ft','descent_deg','units_src','merged_sources','dedup_key','notes'
+  ];
+  var SIGNED = {hla_deg:1, side_spin_rpm:1, spin_axis_deg:1, club_path_deg:1, face_angle_deg:1,
+                face_to_path_deg:1, attack_angle_deg:1, offline_yds:1};
+  var SIM_SOURCES = {gspro_round:1, gspro_range:1, e6:1, creative_golf:1};
+
+  // normalized-token -> canonical column. 'carry' is a pseudo, routed to raw/sim by source.
+  var SYN = {
+    ballspeed:'ball_speed_mph', ballspd:'ball_speed_mph', bs:'ball_speed_mph', ballvelocity:'ball_speed_mph', speedball:'ball_speed_mph',
+    clubspeed:'club_speed_mph', clubheadspeed:'club_speed_mph', chs:'club_speed_mph', headspeed:'club_speed_mph', clubvelocity:'club_speed_mph', clubspd:'club_speed_mph',
+    smash:'smash', smashfactor:'smash', sf:'smash', efficiency:'smash',
+    launchangle:'vla_deg', vla:'vla_deg', verticallaunch:'vla_deg', verticalangle:'vla_deg', vlaunch:'vla_deg', verticallaunchangle:'vla_deg',
+    hla:'hla_deg', horizontallaunch:'hla_deg', launchdirection:'hla_deg', launchdir:'hla_deg', azimuth:'hla_deg', sideangle:'hla_deg', startdirection:'hla_deg', horizontalangle:'hla_deg', horizontallaunchangle:'hla_deg',
+    backspin:'back_spin_rpm', bspin:'back_spin_rpm', backspinrate:'back_spin_rpm', spinback:'back_spin_rpm',
+    sidespin:'side_spin_rpm', sspin:'side_spin_rpm', spinside:'side_spin_rpm', sidespinrate:'side_spin_rpm',
+    totalspin:'total_spin_rpm', spinrate:'total_spin_rpm', ballspin:'total_spin_rpm', totspin:'total_spin_rpm',
+    spinaxis:'spin_axis_deg', spintilt:'spin_axis_deg', axistilt:'spin_axis_deg',
+    clubpath:'club_path_deg', swingpath:'club_path_deg', hpath:'club_path_deg',
+    faceangle:'face_angle_deg', clubface:'face_angle_deg', faceatimpact:'face_angle_deg', faceangleimpact:'face_angle_deg', faceimpact:'face_angle_deg',
+    facetopath:'face_to_path_deg', ftp:'face_to_path_deg', f2p:'face_to_path_deg', facepath:'face_to_path_deg', facetopathangle:'face_to_path_deg',
+    attackangle:'attack_angle_deg', aoa:'attack_angle_deg', angleofattack:'attack_angle_deg', attackang:'attack_angle_deg',
+    dynamicloft:'dynamic_loft_deg', dynloft:'dynamic_loft_deg', loftatimpact:'dynamic_loft_deg', dloft:'dynamic_loft_deg',
+    carry:'carry', carrydistance:'carry', carrydist:'carry', carryyds:'carry', carrym:'carry', carrydistanceyds:'carry',
+    total:'total_yds', totaldistance:'total_yds', totaldist:'total_yds', totalyds:'total_yds', distance:'total_yds', totaldistanceyds:'total_yds',
+    roll:'roll_yds', rolldistance:'roll_yds', rollout:'roll_yds',
+    offline:'offline_yds', offlinedistance:'offline_yds', sidedistance:'offline_yds', sidecarry:'offline_yds', lateral:'offline_yds', lateraldistance:'offline_yds', carryside:'offline_yds', offlinedist:'offline_yds',
+    apex:'peak_height_ft', peakheight:'peak_height_ft', maxheight:'peak_height_ft', apexheight:'peak_height_ft', peak:'peak_height_ft', maxht:'peak_height_ft', apexft:'peak_height_ft',
+    descentangle:'descent_deg', landingangle:'descent_deg', descent:'descent_deg', angleofdescent:'descent_deg', aod:'descent_deg',
+    club:'club', clubname:'club', clubtype:'club', clubused:'club', clubselection:'club',
+    date:'timestamp', time:'timestamp', datetime:'timestamp', timestamp:'timestamp', shottime:'timestamp', shotdate:'timestamp', createdat:'timestamp', recordedat:'timestamp', dateandtime:'timestamp',
+    sessionid:'session_id', session:'session_id', roundid:'session_id', activityid:'session_id',
+    sessionname:'session_label', course:'session_label', coursename:'session_label',
+    shotnumber:'shot_index', shotno:'shot_index', shotindex:'shot_index', ballnumber:'shot_index'
+  };
+
+  function norm(h) {
+    return String(h).toLowerCase().replace(/\(.*?\)|\[.*?\]/g, '').replace(/[^a-z0-9]+/g, '');
+  }
+  function unitHint(h) {
+    var s = String(h).toLowerCase();
+    if (/m\/s|mps|metrespersec|meterspersec/.test(s)) return 'mps';
+    if (/km\/?h|kph/.test(s)) return 'kph';
+    if (/mph|mi\/h/.test(s)) return 'mph';
+    if (/\byds?\b|yards?/.test(s)) return 'yd';
+    if (/\bft\b|feet/.test(s)) return 'ft';
+    if (/\bm\b|meters?|metres?/.test(s)) return 'm';
+    if (/rpm/.test(s)) return 'rpm';
+    if (/deg|°/.test(s)) return 'deg';
+    return null;
+  }
+  function mapHeader(raw) {
+    var n = norm(raw), unit = unitHint(raw), canonical = SYN[n] || null;
+    if (!canonical) {
+      if (n === 'side') canonical = unit === 'rpm' ? 'side_spin_rpm' : (unit === 'yd' || unit === 'm') ? 'offline_yds' : 'hla_deg';
+      else if (n === 'spin') canonical = 'total_spin_rpm';
+      else if (n === 'launch') canonical = 'vla_deg';
+      else if (n === 'axis') canonical = 'spin_axis_deg';
+      else if (n === 'face') canonical = 'face_angle_deg';
+      else if (n === 'path') canonical = 'club_path_deg';
+      else if (n === 'height') canonical = 'peak_height_ft';
+    }
+    return { canonical: canonical, unit: unit, raw: raw };
+  }
+
+  function cleanNum(v) {
+    if (v == null) return null;
+    var s = String(v).trim();
+    if (s === '' || /^(n\/?a|-+|null|nan)$/i.test(s)) return null;
+    s = s.replace(/[^0-9.,\-]/g, '');                            // drop stray units / spaces
+    if (s === '' || s === '-') return null;
+    var hasDot = s.indexOf('.') >= 0, hasComma = s.indexOf(',') >= 0;
+    if (hasDot && hasComma) {                                    // last separator is the decimal
+      if (s.lastIndexOf(',') > s.lastIndexOf('.')) s = s.replace(/\./g, '').replace(',', '.'); // 1.234,56 EU
+      else s = s.replace(/,/g, '');                              // 1,234.56 US
+    } else if (hasComma) {
+      var m = s.match(/^-?\d+,(\d+)$/);
+      if (m && m[1].length !== 3) s = s.replace(',', '.');       // 1–2 or >3 trailing digits → decimal
+      else s = s.replace(/,/g, '');                              // exactly 3 (or multi-comma) → thousands
+    }
+    var f = parseFloat(s);
+    return isNaN(f) ? null : f;
+  }
+  function parseSigned(v) {
+    if (v == null) return null;
+    var s = String(v).trim();
+    if (s === '' || /^(n\/?a|-+|null)$/i.test(s)) return null;
+    var m = s.match(/^([LR])\s*([\d.,]+)$/i) || s.match(/^([\d.,]+)\s*([LR])$/i);
+    if (m) {
+      var letter = /[LR]/i.test(m[1]) ? m[1] : m[2];
+      var num = /[LR]/i.test(m[1]) ? m[2] : m[1];
+      var val = cleanNum(num);
+      if (val == null) return null;
+      return /l/i.test(letter) ? -Math.abs(val) : Math.abs(val);
+    }
+    if (/left/i.test(s)) return -Math.abs(cleanNum(s.replace(/left/i, '')) || 0);
+    if (/right/i.test(s)) return Math.abs(cleanNum(s.replace(/right/i, '')) || 0);
+    return cleanNum(s);
+  }
+  function canonClub(v) {
+    var s = String(v).trim(); if (!s) return null;
+    var u = s.toUpperCase().replace(/\s+/g, '');
+    var deg = u.match(/^(\d{2})(°|DEG)?W?(EDGE)?$/); // 54 / 54° / 54deg
+    if (deg && +deg[1] >= 46 && +deg[1] <= 64) return deg[1] + '° Wedge';
+    var map = {
+      D:'Driver', DR:'Driver', DRV:'Driver', DRIVER:'Driver', '1W':'Driver',
+      '2W':'2 Wood', '3W':'3 Wood', '4W':'4 Wood', '5W':'5 Wood', '7W':'7 Wood', FW:'Fairway Wood',
+      '2H':'2 Hybrid', '3H':'3 Hybrid', '4H':'4 Hybrid', '5H':'5 Hybrid', '6H':'6 Hybrid', HY:'Hybrid',
+      PW:'Pitching Wedge', GW:'Gap Wedge', AW:'Gap Wedge', SW:'Sand Wedge', LW:'Lob Wedge',
+      P:'Putter', PT:'Putter', PUTT:'Putter', PUTTER:'Putter'
+    };
+    if (map[u]) return map[u];
+    var iron = u.match(/^([1-9])I$/) || u.match(/^I([1-9])$/) || u.match(/^([1-9])IRON$/);
+    if (iron) return iron[1] + ' Iron';
+    if (/^[3-9]$/.test(u)) return u + ' Iron';
+    return s; // unknown — keep raw
+  }
+
+  var SPEED = {ball_speed_mph:1, club_speed_mph:1};
+  var DISTY = {carry:1, total_yds:1, roll_yds:1, offline_yds:1};
+  function convertUnit(num, canonical, unit) {
+    var val = num, conv = false;
+    if (SPEED[canonical]) {
+      if (unit === 'mps') { val = num * 2.23694; conv = true; }
+      else if (unit === 'kph') { val = num * 0.621371; conv = true; }
+    } else if (DISTY[canonical]) {
+      if (unit === 'm') { val = num * 1.09361; conv = true; }
+      else if (unit === 'ft') { val = num * 0.333333; conv = true; }
+    } else if (canonical === 'peak_height_ft') {
+      if (unit === 'm') { val = num * 3.28084; conv = true; }
+      else if (unit === 'yd') { val = num * 3; conv = true; }
+    }
+    val = /(_rpm)$/.test(canonical) ? Math.round(val) : Math.round(val * 100) / 100;
+    return { val: val, conv: conv };
+  }
+
+  // ---- CSV parsing (RFC-4180 state machine) ----
+  function sniffDelim(line) {
+    var counts = {',':0, ';':0, '\t':0}, inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (c === '"') inQ = !inQ;
+      else if (!inQ && counts[c] != null) counts[c]++;
+    }
+    var best = ',', n = -1;
+    for (var d in counts) if (counts[d] > n) { n = counts[d]; best = d; }
+    return best;
+  }
+  function parseCSV(text) {
+    var firstLine = text.split(/\r\n|\r|\n/, 1)[0] || '';
+    var delim = sniffDelim(firstLine);
+    var rows = [], row = [], field = '', inQ = false, i = 0, c, nx;
+    while (i < text.length) {
+      c = text[i];
+      if (inQ) {
+        if (c === '"') { nx = text[i + 1]; if (nx === '"') { field += '"'; i += 2; continue; } inQ = false; i++; continue; }
+        field += c; i++; continue;
+      }
+      if (c === '"') { inQ = true; i++; continue; }
+      if (c === delim) { row.push(field); field = ''; i++; continue; }
+      if (c === '\r') { i++; continue; }
+      if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+      field += c; i++;
+    }
+    if (field !== '' || row.length) { row.push(field); rows.push(row); }
+    return rows.filter(function (r) { return r.some(function (x) { return String(x).trim() !== ''; }); });
+  }
+  function rowsToObjects(rows) {
+    if (!rows.length) return { records: [], preamble: [] };
+    // find header: first row with >=2 cells that map to canonical columns
+    var headerIdx = 0, bestScore = -1;
+    for (var r = 0; r < Math.min(rows.length, 8); r++) {
+      var score = 0;
+      for (var k = 0; k < rows[r].length; k++) if (mapHeader(rows[r][k]).canonical) score++;
+      if (score > bestScore) { bestScore = score; headerIdx = r; }
+    }
+    var headers = rows[headerIdx].map(function (h) { return String(h).trim(); });
+    var records = [], preamble = rows.slice(0, headerIdx).map(function (r) { return r.join(' ').trim(); }).filter(Boolean);
+    for (var j = headerIdx + 1; j < rows.length; j++) {
+      var cells = rows[j], obj = {};
+      // drop obvious summary rows (first cell says total/average and rest mostly blank)
+      if (/^(total|average|avg|mean|summary)\b/i.test(String(cells[0] || '')) &&
+          cells.filter(function (x) { return String(x).trim() !== ''; }).length <= 2) continue;
+      for (var h = 0; h < headers.length; h++) {
+        var key = headers[h] || ('col' + h);
+        var val = cells[h];
+        if (val != null && String(val).trim() !== '') obj[key] = val;
+      }
+      if (Object.keys(obj).length) records.push(obj);
+    }
+    return { records: records, preamble: preamble };
+  }
+
+  // ---- JSON parsing (sessions[].shots[], nested wrappers, and flat arrays) ----
+  function walkJSON(node, ctx, out) {
+    ctx = ctx || {}; out = out || [];
+    if (Array.isArray(node)) { node.forEach(function (it) { walkJSON(it, ctx, out); }); return out; }
+    if (!node || typeof node !== 'object') return out;
+    var scalars = {}, shotArrays = [], otherChildren = [];
+    for (var k in node) {
+      var v = node[k];
+      if (v && typeof v === 'object') {
+        if (Array.isArray(v) && /^(shots|data|records|results)$/i.test(k)) shotArrays.push(v);
+        else otherChildren.push(v);                     // objects + non-shot arrays: recurse, don't drop
+      } else scalars[k] = v;
+    }
+    var nctx = {}; for (var a in ctx) nctx[a] = ctx[a]; for (var b in scalars) nctx[b] = scalars[b];
+    var pushed = false;
+    shotArrays.forEach(function (arr) {
+      arr.forEach(function (it) {
+        if (Array.isArray(it)) walkJSON(it, nctx, out);
+        else if (it && typeof it === 'object') {
+          var merged = {}; for (var s in nctx) merged[s] = nctx[s]; for (var s2 in it) merged[s2] = it[s2];
+          out.push(merged); pushed = true;
+        }
+      });
+    });
+    otherChildren.forEach(function (child) { walkJSON(child, nctx, out); });
+    // leaf object that is itself a shot (flat array element / top-level shot)
+    if (!pushed && !shotArrays.length && !otherChildren.length) {
+      var mappable = 0; for (var kk in node) if (typeof node[kk] !== 'object' && mapHeader(kk).canonical) mappable++;
+      if (mappable >= 2) { var flat = {}; for (var s3 in nctx) flat[s3] = nctx[s3]; out.push(flat); }
+    }
+    return out;
+  }
+
+  function detectSource(name, records) {
+    var n = String(name || '').toLowerCase();
+    if (/gspro/.test(n)) return /range|practice/.test(n) ? 'gspro_range' : 'gspro_round';
+    if (/greenjoy|golfjoypc|golfjoy.?4k|golfjoy.?pc/.test(n)) return 'golfjoy_pc';
+    if (/space|mobile|golfjoy/.test(n)) return /\.json$/.test(n) ? 'golfjoy_space' : 'golfjoy_pc';
+    if (/e6|e6connect/.test(n)) return 'e6';
+    if (/creative/.test(n)) return 'creative_golf';
+    return 'other';
+  }
+
+  function normalizeRecord(rec, hmap, source, fileName) {
+    var row = {}; SCHEMA.forEach(function (c) { row[c] = null; });
+    row.source = source; row.source_file = fileName; row.units_src = 'imperial';
+    var didConvert = false, carry = null, carryUnit = null;
+    for (var rawKey in rec) {
+      var m = hmap[rawKey]; if (!m || !m.canonical) continue;
+      var canonical = m.canonical, unit = m.unit, v = rec[rawKey];
+      if (v == null || String(v).trim() === '') continue;
+      if (canonical === 'club') { row.club_raw = String(v).trim(); row.club = canonClub(v); continue; }
+      if (canonical === 'timestamp') { row.timestamp = String(v).trim(); row.time_is_local = !/([zZ]|[+\-]\d\d:?\d\d)$/.test(row.timestamp); continue; }
+      if (canonical === 'session_id') { row.session_id = String(v).trim(); continue; }
+      if (canonical === 'session_label') { row.session_label = String(v).trim(); continue; }
+      if (canonical === 'shot_index') { var si = cleanNum(v); if (si != null) row.shot_index = si; continue; }
+      if (canonical === 'carry') { carry = v; carryUnit = unit; continue; }
+      var num = SIGNED[canonical] ? parseSigned(v) : cleanNum(v);
+      if (num == null) continue;
+      var cu = convertUnit(num, canonical, unit); if (cu.conv) didConvert = true;
+      row[canonical] = cu.val;
+    }
+    if (carry != null) {
+      var cn = cleanNum(carry);
+      if (cn != null) { var cc = convertUnit(cn, 'carry', carryUnit); if (cc.conv) didConvert = true;
+        if (SIM_SOURCES[source]) row.carry_sim_yds = cc.val; else row.carry_raw_yds = cc.val; }
+    }
+    if (row.smash == null && row.ball_speed_mph != null && row.club_speed_mph) row.smash = Math.round((row.ball_speed_mph / row.club_speed_mph) * 1000) / 1000;
+    var carryYds = row.carry_raw_yds != null ? row.carry_raw_yds : row.carry_sim_yds;
+    if (row.roll_yds == null && row.total_yds != null && carryYds != null) { var rr = Math.round((row.total_yds - carryYds) * 100) / 100; if (rr >= 0) row.roll_yds = rr; }
+    if (didConvert) row.units_src = 'metric';
+    var hasData = row.ball_speed_mph != null || row.carry_raw_yds != null || row.carry_sim_yds != null || row.club != null || row.total_yds != null;
+    return hasData ? row : null;
+  }
+
+  function ingestText(name, text, override) {
+    text = String(text).replace(/^﻿/, '');
+    var head = text.replace(/^\s+/, '')[0], records, fmt, preamble = [];
+    if (head === '{' || head === '[') { fmt = 'json'; records = walkJSON(JSON.parse(text)); }
+    else { fmt = 'csv'; var p = rowsToObjects(parseCSV(text)); records = p.records; preamble = p.preamble; }
+    var source = (override && override !== 'auto') ? override : detectSource(name, records);
+    var keys = {}; records.forEach(function (r) { for (var k in r) keys[k] = 1; });
+    var hmap = {}, unmapped = [];
+    for (var k in keys) { var m = mapHeader(k); if (m.canonical) hmap[k] = m; else unmapped.push(k); }
+    var rows = [];
+    records.forEach(function (rec) { var row = normalizeRecord(rec, hmap, source, name); if (row) rows.push(row); });
+    var emptyCols = rows.length ? SCHEMA.filter(function (c) { return ['shot_id','source','source_file','units_src','merged_sources','dedup_key','notes','time_is_local'].indexOf(c) < 0 && rows.every(function (r) { return r[c] == null || r[c] === ''; }); }) : [];
+    var anyMetric = rows.some(function (r) { return r.units_src === 'metric'; });
+    return { source: source, rows: rows, log: { name: name, source: source, fmt: fmt, parsed: records.length, kept: rows.length, unmapped: unmapped, emptyCols: emptyCols, units: anyMetric ? 'metric→imperial' : 'imperial', preamble: preamble } };
+  }
+
+  function sig(r) {
+    if (r.ball_speed_mph == null) return null;
+    return [Math.round(r.ball_speed_mph),
+            r.vla_deg != null ? Math.round(r.vla_deg * 2) / 2 : '',
+            r.hla_deg != null ? Math.round(r.hla_deg * 2) / 2 : '',
+            r.back_spin_rpm != null ? Math.round(r.back_spin_rpm / 100) * 100 : '',
+            r.club || ''].join('|');
+  }
+  function fillFrom(base, other) {
+    SCHEMA.forEach(function (c) { if ((base[c] == null || base[c] === '') && other[c] != null && other[c] !== '') base[c] = other[c]; });
+  }
+  function dedup(rows, opts) {
+    opts = opts || {};
+    // tier 1 — intra-source exact (removes re-imports of the same file)
+    var seen = {}, afterT1 = [], t1 = 0;
+    rows.forEach(function (r) {
+      var disc = (r.shot_index != null) ? ('#' + r.shot_index) : (r.timestamp || '');
+      if (disc) {
+        var k = r.source + '|' + (r.session_id || '') + '|' + disc + '|' + (r.club || '');
+        if (seen[k]) { t1++; return; }
+        seen[k] = 1;
+      }
+      afterT1.push(r);
+    });
+    // tier 2 — cross-source signature
+    var groups = {};
+    afterT1.forEach(function (r) { var s = sig(r); if (!s) return; (groups[s] = groups[s] || []).push(r); });
+    var tagged = 0, merged = 0, drop = [];
+    for (var s in groups) {
+      var grp = groups[s]; if (grp.length < 2) continue;
+      var srcs = {}; grp.forEach(function (r) { srcs[r.source] = 1; });
+      if (Object.keys(srcs).length < 2) continue;              // same-source near-dups: leave (could be real)
+      grp.forEach(function (r) { r.dedup_key = s; });
+      if (opts.crossMerge) {
+        var base = grp[0], contrib = {}; contrib[base.source] = 1;
+        for (var j = 1; j < grp.length; j++) { fillFrom(base, grp[j]); contrib[grp[j].source] = 1; drop.push(grp[j]); merged++; }
+        base.merged_sources = Object.keys(contrib).join('|');
+      } else {
+        grp.forEach(function (r) { r.notes = (r.notes ? r.notes + '; ' : '') + 'cross-source dup ×' + grp.length; });
+        tagged += grp.length;
+      }
+    }
+    var dropSet = drop; var final = afterT1.filter(function (r) { return dropSet.indexOf(r) < 0; });
+    return { rows: final, t1: t1, tagged: tagged, merged: merged };
+  }
+
+  function toCSV(rows) {
+    var esc = function (v) {
+      if (v == null) return '';
+      var s = String(v);
+      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    var out = [SCHEMA.join(',')];
+    rows.forEach(function (r) { out.push(SCHEMA.map(function (c) { return esc(r[c]); }).join(',')); });
+    return out.join('\r\n');
+  }
+
+  function consolidate(files, opts) {
+    opts = opts || {};
+    var all = [], logs = [], perSourceRaw = {};
+    files.forEach(function (f) {
+      try {
+        var res = ingestText(f.name, f.text, f.sourceOverride);
+        logs.push(res.log); all = all.concat(res.rows);
+        perSourceRaw[res.source] = (perSourceRaw[res.source] || 0) + res.rows.length;
+      } catch (e) {
+        logs.push({ name: f.name, error: String(e && e.message || e), parsed: 0, kept: 0, unmapped: [], emptyCols: [] });
+      }
+    });
+    var d = dedup(all, { crossMerge: !!opts.crossMerge });
+    d.rows.forEach(function (r, i) { if (!r.shot_id) r.shot_id = r.source + '-' + (r.session_id || 's') + '-' + (r.shot_index != null ? r.shot_index : i); });
+    var perSource = {}; d.rows.forEach(function (r) { perSource[r.source] = (perSource[r.source] || 0) + 1; });
+    return { rows: d.rows, perSource: perSource, perSourceRaw: perSourceRaw, logs: logs, dedup: d, total: d.rows.length, target: TARGET };
+  }
+
+  // sample data for the "Load sample" button + verification
+  function demo() {
+    return [
+      { name: 'gspro_range_export.csv', text:
+        'Club,Ball Speed (mph),Launch Angle,Launch Direction,Back Spin,Side Spin,Carry,Total\r\n' +
+        '7 Iron,118.4,17.2,L1.3,5900,-120,168,176\r\n' +
+        'Driver,161.2,12.8,R2.1,2450,310,262,289\r\n' +
+        'PW,99.1,26.4,L0.4,8800,-40,132,136\r\n' },
+      { name: 'golfjoy_pc_session.csv', text:
+        'club,ballspeed(m/s),vla,hla,backspin,carry(m)\r\n' +
+        'Driver,72.5,12.1,2.4,2600,235\r\n' +
+        '7I,52.9,17.0,-1.2,5950,153.5\r\n' },
+      { name: 'golfjoy_space_history.json', text: JSON.stringify(
+        { status: 'success', data: { user_id: 'GJ-US-99210', total_records: 2, sessions: [
+          { session_id: 'SESS_2026_03_28_001', date: '2026-03-28T09:15:30Z', shots: [
+            { shot_index: 1, club: '7I', ball_speed: 115.4, vla: 16.2, hla: -1.2, back_spin: 5900, side_spin: -120, carry: 152.3, total: 159.1 },
+            { shot_index: 2, club: 'Driver', ball_speed: 160.8, vla: 12.9, hla: 2.0, back_spin: 2455, side_spin: 305, carry: 260.5, total: 288.0 }
+          ] } ] } }) }
+    ];
+  }
+
+  return { TARGET: TARGET, SCHEMA: SCHEMA, SYN: SYN, norm: norm, mapHeader: mapHeader, cleanNum: cleanNum,
+           parseSigned: parseSigned, canonClub: canonClub, parseCSV: parseCSV, walkJSON: walkJSON,
+           ingestText: ingestText, dedup: dedup, toCSV: toCSV, consolidate: consolidate, demo: demo };
+})();
+window.SPICA = SPICA;
+
+/* ============================================================================
+   UI — playbook cards, dropzone, render. Progressive-enhancement over SPICA.
+   ========================================================================== */
+(function () {
+  // ---------- 01 playbook data ----------
+  var SOURCES = [
+    { id:'golfjoy_pc', code:'a', name:'GolfJoy PC / 4K software', likely:true, conf:'mid', confLabel:'verify locally',
+      sub:"GolfJoy's own Windows desktop app keeps a local cache before it syncs to your account. Most likely home for your bulk range work.",
+      locate:['Look under <code>%localappdata%\\\\GolfJoy</code>, <code>%programdata%</code>, and the install <code>Content\\\\</code> / <code>Log\\\\</code> folders.','You want the SQLite <b>.db</b> files (the brief guesses <code>LocalCache.db</code>) and any <code>UserData.xml</code>. Names unverified — sort by size & recency.'],
+      extract:['Close the app, then <b>copy</b> the .db out (never edit in place).','Open it in DB&nbsp;Browser for SQLite, or run the <code>spica_sqlite_dump.py</code> helper below — it auto-finds the shot table.'],
+      export:['Export the shot table to <b>CSV</b>.','Drop that CSV into the tool in §02 — carry becomes <code>carry_raw</code>.'] },
+    { id:'gspro_round', code:'b', name:'GSPro — rounds & range', likely:true, conf:'hi', confLabel:'export is real',
+      sub:'GSPro is where course play lives. Range data is volatile; scored rounds persist to flat-files.',
+      locate:['<b>Range:</b> the practice screen has a clipboard / <b>Export CSV</b> button (25+ columns).','<b>Rounds:</b> flat-files under the install tree — the brief points at <code>C:\\\\GSProV1\\\\...\\\\Results\\\\</code> (verify the exact path on your box).'],
+      extract:['<b class="warn-t">Export the range CSV BEFORE you close the range</b> — that buffer is wiped on exit and is unrecoverable.','For rounds, copy the Results flat-files; parse the per-course <code>.txt/.json</code> into rows.'],
+      export:['Range → CSV straight in.','Rounds → flatten to CSV/JSON. Carry becomes <code>carry_sim</code> (GSPro physics).'] },
+    { id:'golfjoy_space', code:'c', name:'GolfJoy Space app / account', likely:false, conf:'mid', confLabel:'cloud sync',
+      sub:'The mobile app (NFC/Wi-Fi) and your GolfJoy cloud account. Holds history synced from the device.',
+      locate:['In-app: <b>User Center / History</b>. Try any built-in export first.','If none, the history tab pulls JSON from the cloud API on load.'],
+      extract:['Best case: an in-app export or email-to-self.','Advanced: capture the API response — phone devtools or an SSL proxy (mitmproxy/Fiddler) while History loads — save the JSON payload.'],
+      export:['Feed the JSON straight into §02 (it reads <code>sessions[].shots[]</code>), or run <code>spica_json_to_csv.py</code> first.'] },
+    { id:'e6', code:'d', name:'E6 Connect / Creative Golf', likely:false, conf:'mid', confLabel:'format varies',
+      sub:'The Spica also drives E6 Connect and Creative Golf. Each keeps its own session history.',
+      locate:['E6: session/round history in the app; data under <code>%programdata%\\\\E6Golf\\\\</code> (verify).','Creative Golf: its own stats/history export.'],
+      extract:['Use the app\'s session export where it exists.','Otherwise locate the local history file and copy it out.'],
+      export:['Export/convert to CSV. Carry becomes <code>carry_sim</code> (both are sim engines).'] },
+    { id:'device', code:'e', name:'On-device touchscreen', likely:false, conf:'lo', confLabel:'transient',
+      sub:'Set expectations: the unit shows each shot but is photometric — it does not durably store 3,339 rows.',
+      locate:['The touchscreen shows the last shot / recent session, not a deep archive.'],
+      extract:['Nothing bulk to pull here — the record lives in whatever client was connected.'],
+      export:['Skip for recovery. Use this only to sanity-check a live number against a store.'] },
+    { id:'ocr', code:'f', name:'OCR fallback', likely:false, conf:'lo', confLabel:'last resort',
+      sub:'When a store is locked (certificate pinning, no export, encrypted sync) and nothing else works.',
+      locate:['Open the history/session screens that <em>display</em> the shot tables.'],
+      extract:['Screenshot the tables in sequence.','Run them through an OCR grid parser (or a vision model) to recover the numbers.'],
+      export:['Map recognized columns to the schema, write CSV, drop into §02. Expect to spot-check.'] }
+  ];
+
+  var strata = document.getElementById('strata');
+  var host = document.getElementById('detail-host');
+  var active = SOURCES[0].id;
+  function pill(conf, label) { return '<span class="cpill ' + conf + '">' + conf + '</span> <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted)">' + label + '</span>'; }
+  function renderStrata() {
+    strata.innerHTML = SOURCES.map(function (s) {
+      return '<div class="stratum' + (s.id === active ? ' act' : '') + '" data-id="' + s.id + '">' +
+        (s.likely ? '<span class="likely">likely yours</span>' : '') +
+        '<div class="code">' + s.code + ' · ' + s.conf + '</div>' +
+        '<h4>' + s.name + '</h4>' +
+        '<div class="mini">' + s.sub.split('.')[0] + '.</div></div>';
+    }).join('');
+  }
+  function block(title, items) {
+    return '<div class="dblock"><h5>' + title + '</h5><ul>' + items.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul></div>';
+  }
+  function renderDetail() {
+    var s = SOURCES.filter(function (x) { return x.id === active; })[0];
+    host.innerHTML = '<div class="detail"><h3>' + s.name + ' ' + pill(s.conf, s.confLabel) + '</h3>' +
+      '<p class="dsub">' + s.sub + '</p><div class="dgrid">' +
+      block('locate', s.locate) + block('extract', s.extract) + block('get it into CSV / JSON', s.export) +
+      '</div></div>';
+  }
+  strata.addEventListener('click', function (e) {
+    var el = e.target.closest('.stratum'); if (!el) return;
+    active = el.getAttribute('data-id'); renderStrata(); renderDetail();
+  });
+  renderStrata(); renderDetail();
+
+  // ---------- 03 schema table ----------
+  var SCHEMA_DOC = [
+    ['source','how carry is bucketed + dedup precedence'],
+    ['timestamp / time_is_local','as reported — no silent UTC math; flagged when naive'],
+    ['ball_speed_mph / club_speed_mph','launch + delivery speed (metric auto-converted)'],
+    ['vla_deg / hla_deg','vertical + horizontal launch; hla signed (+right / −left)'],
+    ['back_spin_rpm / side_spin_rpm','spin components; side signed'],
+    ['spin_axis_deg / club_path_deg / face_angle_deg','tilt + delivery, signed — sparse (not every export)'],
+    ['carry_raw_yds','device / app measured carry (GolfJoy, OCR)'],
+    ['carry_sim_yds','sim-physics carry (GSPro / E6 / Creative) — never overwrites raw'],
+    ['total_yds / roll_yds / offline_yds','distances; offline signed'],
+    ['peak_height_ft / descent_deg','apex + landing angle'],
+    ['units_src / merged_sources / dedup_key / notes','provenance & audit — how each row was formed']
+  ];
+  document.getElementById('schema-table').innerHTML =
+    '<tr><th>column(s)</th><th>meaning</th></tr>' +
+    SCHEMA_DOC.map(function (r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+
+  // ---------- 02 consolidator UI ----------
+  var files = [];            // {name, text, sourceOverride}
+  var lastResult = null;
+  var drop = document.getElementById('drop');
+  var input = document.getElementById('file-input');
+  var crossMerge = document.getElementById('cross-merge');
+  var elTotal = document.getElementById('m-total'), elProg = document.getElementById('m-prog'),
+      elFiles = document.getElementById('m-files'), elDedup = document.getElementById('m-dedup');
+
+  drop.addEventListener('click', function () { input.click(); });
+  drop.addEventListener('dragover', function (e) { e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', function () { drop.classList.remove('over'); });
+  drop.addEventListener('drop', function (e) {
+    e.preventDefault(); drop.classList.remove('over');
+    readFiles(e.dataTransfer.files);
+  });
+  input.addEventListener('change', function () { readFiles(input.files); input.value = ''; });
+  crossMerge.addEventListener('change', run);
+  document.getElementById('demo-btn').addEventListener('click', function () { files = SPICA.demo().map(function (f) { return { name: f.name, text: f.text, sourceOverride: 'auto' }; }); run(); });
+  document.getElementById('clear-btn').addEventListener('click', function () { files = []; lastResult = null; run(); });
+  document.getElementById('dl-btn').addEventListener('click', downloadCSV);
+
+  function readFiles(fileList) {
+    var arr = Array.prototype.slice.call(fileList);
+    var pending = arr.length; if (!pending) return;
+    arr.forEach(function (f) {
+      var reader = new FileReader();
+      var add = function (text) {
+        files = files.filter(function (x) { return x.name !== f.name; });   // re-dropping replaces, never doubles
+        files.push({ name: f.name, text: text, sourceOverride: 'auto' });
+        if (--pending === 0) run();
+      };
+      reader.onload = function () { add(reader.result); };
+      reader.onerror = function () { add(''); };
+      reader.readAsText(f);
+    });
+  }
+
+  var SRC_LABELS = { golfjoy_pc:'GolfJoy PC', gspro_round:'GSPro round', gspro_range:'GSPro range',
+    golfjoy_space:'GolfJoy Space', e6:'E6 Connect', creative_golf:'Creative Golf', ocr:'OCR', other:'other' };
+
+  function run() {
+    if (!files.length) { lastResult = null; paint(null); return; }
+    lastResult = SPICA.consolidate(files, { crossMerge: crossMerge.checked });
+    paint(lastResult);
+  }
+
+  function paint(res) {
+    var total = res ? res.total : 0;
+    elTotal.textContent = total.toLocaleString();
+    elFiles.textContent = res ? res.logs.length : 0;
+    elProg.style.width = Math.min(100, (total / SPICA.TARGET) * 100) + '%';
+    var dd = res ? (res.dedup.t1 + res.dedup.tagged + res.dedup.merged) : 0;
+    elDedup.textContent = dd;
+    document.getElementById('dl-btn').disabled = !res || !total;
+
+    // tally
+    var tallyWrap = document.getElementById('tally-wrap'), tally = document.getElementById('tally');
+    if (res && total) {
+      var max = Math.max.apply(null, Object.keys(res.perSource).map(function (k) { return res.perSource[k]; }));
+      tally.innerHTML = Object.keys(res.perSource).sort(function (a, b) { return res.perSource[b] - res.perSource[a]; }).map(function (k) {
+        var n = res.perSource[k];
+        return '<div class="trow"><div class="tl">' + (SRC_LABELS[k] || k) + '<small>' + k + '</small></div>' +
+          '<div class="tbar"><i style="width:' + Math.max(4, (n / max) * 100) + '%"></i></div>' +
+          '<div class="tn">' + n.toLocaleString() + '</div></div>';
+      }).join('');
+      tallyWrap.style.display = '';
+    } else tallyWrap.style.display = 'none';
+
+    // preview
+    var pWrap = document.getElementById('preview-wrap'), pv = document.getElementById('preview');
+    var COLS = ['source','club','ball_speed_mph','club_speed_mph','vla_deg','hla_deg','back_spin_rpm','side_spin_rpm','carry_raw_yds','carry_sim_yds','total_yds','notes'];
+    if (res && total) {
+      var head = '<tr>' + COLS.map(function (c) { return '<th>' + c.replace(/_/g, ' ') + '</th>'; }).join('') + '</tr>';
+      var frag = res.rows.slice(0, 50).map(function (r) {
+        return '<tr>' + COLS.map(function (c) {
+          var v = r[c]; var neg = (typeof v === 'number' && v < 0) ? ' class="neg"' : '';
+          return '<td' + neg + '>' + (v == null ? '' : v) + '</td>';
+        }).join('') + '</tr>';
+      }).join('');
+      pv.innerHTML = head + frag; pWrap.style.display = '';
+    } else pWrap.style.display = 'none';
+
+    // log
+    var lWrap = document.getElementById('log-wrap'), log = document.getElementById('log');
+    if (res && res.logs.length) {
+      log.innerHTML = res.logs.map(function (l) {
+        if (l.error) return '<span class="warn">✗ ' + l.name + ' — ' + l.error + '</span>';
+        var line = '<b>' + l.name + '</b>  →  <span class="ok">' + (SRC_LABELS[l.source] || l.source) + '</span> · ' + l.fmt + ' · ' + l.parsed + ' parsed → ' + l.kept + ' kept · ' + l.units;
+        if (l.unmapped && l.unmapped.length) line += '\n    <span class="warn">unmapped:</span> ' + l.unmapped.join(', ');
+        if (l.emptyCols && l.emptyCols.length) line += '\n    empty in this file: ' + l.emptyCols.join(', ');
+        return line;
+      }).join('\n');
+      var d = res.dedup;
+      log.innerHTML += '\n\n<b>dedup:</b> ' + d.t1 + ' intra-source re-imports removed · ' +
+        (crossMerge.checked ? (d.merged + ' mirrored shots merged') : (d.tagged + ' cross-source dups tagged (not deleted)')) +
+        '\n<b>result:</b> ' + res.total.toLocaleString() + ' unique shots · target ~' + SPICA.TARGET.toLocaleString() +
+        (res.total < SPICA.TARGET ? ' — keep adding sources' : ' — at/over target (dedup + partials shift the count)');
+      lWrap.style.display = '';
+    } else lWrap.style.display = 'none';
+  }
+
+  function downloadCSV() {
+    if (!lastResult) return;
+    var csv = SPICA.toCSV(lastResult.rows);
+    var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'spica3_all_shots.csv'; document.body.appendChild(a); a.click();
+    document.body.removeChild(a); setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  paint(null);
+})();
+</script>
+</body>
+</html>

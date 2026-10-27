@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>portal-v2 from the iOS app — TODO-289</title>
+<!-- bre password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css"><link rel="stylesheet" href="../design-repo/grove/tokens.css"><link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6;--rust:#9a3f24}
+*{box-sizing:border-box}html,body{overflow-x:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{width:min(100% - 32px,960px);margin:auto;padding:54px 0 70px}
+.eyebrow,.k{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}
+h1{margin:14px 0 12px;font:700 clamp(32px,6.4vw,62px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.06em}
+.lede{max-width:720px;color:var(--muted);font-size:18px}
+h2.sec{margin:44px 0 14px;font:700 22px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.03em}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:10px;margin-top:26px}
+.node{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.node.blocked{border-color:#e2c3b8;background:#fbf0ec}
+.node .k{display:block;margin-bottom:6px}
+.node p{margin:0;color:var(--muted);font-size:13.5px}
+.arrow{display:grid;place-items:center;font:700 20px/1 ui-monospace,monospace;color:var(--forest)}
+.arrow.no{color:var(--rust)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.card{padding:20px;border:1px solid var(--line);border-radius:15px;background:var(--card)}
+.card h3{font:700 16px/1.3 ui-monospace,monospace;margin:8px 0}
+.card p{color:var(--muted);margin:0;font-size:14px}
+table{width:100%;border-collapse:collapse;margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest)}
+tr:last-child td{border-bottom:0}
+td.rule{font-weight:700;white-space:nowrap}
+.checks{margin-top:22px;padding:22px;border-radius:16px;background:var(--forest);color:white}
+.check{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #ffffff25}
+.check:last-child{border:0}
+.dot{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900;font-size:13px}
+.dot.todo{background:transparent;color:#ffffff88;border:1px solid #ffffff55;font-weight:700}
+.check.todo span:last-child{color:#ffffffb0}
+ol.steps{margin:16px 0 0;padding-left:0;list-style:none;counter-reset:step}
+ol.steps li{position:relative;margin:10px 0;padding-left:38px;counter-increment:step}
+ol.steps li::before{content:counter(step);position:absolute;left:0;top:-1px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--forest);color:#fff;font:800 12px/1 ui-monospace,monospace}
+code{font:600 13px/1.4 ui-monospace,SFMono-Regular,monospace;background:#e8e6db;padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+.note{margin-top:22px;padding:18px 20px;border-left:3px solid var(--rust);background:#fbf0ec;border-radius:0 12px 12px 0}
+.note p{margin:0;font-size:14px;color:#5d3b30}
+a{color:inherit}
+footer{display:flex;justify-content:space-between;gap:14px;margin-top:44px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,SFMono-Regular,monospace}
+@media(max-width:760px){
+.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);padding:2px 0}
+.grid{grid-template-columns:1fr}footer{flex-direction:column}
+table,tbody,tr,td{display:block;width:100%}
+table tr:first-child{display:none}
+tr{border-bottom:1px solid var(--line);padding:6px 0}
+tr:last-child{border-bottom:0}
+td{border:0;padding:6px 16px}
+td.rule{white-space:normal;padding-top:14px;font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest)}
+}
+</style>
+</head>
+<body>
+<main>
+  <span class="eyebrow">TODO-289 · dha-portal_v2-ios_access · 2026-07-26</span>
+  <h1>portal-v2,<br>from the phone</h1>
+  <p class="lede">The Claude Code iOS app can't see <code>dhammaorg/portal-v2</code>.
+  Not a permissions bug — a GitHub App installation boundary. The fix is a private
+  copy inside the org the app already reaches. It was going to be a fork. Forking
+  is disabled, so it's a mirror.</p>
+
+  <h2 class="sec">Why it's blocked</h2>
+  <div class="flow">
+    <div class="node"><span class="k">iOS app</span><p>Starts a remote session. Repo list comes from the Claude GitHub App installation — not from your GitHub permissions.</p></div>
+    <div class="arrow">→</div>
+    <div class="node"><span class="k">Installation</span><p>Scoped to <code>nomad-code</code>. That's the whole visible world.</p></div>
+    <div class="arrow no">✕</div>
+    <div class="node blocked"><span class="k">dhammaorg</span><p>Never enumerated. Brendan has push access; the app does not. Org won't approve third-party installs.</p></div>
+  </div>
+
+  <h2 class="sec">The fork that wasn't</h2>
+  <div class="note">
+    <p><strong>Blocked, mid-build.</strong> <code>gh repo fork</code> returned
+    <em>403 — the repository exists, but forking is disabled.</em>
+    <code>gh api repos/dhammaorg/portal-v2</code> confirms
+    <code>allow_forking: false</code>, and flipping it needs <code>admin</code>.
+    Brendan has <code>maintain</code>. No amount of retrying fixes that.</p>
+  </div>
+  <p class="lede">Which surfaced the better question: what was the fork actually
+  buying? Brendan already has <code>push</code> upstream, so PRs were always
+  same-repo. The fork bought exactly one thing — <strong>a repo the iOS app can
+  see</strong>. A plain private repo buys that too, for zero org-admin action.</p>
+
+  <h2 class="sec">The decision</h2>
+  <p class="lede"><code>nomad-code/portal-v2</code> — a private mirror, seeded
+  from upstream <code>main</code>. It sits inside the existing installation, so
+  iOS reaches it natively. Upstream stays source of truth; the team's workflow
+  doesn't change.</p>
+
+  <table>
+    <tr><th>Rule</th><th>Why it's load-bearing</th></tr>
+    <tr><td class="rule"><code>main</code> is a mirror</td><td>Read-only copy of upstream <code>main</code>. Nothing local ever lands on it, so it can be force-pushed without thought. Drift dies at the root.</td></tr>
+    <tr><td class="rule"><code>ops</code> is the default branch</td><td>Scheduled workflows only run from the default branch — and the sync job force-pushes <code>main</code>. A workflow living on <code>main</code> <strong>deletes itself on its first run</strong>. <code>ops</code> holds workflows and nothing else.</td></tr>
+    <tr><td class="rule">Work on branches</td><td>Cheap, disposable, and the mirror stays pristine.</td></tr>
+    <tr><td class="rule">Rebase before publishing</td><td>The 07-20 handoff recorded a branch 94 commits behind. Now enforced in code: <code>publish-upstream</code> refuses a branch that isn't a descendant of upstream base.</td></tr>
+    <tr><td class="rule">The upstream hop is dispatched</td><td>Never automatic. Brendan's identity on team-visible acts, and it <em>is</em> the tier boundary.</td></tr>
+  </table>
+
+  <h2 class="sec">Two workflows, on <code>ops</code></h2>
+  <div class="grid">
+    <div class="card"><span class="k">Down</span><h3>sync-upstream</h3><p>Hourly at :17, dodging the top-of-hour stampede. Force-pushes upstream <code>main</code> onto mirror <code>main</code>. No-ops when the SHAs already match.</p></div>
+    <div class="card"><span class="k">Up</span><h3>publish-upstream</h3><p>Dispatch only. Branch in → rebase check → push to <code>dhammaorg/portal-v2</code> → PR opened there. Refuses <code>main</code>. Re-running on an open PR just updates the branch.</p></div>
+    <div class="card"><span class="k">Auth</span><h3>UPSTREAM_TOKEN</h3><p>One fine-grained PAT — owner <code>dhammaorg</code>, repo <code>portal-v2</code> only, Contents and Pull requests both read+write. The default workflow token can't see a private upstream. Token lives in the remote URL, never echoed.</p></div>
+    <div class="card"><span class="k">The gap a fork would've closed</span><h3>No relation</h3><p>GitHub doesn't know these two repos are related: no "N commits behind" banner, no cross-repo compare. The Action is the only link. That's the real cost of mirror-over-fork.</p></div>
+  </div>
+
+  <h2 class="sec">State</h2>
+  <div class="checks">
+    <span class="k" style="color:var(--lime)">Built this session</span>
+    <div class="check"><span class="dot">✓</span><span><code style="background:#ffffff22;color:#fff">nomad-code/portal-v2</code> exists, private</span></div>
+    <div class="check"><span class="dot">✓</span><span><code style="background:#ffffff22;color:#fff">main</code> seeded from upstream <code style="background:#ffffff22;color:#fff">a8d1dd5b</code></span></div>
+    <div class="check"><span class="dot">✓</span><span><code style="background:#ffffff22;color:#fff">ops</code> created, set default, both workflows registered active</span></div>
+    <div class="check todo"><span class="dot todo">4</span><span><strong>Mint <code style="background:#ffffff22;color:#fff">UPSTREAM_TOKEN</code></strong> — human-only, blocks everything below</span></div>
+    <div class="check todo"><span class="dot todo">5</span><span>Manual <code style="background:#ffffff22;color:#fff">sync-upstream</code> dispatch is green</span></div>
+    <div class="check todo"><span class="dot todo">6</span><span>iOS app lists the mirror as a session source</span></div>
+    <div class="check todo"><span class="dot todo">7</span><span><code style="background:#ffffff22;color:#fff">publish-upstream</code> opens a PR on <code style="background:#ffffff22;color:#fff">dhammaorg:main</code> and CI picks it up</span></div>
+  </div>
+
+  <h2 class="sec">Considered and rejected</h2>
+  <div class="grid">
+    <div class="card"><span class="k">Parked, not wrong</span><h3>App install on dhammaorg</h3><p>The right answer. Blocked on org policy. If that changes it supersedes all of this — delete the mirror, start sessions on upstream directly.</p></div>
+    <div class="card"><span class="k">Worth asking for</span><h3>Tick "Allow forking"</h3><p>One checkbox, no third-party vendor — a far smaller ask than the app install, and it restores the simpler fork model. Raise it next time a portal-v2 admin is in the room. The mirror works meanwhile.</p></div>
+    <div class="card"><span class="k">Rejected</span><h3>PAT sibling-clone</h3><p>Setup script clones portal-v2 into the bre environment. No native PR integration, PAT lifecycle to babysit, and invisible to the app's repo picker.</p></div>
+    <div class="card"><span class="k">Different problem</span><h3>M3 + Tailscale</h3><p>The 07-20 operating model. Real and useful — but that's SSH into a laptop, not the iOS app.</p></div>
+  </div>
+
+  <div class="note">
+    <p><strong>Costs, stated.</strong> A second private copy under a personal org
+    — acceptable because portal-v2 carries no secrets; DB dumps and sops env stay
+    out. The token is <em>write</em>-capable where a fork would've needed only
+    read: that's what <code>publish-upstream</code> costs. And PAT expiry breaks
+    sync loudly — but only in a tab nobody watches, which makes <code>main</code>
+    go stale silently.</p>
+  </div>
+
+  <div class="note">
+    <p><strong>Teleport note.</strong> <code>/teleport</code> into <code>~/dev/dha/bre</code>
+    auto-stashed 9 in-flight files — the Teams-ingest work, 908 insertions — as
+    <em>"On main: Teleport auto-stash"</em>. Restored with <code>git stash pop</code>.
+    A second occurrence earns a line in AGENT.md.</p>
+  </div>
+
+  <footer>
+    <span>bre · dha world · TODO-289</span>
+    <span>bre projects/portal-v2/IOS-ACCESS.md · nomad-code/portal-v2@ops</span>
+  </footer>
+</main>
+</body>
+</html>

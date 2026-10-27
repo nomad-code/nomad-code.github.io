@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Overnight chat archive</title>
+<link rel="stylesheet" href="/design-repo/harness/harness.css"><link rel="stylesheet" href="/design-repo/harness/artifact.css">
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--mute:#6b6a65;--line:#e4e1d9;--ok:#2f6b3a;--warn:#9a5b00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--fg:#ecebe6;--mute:#a3a19a;--line:#33322e;--ok:#7cc48a;--warn:#e7a948}}
+:root[data-theme="dark"]{--bg:#141413;--fg:#ecebe6;--mute:#a3a19a;--line:#33322e;--ok:#7cc48a;--warn:#e7a948}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif;margin:0;padding:24px 16px}
+main{max-width:880px;margin:0 auto} .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
+.k div{border:1px solid var(--line);border-radius:8px;padding:10px} .k b{display:block;font-size:24px} .k span{color:var(--mute);font-size:13px}
+.tw{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:13px} td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;white-space:nowrap}
+.open,.warn{color:var(--warn);font-weight:600} .ok{color:var(--ok)} .mute{color:var(--mute)} code{font-size:12px}
+</style></head>
+<body id="tc-app" class="harness-document"><header class="harness-header">BPO · shared brain · TODO-736</header><main>
+<div class="harness-kicker">Evidence · 2026-10-27T02:47:31Z</div>
+<h1 class="harness-title">70 of 76 chats archived, confirmed; all 75 old chats preserved</h1>
+<p>Every Codex chat except the current HUB is archived (18 of 19). Unfinished FIT-Hyrox work now belongs to tmux FIT. ChatGPT (57 in tonight's inventory): 52 confirmed archived; 5 pending confirmation. All 76 are preserved; 74 have exact transcript search. Semantic recall is not claimed.</p>
+<section class="k">
+<div><b>76</b><span>tonight's inventory (+44 older, not preserved)</span></div>
+<div><b>18/19</b><span>Codex archived</span></div>
+<div><b>5</b><span>ChatGPT pending confirmation</span></div>
+<div><b>52/57</b><span>ChatGPT archived, confirmed</span></div>
+<div><b>1</b><span>current HUB open</span></div></section>
+<p class="mute">Ingested means the local Hindsight ledger with exact search. It does not mean semantic recall in lane banks; chats are <code>local_only</code> by policy. Archive state comes from re-listing, not from the archive calls' responses. The list is capped at 50, so more chats may still exist.</p>
+<section id="final-11z"><h2>Final state 11Z (corrected 11:2xZ)</h2>
+<p>Old Codex chats: 18 of 18 archived and indexed. ChatGPT: 57 preserved and searchable; 52 archived (confirmed by the archived-view API at 11:15Z), 5 pending confirmation. 44 older ChatGPT chats outside tonight's 75-chat inventory are NOT preserved or ingested and stay unarchived. No offsite copy tonight (8 gdrive-personal backup steps failed on an expired sign-in). PRT evidence is on one host only. The current HUB is live and preserved as a snapshot; its final version is still pending. FIT: 1,264 profiles, 14,115 history rows, 3,306 bests; all 499 relay URLs return 404.</p>
+<p>Handoff: corrected narrated real-app MP4 (154 s) sent to the phone by Taildrop (transfer only; playback not confirmed). A fresh stateless recovery test of the seed PASSED on M3. All 12 human asks are recorded with outcomes in the private manifest. Final raw ingest of the current HUB is pending normal settle after 12Z; root archives it.</p>
+<div class="tw"><table><thead><tr><th>lane</th><th>world</th><th>state</th></tr></thead><tbody><tr><td>HUB %37</td><td>BPO</td><td style='white-space:normal'>live coordinator until 12Z; archive/ingest receipts done; current thread preserved (active), pending final</td></tr><tr><td>FIT</td><td>personal</td><td style='white-space:normal'>CLOSED, final PASS; 1,264 profiles / 14,115 history / 3,306 bests; 499 relay URLs all 404 (source unavailable); no official identity or calibration claim</td></tr><tr><td>LJA</td><td>personal</td><td style='white-space:normal'>done; one gap closed; idle</td></tr><tr><td>GLF</td><td>personal</td><td style='white-space:normal'>done; human questions open: device model, RPT balls, lofts, where to play</td></tr><tr><td>SKD</td><td>personal</td><td style='white-space:normal'>done; sole request complete; idle</td></tr><tr><td>EAT</td><td>personal</td><td style='white-space:normal'>no assignment</td></tr><tr><td>PRT</td><td>DHA</td><td style='white-space:normal'>evidence committed locally (bre c51f002); evidence.json held for owner review</td></tr><tr><td>BTN</td><td>Found</td><td style='white-space:normal'>clause 1 internal grouping PASS on 3 surfaces; clause 2 UNPROVEN (no historical baseline); clause 3 NOT EXERCISED (no client principal); row_explain retry-capped</td></tr><tr><td>DSP</td><td>Found</td><td style='white-space:normal'>ACCEPTED local checkpoint da36aaa86; not pushed, no PR, not deployed</td></tr><tr><td>GSG</td><td>Found</td><td style='white-space:normal'>ACCEPTED live concept a43a546; not a customer deploy; $3 cumulative model allowance</td></tr><tr><td>STU</td><td>Found</td><td style='white-space:normal'>done; per-bank reranking change is a human decision, not applied</td></tr></tbody></table></div></section>
+<div class="tw"><table><thead><tr><th>id</th><th>source</th><th>route</th><th>preserved</th><th>ingested</th><th>archive</th></tr></thead><tbody>
+<tr><td><code>01a17b12</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>—</td><td class='warn'>current HUB</td></tr>
+<tr><td><code>01a16ea9</code></td><td>Codex m5</td><td>fit</td><td>✓</td><td>—</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a96</code></td><td>Codex m5</td><td>fit</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17aa0</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a9e</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a9d</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a9b</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a9d</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a1795c</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a1795c</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a178cc</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a6d</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a6e</code></td><td>Codex m5</td><td>fit</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a179c1</code></td><td>Codex m5</td><td>fit</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a6f</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a48</code></td><td>Codex m5</td><td>fit</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a4f</code></td><td>Codex m5</td><td>code</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a35</code></td><td>Codex m3</td><td>HUB</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>01a17a28</code></td><td>Codex m5</td><td>travel</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6abc1c6a</code></td><td>ChatGPT</td><td>UNRESOLVED/found?</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6ab6fb5b</code></td><td>ChatGPT</td><td>HUB/infra</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6ab6b91d</code></td><td>ChatGPT</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6ab12694</code></td><td>ChatGPT</td><td>PRT/dha</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6aa151b3</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a93ceae</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a840e8c</code></td><td>ChatGPT</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a80476a</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a7eb7df</code></td><td>ChatGPT</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a73e678</code></td><td>ChatGPT</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a72fb58</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a6aee21</code></td><td>ChatGPT</td><td>LJA/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a66cceb</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a61bca0</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a61431f</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a6069d1</code></td><td>ChatGPT</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6936ab4b</code></td><td>ChatGPT</td><td>GLF/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6a5c8b45</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697a1175</code></td><td>ChatGPT</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69c7e91f</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69898c11</code></td><td>ChatGPT</td><td>LJA/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6981ba64</code></td><td>ChatGPT</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6981b25e</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6981aba4</code></td><td>ChatGPT</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69811a35</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6980ae2c</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6980a1d5</code></td><td>ChatGPT</td><td>UNRESOLVED/found|dha?</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69808959</code></td><td>ChatGPT</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69802ec6</code></td><td>ChatGPT</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6980706b</code></td><td>ChatGPT</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69806ec0</code></td><td>ChatGPT</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69805138</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697ff158</code></td><td>ChatGPT · b2</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697da551</code></td><td>ChatGPT · b2</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697ef817</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697de333</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697c25f4</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697b08bd</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697b256e</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697afacb</code></td><td>ChatGPT · b2</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6976b944</code></td><td>ChatGPT · b2</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6969f378</code></td><td>ChatGPT · b2</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6979affb</code></td><td>ChatGPT · b2</td><td>LJA/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69787d03</code></td><td>ChatGPT · b2</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69783d69</code></td><td>ChatGPT · b2</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>6973143a</code></td><td>ChatGPT · b2</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69773ffa</code></td><td>ChatGPT · b2</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69780b0d</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>697801df</code></td><td>ChatGPT · b2</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69776f05</code></td><td>ChatGPT · b2</td><td>LJA/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69773f20</code></td><td>ChatGPT · b2</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69772ec8</code></td><td>ChatGPT · b2</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='ok'>archived</td></tr>
+<tr><td><code>69772645</code></td><td>ChatGPT · b3</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='warn'>pending confirmation</td></tr>
+<tr><td><code>6976b5fa</code></td><td>ChatGPT · b3</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='warn'>pending confirmation</td></tr>
+<tr><td><code>6975eade</code></td><td>ChatGPT · b3</td><td>FIT/personal</td><td>✓</td><td>✓</td><td class='warn'>pending confirmation</td></tr>
+<tr><td><code>6974af98</code></td><td>ChatGPT · b3</td><td>EAT/personal</td><td>✓</td><td>✓</td><td class='warn'>pending confirmation</td></tr>
+<tr><td><code>69743bfe</code></td><td>ChatGPT · b3</td><td>HUB/personal</td><td>✓</td><td>✓</td><td class='warn'>pending confirmation</td></tr>
+</tbody></table></div>
+<p class="mute">Private manifest: <code>projects/shared-brain/archives/2026-10-27-m5-overnight/</code> in nomad-code/bpo. No titles or content here.</p>
+</main></body></html>

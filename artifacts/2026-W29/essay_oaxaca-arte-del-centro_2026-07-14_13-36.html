@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>El arte del centro · Oaxaca's two museums</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    /* Chart-scope palette — grove hues chroma-snapped to pass the six checks
+       (validated in the sibling artifact: L-band ✓ · chroma ✓ · protan ✓ · contrast ✓) */
+    :root {
+      --c-centro:   #c4501f;  /* el arte del centro · top-down, centralized   (warn, snapped) */
+      --c-centro-bg:#f6e3da;
+      --c-pueblo:   #0d8f7f;  /* lo regional · the specific, the historicized (forest, snapped) */
+      --c-pueblo-bg:#d9ece7;
+      --c-schl:     #3a92ba;  /* the scholars / framework                     (found, snapped) */
+      --c-schl-bg:  #e3eef2;
+      --c-era:      #a07c15;  /* material / time / clay                       (amber, snapped) */
+      --c-era-bg:   #f3ead2;
+      --c-lime:     #84c241;  /* ONE moment: la resistencia / lo que se recupera */
+      --pink:       #c07aa8;  /* the "sala rosa" — arbitrary vitrine color, desaturated */
+      --purple:     #8a76c0;  /* the "sala púrpura" — arbitrary vitrine color, desaturated */
+    }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    main { max-width: 1060px; margin: 0 auto; padding: 30px 24px 80px; }
+
+    /* ---------- header ---------- */
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--c-centro); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-centro); }
+    h1 { font:800 clamp(34px, 5.4vw, 54px)/1.02 var(--font-display); letter-spacing:-.025em;
+      color:var(--ink); margin:16px 0 6px; }
+    h1 em { font-style:normal; color:var(--c-centro); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 14px; }
+    .sub a { color: var(--forest-d); text-decoration-color: var(--line); }
+    .lede { max-width:70ch; font:400 16.5px/1.6 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:640; }
+    .lede i { font-style:italic; }
+
+    .pullquote { margin:26px 0 6px; padding:18px 22px; border-left:3px solid var(--c-centro);
+      background:var(--card); border-radius: 0 var(--r-panel) var(--r-panel) 0;
+      box-shadow: var(--shadow-card); }
+    .pullquote p { font:500 clamp(17px, 2.2vw, 21px)/1.45 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .pullquote p span { color:var(--c-centro); font-style:italic; }
+    .pullquote cite { display:block; margin-top:8px; font:500 11.5px/1 var(--font-mono);
+      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 58px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(22px,3vw,28px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .k h2 em { font-style: normal; color: var(--forest-d); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:18px; }
+    .blurb b { color:var(--ink); font-weight:620; }
+    .blurb i { font-style:italic; }
+
+    /* ---------- legend ---------- */
+    .lgd { display:flex; gap:16px 22px; flex-wrap:wrap; margin:14px 2px 0;
+      font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+    .lgd span { display:inline-flex; align-items:center; gap:8px; }
+    .lgd i { width:11px; height:11px; border-radius:50%; }
+
+    /* ---------- hero viz ---------- */
+    .hero-card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-hero); overflow:hidden; }
+    .mode-bar { display:flex; align-items:center; gap:10px; padding:14px 16px 0; flex-wrap:wrap; }
+    .mode-btn { font:600 12px/1 var(--font-mono); letter-spacing:.03em; padding:9px 14px;
+      border-radius:var(--r-pill); border:1px solid var(--line); background:var(--bg);
+      color:var(--muted); cursor:pointer; transition:all .35s var(--ease); }
+    .mode-btn:hover { border-color:var(--faint); color:var(--ink); }
+    .mode-btn[aria-pressed="true"] { color:#fff; }
+    #btn-centro[aria-pressed="true"] { background:var(--c-centro); border-color:var(--c-centro); }
+    #btn-pueblo[aria-pressed="true"] { background:var(--c-pueblo); border-color:var(--c-pueblo); }
+    .mode-note { flex:1 1 260px; min-width:220px; position:relative; height:38px; }
+    .mode-note p { position:absolute; inset:0; display:flex; align-items:center;
+      font:400 13px/1.35 var(--font-ui); color:var(--muted); opacity:0;
+      transition:opacity .7s var(--ease); }
+    .mode-note p b { color:var(--ink); font-weight:620; margin-right:5px; }
+    [data-mode="centro"] .mode-note .n-cen, [data-mode="pueblo"] .mode-note .n-pue { opacity:1; }
+
+    .stage svg { display:block; width:100%; height:auto; }
+    #modeCentro, #modePueblo { transition: opacity 1s var(--ease); }
+    [data-mode="centro"] #modePueblo { opacity:.12; }
+    [data-mode="pueblo"] #modeCentro { opacity:.12; }
+    .hero-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:12px 18px 15px; border-top:1px solid var(--line); }
+    .hero-cap b { color:var(--forest-d); font-weight:600; }
+
+    .ax-label { font:500 10.5px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; fill:var(--muted); }
+    .ax-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* ---------- stat tiles ---------- */
+    .tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:12px; margin-top:16px; }
+    .tile { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px 14px; box-shadow:var(--shadow-card); position:relative; overflow:hidden;
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease); }
+    .tile:hover { transform:translateY(-3px); box-shadow:var(--shadow-lift); }
+    .tile::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tc,var(--forest)); }
+    .tile .v { font:800 34px/1 var(--font-display); letter-spacing:-.03em; color:var(--ink);
+      font-variant-numeric:tabular-nums; }
+    .tile .v small { font:700 17px/1 var(--font-display); color:var(--tc,var(--forest)); margin-left:2px; }
+    .tile .l { margin-top:6px; font:500 11px/1.45 var(--font-mono); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- museum comparison cards ---------- */
+    .duo { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .mcard { background:var(--card); border:1.5px solid var(--mc-bd); border-radius:var(--r-card);
+      padding:20px 22px; box-shadow:var(--shadow-card); position:relative;
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease); }
+    .mcard:hover { transform:translateY(-3px); box-shadow:var(--shadow-lift); }
+    .mcard.centro { --mc:var(--c-centro); --mc-bd:#e3b9a6; background:linear-gradient(180deg,#fff,#fdf4ef); }
+    .mcard.pueblo { --mc:var(--c-pueblo); --mc-bd:#b9d9d0; background:linear-gradient(180deg,#fff,#f2faf7); }
+    .mcard .tag { display:inline-flex; align-items:center; gap:7px; font:600 9.5px/1 var(--font-mono);
+      letter-spacing:.08em; text-transform:uppercase; color:var(--mc); background:var(--card);
+      border:1px solid var(--mc-bd); padding:5px 9px; border-radius:var(--r-chip); }
+    .mcard .tag i { width:7px; height:7px; border-radius:50%; background:var(--mc); }
+    .mcard h3 { font:700 18px/1.2 var(--font-display); letter-spacing:-.01em; color:var(--ink); margin:11px 0 2px; }
+    .mcard .meta { font:500 11px/1.3 var(--font-mono); color:var(--muted); letter-spacing:.03em; }
+    .mcard q { display:block; margin:12px 0 0; font:400 13px/1.55 var(--font-ui); color:var(--body);
+      quotes:"“" "”"; padding-left:12px; border-left:2px solid var(--mc-bd); }
+    .mcard q::before { color:var(--mc); font-weight:700; }
+    .mcard .read { margin-top:12px; font:400 12.5px/1.5 var(--font-ui); color:var(--muted); }
+    .mcard .read b { color:var(--ink); font-weight:620; }
+
+    .split { margin-top:16px; }
+    .split .bar { display:flex; gap:2px; height:30px; border-radius:8px; overflow:hidden; }
+    .split .seg { display:flex; align-items:center; padding:0 12px; font:700 11.5px var(--font-mono);
+      color:#fff; letter-spacing:.03em; min-width:0; white-space:nowrap; }
+    .split .seg.centro { background:var(--c-centro); flex:1; }
+    .split .seg.pueblo { background:var(--c-pueblo); flex:1; }
+    .split .cap { display:flex; justify-content:space-between; margin-top:8px;
+      font:500 11px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- bespoke figures ---------- */
+    .fig { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); overflow:hidden; }
+    .fig svg { display:block; width:100%; height:auto; }
+    .fig-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:11px 18px 14px; border-top:1px solid var(--line); }
+    .fig-cap b { color:var(--forest-d); font-weight:600; }
+    .stop { cursor:pointer; }
+    .stop circle.c, .stop rect.c { transition: r .25s var(--spring), transform .25s var(--spring); }
+    .stop:hover circle.c, .stop:focus-visible circle.c { r:7.5; }
+    .rt-label { font:500 10.5px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; fill:var(--muted); }
+    .rt-label.strong { fill:var(--ink); font-weight:600; }
+    .cell-lab { font:600 11px var(--font-mono); letter-spacing:.04em; text-transform:uppercase; fill:#fff; }
+    .cell-sub { font:500 9.5px var(--font-mono); letter-spacing:.03em; fill:#fff; opacity:.85; }
+
+    /* draw-in for long paths */
+    .draw { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); }
+    .shown .draw { animation: drawin 2.2s var(--ease) forwards; animation-delay: var(--d,0ms); }
+    @keyframes drawin { to { stroke-dashoffset: 0; } }
+    .pop { opacity:0; transform:translateY(8px); transition:opacity .5s var(--ease), transform .5s var(--spring); transition-delay:var(--d,0ms); }
+    .shown .pop { opacity:1; transform:none; }
+    @media (prefers-reduced-motion: reduce) {
+      .draw { stroke-dasharray:none; stroke-dashoffset:0; }
+      .pop { opacity:1; transform:none; }
+    }
+
+    /* ---------- scholars ---------- */
+    .chorus { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px; }
+    .voice { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:9px; }
+    .voice .who { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .voice .who b { font:700 14.5px/1.1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .voice .role { font:600 9.5px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); color:var(--vr); background:var(--vr-bg); flex:none; }
+    .voice q { font:400 13.5px/1.55 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .voice q::before, .voice q::after { color:var(--vr); font-weight:700; }
+    .voice .note { font:400 11.5px/1.5 var(--font-ui); color:var(--muted); margin-top:auto; }
+    .voice.centro   { --vr:var(--c-centro); --vr-bg:var(--c-centro-bg); }
+    .voice.pueblo   { --vr:var(--c-pueblo); --vr-bg:var(--c-pueblo-bg); }
+    .voice.frame    { --vr:var(--c-schl);   --vr-bg:var(--c-schl-bg); }
+    .voice.era      { --vr:var(--c-era);    --vr-bg:var(--c-era-bg); }
+    .voice.path     { --vr:#5a8a1e; --vr-bg:#e8f3d8; }
+
+    /* ---------- table view ---------- */
+    details.tbl { margin-top:18px; border:1px solid var(--line); border-radius:var(--r-panel);
+      background:var(--card); overflow:hidden; }
+    details.tbl summary { cursor:pointer; padding:13px 18px; font:600 12.5px var(--font-mono);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--forest-d); list-style:none; }
+    details.tbl summary::-webkit-details-marker { display:none; }
+    details.tbl summary::before { content:"▸ "; }
+    details.tbl[open] summary::before { content:"▾ "; }
+    details.tbl table { width:100%; border-collapse:collapse; font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    details.tbl th, details.tbl td { text-align:left; padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+    details.tbl th { font:600 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+    details.tbl td:first-child { font-family:var(--font-mono); font-weight:500; color:var(--ink); white-space:nowrap; }
+
+    /* ---------- closing ---------- */
+    .close-quote { margin:22px 0 0; padding:22px 26px; border-radius:var(--r-card);
+      background:linear-gradient(150deg,#15201d,#0c5a50 130%); color:#eef3ef;
+      box-shadow:var(--shadow-hero); }
+    .close-quote p { font:500 clamp(16px,2.1vw,20px)/1.5 var(--font-display); letter-spacing:-.01em; }
+    .close-quote p em { font-style:normal; color:var(--lime-b); }
+    .close-quote cite { display:block; margin-top:10px; font:500 11px var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:#9fb5ac; font-style:normal; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      font:400 11.5px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.02em; }
+    footer a { color:var(--muted); text-decoration-color:var(--line); }
+
+    /* ---------- tooltip ---------- */
+    .tip { position:fixed; z-index:60; max-width:290px; background:var(--ink); color:#f0f4f1;
+      font:400 12.5px/1.5 var(--font-ui); padding:10px 13px; border-radius:10px;
+      box-shadow:var(--shadow-lift); pointer-events:none; opacity:0;
+      transform:translateY(5px); transition:opacity .18s var(--ease), transform .18s var(--ease); }
+    .tip.on { opacity:1; transform:none; }
+    .tip b { color:#fff; font-weight:640; }
+    .tip i { color:#cfe8df; font-style:italic; }
+
+    @media (max-width: 720px) {
+      .duo { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ================= header ================= -->
+  <header class="mo-reveal">
+    <div class="eyebrow"><span class="mo-dot"></span> essay reading · look sharp! · nolan patrick · 2025-01-20</div>
+    <h1>El arte del <em>centro</em></h1>
+    <p class="sub">What Oaxaca's two museums reveal about who gets to present Indigenous culture.
+      Source: <a href="https://nolanpatrick.substack.com/p/oaxaca-and-el-arte-del-centro">nolanpatrick.substack.com</a></p>
+    <p class="lede">In Oaxaca, art is everywhere — <i>talleres</i> for weaving and engraving, murals, street artisans —
+      and so is the graffiti that answers back. One line, <b>“El arte del centro no me representa,”</b> separates the
+      art made for tourists and the state from the art of the people. Patrick reads two museums against that line: one
+      that presents pre-Hispanic objects as timeless <b>“fenómenos artísticos”</b> stripped of place and creator, and
+      one that historicizes craft down to the clay. The gap between them <b>names a whole way of seeing</b>.</p>
+    <div class="pullquote">
+      <p>“‘El arte del centro’ is not a specific work or artist or style — it is any art that is
+        <span>top-down</span>, that is <span>centralized</span>, that owes its presentation to a center.”</p>
+      <cite>Nolan Patrick · the essay's definition</cite>
+    </div>
+    <div class="lgd" role="list">
+      <span role="listitem"><i style="background:var(--c-centro)"></i> el arte del centro · top-down</span>
+      <span role="listitem"><i style="background:var(--c-pueblo)"></i> lo regional · the specific</span>
+      <span role="listitem"><i style="background:var(--c-schl)"></i> the scholars · framework</span>
+      <span role="listitem"><i style="background:var(--c-era)"></i> material · time · clay</span>
+      <span role="listitem"><i style="background:var(--c-lime)"></i> la resistencia <em style="font-style:normal;color:var(--faint)">(once)</em></span>
+    </div>
+  </header>
+
+  <!-- ================= 01 · where is the center ================= -->
+  <section id="center">
+    <div class="k mo-reveal"><span class="n">01</span><h2>¿Dónde está <em>el centro?</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The same objects — Zapotec, Mixtec, from Monte Albán and Santa María
+      Atzompa — can be arranged two ways. Pull them into a <b>center</b> and they lose their names: “presented like
+      artistic phenomena,” <b>“without time, place, or creator.”</b> Or let them stay in their <b>pueblos</b>, and the
+      center of gravity moves to the living communities themselves. Toggle the two organizations of the same collection.</p>
+
+    <div class="hero-card mo-reveal" style="--d:140ms" data-mode="centro" id="heroCard">
+      <div class="mode-bar">
+        <button class="mode-btn" id="btn-centro" aria-pressed="true">El arte del centro</button>
+        <button class="mode-btn" id="btn-pueblo" aria-pressed="false">El arte del pueblo</button>
+        <div class="mode-note" aria-live="polite">
+          <p class="n-cen"><b>Pulled to the center.</b> Objects converge on the institution and are anonymized — sorted by color, not culture.</p>
+          <p class="n-pue"><b>Left in the pueblos.</b> Each object keeps its place and time; the living community becomes the center.</p>
+        </div>
+      </div>
+      <figure class="stage" aria-hidden="false" role="img"
+        aria-label="Diagram of a collection of Indigenous objects. In 'el arte del centro' mode, five regional objects (Zapotec, Monte Albán, Mixtec, Santa María Atzompa, Guadalajara clay) are drawn inward along converging paths into a single museum vitrine at center, where they become anonymous unlabeled objects. In 'el arte del pueblo' mode, the same objects stay at the periphery keeping their place names, and a new lime-colored center — the people, la resistencia — connects to each of them.">
+        <svg viewBox="0 0 960 400">
+          <line class="vz-gridline" x1="30" y1="360" x2="930" y2="360"/>
+
+          <!-- ============ EL CENTRO: objects pulled inward ============ -->
+          <g id="modeCentro">
+            <!-- converging flow paths -->
+            <path class="vz-path flow draw" style="--vz-c:var(--c-centro); --vz-dash:14; --len:340" d="M150,150 L466,250"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-centro); --vz-dash:14; --len:340; --d:120ms" d="M320,96 L472,244"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-centro); --vz-dash:14; --len:340; --d:240ms" d="M480,78 L480,240"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-centro); --vz-dash:14; --len:340; --d:360ms" d="M640,96 L488,244"/>
+            <path class="vz-path flow draw" style="--vz-c:var(--c-centro); --vz-dash:14; --len:340; --d:480ms" d="M810,150 L494,250"/>
+            <!-- faint origin dots (where they came from) -->
+            <circle cx="150" cy="150" r="3" fill="var(--c-centro)" opacity=".35"/>
+            <circle cx="320" cy="96"  r="3" fill="var(--c-centro)" opacity=".35"/>
+            <circle cx="480" cy="78"  r="3" fill="var(--c-centro)" opacity=".35"/>
+            <circle cx="640" cy="96"  r="3" fill="var(--c-centro)" opacity=".35"/>
+            <circle cx="810" cy="150" r="3" fill="var(--c-centro)" opacity=".35"/>
+            <!-- the vitrine (the institution) -->
+            <rect x="414" y="212" width="132" height="94" rx="8" fill="#fff" stroke="var(--c-centro)" stroke-width="1.85"/>
+            <rect x="414" y="212" width="132" height="16" rx="8" fill="var(--c-centro)" opacity=".12"/>
+            <!-- anonymized objects inside -->
+            <circle class="vz-dot breathe" cx="446" cy="252" r="5" style="--vz-c:var(--c-centro); --d:-.3s"/>
+            <circle class="vz-dot breathe" cx="472" cy="276" r="5" style="--vz-c:var(--c-centro); --d:-1.1s"/>
+            <circle class="vz-dot breathe" cx="498" cy="256" r="5" style="--vz-c:var(--c-centro); --d:-1.9s"/>
+            <circle class="vz-dot breathe" cx="518" cy="282" r="5" style="--vz-c:var(--c-centro); --d:-2.6s"/>
+            <circle class="vz-dot breathe" cx="456" cy="288" r="5" style="--vz-c:var(--c-centro); --d:-3.3s"/>
+            <text class="ax-label strong" x="480" y="204" text-anchor="middle">el museo · el centro</text>
+            <text class="ax-label" x="480" y="330" text-anchor="middle">“objeto · objeto · objeto”</text>
+            <text class="ax-label" x="480" y="346" text-anchor="middle">sin tiempo, lugar, ni creador</text>
+            <!-- motes drifting inward -->
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-centro); --mote-path:path('M150,150 L466,250'); --d:0s"/>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-centro); --mote-path:path('M640,96 L488,244'); --d:-3.1s"/>
+            <circle class="vz-mote" r="2.6" style="--vz-c:var(--c-centro); --mote-path:path('M810,150 L494,250'); --d:-5.4s"/>
+          </g>
+
+          <!-- ============ EL PUEBLO: objects keep their place; the people are the center ============ -->
+          <g id="modePueblo">
+            <!-- the living center (lime, the single rationed moment) -->
+            <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 8" d="M480,332 L150,150"/>
+            <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 8" d="M480,332 L320,96"/>
+            <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 8" d="M480,332 L480,78"/>
+            <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 8" d="M480,332 L640,96"/>
+            <path class="vz-path" style="--vz-c:var(--c-lime); stroke-dasharray:2 8" d="M480,332 L810,150"/>
+            <circle class="vz-ring orbit" cx="480" cy="332" r="17" style="--vz-c:var(--c-lime)"/>
+            <circle class="vz-dot breathe" cx="480" cy="332" r="6" style="--vz-c:var(--c-lime)"/>
+            <text class="ax-label strong" x="480" y="372" text-anchor="middle" fill="#5a8a1e">el pueblo · la resistencia</text>
+            <!-- periphery objects, each named -->
+            <g>
+              <circle class="vz-dot" cx="150" cy="150" r="5.5" style="--vz-c:var(--c-pueblo)"/>
+              <text class="ax-label strong" x="150" y="132" text-anchor="middle">Zapoteca</text>
+              <text class="ax-label" x="150" y="176" text-anchor="middle">Valle de Oaxaca</text>
+            </g>
+            <g>
+              <circle class="vz-dot" cx="320" cy="96" r="5.5" style="--vz-c:var(--c-pueblo)"/>
+              <text class="ax-label strong" x="320" y="78" text-anchor="middle">Monte Albán</text>
+            </g>
+            <g>
+              <circle class="vz-dot" cx="480" cy="78" r="5.5" style="--vz-c:var(--c-pueblo)"/>
+              <text class="ax-label strong" x="480" y="60" text-anchor="middle">Mixteca</text>
+            </g>
+            <g>
+              <circle class="vz-dot" cx="640" cy="96" r="5.5" style="--vz-c:var(--c-pueblo)"/>
+              <text class="ax-label strong" x="640" y="78" text-anchor="middle">Sta. Mª Atzompa</text>
+            </g>
+            <g>
+              <circle class="vz-dot" cx="810" cy="150" r="5.5" style="--vz-c:var(--c-era)"/>
+              <text class="ax-label strong" x="810" y="132" text-anchor="middle" fill="var(--c-era)">el barro</text>
+              <text class="ax-label" x="810" y="176" text-anchor="middle">Guadalajara</text>
+            </g>
+          </g>
+        </svg>
+      </figure>
+      <div class="hero-cap"><b>The same objects, two centers of gravity.</b> The essay's target is not any single work but
+        the <i>operation</i> — the pull toward a center that presents culture on culture's behalf. This diagram is
+        schematic: the five nodes stand for the distinct peoples and places a centralized display dissolves into
+        “pink and purple rooms.”</div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-centro); --d:60ms">
+        <div class="v"><span data-count="1974">0</span></div>
+        <div class="l">Museo de Arte Prehispánico inaugurated</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--pink); --d:140ms">
+        <div class="v"><span data-count="5">0</span><small>salas</small></div>
+        <div class="l">galleries “por región y época” — read as color</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-pueblo); --d:220ms">
+        <div class="v"><span data-count="2">0</span><small>museos</small></div>
+        <div class="l">two ways to present one set of objects</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--ink); --d:300ms">
+        <div class="v"><span data-count="1">0</span><small>centro</small></div>
+        <div class="l">the place all presentation owes itself to</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · two museums ================= -->
+  <section id="museums">
+    <div class="k mo-reveal"><span class="n">02</span><h2>Dos museos, <em>un mismo objeto</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick sets two exhibitions side by side. The <b>Museo de Arte
+      Prehispánico de México</b> holds painter <b>Rufino Tamayo's</b> archaeological collection; its introductory text,
+      by curator <b>Fernando Gamboa</b>, frees the objects from the anthropologist's gaze by presenting them as pure
+      form. The <b>Museo de las Culturas de Oaxaca</b>, inside the Templo de Santo Domingo, does the opposite — it
+      “delights in specificity and process.”</p>
+
+    <div class="duo">
+      <div class="mcard centro mo-reveal" style="--d:120ms">
+        <span class="tag"><i></i>el arte del centro</span>
+        <h3>Museo de Arte Prehispánico de México</h3>
+        <div class="meta">Tamayo collection · text by Fernando Gamboa · 1974</div>
+        <q>presented like artistic phenomena — for their beauty, their strength, and high originality.</q>
+        <div class="read">Gamboa strips the religious meaning away: the old religions “have been left in the past and
+          forgotten,” so what moves us is form alone. Patrick's verdict: the objects go <b>ahistorical</b> — “without
+          time, place, or creator” — and modern Indigenous communities are erased.</div>
+      </div>
+      <div class="mcard pueblo mo-reveal" style="--d:200ms">
+        <span class="tag"><i></i>lo regional</span>
+        <h3>Museo de las Culturas de Oaxaca</h3>
+        <div class="meta">potter Dolores Porras · Templo de Santo Domingo</div>
+        <q>the same people but not ‘the same’ — identity is not purely given.</q>
+        <div class="read">Its wall text rejects the “substantialist / essentialist” model, invoking philosopher
+          <b>Xavier Zubiri</b>: each generation of Atzompa's potters <b>renews</b> tradition. It even historicizes the
+          clay — how Guadalajara's urban growth altered nearby deposits, and how potters adapted.</div>
+      </div>
+    </div>
+
+    <div class="split mo-reveal" style="--d:280ms" role="img"
+      aria-label="The two museums treat the same objects oppositely: the center's museum flattens them into timeless form; the culture's museum historicizes them into specific, changing practice.">
+      <div class="bar">
+        <div class="seg centro">flattened · timeless form</div>
+        <div class="seg pueblo">specific · historicized practice</div>
+      </div>
+      <div class="cap"><span>“fenómenos artísticos”</span><span>the same objects, opposite treatments</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · pink and purple rooms ================= -->
+  <section id="rooms">
+    <div class="k mo-reveal"><span class="n">03</span><h2>Cinco salas, <em>dos colores</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">In the Prehispánico museum the objects are arranged across <b>five
+      galleries</b> “by region and epoch,” each with color-coded vitrine backdrops. But the color does the sorting the
+      culture should: what a visitor carries out is an impression of <b>“pink and purple rooms,”</b> not the difference
+      between <b>Zapotec</b> and <b>Mixtec</b>. Hover a room.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms">
+      <svg viewBox="0 0 960 250" role="img"
+        aria-label="Five color-coded gallery vitrines in a row — pink, mauve, purple, mauve, pink — each labeled only by its color, standing in for culture. Below, a single lime-outlined restored label shows what specificity would look like: Zapoteca, Monte Albán, sixth century, a named community.">
+        <text class="rt-label" x="40" y="34">organización: “por región y época” →</text>
+        <text class="rt-label strong" x="920" y="34" text-anchor="end">lo que el visitante recuerda: el color</text>
+        <!-- five vitrines -->
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Sala 1.&lt;/b&gt; Color-coded backdrop. The vitrine hue, not the culture, is what registers.">
+          <rect class="c" x="46"  y="58" width="160" height="120" rx="10" fill="var(--pink)" opacity=".62"/>
+          <rect x="46" y="58" width="160" height="120" rx="10" fill="none" stroke="var(--pink)" stroke-width="1.85"/>
+          <text class="cell-lab" x="126" y="122" text-anchor="middle">sala rosa</text>
+          <text class="cell-sub" x="126" y="140" text-anchor="middle">¿qué pueblo?</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Sala 2.&lt;/b&gt; Objects sorted by region and epoch — but the label a visitor reads is the paint.">
+          <rect class="c" x="228" y="58" width="160" height="120" rx="10" fill="var(--purple)" opacity=".5"/>
+          <rect x="228" y="58" width="160" height="120" rx="10" fill="none" stroke="var(--purple)" stroke-width="1.85"/>
+          <text class="cell-lab" x="308" y="122" text-anchor="middle">sala malva</text>
+          <text class="cell-sub" x="308" y="140" text-anchor="middle">¿qué época?</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Sala 3.&lt;/b&gt; The center's move: religion removed, so the object is 'free' to be pure form.">
+          <rect class="c" x="410" y="58" width="160" height="120" rx="10" fill="var(--purple)" opacity=".72"/>
+          <rect x="410" y="58" width="160" height="120" rx="10" fill="none" stroke="var(--purple)" stroke-width="1.85"/>
+          <text class="cell-lab" x="490" y="122" text-anchor="middle">sala púrpura</text>
+          <text class="cell-sub" x="490" y="140" text-anchor="middle">¿qué creador?</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Sala 4.&lt;/b&gt; Deified nature — 'sun, wind, water' — but 'left in the past and forgotten,' per the text.">
+          <rect class="c" x="592" y="58" width="160" height="120" rx="10" fill="var(--purple)" opacity=".5"/>
+          <rect x="592" y="58" width="160" height="120" rx="10" fill="none" stroke="var(--purple)" stroke-width="1.85"/>
+          <text class="cell-lab" x="672" y="122" text-anchor="middle">sala malva</text>
+          <text class="cell-sub" x="672" y="140" text-anchor="middle">sin tiempo</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Sala 5.&lt;/b&gt; The visitor exits with an impression of 'pink and purple rooms' — not of distinct peoples.">
+          <rect class="c" x="774" y="58" width="140" height="120" rx="10" fill="var(--pink)" opacity=".62"/>
+          <rect x="774" y="58" width="140" height="120" rx="10" fill="none" stroke="var(--pink)" stroke-width="1.85"/>
+          <text class="cell-lab" x="844" y="122" text-anchor="middle">sala rosa</text>
+          <text class="cell-sub" x="844" y="140" text-anchor="middle">sin lugar</text>
+        </g>
+        <!-- the lime restored label: what specificity looks like -->
+        <g class="pop" style="--d:600ms">
+          <path d="M126,178 L126,206" stroke="var(--c-lime)" stroke-width="1.5" stroke-dasharray="2 5" fill="none"/>
+          <rect x="46" y="204" width="320" height="34" rx="8" fill="none" stroke="var(--c-lime)" stroke-width="1.85"/>
+          <circle cx="66" cy="221" r="4" fill="var(--c-lime)"/>
+          <text class="rt-label strong" x="82" y="217">Zapoteca · Monte Albán · s. VI</text>
+          <text class="rt-label" x="82" y="230">un pueblo con nombre, tiempo y lugar</text>
+        </g>
+      </svg>
+      <div class="fig-cap"><b>The critique made literal:</b> vitrine color is arbitrary; it carries no cultural
+        information, yet it becomes the exhibit's organizing memory. The lime label below is the specificity the
+        display withholds — a named people, a place, a date.</div>
+    </div>
+  </section>
+
+  <!-- ================= 04 · tradition renewed ================= -->
+  <section id="renewal">
+    <div class="k mo-reveal"><span class="n">04</span><h2>La tradición <em>se renueva</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The Oaxaca museum's answer to the frozen object is a loop, not a
+      timeline. Citing Zubiri, its text calls Atzompa's potters <b>“the same people but not ‘the same’”</b> — each
+      generation inherits a craft and remakes it. And the craft is bound to matter: when <b>Guadalajara</b> grew, the
+      clay deposits changed, and the potters <b>adapted</b>. Hover the loop.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms">
+      <svg viewBox="0 0 960 250" role="img"
+        aria-label="A circular loop of four generations of potters, connected around a ring labeled 'the same people but not the same' — each generation renewing tradition. A separate branch shows the material chain: Guadalajara grows, the clay deposit changes, the potters adapt; the current generation is marked in lime.">
+        <!-- the renewal ring -->
+        <circle class="vz-ring orbit" cx="250" cy="125" r="86" style="--vz-c:var(--c-pueblo)"/>
+        <circle class="vz-ring halo" cx="250" cy="125" r="86" style="--vz-c:var(--c-pueblo)"/>
+        <text class="rt-label strong" x="250" y="120" text-anchor="middle">el mismo pueblo</text>
+        <text class="rt-label" x="250" y="136" text-anchor="middle">pero no “lo mismo”</text>
+        <!-- four generation nodes around the ring -->
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Generación anterior.&lt;/b&gt; Tradition is inherited — but the museum text insists identity 'is not purely given.'">
+          <circle class="c" cx="250" cy="39" r="6" fill="var(--c-pueblo)"/>
+          <text class="rt-label" x="250" y="26" text-anchor="middle">gen. anterior</text>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Renovación.&lt;/b&gt; Each generation remakes the craft rather than repeating it — Zubiri's 'not the same.'">
+          <circle class="c" cx="336" cy="125" r="6" fill="var(--c-pueblo)"/>
+        </g>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Continuidad.&lt;/b&gt; The same lineage, the same place — Santa María Atzompa.">
+          <circle class="c" cx="250" cy="211" r="6" fill="var(--c-pueblo)"/>
+          <text class="rt-label" x="250" y="230" text-anchor="middle">continuidad</text>
+        </g>
+        <!-- the current, living generation — lime moment -->
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Dolores Porras &amp; hoy.&lt;/b&gt; The living generation — the potter whose work the museum shows now.">
+          <circle class="vz-ring halo" cx="164" cy="125" r="13" style="--vz-c:var(--c-lime)"/>
+          <circle class="c" cx="164" cy="125" r="7" fill="var(--c-lime)"/>
+          <text class="rt-label strong" x="150" y="125" text-anchor="end" fill="#5a8a1e">hoy</text>
+        </g>
+
+        <!-- material chain: clay adapts -->
+        <line class="vz-gridline" x1="470" y1="125" x2="470" y2="125"/>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Guadalajara crece.&lt;/b&gt; Urban growth reaches the clay deposits the potters depend on.">
+          <circle class="c" cx="512" cy="70" r="6" fill="var(--c-era)"/>
+          <text class="rt-label strong" x="512" y="52" text-anchor="middle" fill="var(--c-era)">Guadalajara crece</text>
+        </g>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-era); --vz-dash:14; --len:180" d="M512,70 C560,110 620,120 668,125"/>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;El depósito cambia.&lt;/b&gt; The nearby clay changes — the raw material of the tradition is not fixed.">
+          <circle class="c" cx="700" cy="125" r="6" fill="var(--c-era)"/>
+          <text class="rt-label strong" x="700" y="107" text-anchor="middle" fill="var(--c-era)">el barro cambia</text>
+        </g>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-pueblo); --vz-dash:14; --len:180; --d:300ms" d="M700,125 C748,130 808,140 856,180"/>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Los alfareros se adaptan.&lt;/b&gt; Potters adjust technique and material — renewal is survival, not nostalgia.">
+          <circle class="c" cx="888" cy="192" r="6" fill="var(--c-pueblo)"/>
+          <text class="rt-label strong" x="888" y="216" text-anchor="middle">se adaptan</text>
+        </g>
+        <text class="rt-label" x="512" y="230" text-anchor="start">materia · proceso · cambio</text>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-era); --mote-path:path('M512,70 C560,110 620,120 668,125'); --d:0s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-pueblo); --mote-path:path('M700,125 C748,130 808,140 856,180'); --d:-2.4s"/>
+      </svg>
+      <div class="fig-cap"><b>Specificity as method:</b> where the center presents a timeless object, the Oaxaca museum
+        presents a practice that changes — down to the clay. Tradition here is a loop that each generation re-draws,
+        not a relic behind glass.</div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · double bind ================= -->
+  <section id="bind">
+    <div class="k mo-reveal"><span class="n">05</span><h2>El doble vínculo del <em>indigenismo</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Back on the street, Patrick reaches for scholar <b>A.S. Dillingham's</b>
+      idea of the <b>“double bind of indigenismo.”</b> The Mexican state, Dillingham argues, “rhetorically celebrated
+      Indigenous people, but it also cast them as a problem to be overcome.” One policy, two contradictory pulls — and
+      the museum of the center performs both at once. Hover the forks.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms">
+      <svg viewBox="0 0 960 236" role="img"
+        aria-label="A single source — the state's indigenismo — forks into two opposite treatments of Indigenous people: an upper branch that celebrates them, and a lower branch that casts them as a problem to overcome. Both branches come from the same origin, illustrating the double bind. The street's graffiti answers back below.">
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;El indigenismo del Estado.&lt;/b&gt; A single state posture toward Indigenous people — the shared origin of both branches.">
+          <circle class="c" cx="120" cy="118" r="7" fill="var(--ink)"/>
+          <text class="rt-label strong" x="120" y="100" text-anchor="middle">el indigenismo</text>
+          <text class="rt-label" x="120" y="150" text-anchor="middle">del Estado</text>
+        </g>
+        <!-- celebrate branch (up) -->
+        <path class="vz-path flow draw" style="--vz-c:var(--c-era); --vz-dash:14; --len:560; --d:200ms"
+              d="M140,112 C300,108 340,58 520,54 S820,50 892,50"/>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;Se celebra.&lt;/b&gt; The rhetoric: Indigenous heritage as national pride — the same impulse that turns objects into 'artistic phenomena.'">
+          <circle class="c" cx="892" cy="50" r="6" fill="var(--c-era)"/>
+        </g>
+        <text class="rt-label strong" x="520" y="36" fill="var(--c-era)">se celebra al pueblo indígena</text>
+        <!-- problem branch (down) -->
+        <path class="vz-path flow draw" style="--vz-c:var(--c-centro); --vz-dash:14; --len:560; --d:200ms"
+              d="M140,124 C300,128 340,178 520,182 S820,186 892,186"/>
+        <g class="stop" tabindex="0" data-tip="&lt;b&gt;…y se le trata como problema.&lt;/b&gt; Simultaneously cast 'as a problem to be overcome' — celebrated and erased at once.">
+          <circle class="c" cx="892" cy="186" r="6" fill="var(--c-centro)"/>
+        </g>
+        <text class="rt-label strong" x="520" y="208" fill="var(--c-centro)">…y se le trata como problema a superar</text>
+        <!-- the street answers (lime, once) -->
+        <g class="pop" style="--d:520ms">
+          <circle class="vz-dot breathe" cx="120" cy="196" r="5" style="--vz-c:var(--c-lime)"/>
+          <text class="rt-label strong" x="140" y="192" fill="#5a8a1e">la calle responde:</text>
+          <text class="rt-label" x="140" y="207">“el arte del centro no me representa”</text>
+        </g>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-era); --mote-path:path('M140,112 C300,108 340,58 520,54 S820,50 892,50'); --d:-1s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-centro); --mote-path:path('M140,124 C300,128 340,178 520,182 S820,186 892,186'); --d:-3.3s"/>
+      </svg>
+      <div class="fig-cap"><b>Both branches, one origin:</b> Dillingham's bind is that celebration and erasure are the
+        same gesture. Read through the essay, the “artistic phenomena” of the center's museum is the celebratory branch —
+        and it erases living communities all the same.</div>
+    </div>
+  </section>
+
+  <!-- ================= 06 · chorus ================= -->
+  <section id="chorus">
+    <div class="k mo-reveal"><span class="n">06</span><h2>El <em>coro</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick builds the argument from the two museums' own texts and a small
+      set of thinkers — the center's curator, the region's philosophy, and the framework that names the politics.</p>
+    <div class="chorus">
+      <div class="voice centro mo-reveal" style="--d:60ms">
+        <div class="who"><b>Fernando Gamboa</b><span class="role">el centro</span></div>
+        <q>[Objects] presented like artistic phenomena — for their beauty, their strength, and high originality.</q>
+        <div class="note">Curator of the Prehispánico text: the old religions are “left in the past and forgotten,” so the object becomes pure form.</div>
+      </div>
+      <div class="voice centro mo-reveal" style="--d:120ms">
+        <div class="who"><b>Rufino Tamayo</b><span class="role">colección</span></div>
+        <q>a painter's archaeological collection, made a museum in 1974.</q>
+        <div class="note">The Oaxacan painter whose pre-Hispanic objects fill the Museo de Arte Prehispánico de México.</div>
+      </div>
+      <div class="voice pueblo mo-reveal" style="--d:180ms">
+        <div class="who"><b>Museo de las Culturas</b><span class="role">lo específico</span></div>
+        <q>identity is not purely given — beware the substantialist, essentialist approach.</q>
+        <div class="note">The Oaxaca museum's own wall text, arguing tradition is renewed rather than inherited whole.</div>
+      </div>
+      <div class="voice frame mo-reveal" style="--d:240ms">
+        <div class="who"><b>Xavier Zubiri</b><span class="role">filosofía</span></div>
+        <q>the same people but not ‘the same.’</q>
+        <div class="note">The philosopher the museum invokes: continuity of a people without fixity of its forms.</div>
+      </div>
+      <div class="voice era mo-reveal" style="--d:300ms">
+        <div class="who"><b>Dolores Porras</b><span class="role">el barro</span></div>
+        <q>a potter of Santa María Atzompa, working clay that itself has a history.</q>
+        <div class="note">Her craft is historicized down to the material — how Guadalajara's growth changed the deposits, and how potters adapted.</div>
+      </div>
+      <div class="voice frame mo-reveal" style="--d:360ms">
+        <div class="who"><b>A.S. Dillingham</b><span class="role">marco</span></div>
+        <q>[Mexico] rhetorically celebrated Indigenous people, but it also cast them as a problem to be overcome.</q>
+        <div class="note">The “double bind of indigenismo,” from an interview with Jonah Walters, <i>Jacobin</i>, Oct. 11, 2021.</div>
+      </div>
+      <div class="voice path mo-reveal" style="--d:420ms">
+        <div class="who"><b>Nolan Patrick</b><span class="role">la salida</span></div>
+        <q>‘El arte del centro’ … is any art that is top-down, that is centralized, that owes its presentation to a center.</q>
+        <div class="note">The essay's synthesis: the fault isn't a work or a style — it's the direction from which culture is presented.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 · the definition ================= -->
+  <section id="close">
+    <div class="k mo-reveal"><span class="n">07</span><h2>El arte del <em>centro</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">The essay ends not with a villain but a definition. “El arte del centro”
+      is a <b>relation</b>, not an object: whenever art is presented top-down, from a center, on a people's behalf, that
+      is the art of the center — whether it hangs in Mexico City or is sold to a tourist in the Zócalo. The Oaxaca
+      museum shows the alternative isn't erasure but <b>specificity</b>.</p>
+
+    <div class="close-quote mo-reveal" style="--d:140ms">
+      <p>“‘El arte del centro’ is not a specific work or artist or style — it is any art that is <em>top-down</em>,
+        that is <em>centralized</em>, that owes its presentation to a center.”</p>
+      <cite>Nolan Patrick · Look Sharp! · conclusion</cite>
+    </div>
+
+    <details class="tbl mo-reveal" style="--d:220ms">
+      <summary>data table · the two museums &amp; the cited voices</summary>
+      <table>
+        <thead><tr><th>Museum</th><th>Vocabulary</th><th>How it presents the objects (per the essay)</th></tr></thead>
+        <tbody>
+          <tr><td>Museo de Arte Prehispánico de México</td><td>el centro</td><td>Tamayo's collection; Gamboa's 1974 text presents objects as “artistic phenomena,” religion “left in the past”; five galleries by region &amp; epoch, color-coded → “pink and purple rooms,” “without time, place, or creator”</td></tr>
+          <tr><td>Museo de las Culturas de Oaxaca</td><td>lo regional</td><td>Dolores Porras / Atzompa pottery in the Templo de Santo Domingo; rejects the “substantialist/essentialist” model; via Zubiri, “the same people but not ‘the same’”; historicizes clay &amp; Guadalajara's urban growth</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Voice</th><th>Role</th><th>What they contribute</th></tr></thead>
+        <tbody>
+          <tr><td>Fernando Gamboa</td><td>el centro</td><td>Curator's introductory text — the aestheticizing move</td></tr>
+          <tr><td>Rufino Tamayo</td><td>colección</td><td>Painter whose archaeological collection became the museum (1974)</td></tr>
+          <tr><td>Xavier Zubiri</td><td>filosofía</td><td>“the same people but not ‘the same’” — identity renewed, not fixed</td></tr>
+          <tr><td>Dolores Porras</td><td>el barro</td><td>Potter of Santa María Atzompa; craft historicized to the material</td></tr>
+          <tr><td>A.S. Dillingham</td><td>marco</td><td>“double bind of indigenismo” (Walters interview, <i>Jacobin</i>, 2021)</td></tr>
+          <tr><td>Nolan Patrick</td><td>la salida</td><td>Defines “el arte del centro” as top-down, centralized presentation</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Street</th><th>—</th><th>Graffiti cited in the essay</th></tr></thead>
+        <tbody>
+          <tr><td>Zócalo / calles</td><td>la resistencia</td><td>“El arte del centro no me representa”</td></tr>
+          <tr><td>Oaxaca</td><td>—</td><td>“La resistencia vive en las fiestas y costumbres de los pueblos”</td></tr>
+          <tr><td>Oaxaca</td><td>—</td><td>“Descoloniza cualquier medio necesario” · “La ficción racista de la ciudad es la realidad violenta de los pueblos”</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    <span>bpo · essay reading · oaxaca &amp; “el arte del centro”</span>
+    <span><a href="https://nolanpatrick.substack.com/p/oaxaca-and-el-arte-del-centro">source essay</a> · built 2026-07-14 13-36 utc</span>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- staggered reveals ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.mo-reveal').forEach(function (el) { io.observe(el); });
+  if (reduce) document.querySelectorAll('.mo-reveal').forEach(function (el) { el.classList.add('shown'); });
+
+  /* ---- count-up tiles ---- */
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, target = +el.getAttribute('data-count');
+      if (reduce) { el.textContent = target; return; }
+      var t0 = null, dur = 1300;
+      function step(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * ease);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+
+  /* ---- mode toggle: auto-alternate until the reader takes over ---- */
+  var card = document.getElementById('heroCard');
+  var bCen = document.getElementById('btn-centro');
+  var bPue = document.getElementById('btn-pueblo');
+  var userDrove = false, timer = null;
+  function setMode(mode) {
+    card.setAttribute('data-mode', mode);
+    bCen.setAttribute('aria-pressed', mode === 'centro');
+    bPue.setAttribute('aria-pressed', mode === 'pueblo');
+  }
+  bCen.addEventListener('click', function () { userDrove = true; clearInterval(timer); setMode('centro'); });
+  bPue.addEventListener('click', function () { userDrove = true; clearInterval(timer); setMode('pueblo'); });
+  if (!reduce) {
+    timer = setInterval(function () {
+      if (userDrove) return clearInterval(timer);
+      setMode(card.getAttribute('data-mode') === 'centro' ? 'pueblo' : 'centro');
+    }, 5500);
+  }
+
+  /* ---- one tooltip for all [data-tip] ---- */
+  var tip = document.getElementById('tip');
+  function showTip(el) {
+    tip.innerHTML = el.getAttribute('data-tip');
+    tip.classList.add('on');
+    tip.setAttribute('aria-hidden', 'false');
+    var r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+    var x = r.left + r.width / 2 - tr.width / 2;
+    x = Math.max(10, Math.min(x, window.innerWidth - tr.width - 10));
+    var y = r.top - tr.height - 12;
+    if (y < 8) y = r.bottom + 12;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.classList.remove('on'); tip.setAttribute('aria-hidden', 'true'); }
+  document.querySelectorAll('[data-tip]').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { showTip(el); });
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('focus', function () { showTip(el); });
+    el.addEventListener('blur', hideTip);
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

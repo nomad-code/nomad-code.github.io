@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-191 · Cold queue autopilot</title>
+<script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<style>
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 56px 22px 76px; }
+  .hero { display: grid; grid-template-columns: 1fr 380px; gap: 22px; align-items: stretch; }
+  .panel { background: linear-gradient(180deg,#fff,#fbfbf6); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow-card); }
+  .intro { padding: 28px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kicker { font-family: var(--font-mono); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  h1 { font-size: 48px; line-height: 1; letter-spacing: -.03em; margin: 16px 0 0; max-width: 11ch; }
+  .sub { color: var(--body); line-height: 1.55; font-size: 14px; max-width: 62ch; margin: 14px 0 0; }
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 28px; }
+  .stat { border: 1px solid var(--line); border-radius: 8px; background: var(--card); padding: 14px; }
+  .stat b { display: block; color: var(--forest-d); font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat span { display: block; margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.3; }
+  .radar { padding: 20px; }
+  .radar h2, .queue h2, .notes h2 { font-size: 18px; margin: 0 0 14px; }
+  .bars { display: grid; gap: 10px; }
+  .bar { display: grid; grid-template-columns: 132px 1fr 74px; gap: 10px; align-items: center; font-size: 12px; }
+  .name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .track { height: 10px; border-radius: 999px; background: var(--well); overflow: hidden; }
+  .fill { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--forest); animation: grow .9s var(--ease) forwards; animation-delay: calc(var(--i) * 55ms); }
+  .fill.fix { background: var(--warn); }
+  .age { font-family: var(--font-mono); color: var(--muted); text-align: right; font-size: 11px; }
+  .queue { margin-top: 22px; padding: 20px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th { text-align: left; color: var(--muted); font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid var(--line); padding: 10px 8px; }
+  td { border-bottom: 1px solid #eef0ea; padding: 12px 8px; font-size: 13px; vertical-align: top; }
+  .pill { display: inline-flex; border-radius: 999px; padding: 4px 9px; font-family: var(--font-mono); font-size: 10px; white-space: nowrap; }
+  .fix { background: var(--warn-bg); color: var(--warn); }
+  .keep { background: var(--g-lime); color: var(--forest-d); }
+  .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; }
+  .note { padding: 20px; }
+  .note ul { margin: 0; padding-left: 18px; color: var(--body); line-height: 1.55; font-size: 13px; }
+  code { font-family: var(--font-mono); font-size: .92em; }
+  @keyframes grow { to { width: var(--w); } }
+  @media (max-width: 860px) {
+    .hero, .notes { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .bar { grid-template-columns: 1fr; gap: 6px; }
+    .age { text-align: left; }
+    table { display: block; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="panel intro">
+      <div>
+        <div class="kicker">TODO-191 · shipped 2026-07-12</div>
+        <h1>Cold queue autopilot.</h1>
+        <p class="sub"><code>scripts/cold-queue</code> now turns the 30-day project rule into a deterministic local report from git touch, SPEC status, and artifact recency.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>13</b><span>project folders scanned</span></div>
+        <div class="stat"><b>2</b><span>default queue items</span></div>
+        <div class="stat"><b>0</b><span>network credentials needed</span></div>
+      </div>
+    </div>
+    <aside class="panel radar">
+      <h2>Status by project</h2>
+      <div class="bars" id="bars"></div>
+    </aside>
+  </section>
+
+  <section class="panel queue">
+    <h2>Default queue</h2>
+    <table>
+      <thead><tr><th>project</th><th>action</th><th>age</th><th>touch</th><th>reason</th></tr></thead>
+      <tbody>
+        <tr><td>golf-spica</td><td><span class="pill fix">fix SPEC</span></td><td>3d</td><td>2026-07-09</td><td>missing top-level <code>SPEC.md</code>; recent artifact matched <code>todo-171_golf-spica-clear</code></td></tr>
+        <tr><td>golf-swingnerds</td><td><span class="pill fix">fix SPEC</span></td><td>1d</td><td>2026-07-11</td><td>missing top-level <code>SPEC.md</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="notes">
+    <div class="panel note">
+      <h2>Command</h2>
+      <ul>
+        <li><code>scripts/cold-queue</code> prints only review items.</li>
+        <li><code>--all</code> shows active rows too.</li>
+        <li><code>--json</code> emits machine-readable rows.</li>
+        <li><code>--threshold-days</code> defaults to 30.</li>
+      </ul>
+    </div>
+    <div class="panel note">
+      <h2>Verification</h2>
+      <ul>
+        <li><code>python3 -m unittest tests/test_cold_queue.py</code> green.</li>
+        <li><code>scripts/tokens</code> green: AGENT.md at 1,110 / 2,000.</li>
+        <li>First run reviewed: only missing-SPEC candidates remained.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+<script>
+var rows = [
+  ["golf-spica","fix SPEC",3],
+  ["golf-swingnerds","fix SPEC",1],
+  ["apple-wallet","keep active",7],
+  ["bpo-cal-ingest","keep active",7],
+  ["found-equity","keep active",7],
+  ["fukuoka-visa","keep active",7],
+  ["hyrox","keep active",7],
+  ["indonesia-kitas","keep active",7],
+  ["tmobile","keep active",7],
+  ["bunpro-listening","keep active",5],
+  ["golf-gspro","keep active",2],
+  ["travel-kiwi","keep active",2],
+  ["wisper","keep active",2]
+];
+var bars = document.getElementById("bars");
+bars.innerHTML = rows.map(function(row, i) {
+  var cls = row[1] === "fix SPEC" ? " fix" : "";
+  var width = Math.max(8, Math.min(100, row[2] / 30 * 100));
+  return '<div class="bar"><span class="name">' + row[0] + '</span><span class="track"><span class="fill' + cls + '" style="--i:' + i + ';--w:' + width + '%"></span></span><span class="age">' + row[2] + 'd · ' + row[1] + '</span></div>';
+}).join("");
+</script>
+</body>
+</html>

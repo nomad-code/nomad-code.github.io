@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () { if (cover) cover.remove(); }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bpo · money baseline</title>
+<style>
+  :root {
+    --paper:#f3f0e8; --surface:#fffdf7; --ink:#1d2823; --muted:#66716b;
+    --line:#d8d7cc; --green:#176b53; --green-soft:#dcebe3; --amber:#9b6500;
+    --amber-soft:#f4e8cb; --red:#a63c32; --red-soft:#f2dfdc; --blue:#315f83;
+    --mono:"SF Mono",ui-monospace,"Menlo",monospace;
+  }
+  @media (prefers-color-scheme:dark) {
+    :root { --paper:#141a17; --surface:#1c2420; --ink:#edf1ec; --muted:#a4aea8;
+      --line:#38433d; --green:#6dd0a7; --green-soft:#203b31; --amber:#e1b358;
+      --amber-soft:#3b321f; --red:#ef8d80; --red-soft:#422825; --blue:#8fc5ed; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+  a { color:var(--blue); }
+  .wrap { width:min(1040px,calc(100% - 32px)); margin:0 auto; padding:42px 0 70px; }
+  .kicker { font:700 11px/1.3 var(--mono); color:var(--green); letter-spacing:.12em; text-transform:uppercase; }
+  h1 { margin:8px 0 8px; font-size:clamp(30px,5vw,54px); line-height:1.02; letter-spacing:-.04em; }
+  .lede { max-width:760px; color:var(--muted); font-size:17px; }
+  .meta { margin-top:14px; color:var(--muted); font:12px/1.5 var(--mono); }
+  .verdict { display:flex; gap:14px; align-items:flex-start; margin:28px 0; padding:20px;
+    border:1px solid color-mix(in srgb,var(--green) 45%,var(--line)); border-radius:16px;
+    background:var(--green-soft); }
+  .verdict .mark { width:34px; height:34px; flex:0 0 34px; display:grid; place-items:center;
+    border-radius:50%; background:var(--green); color:var(--surface); font-weight:900; }
+  .verdict strong { display:block; font-size:18px; margin-bottom:3px; }
+  .section { margin-top:34px; }
+  .section-head { display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:12px; }
+  h2 { margin:0; font-size:21px; letter-spacing:-.02em; }
+  .hint { color:var(--muted); font-size:12px; }
+  .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:12px; }
+  .card { grid-column:span 4; min-width:0; padding:17px; border:1px solid var(--line);
+    border-radius:14px; background:var(--surface); }
+  .card.wide { grid-column:span 6; }
+  .card.full { grid-column:1/-1; }
+  .card h3 { margin:0 0 5px; font-size:16px; }
+  .card p { margin:0; color:var(--muted); }
+  .role { font:700 11px/1.3 var(--mono); color:var(--green); text-transform:uppercase; letter-spacing:.08em; }
+  .pill { display:inline-block; margin-top:10px; padding:3px 8px; border-radius:999px;
+    font:700 10px/1.4 var(--mono); background:var(--green-soft); color:var(--green); }
+  .pill.no { background:var(--red-soft); color:var(--red); }
+  .pill.open { background:var(--amber-soft); color:var(--amber); }
+  .inputs { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  label { display:block; color:var(--muted); font-size:12px; }
+  input[type="number"] { width:100%; margin-top:5px; padding:11px 12px; border:1px solid var(--line);
+    border-radius:9px; background:var(--paper); color:var(--ink); font:15px var(--mono); }
+  input:focus { outline:2px solid color-mix(in srgb,var(--green) 45%,transparent); border-color:var(--green); }
+  .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+  .metric { padding:14px; border:1px solid var(--line); border-radius:11px; background:var(--paper); }
+  .metric .value { font:700 22px/1.2 var(--mono); letter-spacing:-.04em; }
+  .metric .label { margin-top:5px; color:var(--muted); font-size:11px; }
+  .metric.good .value { color:var(--green); }
+  .metric.warn .value { color:var(--amber); }
+  .metric.bad .value { color:var(--red); }
+  table { width:100%; border-collapse:collapse; }
+  th { padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); color:var(--muted);
+    font:700 10px/1.4 var(--mono); text-transform:uppercase; letter-spacing:.08em; }
+  td { padding:11px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tr:last-child td { border-bottom:0; }
+  td:first-child { font-weight:700; }
+  .status { font:700 10px/1.4 var(--mono); text-transform:uppercase; }
+  .status.good { color:var(--green); } .status.no { color:var(--red); } .status.open { color:var(--amber); }
+  .checks { display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; }
+  .check { display:flex; gap:9px; align-items:flex-start; padding:8px 0; color:var(--ink); }
+  .check input { margin-top:4px; accent-color:var(--green); }
+  .check small { display:block; color:var(--muted); }
+  .note { margin-top:12px; padding:12px 14px; border-left:3px solid var(--amber);
+    background:var(--amber-soft); color:var(--ink); border-radius:4px 10px 10px 4px; font-size:13px; }
+  footer { margin-top:36px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted);
+    font:11px/1.6 var(--mono); }
+  @media (max-width:760px) {
+    .card,.card.wide { grid-column:1/-1; }
+    .inputs { grid-template-columns:1fr 1fr; }
+    .metrics { grid-template-columns:1fr 1fr; }
+    .checks { grid-template-columns:1fr; }
+  }
+  @media (max-width:480px) {
+    .inputs { grid-template-columns:1fr; }
+    .wrap { width:min(100% - 22px,1040px); padding-top:26px; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="kicker">personal finance · baseline 01</div>
+  <h1>Good plumbing.<br>Now measure the water.</h1>
+  <p class="lede">The account structure is sensible for a childfree American living in Indonesia. The next iteration is about amounts, obligations, and resilience—not collecting more financial apps.</p>
+  <div class="meta">TODO-232 · 2026-07-19 04:54 UTC · values below stay in this browser's local storage</div>
+
+  <section class="verdict">
+    <div class="mark">✓</div>
+    <div><strong>Keep the current stack. Skip Telegram Wallet for yield.</strong>
+      Robinhood + index funds, two credit-card issuers, Permata, and USAA already cover the jobs. Telegram Wallet only earns a place for a real crypto-payment need—and its current terms restrict U.S. citizens and residents.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Current money map</h2><span class="hint">one account, one job</span></div>
+    <div class="grid">
+      <article class="card"><div class="role">grow + park USD</div><h3>Robinhood</h3><p>Index investing and interest-bearing eligible cash.</p><span class="pill">keep</span></article>
+      <article class="card"><div class="role">spend</div><h3>Capital One + Chase</h3><p>Credit-card rails, rewards, fraud buffer. Pay statement balances in full.</p><span class="pill">keep</span></article>
+      <article class="card"><div class="role">live locally</div><h3>Permata</h3><p>IDR bills, transfers, and day-to-day Indonesia banking.</p><span class="pill">keep</span></article>
+      <article class="card"><div class="role">access cash</div><h3>USAA</h3><p>ATM withdrawals and a separate U.S. banking rail.</p><span class="pill">keep</span></article>
+      <article class="card"><div class="role">crypto convenience</div><h3>Telegram Wallet</h3><p>No uncovered job today. Yield adds custody, protocol, depeg, and eligibility risk.</p><span class="pill no">skip</span></article>
+      <article class="card"><div class="role">life design</div><h3>Childfree by choice</h3><p>No education fund. Prioritize self-funded longevity, health, disability, and clean estate instructions.</p><span class="pill">recorded</span></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Numbers that determine “doing good”</h2><span class="hint">editable · saved automatically</span></div>
+    <article class="card full">
+      <div class="inputs">
+        <label>Monthly spending (USD)<input data-money="spend" type="number" min="0" step="100" placeholder="0"></label>
+        <label>Liquid safe cash (USD)<input data-money="cash" type="number" min="0" step="1000" placeholder="0"></label>
+        <label>Index investments (USD)<input data-money="invested" type="number" min="0" step="1000" placeholder="0"></label>
+        <label>After-tax monthly income<input data-money="income" type="number" min="0" step="100" placeholder="0"></label>
+        <label>Monthly investing<input data-money="monthlyInvest" type="number" min="0" step="100" placeholder="0"></label>
+        <label>Carried card balance<input data-money="cardDebt" type="number" min="0" step="100" placeholder="0"></label>
+      </div>
+      <div class="metrics">
+        <div class="metric" id="runwayBox"><div class="value" id="runway">—</div><div class="label">months of liquid runway · expat target 6–12</div></div>
+        <div class="metric" id="saveBox"><div class="value" id="saveRate">—</div><div class="label">monthly investing ÷ after-tax income</div></div>
+        <div class="metric"><div class="value" id="fi25">—</div><div class="label">25× annual spending · rough FI reference</div></div>
+        <div class="metric"><div class="value" id="fi30">—</div><div class="label">30× annual spending · more conservative reference</div></div>
+      </div>
+      <div class="note" id="debtNote">Enter the six numbers above. A carried credit-card balance should be zero before optimizing yields.</div>
+    </article>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Next diligence</h2><span class="hint">check off as we iterate</span></div>
+    <article class="card full">
+      <div class="checks">
+        <label class="check"><input data-check="autopay" type="checkbox"><span>All cards autopay full statement balance<small>No revolving high-interest debt.</small></span></label>
+        <label class="check"><input data-check="cash" type="checkbox"><span>Emergency cash is genuinely accessible abroad<small>Not all trapped behind one app, device, or country.</small></span></label>
+        <label class="check"><input data-check="health" type="checkbox"><span>International health + evacuation reviewed<small>Coverage matches Indonesia and travel reality.</small></span></label>
+        <label class="check"><input data-check="disability" type="checkbox"><span>Disability/income interruption risk reviewed<small>Your earning power matters more than dependent life insurance.</small></span></label>
+        <label class="check"><input data-check="tax" type="checkbox"><span>U.S. + Indonesia tax/reporting mapped<small>Include foreign accounts and investment income.</small></span></label>
+        <label class="check"><input data-check="estate" type="checkbox"><span>Beneficiaries, will, and medical directives current<small>Especially important when the default heirs are not children.</small></span></label>
+      </div>
+    </article>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Telegram Wallet decision record</h2><span class="hint">why “no”</span></div>
+    <article class="card full">
+      <table>
+        <tr><th>Question</th><th>Finding</th><th>State</th></tr>
+        <tr><td>Does it fill a missing job?</td><td>No. Existing accounts cover saving, investing, cards, IDR, and cash.</td><td class="status no">no</td></tr>
+        <tr><td>Is the displayed APY cash-like?</td><td>No. Products can involve volatile tokens, synthetic dollars, custody, or third-party DeFi protocols.</td><td class="status no">no</td></tr>
+        <tr><td>Is the extra yield compelling?</td><td>No. The small headline spread does not compensate for the additional failure modes.</td><td class="status no">no</td></tr>
+        <tr><td>Could it ever be useful?</td><td>Yes, for a small crypto payment to someone who already uses it—subject to legal eligibility.</td><td class="status open">niche</td></tr>
+      </table>
+      <p class="hint" style="margin:12px 10px 0">Primary references: <a href="https://wallet.tg/docs/user_agreement">Crypto Wallet agreement</a> · <a href="https://help.wallet.tg/article/706-dollar-earn">Dollars Earn mechanics</a> · <a href="https://robinhood.com/us/en/support/articles/cash-sweep-program-interest-rate/">Robinhood cash program</a></p>
+    </article>
+  </section>
+
+  <footer>
+    money_telegram-wallet_2026-07-19_04-54 · world bpo · private baseline, not a complete financial plan<br>
+    Next iteration: fill the six numbers, then add account balances only at the level useful for decisions.
+  </footer>
+</main>
+<script>
+(function () {
+  var KEY = 'bpo-money-baseline-v1';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var money = Array.prototype.slice.call(document.querySelectorAll('[data-money]'));
+  var checks = Array.prototype.slice.call(document.querySelectorAll('[data-check]'));
+  money.forEach(function (el) { el.value = state[el.dataset.money] || ''; el.addEventListener('input', update); });
+  checks.forEach(function (el) {
+    el.checked = !!state['check:' + el.dataset.check];
+    el.addEventListener('change', update);
+  });
+  function n(name) {
+    var el = document.querySelector('[data-money="' + name + '"]');
+    return Number(el.value) || 0;
+  }
+  function compact(v) {
+    if (!v) return '—';
+    return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits:0, notation:v >= 1000000 ? 'compact' : 'standard' }).format(v);
+  }
+  function tone(el, cls) { el.classList.remove('good','warn','bad'); if (cls) el.classList.add(cls); }
+  function update() {
+    money.forEach(function (el) { state[el.dataset.money] = el.value; });
+    checks.forEach(function (el) { state['check:' + el.dataset.check] = el.checked; });
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    var spend = n('spend'), cash = n('cash'), income = n('income'), monthlyInvest = n('monthlyInvest'), debt = n('cardDebt');
+    var runway = spend ? cash / spend : 0;
+    var rate = income ? monthlyInvest / income : 0;
+    document.getElementById('runway').textContent = runway ? runway.toFixed(1) : '—';
+    document.getElementById('saveRate').textContent = income ? Math.round(rate * 100) + '%' : '—';
+    document.getElementById('fi25').textContent = compact(spend * 12 * 25);
+    document.getElementById('fi30').textContent = compact(spend * 12 * 30);
+    tone(document.getElementById('runwayBox'), !runway ? '' : runway >= 6 ? 'good' : runway >= 3 ? 'warn' : 'bad');
+    tone(document.getElementById('saveBox'), !income ? '' : rate >= .2 ? 'good' : rate >= .1 ? 'warn' : 'bad');
+    var note = document.getElementById('debtNote');
+    if (debt > 0) note.textContent = 'Priority: eliminate the ' + compact(debt) + ' carried card balance before chasing APY or increasing risk.';
+    else if (spend || cash || income || monthlyInvest) note.textContent = 'No carried card debt entered. The dashboard is now ready for a balance-and-risk review.';
+    else note.textContent = 'Enter the six numbers above. A carried credit-card balance should be zero before optimizing yields.';
+  }
+  update();
+})();
+</script>
+</body>
+</html>

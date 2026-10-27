@@ -1,0 +1,8 @@
+{
+  "name": "dsp-shell-pack",
+  "private": true,
+  "description": "dev runtime for scripts/dsp-shell-proof; the pack itself has no dependencies",
+  "devDependencies": {
+    "playwright-core": "1.62.1"
+  }
+}

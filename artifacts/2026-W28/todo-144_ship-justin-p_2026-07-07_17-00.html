@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-144 · ship-justin-p · get something dope to Taipei</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --fit: 1000px; }
+    body { min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--ink); }
+    .wrap { max-width: var(--fit); margin: 0 auto; padding: 40px 24px 72px; }
+    .kicker { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      font: 600 12px/1 var(--font-mono, ui-monospace, monospace); letter-spacing:.08em;
+      text-transform:uppercase; color: var(--forest); }
+    .kicker .dot { width:7px; height:7px; border-radius:2px; background: var(--lime); }
+    h1 { margin: 14px 0 6px; font-size: clamp(28px, 4.4vw, 42px); line-height:1.04; letter-spacing:-.01em; }
+    .sub { color: color-mix(in srgb, var(--ink) 62%, transparent); max-width: 62ch; font-size:16px; }
+    .sub b { color: var(--forest); font-weight:700; }
+
+    h2 { margin: 40px 0 4px; font-size: 13px; letter-spacing:.10em; text-transform:uppercase; color: var(--forest); }
+    .h2sub { margin:0 0 16px; font-size:14px; color: var(--muted); }
+
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+    @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } }
+
+    .card { border:1px solid var(--line); border-radius: var(--r-card, 16px);
+      background: var(--card); box-shadow: var(--shadow-card); padding:20px 22px; }
+    .card.reco { border-color: color-mix(in srgb, var(--forest) 40%, var(--line));
+      box-shadow: var(--shadow-hero); }
+    .card h3 { margin:0 0 4px; font-size:17px; }
+    .card .lead { font-size:13px; color: var(--muted); margin:0 0 14px; }
+    .tag { display:inline-block; font:700 10px/1 var(--font-mono, monospace); letter-spacing:.06em;
+      text-transform:uppercase; padding:5px 8px; border-radius:6px; vertical-align:middle; margin-left:8px; }
+    .tag.reco { background: color-mix(in srgb, var(--lime) 28%, transparent); color: var(--forest-d); }
+    .tag.alt  { background: color-mix(in srgb, var(--found) 18%, transparent); color: var(--found-d); }
+
+    ul.steps { list-style:none; padding:0; margin:0; display:grid; gap:9px; }
+    ul.steps li { display:flex; gap:11px; align-items:baseline; font-size:14px; line-height:1.5; }
+    ul.steps .n { flex:none; width:20px; height:20px; border-radius:6px; display:grid; place-items:center;
+      font:700 11px/1 var(--font-mono, monospace); background: color-mix(in srgb, var(--forest) 12%, transparent);
+      color: var(--forest-d); }
+    .pro, .con { font-size:13px; margin-top:12px; padding-left:20px; position:relative; }
+    .pro::before { content:"+"; position:absolute; left:4px; color: var(--forest); font-weight:800; }
+    .con::before { content:"–"; position:absolute; left:5px; color: var(--warn); font-weight:800; }
+
+    .callout { margin:18px 0 0; border:1px solid var(--g-lime); background: color-mix(in srgb, var(--g-lime) 55%, var(--card));
+      border-radius: var(--r-panel); padding:16px 18px; display:flex; gap:14px; align-items:flex-start; }
+    .callout .big { font:800 26px/1 var(--font-mono, monospace); color: var(--forest); flex:none; }
+    .callout p { margin:0; font-size:14px; color: var(--body); }
+    .callout b { color: var(--forest-d); }
+
+    .gifts { display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
+    @media (max-width:760px){ .gifts { grid-template-columns:1fr; } }
+    .gift { border:1px solid var(--line); border-radius: var(--r-card); background: var(--card);
+      box-shadow: var(--shadow-card); padding:18px 18px 20px; display:flex; flex-direction:column; }
+    .gift .rank { font:700 11px/1 var(--font-mono, monospace); letter-spacing:.08em; text-transform:uppercase;
+      color: var(--faint); margin-bottom:8px; }
+    .gift h3 { margin:0 0 3px; font-size:18px; }
+    .gift .price { font:600 12px/1 var(--font-mono, monospace); color: var(--muted); margin-bottom:10px; }
+    .gift p { margin:0 0 10px; font-size:13.5px; line-height:1.5; color: var(--body); }
+    .gift .why { margin-top:auto; font-size:12.5px; color: var(--forest-d);
+      background: color-mix(in srgb, var(--lime) 14%, transparent); border-radius:8px; padding:8px 10px; }
+
+    .itin { display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
+    @media (max-width:760px){ .itin { grid-template-columns:1fr; } }
+    .stop { border:1px solid var(--line); border-radius: var(--r-tile); background: var(--card); padding:13px 15px; }
+    .stop .t { font:600 11px/1 var(--font-mono, monospace); color: var(--forest); letter-spacing:.05em; }
+    .stop .p { font-size:14.5px; font-weight:600; margin:5px 0 2px; }
+    .stop .d { font-size:12.5px; color: var(--muted); line-height:1.45; }
+
+    code { font: 12.5px var(--font-mono, monospace);
+      background: color-mix(in srgb, var(--forest) 9%, transparent); padding:1px 5px; border-radius:5px; }
+    a { color: var(--forest); text-decoration: none; border-bottom:1px solid color-mix(in srgb, var(--forest) 30%, transparent); }
+
+    .foot { margin-top:44px; font-size:12.5px; color: var(--muted);
+      border-top:1px solid var(--line); padding-top:16px; }
+    .foot .row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:10px; }
+    .foot .src { font-size:11.5px; color: var(--faint); line-height:1.7; }
+    .foot .src b { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kicker"><span class="dot"></span> TODO-144 · ship-justin-p · In&nbsp;Review · 2026-07-07 17-00 Z</div>
+    <h1>Get something dope to Justin in Taipei</h1>
+    <p class="sub">Target: land a fun gift around <b>Aug 11 2026</b> — peak Taipei summer, kids underfoot.
+      Two things make this easy once you know them: <b>Taiwan runs the exact same power as the US</b>, and
+      the <b>蝦皮店到店 pickup point only accepts domestic Shopee parcels</b>. Everything below follows from those two facts.</p>
+
+    <div class="callout">
+      <div class="big">110V</div>
+      <p><b>Taiwan is 110V / 60Hz on Type A/B plugs — identical to the US.</b> A US-market Ninja Creami
+        runs in Taipei with zero converter or adapter. The Whirly Pop is hand-crank on the stovetop, so it
+        needs no electricity at all. The usual "will it work abroad?" worry simply doesn't apply here.</p>
+    </div>
+
+    <h2>The two ways to get it there</h2>
+    <p class="h2sub">The Shilin address you have is a Shopee <code>店到店</code> self-pickup counter. That counter
+      only receives parcels moving inside Shopee's own Taiwan network — a US box can't be delivered to it.
+      So the route depends on where the item is bought.</p>
+
+    <div class="grid2">
+      <div class="card reco">
+        <h3>Path A · Buy inside Taiwan <span class="tag reco">Recommended</span></h3>
+        <p class="lead">Order from a Shopee TW seller, ship to 士林克強智取店 — the address he gave you.</p>
+        <ul class="steps">
+          <li><span class="n">1</span><span>Pick a shopping-agent that fronts a Taiwan account & address — <b>Buy Taiwan Online</b>, <b>Two Tree</b>, or <b>Taiwan Ezstar</b>. They take a foreign credit card / PayPal.</span></li>
+          <li><span class="n">2</span><span>Send them the Shopee TW listing (Ninja Creami is on Shopee TW & Taiwan retailers like Linselect) and the <code>蝦皮店到店 · 士林克強智取店</code> address.</span></li>
+          <li><span class="n">3</span><span>They place the domestic order → it flows through Shopee's network → Justin gets a pickup code for the Shilin counter.</span></li>
+        </ul>
+        <div class="pro">Uses the exact pickup point he flagged; Taiwan-market unit = local warranty & correct plug.</div>
+        <div class="pro">No customs paperwork or import duty — it's a domestic Taiwan sale.</div>
+        <div class="con">Agent charges a service fee (~a few USD + %); a day or two slower to set up.</div>
+      </div>
+
+      <div class="card">
+        <h3>Path B · Buy in the US <span class="tag alt">Fastest</span></h3>
+        <p class="lead">Amazon US → Justin's <b>home address</b> (not the 店到店 counter).</p>
+        <ul class="steps">
+          <li><span class="n">1</span><span>Buy on Amazon US. Ship direct if the listing offers Taiwan, or via a forwarder (Buy&amp;Ship, MyUS) to his door.</span></li>
+          <li><span class="n">2</span><span>Because it's 110V, it powers on the moment it lands — nothing to convert.</span></li>
+          <li><span class="n">3</span><span>Declare it as a gift; keep the value modest to stay under duty thresholds.</span></li>
+        </ul>
+        <div class="pro">Familiar checkout, often fastest, easy to gift-wrap the moment.</div>
+        <div class="con">Can't use the 店到店 counter — needs a home address instead.</div>
+        <div class="con">Possible import duty/VAT on arrival; US warranty won't help him in Taiwan.</div>
+      </div>
+    </div>
+
+    <h2>Gift shortlist</h2>
+    <p class="h2sub">Ranked for a hot Taipei August with kids in the house.</p>
+    <div class="gifts">
+      <div class="gift">
+        <div class="rank">Pick 01 · the crowd-pleaser</div>
+        <h3>Ninja Creami</h3>
+        <div class="price">NC301 · ~US$180 · runs on 110V ✓</div>
+        <p>Freeze a base overnight, hit one button, and it spins solid blocks into ice cream, gelato,
+          sorbet, milkshakes. Endless kid experiments — mango, matcha, whatever's in the fridge.</p>
+        <div class="why">Why it's dope: homemade ice cream is exactly what a sweltering Taipei summer wants, and kids get to invent flavors.</div>
+      </div>
+      <div class="gift">
+        <div class="rank">Pick 02 · the ritual</div>
+        <h3>Whirly Pop</h3>
+        <div class="price">Stovetop · ~US$25 · no power needed</div>
+        <p>Hand-crank stovetop popper — perfect popcorn in three minutes, nothing to break, no electronics.
+          Instant movie-night ritual and the most travel-proof thing on this list.</p>
+        <div class="why">Why it's dope: cheap, indestructible, and the crank is half the fun for a kid. Works anywhere on Earth.</div>
+      </div>
+      <div class="gift">
+        <div class="rank">Pick 03 · be creative</div>
+        <h3>The "make-it-together" bundle</h3>
+        <div class="price">Creami + sundae kit, or Pop + movie night</div>
+        <p>Pair the machine with the fixings — sprinkles, cones, mix-ins for the Creami; or popcorn kernels,
+          seasonings and a couple of kid movies for the Pop. Turns a gadget into a whole afternoon.</p>
+        <div class="why">Why it's dope: you're gifting an activity, not just a box — which is the actual "fun things to do with kids."</div>
+      </div>
+    </div>
+
+    <h2>Fun things to do with kids · Aug 11 2026</h2>
+    <p class="h2sub">Pair the gift with a day out — Taipei has great rainy-or-shine kid options in August.</p>
+    <div class="itin">
+      <div class="stop">
+        <div class="t">MORNING · beat the heat</div>
+        <div class="p">Taipei Children's Amusement Park</div>
+        <div class="d">Shilin-adjacent, cheap rides, right by the pickup counter's district. Easy first stop.</div>
+      </div>
+      <div class="stop">
+        <div class="t">MIDDAY · up & over</div>
+        <div class="p">Maokong Gondola + tea hills</div>
+        <div class="d">Glass-floor cabins over the hills; snacks and space to run at the top.</div>
+      </div>
+      <div class="stop">
+        <div class="t">AFTERNOON · indoor / AC</div>
+        <div class="p">Miramar Ferris Wheel &amp; mall</div>
+        <div class="d">Rooftop wheel plus air-con when the afternoon sun peaks. Movie option on-site.</div>
+      </div>
+      <div class="stop">
+        <div class="t">HOME · the gift lands</div>
+        <div class="p">Creami night / Whirly Pop movie</div>
+        <div class="d">Cap the day making ice cream or popping corn — the present becomes the finale.</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="row">
+        <span>Descriptor: <code>ship-justin-p</code></span>
+        <span>Bucket: <code>todo-144</code></span>
+        <span>Stamp: 2026-07-07 17-00 Z</span>
+      </div>
+      <div class="src">
+        <b>Sources</b> —
+        Shopee TW cross-border limits &amp; agents: buytaiwanonline.com, twotreeteam.com ·
+        Taiwan 110V/60Hz Type A/B: power-plugs-sockets.com, remitly.com ·
+        Ninja Creami in Taiwan: linselect.com.tw, u-buy.com.tw.
+        Prices approximate; confirm live listings before ordering.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

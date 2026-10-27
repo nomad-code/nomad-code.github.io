@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The state of the world — TODO-293</title>
+<!-- bre password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css"><link rel="stylesheet" href="../design-repo/grove/tokens.css"><link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6;--rust:#9a3f24;--amber:#8a6d1c}
+*{box-sizing:border-box}html,body{overflow-x:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{width:min(100% - 32px,960px);margin:auto;padding:54px 0 70px}
+.eyebrow,.k{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}
+h1{margin:14px 0 12px;font:700 clamp(32px,6.4vw,62px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.06em}
+.lede{max-width:720px;color:var(--muted);font-size:18px}
+h2.sec{margin:46px 0 14px;font:700 22px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.03em}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.kpi{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.kpi .n{display:block;font:700 34px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.04em;color:var(--forest)}
+.kpi .n.was{color:var(--muted);font-size:15px;text-decoration:line-through;letter-spacing:0}
+.kpi .l{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.card{padding:20px;border:1px solid var(--line);border-radius:15px;background:var(--card)}
+.card.bad{border-color:#e2c3b8;background:#fbf0ec}
+.card.fixed{border-color:#c3d8c9;background:#eef5ef}
+.card h3{font:700 15px/1.3 ui-monospace,monospace;margin:9px 0 8px}
+.card p{color:var(--muted);margin:0 0 8px;font-size:13.5px}
+.card p:last-child{margin-bottom:0}
+.tag{display:inline-block;padding:3px 9px;border-radius:999px;font:700 10px/1.4 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase}
+.tag.red{background:#f1d9d0;color:var(--rust)}
+.tag.green{background:#d8ead9;color:var(--forest)}
+.tag.amber{background:#f2e7c8;color:var(--amber)}
+
+.ba{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin-top:22px}
+.ba .side{padding:18px 20px;border:1px solid var(--line);border-radius:15px;background:var(--card)}
+.ba .side.before{border-color:#e2c3b8;background:#fbf0ec}
+.ba .side.after{border-color:#c3d8c9;background:#eef5ef}
+.ba .side ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:13.5px}
+.ba .side li{margin:5px 0}
+.ba .arrow{font:700 22px/1 ui-monospace,monospace;color:var(--forest)}
+
+table{width:100%;border-collapse:collapse;margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--forest)}
+tr:last-child td{border-bottom:0}
+td.id{font:700 13px/1.4 ui-monospace,monospace;white-space:nowrap}
+td.st{white-space:nowrap}
+
+.checks{margin-top:24px;padding:22px;border-radius:16px;background:var(--forest);color:white}
+.checks h3{margin:0 0 6px;font:700 15px/1.3 ui-monospace,monospace}
+.check{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #ffffff25}
+.check:last-child{border:0}
+.dot{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900;font-size:13px}
+.dot.todo{background:transparent;color:#ffffff88;border:1px solid #ffffff55;font-weight:700}
+.check.todo span:last-child{color:#ffffffb0}
+.checks code{background:#ffffff1f;color:#eaf4ea}
+
+.note{margin-top:22px;padding:18px 20px;border-left:3px solid var(--rust);background:#fbf0ec;border-radius:0 12px 12px 0}
+.note p{margin:0 0 9px;font-size:14px;color:#5d3b30}
+.note p:last-child{margin-bottom:0}
+code{font:600 13px/1.4 ui-monospace,SFMono-Regular,monospace;background:#e8e6db;padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+a{color:inherit}
+footer{display:flex;justify-content:space-between;gap:14px;margin-top:46px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,SFMono-Regular,monospace}
+@media(max-width:820px){
+.kpis{grid-template-columns:repeat(2,1fr)}
+.grid{grid-template-columns:1fr}
+.ba{grid-template-columns:1fr}.ba .arrow{transform:rotate(90deg)}
+footer{flex-direction:column}
+table,tbody,tr,td{display:block;width:100%}
+table tr:first-child{display:none}
+tr{border-bottom:1px solid var(--line);padding:6px 0}
+tr:last-child{border-bottom:0}
+td{border:0;padding:5px 16px}
+td.id{padding-top:13px;color:var(--forest)}
+}
+</style>
+</head>
+<body>
+<main>
+  <span class="eyebrow">TODO-293 · dha-linear_audit · 2026-07-27</span>
+  <h1>the state<br>of the world</h1>
+  <p class="lede">Three repos, one tracker, and a lot of cognitive debt. The audit
+  found three things quietly broken — none of them where the debt was assumed to be.
+  All the uncommitted work is now in git. Everything else is a decision you still
+  have to make.</p>
+
+  <div class="kpis">
+    <div class="kpi"><span class="n">1</span><span class="l">open dha ticket, from 11</span></div>
+    <div class="kpi"><span class="n">0</span><span class="l">uncommitted lines, from 1,109</span></div>
+    <div class="kpi"><span class="n">629</span><span class="l">portal tests green on PR 491</span></div>
+    <div class="kpi"><span class="n">2</span><span class="l">tools still dead — see below</span></div>
+  </div>
+
+  <h2 class="sec">What was actually broken</h2>
+  <div class="grid">
+    <div class="card bad">
+      <span class="tag red">still broken</span>
+      <h3>GitHub is dark locally</h3>
+      <p>No <code>~/.config/gh</code> — <code>gh</code> is not authenticated on this
+      machine at all. And <code>bun</code> isn't installed globally, so
+      <code>ghp</code> (<code>#!/usr/bin/env bun</code>) cannot run.</p>
+      <p>Plain <code>git</code> over HTTPS still works via keychain, which is the
+      only reason this session could push anything.</p>
+    </div>
+    <div class="card fixed">
+      <span class="tag green">fixed</span>
+      <h3><code>maps-v3</code> had diverged</h3>
+      <p>The remote branch was rebased at some point; the local checkout was still
+      the pre-rebase one. Same commits, different SHAs, silently drifting apart.</p>
+      <p>Every local commit turned out to be patch-identical upstream. Nothing was
+      lost in the reset — but nobody knew that until it was checked.</p>
+    </div>
+    <div class="card fixed">
+      <span class="tag green">fixed</span>
+      <h3><code>bre</code> was holding the key</h3>
+      <p>An uncommitted rename from <code>LINEAR_API_KEY_NC</code> to
+      <code>LINEAR_API_KEY_BPO</code> across four files. <code>_NC</code> is not set
+      on this machine.</p>
+      <p>The entire journal loop was one <code>git checkout</code> away from silently
+      losing auth. Committed as <code>68e3494</code>.</p>
+    </div>
+  </div>
+
+  <h2 class="sec">portal-v2 · the divergence</h2>
+  <p class="lede">The local checkout and <code>origin/maps-v3</code> had the same
+  work under different SHAs. Resolving it meant proving containment first — reset
+  before proof would have been a gamble with 38 commits.</p>
+
+  <div class="ba">
+    <div class="side before">
+      <span class="k">Before</span>
+      <ul>
+        <li>local <code>27cc6197</code>, remote <code>890a420d</code> — diverged</li>
+        <li>103 commits remote-only, 38 local-only</li>
+        <li>4 modified + 5 untracked paths, uncommitted</li>
+        <li>PR 491 three commits behind <code>main</code></li>
+      </ul>
+    </div>
+    <div class="arrow">→</div>
+    <div class="side after">
+      <span class="k">After</span>
+      <ul>
+        <li>local and remote both <code>18f02446</code></li>
+        <li>0 behind <code>main</code>, 36 ahead</li>
+        <li>working tree clean</li>
+        <li>629 tests pass, 0 fail</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="lede" style="margin-top:20px"><strong>The proof step mattered.</strong>
+  <code>git cherry</code> showed 34 of 35 local commits already upstream. The 35th
+  — the Courses redesign — reported as different only because it created
+  <code>code.module.scss</code> where the remote modified it. The resulting trees
+  are byte-identical. The single real difference was a remote-only improvement:
+  querying country flags by accessible image role instead of by label.</p>
+
+  <p class="lede">The PWA work — manifest, iOS/Android icons, <code>/pwa-launch</code>,
+  and the nginx locations that serve <code>/manifest.webmanifest</code> without the
+  V2 routing cookie — was replayed on top and folded into PR 491. Gating a manifest
+  behind a cookie makes an app silently non-installable; browsers fetch it without
+  credentials while deciding.</p>
+
+  <h2 class="sec">gh-project · the real fragility</h2>
+  <div class="note">
+    <p><strong>One commit. No remote. Never pushed.</strong>
+    <code>~/dev/dha/gh-project</code> has a single commit, no <code>origin</code>,
+    and 654 lines across <code>src/</code> and <code>bin/</code>. It exists on
+    exactly one disk.</p>
+    <p>This is <code>ghp</code> — the entire public tier of the tiered task model.
+    <code>AGENT.md</code> routes every team-visible lookup through it
+    (<code>ghp issue portal-v2-iNN</code>, board #26). It is also currently
+    unrunnable, because its shebang is <code>#!/usr/bin/env bun</code> and bun is
+    not installed globally. <em>Interesting wrinkle:</em> bun 1.3.8 <strong>does</strong>
+    exist via mise inside <code>portal-v2</code> — which is how this session ran the
+    test suite. It just isn't on the global PATH where <code>ghp</code> needs it.</p>
+    <p>Private tier is durable: Linear plus a pushed git repo. Public tier is one
+    disk failure from gone. That asymmetry is the biggest thing this audit found.</p>
+  </div>
+
+  <h2 class="sec">Linear · eleven to one</h2>
+  <p class="lede">Nothing closed empty-handed. The three tickets carrying unbuilt
+  scope were distilled into <code>bre/projects/portal-v2/</code> and committed
+  <em>before</em> the tickets closed — git holds truth, SaaS holds workflow.</p>
+
+  <table>
+    <tr><th>Ticket</th><th>Now</th><th>Why</th></tr>
+    <tr><td class="id">TODO-196</td><td class="st"><span class="tag green">stays open</span></td><td>The running portal-v2 cleanup catch-all. Its own description says it must never close on the normal loop. The one survivor.</td></tr>
+    <tr><td class="id">TODO-251</td><td class="st">Done</td><td>Teams ingest — 877 lines had been sitting uncommitted since 20 July. Now <code>10ef17a</code>, pushed, 7 tests pass.</td></tr>
+    <tr><td class="id">TODO-289</td><td class="st">Done</td><td>iOS access. Fork model dead (<code>allow_forking: false</code>); mirror is the answer. PWA half shipped into PR 491.</td></tr>
+    <tr><td class="id">TODO-201</td><td class="st">Done</td><td>Never started. Full spec preserved → <code>VIRTUAL-SITTINGS.md</code>, blocking design question intact.</td></tr>
+    <tr><td class="id">TODO-225</td><td class="st">Done</td><td>Unimplemented. Janine's four answers + her unanswered nav-vs-h1 question → <code>JANINE-ANSWERS.md</code>.</td></tr>
+    <tr><td class="id">TODO-223</td><td class="st">Done</td><td>Self-hosted country flags. Shipped, on PR 491.</td></tr>
+    <tr><td class="id">TODO-250 · 240</td><td class="st">Done</td><td>Artifacts published and live. Nothing outstanding.</td></tr>
+    <tr><td class="id">TODO-162</td><td class="st">Canceled</td><td>Duplicate of <code>portal-v2-issues#49</code>, which was always the live tracker. Scope → <code>DESKTOP-SPLIT.md</code>.</td></tr>
+    <tr><td class="id">TODO-133</td><td class="st">Duplicate</td><td>Superseded by TODO-137, which actually built the thing. Never got a single comment.</td></tr>
+  </table>
+
+  <p class="lede" style="margin-top:18px"><code>VIRTUAL-SITTINGS.md</code> and
+  <code>DESKTOP-SPLIT.md</code> point at each other on purpose: both hinge on the
+  same unanswered design question — does the card list <em>replace</em> the map or
+  sit beside it? Two pages disagreeing on whether maps survive is worse than either
+  answer.</p>
+
+  <div class="checks">
+    <h3>Where it stands</h3>
+    <div class="check"><span class="dot">✓</span><span><strong>PR 491 is current.</strong> Reconciled, merged with <code>main</code>, PWA folded in, 629 tests green, pushed.</span></div>
+    <div class="check"><span class="dot">✓</span><span><strong>bre is clean and pushed.</strong> Three commits: teams ingest, the key rename, the distilled specs.</span></div>
+    <div class="check"><span class="dot">✓</span><span><strong>Linear is down to one.</strong> TODO-196 survives by design; this ticket closes on session end.</span></div>
+    <div class="check todo"><span class="dot todo">1</span><span><strong>Authenticate <code>gh</code>.</strong> Until then PR 491's checks and board #26 can't be read from this machine — the push went through plain git.</span></div>
+    <div class="check todo"><span class="dot todo">2</span><span><strong>Install bun globally, and give <code>gh-project</code> a remote.</strong> A 654-line tool on one disk with no push target is the thinnest thing in the world.</span></div>
+    <div class="check todo"><span class="dot todo">3</span><span><strong>Get the map-vs-list answer from design.</strong> It blocks two specs at once.</span></div>
+  </div>
+
+  <h2 class="sec">Reported, deliberately untouched</h2>
+  <p class="lede">Old cruft in <code>portal-v2</code> that this session did not
+  clear, because clearing it destroys things and nobody asked: <strong>10 stashes</strong>
+  (the oldest from <code>271-locations-initialize</code>, months old) and
+  <strong>8 stale worktrees</strong> registered against a second clone at
+  <code>~/dev/zyx/dhamma/portal-v2</code> — a duplicate checkout that still exists.
+  Two of those worktrees are locked. Say the word and they go.</p>
+
+  <footer>
+    <span>bre · dha world · TODO-293</span>
+    <span>PR 491 @ 18f02446 · bre @ 11ce6c4</span>
+  </footer>
+</main>
+</body>
+</html>
