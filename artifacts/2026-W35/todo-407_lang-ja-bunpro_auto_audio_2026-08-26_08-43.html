@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-407 · The Loop Is The Forcing Function</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../../design-repo/grove/motion.css">
+  <style>
+  <style>
+    :root {
+      --c-go:    #0d8f7f;  --c-go-bg:  #d9ece7;  --c-go-bd:  #b9d9d0;
+      --c-stop:  #c4501f;  --c-stop-bg:#f6e3da;  --c-stop-bd:#e3b9a6;
+      --c-gold:  #a07c15;  --c-gold-bg:#f3ead2;  --c-gold-bd:#e3d3a0;
+      --c-blue:  #3a92ba;  --c-blue-bg:#e3eef2;  --c-blue-bd:#cfe1e7;
+    }
+    body { min-height:100vh; overflow-x:hidden; }
+    main { max-width:960px; margin:0 auto; padding:34px 24px 90px; }
+
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.08em; text-transform:uppercase; color:var(--c-go); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-go); }
+    h1 { font:800 clamp(30px,4.8vw,50px)/1.04 var(--font-display); letter-spacing:-.03em;
+      color:var(--ink); margin:16px 0 8px; }
+    h1 em { font-style:normal; color:var(--c-go); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 12px; }
+    .lede { max-width:72ch; font:400 16.5px/1.62 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:660; }
+
+    section { margin-top:54px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(20px,3vw,26px)/1.12 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:14px; }
+    .blurb b { color:var(--ink); font-weight:640; }
+
+    .river { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    @media (max-width:680px){ .river{ grid-template-columns:1fr; } }
+    .chan { border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card); padding:15px 16px; }
+    .chan .o { font:800 22px/1 var(--font-display); margin-bottom:6px; }
+    .chan.c1 .o { color:var(--c-go); } .chan.c2 .o { color:var(--c-blue); } .chan.c3 .o { color:var(--c-gold); }
+    .chan h4 { font:700 14.5px/1.2 var(--font-display); color:var(--ink); margin:0 0 5px; }
+    .chan p { font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    .chan p b { color:var(--ink); }
+    .chan .q { font:italic 500 12.5px/1.45 var(--font-ui); color:var(--muted); margin-bottom:8px; font-style:italic; }
+
+    .gate { border:1px solid var(--c-stop-bd); border-left:4px solid var(--c-stop);
+      background:var(--c-stop-bg); border-radius:var(--r-panel); padding:16px 18px; max-width:76ch; }
+    .gate .t { font:700 15px/1.3 var(--font-display); color:var(--c-stop); margin-bottom:4px; }
+    .gate p { font:400 14px/1.55 var(--font-ui); color:var(--body); }
+    .gate p b { color:var(--ink); }
+    .gate.gold { border-color:var(--c-gold-bd); border-left-color:var(--c-gold); background:var(--c-gold-bg); }
+    .gate.gold .t { color:var(--c-gold); }
+
+    pre.code { border:1px solid var(--line); border-radius:var(--r-panel); background:var(--card);
+      padding:14px 16px; overflow-x:auto; font:400 12.5px/1.6 var(--font-mono); color:var(--body); }
+    pre.code b { color:var(--c-go); font-weight:600; }
+    pre.code i { color:var(--c-stop); font-style:normal; }
+
+    table.ent { border-collapse:collapse; width:100%; font:400 13.5px/1.5 var(--font-ui); }
+    table.ent th { font:600 11px/1 var(--font-mono); letter-spacing:.07em; text-transform:uppercase;
+      color:var(--muted); text-align:left; padding:8px 10px; border-bottom:2px solid var(--line); }
+    table.ent td { padding:9px 10px; border-bottom:1px solid var(--line); color:var(--body); vertical-align:top; }
+    table.ent td:first-child { font:600 12px/1.4 var(--font-mono); color:var(--ink); white-space:nowrap; }
+
+    ul.x { list-style:none; padding:0; margin:0; display:grid; gap:9px; max-width:74ch; }
+    ul.x li { display:flex; gap:11px; align-items:flex-start; font:400 14.5px/1.55 var(--font-ui); color:var(--body); }
+    ul.x li b { color:var(--ink); font-weight:640; }
+    ul.x li::before { content:"✗"; color:var(--c-stop); font-weight:700; flex:0 0 auto; }
+    ul.x.check li::before { content:"→"; color:var(--c-go); }
+
+    .head { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px; }
+    .head .pill { font:600 11px/1 var(--font-mono); letter-spacing:.05em; padding:6px 10px;
+      border-radius:var(--r-pill); color:var(--c-go); background:var(--c-go-bg); border:1px solid var(--c-go-bd); }
+    .head code { font:500 11.5px/1.4 var(--font-mono); color:var(--muted); word-break:break-all; }
+
+    .flow { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:6px 0 4px; }
+    .flow .n { font:600 12.5px/1 var(--font-mono); padding:9px 13px; border-radius:var(--r-pill);
+      border:1px solid var(--line); background:var(--card); color:var(--ink); }
+    .flow .n.go { color:var(--c-go); border-color:var(--c-go-bd); background:var(--c-go-bg); }
+    .flow .n.gold { color:var(--c-gold); border-color:var(--c-gold-bd); background:var(--c-gold-bg); }
+    .flow .a { font:600 13px/1 var(--font-mono); color:var(--faint); }
+    .flow .a b { color:var(--c-go); font-weight:600; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width:680px){ .two{ grid-template-columns:1fr; } }
+    .badge { display:inline-block; font:600 12px/1 var(--font-mono); padding:7px 12px;
+      border-radius:var(--r-pill); background:var(--c-go); color:#06120d; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow"><span class="mo-dot"></span> todo-407 · lang_ja-bunpro-auto_review_audio_ext · 2026-08-26</p>
+  <h1>The loop is <em>the forcing function</em></h1>
+  <p class="sub">bunpro replays the clip until you come back and press 2 · chrome MV3, unpacked</p>
+  <p class="lede">First cut of this auto-advanced the queue on the audio's <b>ended</b> event —
+  clever, and the wrong deliverable. The version worth having is dumber and does more work: replay
+  the same line, forever, with a gap, until <b>you</b> move the card. The repetition is what pulls
+  you back to the keyboard. And since it's already counting <b>ended</b> events to know when to
+  replay, it may as well keep the number — <b>how many times did I have to hear this line before it
+  landed?</b> — which is the one thing Bunpro's SRS doesn't record.</p>
+
+  <section>
+    <div class="k"><span class="n">01</span><h2>The loop</h2></div>
+    <div class="flow">
+      <span class="n go">playing</span><span class="a">— <b>ended</b>, count++ →</span>
+      <span class="n">gap</span><span class="a">→</span>
+      <span class="n go">playing</span><span class="a">…until</span>
+      <span class="n gold">new clip</span><span class="a">→ bank the card, reset to 0</span>
+    </div>
+    <p class="blurb">Replay fires on the audio element's real <b>ended</b> event, never a timer, so
+    the gap you set is genuinely a gap and a long sentence never gets clipped. Cards are keyed by
+    clip <b>src</b> rather than element identity — a front-end that reuses one <b>&lt;audio&gt;</b>
+    and swaps its source still reads as a new card. The badge carries both numbers:</p>
+    <p><span class="badge">×7 · 143</span></p>
+    <p class="blurb">Seven replays of this line, one hundred and forty-three this session.</p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">02</span><h2>Why it needs the page's own JS context</h2></div>
+    <p class="blurb">A content script shares the DOM but not the JavaScript world. Fine for an
+    <b>&lt;audio&gt;</b> tag rendered into the page — useless for a clip built with
+    <b>new Audio(...)</b> and played without ever being attached, which is how plenty of SRS
+    front-ends do it. So there are two scripts, and no Bunpro selector in either:</p>
+    <div class="two">
+      <div class="chan c1">
+        <div class="o">◍</div>
+        <h4>inject.js — MAIN world</h4>
+        <p>Wraps <b>HTMLMediaElement.play</b> and the <b>Audio</b> constructor, plus a
+        MutationObserver for DOM-rendered clips. Every clip gets an id, a src and an <b>ended</b>
+        listener. Reports up as CustomEvents, takes <b>play</b>/<b>stop</b> back down.</p>
+      </div>
+      <div class="chan c2">
+        <div class="o">⧗</div>
+        <h4>content.js — isolated world</h4>
+        <p>Owns the loop, the counts, the badge, the keys. Never touches media directly — it asks the
+        bridge. That split is why the thing has no idea what Bunpro's DOM looks like.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">03</span><h2>Pressing P is the fallback, not the mechanism</h2></div>
+    <p class="blurb">Asking for the <b>P</b> key is asking for "play the clip again" — but the key is
+    the least reliable way to say it. If a clip is reachable the bridge plays it directly: no focus
+    games, no interference with typing, works when the shortcut is disabled inside an input. The
+    synthetic keypress only fires when nothing is reachable at all.</p>
+    <p class="blurb">And when it does fire it has to be careful. Dispatched <b>KeyboardEvent</b>s are
+    untrusted — they reach a site's handlers but can never type — so a printable key aimed at a
+    focused answer box is simply swallowed by it. The field gets blurred for the dispatch and
+    refocused after, <b>except</b> within 1.5s of a real keystroke, where stepping focus out would
+    eat a character mid-answer.</p>
+    <pre class="code">document.addEventListener('keydown', e =&gt;
+  console.log(e.key, '| code:', e.code, '| target:', e.target.tagName), <b>true</b>);</pre>
+    <p class="blurb">Console that on a review page, press the key you actually use, put what prints
+    in the popup.</p>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">04</span><h2>The count wants to leave</h2></div>
+    <p class="blurb">Replay count is a different signal from pass/fail, and it's the one that says
+    <i>this line is not in your ear yet</i> even on cards you're answering correctly. <b>Copy log</b>
+    puts the whole history on the clipboard as CSV — <b>at, loops, clip</b> — one row per card. That's
+    deliberately the cheapest possible export: when the SRS side moves off Bunpro and into the local
+    filesystem, this is already a file, not an API integration to unwind.</p>
+    <table class="ent">
+      <tr><th>setting</th><th>default</th><th>what it buys</th></tr>
+      <tr><td>gap between loops</td><td>1200 ms</td><td>the thinking beat; the only timer in the thing</td></tr>
+      <tr><td>speed</td><td>1.0</td><td>playbackRate, 0.5–2</td></tr>
+      <tr><td>stop after</td><td>0</td><td>loops per card; 0 = never stop</td></tr>
+      <tr><td>press key if no clip</td><td>on</td><td>fallback path only</td></tr>
+    </table>
+    <div class="head">
+      <span class="pill">Alt+Shift+A</span>
+      <code>chrome://extensions → developer mode → load unpacked → bpo/projects/bunpro-auto/extension</code>
+    </div>
+  </section>
+
+  <section>
+    <div class="k"><span class="n">05</span><h2>What's untested</h2></div>
+    <ul class="x">
+      <li>No live logged-in review session was driven. The design is selector-free, so the likely
+      first-run failure is <b>the fallback key, not the loop</b>.</li>
+      <li>Bunpro's real shortcut map is unverified — <b>p</b> is an assumption.</li>
+      <li>Whether clips are DOM-rendered or built in memory is unknown; both paths exist, only one
+      gets exercised in practice.</li>
+      <li>bpo <b>main</b> is ahead 12 / behind 16 — this artifact and the extension commit are
+      <b>local only</b>; the push was rejected non-fast-forward.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

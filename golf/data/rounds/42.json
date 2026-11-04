@@ -1,0 +1,105 @@
+{
+    "round":  {
+                  "id":  42,
+                  "course":  "mammoth_dunes_gsp",
+                  "date":  "2026-07-07",
+                  "updated":  "2026-07-17T13:58:28.1586593+08:00",
+                  "shots":  0,
+                  "scoreOnly":  true,
+                  "source":  "gspro-db"
+              },
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "thru":  10,
+                        "strokes":  47,
+                        "toParNum":  null,
+                        "toPar":  null,
+                        "sgTotal":  null,
+                        "sg":  null,
+                        "holes":  [
+                                      {
+                                          "hole":  1,
+                                          "par":  null,
+                                          "strokes":  5,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  2,
+                                          "par":  null,
+                                          "strokes":  4,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  3,
+                                          "par":  null,
+                                          "strokes":  5,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  4,
+                                          "par":  null,
+                                          "strokes":  5,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  5,
+                                          "par":  null,
+                                          "strokes":  5,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  6,
+                                          "par":  null,
+                                          "strokes":  4,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  7,
+                                          "par":  null,
+                                          "strokes":  6,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  8,
+                                          "par":  null,
+                                          "strokes":  3,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  9,
+                                          "par":  null,
+                                          "strokes":  6,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  10,
+                                          "par":  null,
+                                          "strokes":  4,
+                                          "toPar":  null,
+                                          "sg":  null,
+                                          "complete":  true
+                                      }
+                                  ],
+                        "lastShot":  null
+                    }
+                ]
+}

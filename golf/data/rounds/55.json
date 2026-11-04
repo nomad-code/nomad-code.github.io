@@ -1,0 +1,44 @@
+{
+    "round":  {
+                  "id":  55,
+                  "course":  "Shadow_Ridge_gsp",
+                  "date":  "2026-07-10",
+                  "updated":  "2026-07-15T17:19:40.3693667+08:00",
+                  "shots":  4
+              },
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "thru":  1,
+                        "strokes":  4,
+                        "toParNum":  0,
+                        "toPar":  "E",
+                        "sgTotal":  0.05,
+                        "sg":  {
+                                   "off-tee":  -0.26,
+                                   "approach":  -0.33,
+                                   "around-green":  0,
+                                   "putting":  0.63
+                               },
+                        "holes":  [
+                                      {
+                                          "hole":  1,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.05,
+                                          "complete":  true
+                                      }
+                                  ],
+                        "lastShot":  {
+                                         "hole":  1,
+                                         "shot":  4,
+                                         "ballSpeed":  4.8,
+                                         "club":  "PT",
+                                         "carry":  null,
+                                         "vla":  0,
+                                         "totalDist":  3.8
+                                     }
+                    }
+                ]
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Public-safe privacy and credential boundary explainer for GOAT State.">
+  <title>TODO-345 · GOAT State boundaries</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <style>
+    body{min-height:100vh;background:radial-gradient(circle at 10% 10%,rgba(227,183,65,.14),transparent 28rem),var(--bg)}.shell{width:min(1140px,calc(100% - 32px));margin:auto;padding:26px 0 52px}.mast,.nav,.legend{display:flex;gap:11px;align-items:center;flex-wrap:wrap}.mast{justify-content:space-between;font:600 10px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.nav a{color:var(--forest-d);border-bottom:1px solid var(--forest)}
+    .hero{margin:58px 0 42px}.hero span{font:600 11px/1 var(--font-mono);color:var(--forest);letter-spacing:.12em;text-transform:uppercase}.hero h1{font-size:clamp(54px,9vw,110px);line-height:.87;letter-spacing:-.075em;margin:20px 0;max-width:10ch}.hero p{max-width:64ch;color:var(--muted);font-size:15px;line-height:1.65}
+    .vaults{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.vault{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:24px;min-height:330px;position:relative;overflow:hidden;transition:.25s}.vault.on{transform:translateY(-5px);box-shadow:0 20px 55px rgba(26,48,37,.1)}.vault:after{content:attr(data-prefix);position:absolute;right:-12px;bottom:-28px;font:800 96px/1 var(--font-ui);color:rgba(20,42,30,.045)}.vault.bpo.on{border-color:#91be92}.vault.bob.on{border-color:#d6b058}.vault.client.on{border-color:#a6a6ca}.vault .tag{font:600 10px/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase}.vault.bpo .tag{color:var(--forest)}.vault.bob .tag{color:#8d6414}.vault.client .tag{color:#535390}.vault h2{font-size:32px;letter-spacing:-.05em;margin:17px 0 8px}.vault p{font-size:13px;line-height:1.55;color:var(--muted)}.vault ul{display:grid;gap:9px;margin-top:18px}.vault li{font:500 11px/1.5 var(--font-mono);border-top:1px solid var(--line);padding-top:9px}.probe{margin-top:18px;border-radius:99px;padding:10px 13px;min-height:44px;background:var(--ink);color:white;font:600 10px/1 var(--font-mono)}
+    .verdict{margin-top:15px;border-radius:24px;background:var(--ink);color:white;padding:26px;display:grid;grid-template-columns:.8fr 1.2fr;gap:22px;align-items:center}.verdict .word{font-size:58px;font-weight:800;letter-spacing:-.07em;color:var(--lime-b)}.verdict p{font-size:13px;line-height:1.6;color:#c7d0cc}.verdict code{color:var(--lime-b)}
+    .matrix{margin-top:42px}.matrix h2{font-size:29px;letter-spacing:-.04em;margin-bottom:16px}.rows{border:1px solid var(--line);border-radius:22px;overflow:hidden}.row{display:grid;grid-template-columns:1.3fr repeat(3,.7fr);background:var(--card);border-bottom:1px solid var(--line)}.row:last-child{border:0}.row>div{padding:15px 17px;font-size:12px;border-left:1px solid var(--line)}.row>div:first-child{border:0;font-weight:650}.yes{color:var(--forest);font-weight:700}.no{color:#a34935;font-weight:700}.head{background:#e8ebe5!important;font:600 10px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    footer{margin-top:32px;border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font:500 10px/1.5 var(--font-mono);color:var(--faint)}
+    @media(max-width:780px){.vaults{grid-template-columns:1fr}.vault{min-height:0}.verdict{grid-template-columns:1fr}.row{grid-template-columns:1.3fr repeat(3,.65fr)}.row>div{padding:12px 8px;font-size:10px}}@media(max-width:480px){.shell{width:calc(100% - 20px)}.matrix{overflow-x:auto}.rows{min-width:590px}}
+  </style>
+</head>
+<body><main class="shell"><header class="mast"><span>TODO-345 · privacy gradient</span><nav class="nav"><a href="https://nomad-code.github.io/todo-345_goat-state-architecture_2026-08-02_12-41">architecture</a><a href="https://nomad-code.github.io/todo-345_goat-state-airplane_2026-08-02_12-41">airplane</a><a href="https://nomad-code.github.io/todo-345_goat-state-proof_2026-08-02_12-41">proof</a></nav></header>
+  <section class="hero"><span>Security architecture</span><h1>Code can flow. Context cannot.</h1><p>GOAT State treats personal, company, and client work as separate vaults—not filters over one shared database. Every task, event, credential process, capsule, and destination resolves a world before use.</p></section>
+  <section class="vaults"><article class="vault bpo on" data-prefix="TODO"><span class="tag">BPO · private forever</span><h2>Personal</h2><p>May consume reusable Found code, but exports no personal task or context upstream.</p><ul><li>Task prefix: TODO</li><li>Database key: BPO only</li><li>Linear credential: nomad-code</li></ul><button class="probe" data-result="ALLOW · TODO stays inside the BPO vault">Probe boundary</button></article><article class="vault bob" data-prefix="TECH"><span class="tag">BOB · company</span><h2>Found</h2><p>Owns the generic implementation and employee policies. Synthetic fixtures only.</p><ul><li>Task prefix: TECH</li><li>Separate gateway and audit</li><li>No dependency on BPO</li></ul><button class="probe" data-result="BLOCK · TODO cannot enter the Found database">Probe boundary</button></article><article class="vault client" data-prefix="BGO"><span class="tag">BGO · compartment</span><h2>Client</h2><p>Receives a signed, allowlisted capability bundle and one explicit client scope.</p><ul><li>Per-client deployment</li><li>Limited credential handles</li><li>Fail closed on missing data</li></ul><button class="probe" data-result="BLOCK · cross-client access has no route">Probe boundary</button></article></section>
+  <section class="verdict" aria-live="polite"><div class="word" id="result">ALLOW</div><p id="explain">A <code>TODO-345</code> checkpoint can enter a BPO capsule. The same parser rejects <code>TECH-345</code> before a database write.</p></section>
+  <section class="matrix"><h2>What crosses a handoff?</h2><div class="rows"><div class="row head"><div>Object</div><div>BPO</div><div>Found</div><div>Client</div></div><div class="row"><div>Semantic checkpoint</div><div class="yes">own world</div><div class="yes">own world</div><div class="yes">own scope</div></div><div class="row"><div>Git SHA / patch</div><div class="yes">scoped</div><div class="yes">scoped</div><div class="yes">allowlist</div></div><div class="row"><div>Raw credentials</div><div class="no">never</div><div class="no">never</div><div class="no">never</div></div><div class="row"><div>Codex databases</div><div class="no">never</div><div class="no">never</div><div class="no">never</div></div><div class="row"><div>Another world's tasks</div><div class="no">reject</div><div class="no">reject</div><div class="no">reject</div></div></div></section>
+  <footer><span>privacy boundaries · public-safe explainer</span><span>separate stores · separate keys · explicit destinations</span></footer></main>
+  <script>document.querySelectorAll('.probe').forEach(function(b){b.onclick=function(){document.querySelectorAll('.vault').forEach(function(x){x.classList.toggle('on',x.contains(b))});var parts=b.dataset.result.split(' · ');var result=document.getElementById('result');result.textContent=parts[0];result.style.color=parts[0]==='ALLOW'?'var(--lime-b)':'#ff9b85';document.getElementById('explain').textContent=parts[1]}})</script>
+</body></html>

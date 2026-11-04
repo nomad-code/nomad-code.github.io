@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LANG_JA · Existing practice</title><link rel="stylesheet" href="/design-repo/harness/harness.css"><link rel="stylesheet" href="/design-repo/harness/artifact.css"><script src="/password-wall/gate.js" data-key="bpo-unlocked"></script><style>main{max-width:960px;margin:auto;padding:24px}li{padding:12px 0;overflow-wrap:anywhere}small{display:block;opacity:.65}input,select{font:inherit;padding:12px;max-width:100%;box-sizing:border-box}input{width:70%}pre{white-space:pre-wrap;font:inherit;line-height:1.6}a{overflow-wrap:anywhere}</style></head><body id="tc-app" class="harness-document"><header class="harness-header">BPO · LANG_JA</header><main><h1 class="harness-title">Your existing practice, brought together</h1><section class="harness-card"><pre>LANG_JA — corrected practice collection and N4 harness
+
+This package supersedes the earlier 2026-09-27 delivery.
+Goal: December 6 N4. Daily range: 10-minute floor, 30–45 normal, 60 stretch.
+
+All 593 original sources retain their organization and annotations. N4 2012
+Q3/Q4 audio was restored; wrong-level originals are preserved but excluded
+from N4 playback. Use original PDFs for definitive questions and scripts.
+
+CORRECTION: annotated N5 sheets map questions to grammar/vocabulary. They
+are not recorded answers. The previous interpretation is withdrawn in
+bpo/practice/attempt-evidence.json. 27 explicit mappings are now extracted.
+WaniKani forced clears were intentional level navigation, not performance.
+Your report of practicing less remains recorded. Amount and ability change
+need actual logs and comparable retests; missing data is not zero practice.
+9 historical question results are preserved without inventing timed scores.
+623 catalogue/note records are in the local LANG ledger. Binary sources have
+not been comprehensively OCRed or mapped question by question.
+
+The new harness runs on your Mac at http://127.0.0.1:8766 while its server is
+running. That loopback address does not open the Mac app from an iPhone.
+See japanese-harness-phone.jpg for the actual screen and bpo/brain/README.md
+for operation. App source is included for review, not as an iOS application.
+It provides a daily queue, original papers/audio, actual practice logging,
+gap retests, comparable vocabulary baseline, and a ten-week December plan.
+City and registration remain unknown. Ten minutes builds consistency; it
+is not a guarantee of passing. Old papers differ from current test timings.
+
+Unzip in Files. index.html is a searchable catalogue in compatible browsers.
+SHA256SUMS.txt verifies delivered files. No source material was published.
+</pre></section><p><a href="bpo/practice/README.md">Detailed reconciliation</a> · <a href="bpo/practice/attempt-evidence.json">Correction to annotation interpretation</a></p><label>Find material <input id="query" placeholder="Bunpro, 2012, kanji…"></label><select id="level" aria-label="Level"><option value="">All levels</option><option>N3</option><option>N4</option><option>N5</option></select><p id="count"></p><ul id="files"><li>Open the delivered private ZIP for the source files.</li></ul></main><script>const q=document.querySelector('#query'),l=document.querySelector('#level'),rows=[...document.querySelectorAll('#files li')];function filter(){let n=0;for(const r of rows){r.hidden=!(r.textContent.toLowerCase().includes(q.value.toLowerCase())&&(!l.value||r.dataset.level===l.value));if(!r.hidden)n++}document.querySelector('#count').textContent=n+' source files'}q.addEventListener('input',filter);l.addEventListener('change',filter);filter();</script></body></html>

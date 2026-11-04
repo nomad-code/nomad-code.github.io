@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vilnius coffee scene · ingested · TODO-399</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#1d1a15;--muted:#6f6659;--line:#e0d9cc;--paper:#f6f3ea;--card:#fffdf8;--roast:#7a3f22;--gold:#b98a2e;--filter:#2f6b5f;--flag:#b4472e}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 94% 1%,#eee6d6 0,transparent 32%),var(--paper)}
+main{width:min(1040px,calc(100% - 36px));margin:auto;padding:40px 0 60px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:var(--gold)}
+.hero{margin:16px 0 6px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.hero .n{font:750 clamp(56px,11vw,124px)/.85 Georgia,serif;letter-spacing:-.05em;color:var(--roast)}
+.hero .u{font:700 13px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);max-width:20ch;line-height:1.5}
+h1{font:700 clamp(25px,3.5vw,38px)/1.06 Georgia,serif;letter-spacing:-.03em;margin:8px 0 14px}
+.lede{max-width:72ch;font-size:17px;line-height:1.62;color:#4a4238}
+.strap{font:700 12px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--flag);margin-top:8px}
+h2{font:700 24px/1.1 Georgia,serif;margin:38px 0 10px}
+.note{color:var(--muted);margin:-4px 0 14px;max-width:78ch;line-height:1.55}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{padding:11px 9px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font:700 15px Georgia,serif;width:22%}
+tbody th small{display:block;font:400 10.5px ui-monospace,monospace;color:var(--muted);margin-top:4px;letter-spacing:.02em}
+td{font-size:14px;line-height:1.55;color:#4a4238}
+tr.hi td,tr.hi th{background:#f4efe2}
+.badge{display:inline-block;font:700 9.5px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--gold);border-radius:4px;padding:2px 6px;margin-right:6px;vertical-align:1px}
+.badge.f{background:var(--filter)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.t{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px}
+.t:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--roast)}
+.t:nth-child(2):before{background:var(--filter)}.t:nth-child(3):before{background:var(--gold)}
+.tn{font:700 10px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.tv{font:750 30px/1.05 Georgia,serif;margin:8px 0 4px;color:var(--roast)}
+.t:nth-child(2) .tv{color:var(--filter)}.t:nth-child(3) .tv{color:var(--gold)}
+.tf{color:var(--muted);font-size:12.5px;line-height:1.55;border-top:1px solid var(--line);padding-top:9px;margin-top:9px}
+.now{background:linear-gradient(180deg,#fffdf8,#f7f1e3);border:1px solid var(--line);border-left:5px solid var(--flag);border-radius:15px;padding:20px 22px;margin:24px 0}
+.now .k{font:700 10px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--flag)}
+.now h3{font:700 22px Georgia,serif;margin:7px 0 8px}
+.now p{margin:0 0 8px;max-width:74ch;line-height:1.6;color:#4a4238;font-size:14.5px}
+.now code{font:600 12px ui-monospace,monospace;background:#efe8da;padding:2px 5px;border-radius:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+ul{margin:8px 0 0;padding-left:20px}li{line-height:1.6;font-size:14px;color:#4a4238;margin-bottom:5px}
+.tl{display:grid;gap:0;margin:14px 0;border-left:2px solid var(--line);padding-left:18px}
+.tl div{position:relative;padding:8px 0;font-size:14px;color:#4a4238}
+.tl div:before{content:"";position:absolute;left:-24px;top:15px;width:9px;height:9px;border-radius:50%;background:var(--roast);border:2px solid var(--paper)}
+.tl b{font:700 13px ui-monospace,monospace;color:var(--ink);margin-right:8px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font:500 12px ui-monospace,monospace;color:var(--muted);line-height:1.8}
+footer a{color:var(--filter)}
+@media(max-width:760px){.three,.two{grid-template-columns:1fr}tbody th{width:auto}}
+</style></head>
+<body><main>
+
+<div class="eyebrow">TODO-399 · cafe-travel/vilnius-coffee_scene · 2026-08-19 11:07 Z</div>
+<div class="hero">
+  <span class="n">30</span>
+  <span class="u">roasteries in Lithuania — more than Latvia and Estonia combined</span>
+</div>
+<h1>A nation that refuses to settle for average</h1>
+<p class="lede">specialtycoffee.lt's Lithuania guide, ingested into BPO/CAFE from the floor of
+Taste Map's sensory room in Vilnius. No growing tradition, no colonial bean ties, decades of
+Soviet rationing — chicory and barley as substitutes — and now a world-championship roaster
+and a Falstaff guide entry. The full scene note lives at <code>dna/cafe/vilnius-lithuania-scene.md</code>.</p>
+<p class="strap">Ingested on the ground · 🇱🇹 Vilnius, EEST</p>
+
+<div class="three">
+  <div class="t"><div class="tn">Huracán Coffee</div><div class="tv">World #1<small>Global Coffee Awards 2026</small></div>
+    <div class="tf">Filter <em>and</em> Flat White Alternative. Founded 1999 in 16m² with seven bags of Colombian Excelso.</div></div>
+  <div class="t"><div class="tn">Market growth</div><div class="tv">&gt;18%<small>CAGR 2020–2024</small></div>
+    <div class="tf">Against real pressure on wages, rents and COGS. The appetite is there; purchasing power is the constraint.</div></div>
+  <div class="t"><div class="tn">Vilnius density</div><div class="tv">&lt;600k<small>population</small></div>
+    <div class="tf">Cited alongside Budapest and Lisbon for third-wave density. That's the whole story in one ratio.</div></div>
+</div>
+
+<div class="now">
+  <div class="k">Where I am right now</div>
+  <h3>Taste Map sensory room · M.K. Čiurlionio g. 8</h3>
+  <p>Calendar occurrence <code>22ED516A</code> on the 🧑‍💻 calendar — 11:30–14:00 EEST
+  (08:30–11:00 Z), resolved from the local Apple Calendar store. Logged as a cupping session at
+  <code>dna/cafe/log/2026-08-19 - 08-30-00 Z.md</code>, with the cupping / tasting / carry-out
+  fields left open to fill from the room.</p>
+  <p>Taste Map is the veteran: founded 2011 on a 10kg roaster, four Vilnius cafés, a rotating
+  single-origin filter menu and a direct line to Daterra in Brazil. Domas Ivonis and Ieva
+  Malijauskaitė hold national titles across Barista, Latte Art and Cup Tasters. The sensory room
+  is the part that puts the education beyond the espresso bar. House pointer: the espresso tonic.</p>
+</div>
+
+<h2>How it got here</h2>
+<div class="tl">
+  <div><b>pre-1940</b>Brewed coffee — ibrik and moka — takes root harder than in Latvia or Estonia. Cafés become social institutions by the 19th century.</div>
+  <div><b>1940</b>Soviet occupation severs the thread. Roasted coffee is a Moscow-rationed luxury; households fall back on chicory and barley.</div>
+  <div><b>1991</b>Independence. German and Scandinavian equipment and ideas flood in; Italian espresso culture, seeded via late-Soviet machinery trade, is the first template.</div>
+  <div><b>2003 · 2005</b>First national barista championship; SCA chapter established.</div>
+  <div><b>2007 · 2011</b>Caffeine Roasters launches, becomes the largest chain across all three Baltics. Taste Map follows with a 10kg roaster.</div>
+  <div><b>2026</b>Huracán named world's best roaster in El Salvador. Falstaff Coffee Guide Nordics evaluates 315 cafés across five countries and names Espresinė Best Roastery in Lithuania.</div>
+</div>
+
+<h2>Vilnius</h2>
+<p class="note">Not a ranking — the article is explicit about that, and it's right. These are the
+places worth knowing, and why.</p>
+<div class="panel"><table>
+<thead><tr><th>Place</th><th>Why</th></tr></thead>
+<tbody>
+<tr class="hi"><th>Espresinė<small>Vytauto g. 35, Žvėrynas</small></th><td><span class="badge">Best roastery LT</span>The OG baristas who built the city's coffee culture, still behind the counter, with elite baristas drawn around them. Kavos Broliai behind it — science-driven sourcing, light seasonal lots, jazz and considered design. Modest hours, reliably packed, utterly uninterested in the tourist circuit. Falstaff Nordics 2026 named it Best Roastery in Lithuania.</td></tr>
+<tr class="hi"><th>Taste Map<small>M.K. Čiurlionio g. 8 + 3</small></th><td><span class="badge f">Visited today</span>The veteran. National titles across three disciplines, rotating single-origin filter, direct with Daterra. The <b>sensory room</b> is the differentiator. Try the espresso tonic.</td></tr>
+<tr><th>Eskedar Coffee<small>Pilies g. 26 + 3</small></th><td>Eskedar Tilahun fled Ethiopia in 2005 — Sahara by jeep with 37 others over nine days, a Libyan prison, the Mediterranean in a small boat — and landed in a Lithuanian winter with a one-month-old. Learned the language, earned a Master's, built one of the city's most distinctive brands from nothing. African beans only, mostly Ethiopian, direct and small-batch, rooted in the buna ceremony. Her foundation is building a primary school in Yirgacheffe. She calls it diplomacy through coffee.</td></tr>
+<tr><th>Crooked Nose<small>Trakų g. 8</small></th><td>Emanuelis Ryklys — a slow-coffee institution rather than a café. Cupping programme, a dedicated coffee school, and published books. Deliberate and unhurried, on the belief that coffee is understood rather than consumed.</td></tr>
+<tr><th>Kavos Reikalai<small>Šermukšnių 1 · Aukštaičių 12</small></th><td>The city's coffee library: up to ten filters on rotation, plus the widest brew-gear and retail-bean selection in Vilnius, Latvia's Rocket Bean included. Brewing workshops are a fixture.</td></tr>
+<tr><th>Strange Love<small>Barboros Radvilaitės 6B</small></th><td>Since 2015, two floors and a garden terrace. Head roaster Eimantas Vilčinskas sources Costa Rica, Ethiopia, Kenya, Uganda, El Salvador. The rose espresso is worth the detour alone.</td></tr>
+<tr><th>Backstage<small>T. Ševčenkos 16H + 2</small></th><td>Founded 2018 by two photographers who freely admit they knew nothing about coffee. Three sites and a proper roastery later: direct from the Vinhal family farm in Brazil and Thailand's Beanspire. Middle-Eastern-leaning brunch.</td></tr>
+<tr><th>Italala Caffè<small>Vokiečių g. 1, Old Town</small></th><td>Italian register in the Old Town — Ditta Artigianale from Florence, plus seasonal lattes: lavender in summer, apple pie in autumn, mimosa in spring. Voted the city's best in 2019.</td></tr>
+<tr><th>BREW.<small>Pylimo 19 · Švitrigailos 36</small></th><td>Two locations, a roastery and a bakery arm. Straightforward and reliable, filter or espresso. Extends to Palanga seasonally.</td></tr>
+<tr><th>Huracán<small>huracan.lt — roastery + online</small></th><td><span class="badge">World champion 2026</span>The oldest name in Lithuanian specialty and now its most decorated. Kratulis has been a Cup of Excellence juror since 2005 and helped organise the country's first barista championship. The philosophy held throughout: flavour must carry meaning, not just clarity or acidity.</td></tr>
+<tr><th>Cofmos<small>cofmos.lt — online only</small></th><td>No café, no counter, no queue. Quiet since 2015 — direct sourcing, roast-to-order, a rotating single-origin selection for home and office.</td></tr>
+</tbody></table></div>
+
+<div class="two">
+  <div class="panel"><h2 style="margin-top:0">New arrivals</h2>
+    <p class="note">Both chose Vilnius as their first expansion outside their home country. That's the tell.</p>
+    <ul>
+      <li><b>KALVE</b> — the Latvian roaster, central and contemporary, paired with GRUDAS Bakery pastries.</li>
+      <li><b>Rocket Bean</b> — Riga's celebrated roastery, Global Coffee Awards Europe Flat White Alternative gold, now present in the city.</li>
+    </ul></div>
+  <div class="panel"><h2 style="margin-top:0">Curators, not roasters</h2>
+    <p class="note">The connective tissue — specialty arrives without ceremony and tastes right.</p>
+    <ul>
+      <li><b>Elska</b> — shares space with the Pamėnkalnio Art Gallery; atmosphere and considered sourcing.</li>
+      <li><b>Karštos galvos</b> — Pilies street, brunch menu with its own crowd.</li>
+      <li><b>Cuproom</b> · <b>DEMO</b> — serious enough for anyone who knows what they're drinking.</li>
+    </ul></div>
+</div>
+
+<h2>Beyond the capital</h2>
+<div class="panel"><table>
+<thead><tr><th>Place</th><th>Why</th></tr></thead>
+<tbody>
+<tr><th>Vero Coffee House<small>Kaunas · 37+ locations</small></th><td>Darius Vėželis's chain took the Lithuania National Winner title at Global Coffee Awards Europe. That it started in Kaunas and not Vilnius says how distributed the country's ambition is.</td></tr>
+<tr><th>Koffee Lab<small>Kaunas</small></th><td>Roasts on site in a minimalist, comfortable space. Falstaff Nordics 2026.</td></tr>
+<tr><th>Kavalierius · Green Cafe · Kasdienybės<small>Kaunas</small></th><td>Expertly prepared cups on Taste Map beans; a vegan-friendly menu; and a bakehouse where cinnamon buns and specialty share equal billing.</td></tr>
+<tr class="hi"><th>Musangas<small>Klaipėda · musangas.lt</small></th><td><span class="badge f">Bag to carry home</span>Klaipėda's first specialty roastery — Mindaugas Gedvilas walked away from conventional work for it. Loft roastery and café away from the centre, roasting visible daily, which is the point. Around fifteen single origins at a time, and one of the earlier Lithuanian roasters to take <b>fermented and barrel-aged</b> lots seriously: plum, citrus, spice, well outside the usual range. Their line: "we teach people how not to ruin their coffee."</td></tr>
+<tr><th>Kavos Architektai<small>Klaipėda centre</small></th><td>Founded by architects, and the name is not a metaphor. Ranked first in the city: broad brew-method range, tastings, events, homemade ice cream, and a deliberate <b>no-wifi policy</b> that signals exactly what kind of place it wants to be. The attitude is the point.</td></tr>
+<tr><th>Odum · BREW. · Caffeine<small>Klaipėda / Palanga</small></th><td>Odum is Korean-inspired in aesthetic, local in spirit, with art exhibitions and a considered music programme. BREW. runs a seasonal Palanga café; Caffeine holds the summer crowd.</td></tr>
+</tbody></table></div>
+
+<h2>Community &amp; trends</h2>
+<div class="two">
+  <div class="panel">
+    <p class="note" style="margin-top:0"><b>Kavos Entuziastai</b> — Asociacija „Kavos Entuziastai", the official association and the connective tissue: the Lithuanian Coffee Championships, education from water mineralogy to latte art, roastery excursions, and competitors sent abroad. Cup Tasters champion Miglė Lukoševičiūtė, national titleholder in 2020 and 2025, represented Lithuania in Geneva.</p>
+    <p class="note" style="margin-bottom:0"><b>Note for planning:</b> the Vilnius Coffee Festival, formerly Vilnius Coffee Days, <b>is no longer running</b>. Kavos Entuziastai absorbed the championship role.</p>
+  </div>
+  <div class="panel">
+    <ul style="margin-top:0">
+      <li>Light roasts have crossed from enthusiast territory into the mainstream.</li>
+      <li>Origin and process transparency are genuine selling points now, not niche signifiers.</li>
+      <li>Alt milks standard · matcha gaining · cold brew has a loyal base.</li>
+      <li><b>Baltic distinction:</b> hot espresso drinks — flat white, cappuccino, latte — still beat the heavily customised cold drinks dominating Western European and US menus.</li>
+      <li>Home espresso setups spreading, pulling demand for fresh, high-transparency beans.</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+Source · <a href="https://specialtycoffee.lt/lithuanias-best-specialty-coffee-vilnius-kaunas-a-nation-that-refuses-to-settle-for-average/">specialtycoffee.lt — Lithuania's Best Specialty Coffee</a> (2026-05-31)<br>
+Landed · <code>dna/cafe/vilnius-lithuania-scene.md</code> · <code>dna/cafe/log/2026-08-19 - 08-30-00 Z.md</code><br>
+TODO-399 · cafe-travel/vilnius-coffee_scene · ji ☕ ✈️🇱🇹 · 2026-08-19 11:07 Z
+</footer>
+
+</main></body></html>

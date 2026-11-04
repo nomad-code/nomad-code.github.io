@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>49 weeks to Copenhagen · the map · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--block:#b85339;--race:#176b78;--pair:#a9863f;--gold:#c59a45}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1040px,calc(100% - 36px));margin:auto;padding:40px 0 56px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(38px,6.2vw,66px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:14ch;margin:16px 0}
+h1 em{color:var(--block);font-weight:400}
+.lede{max-width:72ch;font-size:17px;line-height:1.62;color:#43534a}
+.brief{border-left:4px solid var(--gold);padding:15px 18px;background:#f8f1df;border-radius:0 12px 12px 0;line-height:1.55;margin:22px 0;font-size:15px}
+h2{font:700 25px/1.1 Georgia,serif;margin:34px 0 12px}
+.note{color:var(--muted);margin:-6px 0 14px;max-width:78ch;line-height:1.5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font-size:13px;font-weight:700}
+td{font:700 15px Georgia,serif}
+td.mono{font:700 13px ui-monospace,monospace}
+td small,th small{display:block;font:500 10px ui-monospace,monospace;color:var(--muted);margin-top:3px;font-weight:400}
+tr.hi td,tr.hi th{background:#edf4ef}
+.phases{display:grid;gap:9px;margin:20px 0}
+.ph{display:grid;grid-template-columns:118px 1fr;gap:14px;align-items:start;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:13px;padding:13px 16px}
+.ph.b{--c:var(--block)}.ph.r{--c:var(--race)}.ph.p{--c:var(--pair)}.ph.t{--c:#8a949c}
+.when{font:700 11px ui-monospace,monospace;color:var(--c);line-height:1.5}
+.what b{display:block;font:750 16px Georgia,serif;margin-bottom:3px}
+.what span{color:var(--muted);font-size:13.5px;line-height:1.5}
+.week{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.5}
+.week b{font:700 11px ui-monospace,monospace;color:var(--muted);padding-top:2px}
+.week:last-child{border-bottom:0}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:24px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ol{margin:0;padding-left:20px;line-height:1.68;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+@media(max-width:700px){.ph{grid-template-columns:1fr}}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · 17 Aug 2026 → 31 Jul 2027 · 49 weeks · 348 days</div>
+<h1>49 weeks.<br><em>One block decides it.</em></h1>
+<p class="lede">The map to ATHX Copenhagen 2027 — Sat 31 July, Bella Centre, doubles with Chris. Dated phases, a tested ladder per checkpoint, and the three calls to make this week.</p>
+<div class="brief"><b>The brief in one line:</b> this autumn is the season. There are no races between now and January, so it is the only uninterrupted strength window of the year — the KG you don't own by 20 December you won't own in Copenhagen.</div>
+<h2>Call 1 — category is the biggest lever you have</h2>
+<p class="note">Our exact numbers dropped into the real 2026 Male pair fields, Pro versus standard ATHX.</p>
+<div class="panel"><table><thead><tr><th>Path</th><th>ATHX Pro<small>16–17 pairs</small></th><th>ATHX<small>73–75 pairs</small></th></tr></thead><tbody>
+<tr><th>As raced · Aug 2026</th><td class="mono">13 / 16</td><td class="mono">42 / 73</td></tr>
+<tr><th>Mild</th><td class="mono">12 / 16</td><td class="mono">32 / 73</td></tr>
+<tr class="hi"><th>Solid</th><td class="mono">10 / 16</td><td class="mono">22 / 73<small>strength 6th of 75 · endurance 2nd of 73</small></td></tr>
+<tr><th>Aggressive</th><td class="mono">5 / 16</td><td class="mono">12 / 73</td></tr>
+</tbody></table></div>
+<p class="note" style="margin-top:12px">Those ATHX placings are a <b>floor</b>: the sim transplants our Pro MetCon time into an ATHX field where the MetCon is lighter and everyone is faster. <b>Recommendation — race ATHX at Copenhagen, keep Pro for Brendan's singles block.</b> Pro is where the learning is; ATHX is where the result is.</p>
+<h2>Calls 2 and 3</h2>
+<div class="panel"><table><thead><tr><th>Decision</th><th>Answer</th><th>Why</th></tr></thead><tbody>
+<tr><th>Dublin or Lisbon?</th><td>Dublin · 12–13 Jun</td><td style="font:400 13.5px Inter,sans-serif;color:#43534a">Seven weeks to Copenhagen instead of five.</td></tr>
+<tr><th>Weighted pull-ups?</th><td>Start this week</td><td style="font:400 13.5px Inter,sans-serif;color:#43534a">3 of the last 4 Pro seasons carried a pull-up block. We have no number. Ladder ends at +33 KG × 3.</td></tr>
+</tbody></table></div>
+<h2>The seven phases</h2>
+<section class="phases">
+<div class="ph t"><div class="when">17 AUG – 27 SEP<br>6 weeks</div><div class="what"><b>0 · Test everything</b><span>Baselines on all five lifts + 25-min run/row/bike. Technique and volume ramp, no PR chasing.</span></div></div>
+<div class="ph b"><div class="when">28 SEP – 20 DEC<br>12 weeks</div><div class="what"><b>1 · The block</b><span>Three lifts, three engines, one day off. Squat twice a week. This is the phase that moves the result — no races to interrupt it.</span></div></div>
+<div class="ph r"><div class="when">21 DEC – 24 JAN<br>5 weeks</div><div class="what"><b>2 · Sharpen for London</b><span>Squat stays heavy, volume drops. LONDON 23–24 Jan opens Brendan's singles Pro block.</span></div></div>
+<div class="ph r"><div class="when">25 JAN – 9 MAY<br>15 weeks</div><div class="what"><b>3 · In-season strength</b><span>Keep lifting through Milan (6–7 Mar), Vienna (24 Apr), Madrid (8–9 May). Two lifts in race weeks, taper Thu–Fri.</span></div></div>
+<div class="ph b"><div class="when">10 MAY – 13 JUN<br>5 weeks</div><div class="what"><b>4 · Peak strength + Dublin</b><span>Last strength push and the final singles race, 12–13 Jun.</span></div></div>
+<div class="ph p"><div class="when">14 JUN – 18 JUL<br>5 weeks</div><div class="what"><b>5 · Doubles with Chris</b><span>The only part that can't be trained solo: split rehearsal at target pace, changeovers, MetCon pacing. Lift maintenance at 85%, no PR attempts after 4 Jul.</span></div></div>
+<div class="ph t"><div class="when">19 – 30 JUL<br>2 weeks</div><div class="what"><b>6 · Taper, openers, travel</b><span>Openers only. Race Sat 31 Jul.</span></div></div>
+</section>
+<h2>The dated ladder — solid path</h2>
+<p class="note">Brendan / Chris, in 2026 schemes. Test at every mark; if 2027 changes the rep schemes, convert through the e1RM table.</p>
+<div class="panel"><table><thead><tr><th>Checkpoint</th><th>Press 1RM</th><th>Squat 3RM</th><th>Deadlift 5RM</th><th>Pull-up 3RM</th></tr></thead><tbody>
+<tr><th>Base test · 27 Sep 26</th><td class="mono">58 / 73</td><td class="mono">114 / 114</td><td class="mono">149 / 159</td><td class="mono">+4</td></tr>
+<tr><th>Christmas · 20 Dec 26</th><td class="mono">61 / 76</td><td class="mono">123 / 123</td><td class="mono">158 / 166</td><td class="mono">+12</td></tr>
+<tr class="hi"><th>LONDON · 23 Jan 27</th><td class="mono">62 / 77</td><td class="mono">126 / 126</td><td class="mono">161 / 169</td><td class="mono">+15</td></tr>
+<tr><th>MILAN · 6 Mar</th><td class="mono">64 / 79</td><td class="mono">130 / 130</td><td class="mono">165 / 172</td><td class="mono">+19</td></tr>
+<tr><th>VIENNA · 24 Apr</th><td class="mono">66 / 81</td><td class="mono">135 / 135</td><td class="mono">170 / 177</td><td class="mono">+24</td></tr>
+<tr><th>MADRID · 8 May</th><td class="mono">66 / 81</td><td class="mono">137 / 137</td><td class="mono">172 / 178</td><td class="mono">+25</td></tr>
+<tr><th>DUBLIN · 12 Jun</th><td class="mono">67 / 82</td><td class="mono">140 / 140</td><td class="mono">175 / 181</td><td class="mono">+28</td></tr>
+<tr class="hi"><th><b>CPH · 31 Jul 27</b></th><td class="mono"><b>69 / 84</b></td><td class="mono"><b>145 / 145</b></td><td class="mono"><b>180 / 185</b></td><td class="mono"><b>+33</b></td></tr>
+</tbody></table></div>
+<p class="note" style="margin-top:12px">Endurance moves small and steady: pair total 9.837 → <b>10.26 KM</b> (Brendan 2.52 run / 2.68 row · Chris 2.08 / 2.98). MetCon X 20:28 → <b>17:58</b>. Stretch line at CPH: press 77 / 90 · squat 165 / 160 · deadlift 200 / 205 — take it if Christmas comes in ahead of ladder.</p>
+<h2>The week that does the work — Phase 1</h2>
+<div class="panel">
+<div class="week"><b>MON</b><span><b>Squat</b> heavy (5s → 3s wave) · press volume 3×8 · weighted pull-up 4×5</span></div>
+<div class="week"><b>TUE</b><span>Run intervals — 8 × 3 min at threshold · easy row 15 min</span></div>
+<div class="week"><b>WED</b><span><b>Deadlift</b> 5RM work · press strength 5×3 · carries and core</span></div>
+<div class="week"><b>THU</b><span>Bike or ski intervals — rotate weekly, the second endurance modality changes every season</span></div>
+<div class="week"><b>FRI</b><span><b>Squat</b> volume (front or tempo) · pull-up volume · single-leg and hinge accessory</span></div>
+<div class="week"><b>SAT</b><span>Long mixed engine 60–75 min: run → row → bike continuous</span></div>
+<div class="week"><b>SUN</b><span>Off · mobility</span></div>
+</div>
+<div class="rules"><h3>What good looks like on 31 July 2027</h3><ol>
+<li><b>ATHX, solid path — top 25 of ~75</b>, strength top-10, endurance top-3. A real result, and the recommended race.</li>
+<li><b>Pro, solid path — 10th of 16.</b> Same standing we earned with 41 points, moved three places by 159 KG.</li>
+<li><b>Either category, aggressive path — top-12 ATHX or 5th Pro.</b> Needs +4.8 KG/month on squat and deadlift, every month, for eleven months.</li>
+<li><b>The failure mode is the mild path</b> — what happens with no dedicated autumn block. It is worth exactly one place.</li>
+</ol></div>
+<footer>Targets: <code>projects/fit-athx/projections-2027.md</code> · plan: <code>projects/fit-athx/plan-to-cph-2027.md</code> · fields: 2026 ATHX Male pairs, Pro (210 rows / 10 events) and ATHX (1195 rows / 10 events) · re-place us any time with <code>project_2027.py</code></footer>
+</main></body></html>

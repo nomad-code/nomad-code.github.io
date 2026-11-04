@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TODO-305 · linear loops · github graphs</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    body { background: var(--bg); color: var(--body); font-family: var(--font-ui);
+           max-width: 880px; margin: 0 auto; padding: 48px 24px 64px; line-height: 1.55; }
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+               text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    h1 { font-size: 34px; font-weight: 800; color: var(--ink); letter-spacing: -.02em; margin: 0 0 12px; }
+    .lede { font-size: 17px; color: var(--body); max-width: 62ch; margin-bottom: 20px; }
+    .verdict { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--forest);
+               border-radius: 10px; padding: 16px 20px; margin: 0 0 36px; }
+    .verdict strong { display: block; color: var(--forest-d); font-size: 15px; margin-bottom: 4px; }
+    .verdict p { font-size: 14px; margin: 0; }
+    h2.section { font-size: 13px; font-family: var(--font-mono); letter-spacing: .1em; text-transform: uppercase;
+                 color: var(--faint); margin: 40px 0 14px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .leg { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+    .leg .label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+                  letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+    .leg h3 { font-size: 17px; color: var(--ink); font-weight: 700; margin: 0 0 6px; }
+    .leg p { font-size: 13.5px; margin: 0; }
+    .leg.ghost { border-style: dashed; border-color: var(--found-bd); background: var(--found-bg); }
+    .leg.ghost h3 { color: var(--found-d); }
+    .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 6px 18px; }
+    .fact { display: flex; justify-content: space-between; gap: 18px; padding: 11px 0;
+            border-bottom: 1px solid var(--line); font-size: 14px; }
+    .fact:last-child { border-bottom: 0; }
+    .fact span { color: var(--muted); flex: 0 0 200px; }
+    .fact b { color: var(--ink); font-weight: 600; text-align: left; flex: 1; }
+    .pp { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+          padding: 15px 18px; margin-bottom: 12px; }
+    .pp .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+    .pp .num { font-family: var(--font-mono); font-size: 12px; color: var(--faint); }
+    .pp h3 { font-size: 15.5px; color: var(--ink); font-weight: 700; margin: 0; flex: 1; }
+    .pill { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em;
+            padding: 2px 9px; border-radius: 99px; white-space: nowrap; }
+    .pill.warn  { color: var(--warn);  background: var(--warn-bg);  border: 1px solid var(--warn-bd); }
+    .pill.amber { color: var(--amber); background: var(--amber-bg); border: 1px solid var(--amber-bd); }
+    .pp p { font-size: 13.5px; margin: 0; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line);
+            border-radius: 10px; overflow: hidden; font-size: 13.5px; }
+    th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+         color: var(--muted); font-weight: 500; background: var(--well); }
+    tr:last-child td { border-bottom: 0; }
+    td.ok { color: var(--forest-d); font-weight: 600; }
+    td.gap { color: var(--warn); font-weight: 600; }
+    .tablewrap { overflow-x: auto; border-radius: 10px; }
+    .formula { font-family: var(--font-mono); font-size: 15px; color: var(--ink); background: var(--card);
+               border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; text-align: center; }
+    .formula .plus { color: var(--faint); margin: 0 10px; }
+    .formula .new { color: var(--found-d); background: var(--found-bg); padding: 2px 8px; border-radius: 6px; }
+    footer { margin-top: 48px; font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); }
+  </style>
+</head>
+<body>
+
+  <div class="eyebrow">nomad-code / bpo · code / TODO-305</div>
+  <h1>linear loops · github graphs</h1>
+  <p class="lede">Pressure test of the thesis: <em>Linear URL as loop context, GitHub repo as graph
+  context — hand any harness a repo clone and a Linear API key and it has everything it needs.</em>
+  Outcome claim: three worlds (Found·TECH, Nomad·TODO, Dhamma·DHA) run from an iPhone with
+  Linear iOS and GitHub iOS.</p>
+
+  <div class="verdict">
+    <strong>Verdict — survives, with one amendment</strong>
+    <p>The loop/graph split is real and this session proved the minimal contract cold. But the
+    formula is three-legged, not two: the repo is the graph, the Linear key is the loop, and the
+    quietly assumed third primitive is a <b>runner</b> — something that ignites a session when the
+    phone writes a prompt. "All you gave me" included a running harness.</p>
+  </div>
+
+  <h2 class="section">The three legs</h2>
+  <div class="trio">
+    <article class="leg">
+      <div class="label">Loop · Linear</div>
+      <h3>PROMPT ⇄ RESPONSE</h3>
+      <p>Description is the inbox, comments are the journal, workflow states are the lifecycle.
+      Backlog → In Progress → In Review → Done, with Done human-only — the approve gate.</p>
+    </article>
+    <article class="leg">
+      <div class="label">Graph · GitHub</div>
+      <h3>bpo as context graph</h3>
+      <p>Nodes: worlds, issues, artifacts, sessions. Edges: provenance records, UTC stamps joining
+      prompt ↔ response ↔ artifact, AGENT.md routes loaded lazily under a 2k-token boot budget.</p>
+    </article>
+    <article class="leg ghost">
+      <div class="label">Runner · the third leg</div>
+      <h3>The verb lives on M3/M5</h3>
+      <p>Neither Linear nor the repo starts a loop — but the runner already exists: the M3/M5
+      supervisor (TODO-294) observes both nodes, dispatches work, and teleports task state.
+      What's missing is only the wire from Linear to <code>supervisor dispatch</code>.</p>
+    </article>
+  </div>
+
+  <h2 class="section">Exhibit A — this session</h2>
+  <section class="panel">
+    <div class="fact"><span>Given</span><b>Fresh ephemeral container, three repo clones, one env var — nothing else</b></div>
+    <div class="fact"><span>Input</span><b>A bare Linear URL; the session resolved ticket → world → protocol → deliverable unaided</b></div>
+    <div class="fact"><span>Integration surface</span><b>scripts/linear — 270 lines of stdlib Python, raw GraphQL, no SDK, no MCP</b></div>
+    <div class="fact"><span>Why every harness rides it</span><b>Cost of joining the loop is one file + one secret; codex, gemini, claude, pi, hermes all clear that bar</b></div>
+    <div class="fact"><span>Replication</span><b>Same loop shape in three orgs — bob/TECH, bpo/TODO, bre/DHA — so it's architecture, not accident</b></div>
+    <div class="fact"><span>SPOF hedge</span><b>"Git holds truth, SaaS holds workflow" — losing Linear loses state, not knowledge</b></div>
+  </section>
+
+  <h2 class="section">Pressure points</h2>
+  <article class="pp">
+    <div class="head"><span class="num">P1</span><h3>The trigger gap</h3><span class="pill warn">structural</span></div>
+    <p>Repo + key is everything the agent needs <em>once running</em>. Nothing in either surface
+    ignites the loop; the phone can write a prompt but cannot start a session. The runner (this
+    remote harness, hooks, PR subscriptions) is unpriced infrastructure the thesis treats as free.</p>
+  </article>
+  <article class="pp">
+    <div class="head"><span class="num">P2</span><h3>Live-URL contract vs. branch discipline</h3><span class="pill amber">observed live</span></div>
+    <p>The loop's step 4 says share an artifact URL only after it returns 200. In a branch-and-PR
+    world (this session), the artifact cannot be live until merge — so the respond step must hand
+    over a PR instead of a page. The desktop Stop-hook-to-main path and the remote PR path obey
+    different contracts.</p>
+  </article>
+  <article class="pp">
+    <div class="head"><span class="num">P3</span><h3>Hooks are harness-shaped</h3><span class="pill amber">degrades</span></div>
+    <p>The automation — auto-file, gate injection, provenance, auto-close — lives in
+    <code>.claude/</code> Stop hooks. The scripts are harness-neutral; the hooks are not. On codex,
+    gemini, or pi the protocol degrades to "remember to do it by hand," and AGENT.md already logs
+    two artifacts shipped broken exactly there.</p>
+  </article>
+  <article class="pp">
+    <div class="head"><span class="num">P4</span><h3>Secrets live outside the graph</h3><span class="pill warn">already failed once</span></div>
+    <p>The graph is self-describing; the credentials are not. Key routing already failed once — a
+    generic key silently hit the wrong workspace — and the fix (world-pinned env names) lives in a
+    zsh file no repo carries. Every new machine or container needs out-of-band provisioning.</p>
+  </article>
+  <article class="pp">
+    <div class="head"><span class="num">P5</span><h3>No locking on the loop</h3><span class="pill amber">at scale</span></div>
+    <p>Comments are append-only, so the journal is race-safe. But <code>start</code> blanks the
+    description and state transitions aren't transactional: two harnesses on one ticket can
+    double-archive or fight over state. Fine for one human; a contended lock with no lock at
+    company scale.</p>
+  </article>
+  <article class="pp">
+    <div class="head"><span class="num">P6</span><h3>Privacy gradient is prose, not enforcement</h3><span class="pill warn">amplified by mobile</span></div>
+    <p>Three worlds, three keys, tiering rules written in markdown plus one tripwire CI. One wrong
+    <code>respond</code> posts private content to a public surface. Phone-speed control amplifies
+    exactly this failure: taps are faster than the guardrails are strong.</p>
+  </article>
+
+  <h2 class="section">The iPhone control surface</h2>
+  <div class="tablewrap">
+    <table>
+      <tr><th>Capability</th><th>Linear iOS</th><th>GitHub iOS</th><th>Status</th></tr>
+      <tr><td>Write prompts (description = inbox)</td><td>native</td><td>—</td><td class="ok">covered</td></tr>
+      <tr><td>Read the journal (comments)</td><td>native</td><td>—</td><td class="ok">covered</td></tr>
+      <tr><td>Approve (Done is human-only)</td><td>one tap</td><td>—</td><td class="ok">covered</td></tr>
+      <tr><td>Review the diff, merge the PR</td><td>—</td><td>native</td><td class="ok">covered</td></tr>
+      <tr><td>Publish (merge → Pages deploy)</td><td>—</td><td>merge triggers it</td><td class="ok">covered</td></tr>
+      <tr><td>Ignite a session on a new prompt</td><td>no run button</td><td>no run button</td><td class="gap">the M5 wire — supervisor must watch Linear</td></tr>
+    </table>
+  </div>
+
+  <h2 class="section">Amended formula</h2>
+  <p class="formula">graph <span class="plus">(repo)</span> + loop <span class="plus">(Linear key)</span> + <span class="new">runner (trigger)</span></p>
+  <p style="font-size:13.5px; margin-top:12px;">The outcome claim stands for read, write, and
+  approve — those surfaces exist on the phone today. What the phone cannot yet do is start the
+  machine, and remote sessions with PR subscriptions are precisely that third leg arriving. The
+  next engineering target isn't more loop or more graph: it's making ignition a first-class,
+  named primitive instead of ambient infrastructure.</p>
+
+  <h2 class="section">The sentence — device grammar (rev 2)</h2>
+  <p style="font-size:13.5px; margin-bottom:14px;">Refinement from the phone: the Linear iOS
+  create sheet's two buttons are the architecture's two nouns — <b>Issue = task = loop</b>,
+  <b>Project = repo = graph</b> (a projection, not an isomorphism: a Project is workflow and
+  completes; a repo is truth and accumulates). And the verb isn't missing — it's hardware-resident.
+  The full sentence:</p>
+  <div class="tablewrap">
+    <table>
+      <tr><th>Grammar</th><th>Device</th><th>Role</th></tr>
+      <tr><td><b>Subject</b></td><td>iPhone 17 Pro Max</td><td>Writes the noun (<code>+ → Issue</code>), reads the journal, taps approve — commands, never executes; nothing stays resident on iOS</td></tr>
+      <tr><td><b>Grammar</b></td><td>Linear</td><td>Carries the sentence: description = inbox, comments = journal, states = tense</td></tr>
+      <tr><td><b>Verb</b></td><td>M3 · edge / M5 · fortress</td><td>The TODO-294 supervisor: always-on, dispatches sessions, teleports recoverable task state between kernels</td></tr>
+      <tr><td><b>Object</b></td><td>GitHub</td><td>The graph that accumulates what the verb produces — truth, provenance, artifacts</td></tr>
+      <tr><td><b>Full stop</b></td><td>Apple Watch</td><td>Done from the wrist — the cheapest human-only approval gate in the system</td></tr>
+    </table>
+  </div>
+  <p style="font-size:13.5px; margin-top:12px;">One wire closes it: today <code>supervisor
+  dispatch</code> conjugates by hand on the Mac. Give the M5 supervisor a Linear subscription —
+  poll or webhook on issue-created/state-changed, map team → repo → <code>--cwd</code>, dispatch —
+  roughly 30 lines on top of <code>scripts/linear</code>. Then the thesis is fully true with the
+  amendment absorbed: repo + key + <em>the supervisor already built</em>.</p>
+
+  <footer>TODO-305 · pressure test · 2026-07-27 04:45 UTC · rev 2 06:53 UTC · built in a cold container from ./bpo + one key — which is the point, and the caveat.</footer>
+
+</body>
+</html>

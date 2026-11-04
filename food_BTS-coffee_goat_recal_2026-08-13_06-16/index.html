@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTS coffee · GOAT recalibration</title>
+<meta name="description" content="Ten Bratislava cafés re-scored on a Europe-wide scale — all ten real, all ten inflated by about a point">
+<link rel="stylesheet" href="../design-repo/grove/reset.css"><link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<style>:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--rust:#a3421f;--line:#d6d9cf;--card:#fffdf6}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{width:min(100% - 32px,880px);margin:auto;padding:30px 0 34px}.eyebrow{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}h1{margin:10px 0 8px;font:700 clamp(28px,5.5vw,46px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.05em}h2{margin:26px 0 10px;font:700 13px/1.2 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--forest)}.lede{max-width:720px;color:var(--muted);font-size:15.5px;margin:0 0 18px}.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line)}th{font:700 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}td.n{text-align:right;font:600 13px/1.2 ui-monospace,monospace;white-space:nowrap}tr:last-child td{border-bottom:0}.down{color:var(--rust);font-weight:700}.hold{color:var(--muted)}.goat td{color:var(--forest)}.note{margin-top:12px;padding:13px 16px;border-radius:14px;background:var(--forest);color:#fff;font-size:12.5px}.note b{color:var(--lime)}.warn{margin-top:10px;padding:13px 16px;border-radius:14px;background:var(--rust);color:#fff;font-size:12.5px}.warn b{color:#ffe08a}footer{display:flex;justify-content:space-between;gap:12px;margin-top:20px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}</style></head>
+<body><main>
+<div class="eyebrow">nomad-code / bpo · food · Bratislava</div>
+<h1>Ten real cafés, one inflated scale</h1>
+<p class="lede">The audit brief: is this Bratislava top-ten honest, and how do the numbers hold up next to Europe's actual GOAT rooms? Roster verdict — <b>10/10 exist and are open</b>, including the two that smelled fabricated (Temný OST BLOCK and Pán Králiček Priestor are both real). Score verdict — everything is inflated by roughly a point. A 9.8 for Goriffee puts a Košická-street café at Tim Wendelboe altitude; nothing in the international record supports that.</p>
+
+<h2>The anchor scale — where the GOATs sit</h2>
+<div class="wrap"><table>
+<thead><tr><th>anchor</th><th>city</th><th class="n">score</th><th>why it anchors</th></tr></thead>
+<tbody class="goat">
+<tr><td>Tim Wendelboe</td><td>Oslo</td><td class="n">9.8</td><td>WBC champion, own farm in Colombia, the reference light-roast program</td></tr>
+<tr><td>Coffee Collective</td><td>Copenhagen</td><td class="n">9.6</td><td>direct-trade pioneers, decades of transparency reports</td></tr>
+<tr><td>La Cabra</td><td>Aarhus</td><td class="n">9.5</td><td>Nordic roast exported to three continents</td></tr>
+<tr><td>The Barn</td><td>Berlin</td><td class="n">9.4</td><td>Berlin's flagship, green-buying at competition level</td></tr>
+<tr><td>Drop Coffee</td><td>Stockholm</td><td class="n">9.2</td><td>repeat Swedish roasting-championship titles</td></tr>
+<tr><td>Prufrock</td><td>London</td><td class="n">9.2</td><td>WBC-champion founded, the barista-training benchmark</td></tr>
+</tbody></table></div>
+
+<h2>Bratislava, recalibrated onto that scale</h2>
+<div class="wrap"><table>
+<thead><tr><th>#</th><th>café</th><th class="n">was</th><th class="n">now</th><th>adjustment logic</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>black. Gorkého</td><td class="n">9.6</td><td class="n down">8.7</td><td>promoted to #1 — most consistently cited best-in-city, own light-roast program, Gorkého 15 + Nová Cvernovka</td></tr>
+<tr><td>2</td><td>Goriffee Košická</td><td class="n">9.8</td><td class="n down">8.6</td><td>the Rwanda direct-trade story is genuinely distinctive, but 9.8 claimed Wendelboe parity — the biggest single inflation on the board</td></tr>
+<tr><td>3</td><td>Brew Bar Cafe</td><td class="n">9.5</td><td class="n down">8.5</td><td>guest shelf (Tim Wendelboe, Casino Mocca, Doubleshot) gives it the highest cup ceiling in the city; curation ≠ own program, so it can't outrank the roasters</td></tr>
+<tr><td>4</td><td>Sweet Beans Coffee</td><td class="n">9.3</td><td class="n down">8.4</td><td>real competition hardware (Slovak Comandante Cup 1st, 2022) and honest ferment work — holds its rank</td></tr>
+<tr><td>5</td><td>Concept Coffee Roasters</td><td class="n hold">—</td><td class="n">8.1</td><td>missing from the original board — own roastery at Košická 21, and peer cafés (Baryk) pour its beans alongside Brno's Industra; wholesale adoption is respect you can't fake</td></tr>
+<tr><td>6</td><td>Triple Five Coffee</td><td class="n">9.1</td><td class="n down">8.0</td><td>solid own-roast microlot focus, Turbínova roastery + Jozefská bar; a notch below the top four</td></tr>
+<tr><td>7</td><td>Pán Králiček Priestor</td><td class="n">8.8</td><td class="n down">7.9</td><td>scene pioneer (tricycle carts → Priestor); consistency is the product, ceiling is not</td></tr>
+<tr><td>8</td><td>OST BLOCK</td><td class="n">9.0</td><td class="n down">7.7</td><td>original 9.0 was paying for the industrial room, not the extraction — biggest vibe premium on the list</td></tr>
+<tr><td>9</td><td>grão</td><td class="n">8.9</td><td class="n down">7.6</td><td>CE ZA AR-nominated interior, good espresso bar; design destination more than coffee destination</td></tr>
+<tr><td>10</td><td>FACH</td><td class="n">8.7</td><td class="n down">7.5</td><td>bakery-first — the sourdough is the headline and the coffee is the pairing</td></tr>
+<tr><td>11</td><td>Temný OST BLOCK</td><td class="n">8.5</td><td class="n down">7.3</td><td>real, but it's OST BLOCK's dark-neon sister branch — gin &amp; tonics share the bill; two entries for one operation double-counts</td></tr>
+</tbody></table></div>
+
+<div class="warn"><b>Four structural findings.</b> (1) Inflation ≈ 1.0–1.2 across the board — the original scale left no room above Bratislava for Oslo or Copenhagen. (2) Compression — a 1.3-point spread said the city's 10th-best café is world elite; the honest spread is wider. (3) Double-count — OST BLOCK and Temný OST BLOCK are branches of one operation and should be one line. (4) Omission — Concept Coffee Roasters, a peer-adopted own-roast program on the same street as Goriffee, wasn't on the board at all; Košická is the city's roaster row.</div>
+
+<div class="note"><b>Where Bratislava actually lands:</b> a strong European second tier. black., Goriffee and Sweet Beans roast at a level worth a detour; Brew Bar pours GOAT-tier beans on guest days. Nobody in the city is yet buying green or placing on international stages the way the anchor six do — high-8s is a compliment, not a demotion.</div>
+
+<footer><span>food_BTS-coffee_goat_recal</span><span>2026-08-13 · 06-16 Z</span></footer>
+</main></body></html>

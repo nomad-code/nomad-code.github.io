@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bpo · repo improvement map</title>
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/viz.css">
+<style>
+  :root {
+    --fit-width: 1360px;
+    --olive: #5f6f35;
+    --violet: #7863a6;
+    --paper-2: #fbfaf3;
+    --soft-blue: #edf6f8;
+    --soft-lime: #edf6df;
+    --soft-warn: #faeee8;
+    --soft-amber: #f7f0d9;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { min-height: 100vh; }
+
+  .repo-page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 22px 72px;
+  }
+
+  .mast {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr);
+    gap: 22px;
+    align-items: stretch;
+  }
+
+  .intro,
+  .orbit-panel,
+  .plot,
+  .flow,
+  .idea,
+  .metric {
+    background: linear-gradient(180deg, #fff, var(--paper-2));
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .intro {
+    min-height: 430px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .intro::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(18,124,112,.08) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(74,138,160,.08) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(135deg, rgba(0,0,0,.65), transparent 72%);
+    pointer-events: none;
+  }
+
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .kicker i {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: var(--forest);
+    box-shadow: 12px 0 0 var(--lime), 24px 0 0 var(--found);
+  }
+
+  h1 {
+    position: relative;
+    max-width: 11ch;
+    margin: 18px 0 0;
+    font-size: 58px;
+    line-height: .98;
+    font-weight: 800;
+  }
+
+  .sub {
+    position: relative;
+    max-width: 58ch;
+    margin: 18px 0 0;
+    color: var(--body);
+    font-size: 15px;
+    line-height: 1.58;
+  }
+
+  .metrics {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .metric {
+    padding: 14px;
+    box-shadow: none;
+  }
+
+  .metric b {
+    display: block;
+    font-size: 28px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--forest-d);
+  }
+
+  .metric span {
+    display: block;
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .orbit-panel {
+    padding: 18px;
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .orbit-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin: 0 0 10px;
+  }
+
+  .orbit-head h2,
+  .section-title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.15;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--found-bd);
+    border-radius: 999px;
+    padding: 5px 10px;
+    background: var(--found-bg);
+    color: var(--found-d);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .orbit-wrap {
+    position: relative;
+    flex: 1;
+    min-height: 340px;
+  }
+
+  .orbit-svg {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+    display: block;
+  }
+
+  .orbit-ring {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .orbit-ring.live {
+    stroke: var(--found);
+    stroke-width: 2;
+    stroke-dasharray: 4 10;
+    animation: dash 4.8s linear infinite;
+    opacity: .7;
+  }
+
+  .node {
+    cursor: pointer;
+  }
+
+  .node circle {
+    fill: var(--card);
+    stroke: var(--forest);
+    stroke-width: 2;
+    transition: transform .24s var(--spring), fill .24s var(--ease);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .node text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--forest-d);
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
+
+  .node.is-active circle,
+  .node:hover circle {
+    fill: var(--lime);
+    transform: scale(1.12);
+  }
+
+  .core {
+    fill: var(--forest);
+  }
+
+  .core-label {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 800;
+    fill: #fff;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  .orbit-detail {
+    min-height: 78px;
+    border-top: 1px solid var(--line);
+    padding-top: 13px;
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .orbit-detail .rank {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--g-lime);
+    color: var(--forest-d);
+    font-family: var(--font-mono);
+    font-size: 16px;
+  }
+
+  .orbit-detail b {
+    display: block;
+    font-size: 15px;
+  }
+
+  .orbit-detail p {
+    margin: 4px 0 0;
+    color: var(--body);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .grid-row {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 22px;
+    margin-top: 22px;
+  }
+
+  .plot {
+    padding: 20px;
+    min-height: 420px;
+  }
+
+  .plot-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .plot-sub {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .quadrant {
+    width: 100%;
+    height: 340px;
+    display: block;
+  }
+
+  .q-grid {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .q-axis {
+    stroke: #c8d0c9;
+    stroke-width: 1.5;
+  }
+
+  .q-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    fill: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .q-dot {
+    fill: var(--card);
+    stroke: var(--forest);
+    stroke-width: 2;
+    opacity: 0;
+    animation: pop .48s var(--spring) forwards;
+    animation-delay: calc(var(--i) * 80ms);
+  }
+
+  .q-dot.prime {
+    fill: var(--lime);
+    stroke: var(--forest-d);
+  }
+
+  .q-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    fill: var(--forest-d);
+    text-anchor: middle;
+    dominant-baseline: central;
+    opacity: 0;
+    animation: fade .4s var(--ease) forwards;
+    animation-delay: calc(var(--i) * 80ms + 120ms);
+  }
+
+  .flow {
+    padding: 20px;
+    min-height: 420px;
+    overflow: hidden;
+  }
+
+  .flow-viz {
+    width: 100%;
+    height: 260px;
+    display: block;
+    margin-top: 22px;
+  }
+
+  .flow-lane {
+    stroke: #d4ddd7;
+    stroke-width: 10;
+    stroke-linecap: round;
+  }
+
+  .flow-path {
+    fill: none;
+    stroke: var(--forest);
+    stroke-width: 2;
+    stroke-dasharray: 6 10;
+    animation: dash 3.6s linear infinite;
+  }
+
+  .flow-dot {
+    fill: var(--forest);
+    offset-path: path("M 42 152 C 130 40, 214 42, 302 118 S 470 230, 570 96");
+    offset-rotate: 0deg;
+    animation: route 5.2s linear infinite;
+    animation-delay: var(--d);
+  }
+
+  .flow-dot.alt {
+    fill: var(--found);
+  }
+
+  .gate-box {
+    fill: var(--soft-lime);
+    stroke: #bad7b3;
+    stroke-width: 1;
+  }
+
+  .host-box {
+    fill: var(--soft-blue);
+    stroke: var(--found-bd);
+    stroke-width: 1;
+  }
+
+  .leak-box {
+    fill: var(--soft-warn);
+    stroke: var(--warn-bd);
+    stroke-width: 1;
+  }
+
+  .flow-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    fill: var(--body);
+    text-anchor: middle;
+  }
+
+  .ideas {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .idea {
+    min-height: 210px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(18px);
+    animation: rise .55s var(--spring) forwards;
+    animation-delay: calc(var(--i) * 70ms);
+  }
+
+  .idea::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--forest), var(--lime), var(--found));
+    transform: scaleX(var(--impact));
+    transform-origin: left;
+  }
+
+  .idea-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .idea-n {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--forest-d);
+  }
+
+  .idea-kind {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .idea h3 {
+    margin: 22px 0 0;
+    font-size: 17px;
+    line-height: 1.15;
+  }
+
+  .idea p {
+    margin: 9px 0 0;
+    color: var(--body);
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .bars-mini {
+    margin-top: auto;
+    display: grid;
+    gap: 7px;
+    padding-top: 16px;
+  }
+
+  .mini {
+    display: grid;
+    grid-template-columns: 42px 1fr 24px;
+    gap: 8px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .mini-track {
+    height: 7px;
+    border-radius: 999px;
+    background: var(--well);
+    overflow: hidden;
+  }
+
+  .mini-fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--forest);
+    animation: grow 1s var(--ease) forwards;
+    animation-delay: calc(var(--i) * 70ms + 220ms);
+  }
+
+  .mini-fill.effort {
+    background: var(--found);
+  }
+
+  .footer-note {
+    margin-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  @keyframes dash { to { stroke-dashoffset: -80; } }
+  @keyframes route { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+  @keyframes pop { to { opacity: 1; transform: scale(1); } from { opacity: 0; transform: scale(.75); } }
+  @keyframes fade { to { opacity: 1; } }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  @keyframes grow { to { width: var(--w); } }
+
+  @media (max-width: 1060px) {
+    .mast,
+    .grid-row {
+      grid-template-columns: 1fr;
+    }
+
+    .ideas {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 700px) {
+    .repo-page {
+      padding: 16px 14px 48px;
+    }
+
+    .intro,
+    .orbit-panel,
+    .plot,
+    .flow {
+      padding: 18px;
+      min-height: 0;
+    }
+
+    h1 {
+      font-size: 38px;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ideas {
+      grid-template-columns: 1fr;
+    }
+
+    .plot-head,
+    .orbit-head,
+    .footer-note {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .quadrant {
+      height: 300px;
+    }
+
+    .flow-viz {
+      height: 220px;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="repo-page">
+    <section class="mast" aria-label="Repo improvement overview">
+      <div class="intro">
+        <div>
+          <div class="kicker"><i></i> 2026-07-10 · private repo audit</div>
+          <h1>10 repo moves.</h1>
+          <p class="sub">Small upgrades for a repo that is already operating as a context layer: clearer active boundaries, stronger artifact proof, less repeated session setup.</p>
+        </div>
+        <div class="metrics" aria-label="Repo snapshot">
+          <div class="metric"><b>12</b><span>active project folders</span></div>
+          <div class="metric"><b>11</b><span>top-level project specs</span></div>
+          <div class="metric"><b>39</b><span>session artifacts</span></div>
+          <div class="metric"><b>1.8k</b><span>private source files scanned</span></div>
+        </div>
+      </div>
+
+      <aside class="orbit-panel" aria-label="Ten ideas orbit">
+        <div class="orbit-head">
+          <h2>Improvement orbit</h2>
+          <span class="pill">click a node</span>
+        </div>
+        <div class="orbit-wrap">
+          <svg class="orbit-svg" viewBox="0 0 420 340" role="img" aria-label="Ten improvement ideas arranged around the bpo repo core">
+            <circle class="orbit-ring" cx="210" cy="170" r="118"></circle>
+            <circle class="orbit-ring live" cx="210" cy="170" r="93"></circle>
+            <circle class="core" cx="210" cy="170" r="49"></circle>
+            <text class="core-label" x="210" y="164">bpo</text>
+            <text class="core-label" x="210" y="183">repo</text>
+            <g id="orbitNodes"></g>
+          </svg>
+        </div>
+        <div class="orbit-detail" id="orbitDetail">
+          <span class="rank">01</span>
+          <div>
+            <b>Cold queue autopilot</b>
+            <p>Turn the 30-day rule into a generated review list before projects drift.</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid-row" aria-label="Impact charts">
+      <div class="plot">
+        <div class="plot-head">
+          <h2 class="section-title">Impact / effort</h2>
+          <span class="plot-sub">up = impact · right = effort</span>
+        </div>
+        <svg class="quadrant" viewBox="0 0 560 340" role="img" aria-label="Impact effort plot of ten repo improvement ideas">
+          <line class="q-grid" x1="70" y1="60" x2="510" y2="60"></line>
+          <line class="q-grid" x1="70" y1="130" x2="510" y2="130"></line>
+          <line class="q-grid" x1="70" y1="200" x2="510" y2="200"></line>
+          <line class="q-grid" x1="70" y1="270" x2="510" y2="270"></line>
+          <line class="q-grid" x1="180" y1="40" x2="180" y2="292"></line>
+          <line class="q-grid" x1="290" y1="40" x2="290" y2="292"></line>
+          <line class="q-grid" x1="400" y1="40" x2="400" y2="292"></line>
+          <line class="q-axis" x1="70" y1="292" x2="510" y2="292"></line>
+          <line class="q-axis" x1="70" y1="292" x2="70" y2="40"></line>
+          <text class="q-label" x="70" y="322">low effort</text>
+          <text class="q-label" x="454" y="322">high effort</text>
+          <text class="q-label" x="24" y="52" transform="rotate(-90 24 52)">high impact</text>
+          <text class="q-label" x="344" y="58">first picks</text>
+          <g id="plotDots"></g>
+        </svg>
+      </div>
+
+      <div class="flow">
+        <div class="plot-head">
+          <h2 class="section-title">Artifact proof path</h2>
+          <span class="plot-sub">keep private source off the wire</span>
+        </div>
+        <svg class="flow-viz" viewBox="0 0 620 260" role="img" aria-label="Private repo artifact flow through gate, allowlist, mirror, and host">
+          <path class="flow-lane" d="M 42 152 C 130 40, 214 42, 302 118 S 470 230, 570 96"></path>
+          <path class="flow-path" d="M 42 152 C 130 40, 214 42, 302 118 S 470 230, 570 96"></path>
+          <circle class="flow-dot" r="6" style="--d:0s"></circle>
+          <circle class="flow-dot alt" r="4" style="--d:-1.4s"></circle>
+          <circle class="flow-dot" r="5" style="--d:-2.7s"></circle>
+          <rect class="gate-box" x="22" y="128" width="82" height="48" rx="8"></rect>
+          <rect class="gate-box" x="156" y="44" width="94" height="48" rx="8"></rect>
+          <rect class="leak-box" x="266" y="94" width="88" height="48" rx="8"></rect>
+          <rect class="host-box" x="414" y="174" width="94" height="48" rx="8"></rect>
+          <rect class="host-box" x="526" y="72" width="72" height="48" rx="8"></rect>
+          <text class="flow-text" x="63" y="154">artifact</text>
+          <text class="flow-text" x="203" y="70">gate</text>
+          <text class="flow-text" x="310" y="120">allowlist</text>
+          <text class="flow-text" x="461" y="200">mirror</text>
+          <text class="flow-text" x="562" y="98">host</text>
+        </svg>
+        <p class="sub" style="margin-top:0">Best upgrade: make the deploy proof explicit for every artifact URL and every custom host alias.</p>
+      </div>
+    </section>
+
+    <section class="ideas" aria-label="Ten improvement ideas" id="ideas"></section>
+
+    <div class="footer-note">
+      <span>Source cues: AGENT.md, scripts/, deploy workflow, project SPEC files, artifact inventory.</span>
+      <span>Visual grammar: grove · paths, claims, gates, recovery.</span>
+    </div>
+  </main>
+
+<script>
+(function () {
+  var ideas = [
+    { n: 1, title: "Cold queue autopilot", kind: "hygiene", action: "Generate stale-project candidates from last touch + SPEC status.", impact: 9, effort: 3, metric: "12 active / 0 stale today" },
+    { n: 2, title: "SPEC contract lint", kind: "shape", action: "Check every active project has Goal, Done-when, Stack, Secrets.", impact: 8, effort: 2, metric: "11 of 12 top-level specs" },
+    { n: 3, title: "Dual-host artifact probe", kind: "deploy", action: "Curl the clean URL and nomad-code.found-ai.io alias before sharing.", impact: 9, effort: 2, metric: "200 or explicit DNS fault" },
+    { n: 4, title: "Project capsule index", kind: "map", action: "Build a generated index from SPEC goals, open gates, and last artifact.", impact: 8, effort: 4, metric: "one page to route work" },
+    { n: 5, title: "Dist privacy diff", kind: "privacy", action: "Show the exact allowlisted files before deploy, then tripwire.", impact: 10, effort: 4, metric: "positive allowlist stays visible" },
+    { n: 6, title: "Linear journal distiller", kind: "memory", action: "Promote durable decisions from comments into project markdown.", impact: 9, effort: 5, metric: "SaaS workflow, git truth" },
+    { n: 7, title: "Provenance stop edge", kind: "ledger", action: "Append artifact URL, commit, prompt, and host check per session.", impact: 7, effort: 3, metric: "36 edges becomes complete" },
+    { n: 8, title: "Per-project run harness", kind: "tests", action: "Standardize test/build/smoke commands without forcing one stack.", impact: 8, effort: 6, metric: "python, node, static, local-only" },
+    { n: 9, title: "Local-only capability registry", kind: "ops", action: "Declare Bunpro login, Sheets key, Calendar FDA, OPCD gates once.", impact: 7, effort: 3, metric: "less rediscovery" },
+    { n: 10, title: "Grove artifact scaffold", kind: "artifact", action: "One command for gated, mobile-safe, data-backed session pages.", impact: 8, effort: 5, metric: "39 artifacts, same bones" }
+  ];
+
+  var ideasEl = document.getElementById("ideas");
+  var nodesEl = document.getElementById("orbitNodes");
+  var plotEl = document.getElementById("plotDots");
+  var detail = document.getElementById("orbitDetail");
+  var active = 0;
+
+  function pct(v) {
+    return Math.max(0, Math.min(100, v * 10)) + "%";
+  }
+
+  function renderCards() {
+    ideasEl.innerHTML = ideas.map(function (idea, idx) {
+      return [
+        '<article class="idea" style="--i:', idx, ';--impact:', idea.impact / 10, '">',
+        '<div class="idea-top"><span class="idea-n">', String(idea.n).padStart(2, "0"), '</span><span class="idea-kind">', idea.kind, '</span></div>',
+        '<h3>', idea.title, '</h3>',
+        '<p>', idea.action, '</p>',
+        '<div class="bars-mini">',
+        '<div class="mini"><span>impact</span><span class="mini-track"><span class="mini-fill" style="--w:', pct(idea.impact), '"></span></span><span>', idea.impact, '</span></div>',
+        '<div class="mini"><span>effort</span><span class="mini-track"><span class="mini-fill effort" style="--w:', pct(idea.effort), '"></span></span><span>', idea.effort, '</span></div>',
+        '</div>',
+        '</article>'
+      ].join("");
+    }).join("");
+  }
+
+  function renderOrbit() {
+    var cx = 210, cy = 170, r = 128;
+    nodesEl.innerHTML = ideas.map(function (idea, idx) {
+      var a = -Math.PI / 2 + idx * Math.PI * 2 / ideas.length;
+      var x = cx + Math.cos(a) * r;
+      var y = cy + Math.sin(a) * r;
+      return [
+        '<g class="node', idx === active ? ' is-active' : '', '" data-i="', idx, '" transform="translate(', x.toFixed(1), ' ', y.toFixed(1), ')">',
+        '<circle r="18"></circle>',
+        '<text y="1">', idea.n, '</text>',
+        '</g>'
+      ].join("");
+    }).join("");
+  }
+
+  function renderPlot() {
+    plotEl.innerHTML = ideas.map(function (idea, idx) {
+      var x = 70 + (idea.effort / 10) * 440;
+      var y = 292 - (idea.impact / 10) * 252;
+      var prime = idea.impact >= 9 && idea.effort <= 4;
+      return [
+        '<g style="--i:', idx, '">',
+        '<circle class="q-dot', prime ? ' prime' : '', '" cx="', x.toFixed(1), '" cy="', y.toFixed(1), '" r="14"></circle>',
+        '<text class="q-num" x="', x.toFixed(1), '" y="', y.toFixed(1), '">', idea.n, '</text>',
+        '</g>'
+      ].join("");
+    }).join("");
+  }
+
+  function setActive(idx) {
+    active = idx;
+    var idea = ideas[idx];
+    detail.innerHTML = [
+      '<span class="rank">', String(idea.n).padStart(2, "0"), '</span>',
+      '<div><b>', idea.title, '</b><p>', idea.metric, ' · ', idea.action, '</p></div>'
+    ].join("");
+    renderOrbit();
+    bindOrbit();
+  }
+
+  function bindOrbit() {
+    Array.prototype.forEach.call(nodesEl.querySelectorAll(".node"), function (node) {
+      node.addEventListener("click", function () {
+        setActive(Number(node.getAttribute("data-i")));
+      });
+    });
+  }
+
+  renderCards();
+  renderOrbit();
+  renderPlot();
+  bindOrbit();
+
+  window.setInterval(function () {
+    setActive((active + 1) % ideas.length);
+  }, 4200);
+})();
+</script>
+</body>
+</html>

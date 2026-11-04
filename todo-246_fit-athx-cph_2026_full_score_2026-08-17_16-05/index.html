@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The full score · CPH 2026 · TODO-246</title>
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css"><link rel="stylesheet" href="../../design-repo/grove/components.css">
+<style>
+:root{--ink:#17281f;--muted:#65736b;--line:#d7ded8;--paper:#f4f2e9;--card:#fffdfa;--bp:#176b78;--cr:#b85339;--gold:#c59a45}
+*{box-sizing:border-box}html{background:var(--paper)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 92% 2%,#e3eee8 0,transparent 30%),var(--paper)}
+main{width:min(1040px,calc(100% - 36px));margin:auto;padding:40px 0 56px}
+.eyebrow{font:700 11px/1.4 ui-monospace,SFMono-Regular,monospace;letter-spacing:.11em;text-transform:uppercase;color:#8a682a}
+h1{font:700 clamp(38px,6.2vw,66px)/.95 Georgia,serif;letter-spacing:-.045em;max-width:14ch;margin:16px 0}
+h1 em{color:var(--bp);font-weight:400}
+.lede{max-width:72ch;font-size:17px;line-height:1.62;color:#43534a}
+.hero{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0}
+.h{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:16px}
+.h:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
+.h.a{--c:#17281f}.h.b{--c:var(--gold)}.h.c{--c:var(--bp)}.h.d{--c:var(--cr)}
+.hl{font:700 10px ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--c)}
+.hv{font:750 34px/1 Georgia,serif;margin:8px 0 2px}
+.hv small{font:700 15px ui-monospace,monospace;color:var(--muted)}
+.hn{color:var(--muted);font-size:12px;line-height:1.5}
+h2{font:700 25px/1.1 Georgia,serif;margin:36px 0 12px}
+.note{color:var(--muted);margin:-6px 0 15px;max-width:78ch;line-height:1.5}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line)}
+thead th{font:700 10px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody th{font-size:13px;font-weight:700}
+td{font:700 16px Georgia,serif}
+td small,th small{display:block;font:500 10px ui-monospace,monospace;color:var(--muted);margin-top:3px;font-weight:400}
+td.rk{font:700 15px ui-monospace,monospace}
+td.bp{color:var(--bp)}td.cr{color:var(--cr)}
+.share{display:grid;grid-template-columns:60px 1fr;gap:9px;align-items:center;margin:4px 0}
+.share i{display:block;height:9px;border-radius:6px;background:linear-gradient(90deg,var(--bp) 0 var(--split),var(--cr) var(--split) 100%)}
+.share span{font:700 10px ui-monospace,monospace;color:var(--muted)}
+.rules{background:#17281f;color:#e7eee9;border-radius:16px;padding:22px 24px;margin:24px 0}
+.rules h3{font:700 12px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#9fc2ae;margin:0 0 10px}
+.rules ul{margin:0;padding-left:18px;line-height:1.65;color:#cfdcd4;font-size:14px}
+.rules b{color:#fff}
+.key{display:flex;gap:18px;flex-wrap:wrap;font:700 11px ui-monospace,monospace;color:var(--muted);margin:10px 0 0}
+.key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font:11px/1.6 ui-monospace,monospace}
+@media(max-width:820px){.hero{grid-template-columns:1fr 1fr}}
+</style></head><body><main>
+<div class="eyebrow">TODO-246 · fit-athx · ATHX COPENHAGEN 2026 · 15 Aug 2026 · Bella Centre 🇩🇰</div>
+<h1>The full score.<br><em>Every board.</em></h1>
+<p class="lede">Brendan OBrien &amp; Christopher Reeves — ATHX Pro, Male, pairs. Every row the leaderboards hold on us, with its real denominator: the overall board, the three workout boards, the combined-age band, and both athletes' own team-individual placings.</p>
+<section class="hero">
+<article class="h a"><div class="hl">Overall</div><div class="hv">13<small>/16</small></div><div class="hn">41 points<br>rank sum of 16 · 11 · 14</div></article>
+<article class="h b"><div class="hl">Age band · 69 &amp; under</div><div class="hv">7<small>/9</small></div><div class="hn">24 points<br>S 9 · E 7 · M 8 in band</div></article>
+<article class="h c"><div class="hl">Best workout</div><div class="hv">11<small>/17</small></div><div class="hn">Endurance · 9.837 KM<br>field median 9.890</div></article>
+<article class="h d"><div class="hl">Worst workout</div><div class="hv">16<small>/16</small></div><div class="hn">Strength · 649 KG<br>field median 827</div></article>
+</section>
+<h2>The pair, board by board</h2>
+<p class="note">Denominators differ because 17 pairs scored Endurance and MetCon X but only 16 scored Strength — and points need all three, so the overall board is 16 deep.</p>
+<div class="panel"><table><thead><tr><th>Board</th><th>Our score</th><th>Rank</th><th>Field median</th><th>Field best</th></tr></thead><tbody>
+<tr><th>Overall</th><td>41 pts</td><td class="rk">13 / 16</td><td>—</td><td>7 pts<small>Karlsson / Jansson</small></td></tr>
+<tr><th>Strength total</th><td>649 KG</td><td class="rk cr">16 / 16</td><td>827 KG</td><td>1022 KG</td></tr>
+<tr><th>— 1RM strict press</th><td>129 KG</td><td class="rk">15 / 16</td><td>162 KG</td><td>182 KG</td></tr>
+<tr><th>— 3RM back squat</th><td>220 KG</td><td class="rk cr">16 / 16</td><td>305 KG</td><td>380 KG</td></tr>
+<tr><th>— 5RM deadlift</th><td>300 KG</td><td class="rk">15 / 16</td><td>367.5 KG</td><td>460 KG</td></tr>
+<tr><th>Endurance total</th><td>9.837 KM</td><td class="rk bp">11 / 17</td><td>9.890 KM</td><td>10.608 KM</td></tr>
+<tr><th>— run</th><td>4.421 KM</td><td class="rk bp">7 / 17</td><td>4.384 KM</td><td>4.921 KM</td></tr>
+<tr><th>— row</th><td>5.416 KM</td><td class="rk">14 / 17</td><td>5.714 KM</td><td>6.165 KM</td></tr>
+<tr><th>MetCon X</th><td>20:28</td><td class="rk">14 / 17</td><td>15:52</td><td>13:52</td></tr>
+<tr><th>Band · 69 &amp; under</th><td>24 pts</td><td class="rk b">7 / 9</td><td>—</td><td>—<small>combined-age partition</small></td></tr>
+</tbody></table></div>
+<h2>Who did what</h2>
+<p class="note">Team-individual boards rank every Pro man at the event — 52 on strength, 53 on endurance — which includes the men racing in mixed pairs, not just the 17 male pairs. MetCon X has no per-athlete split.</p>
+<div class="panel"><table><thead><tr><th>Block</th><th>Brendan</th><th>Chris</th><th>Team</th><th>Split</th></tr></thead><tbody>
+<tr><th>1RM strict press</th><td class="bp">57 KG</td><td class="cr">72 KG</td><td>129 KG</td><td><div class="share" style="--split:44.2%"><span>44/56</span><i></i></div></td></tr>
+<tr><th>3RM back squat</th><td class="bp">110 KG</td><td class="cr">110 KG</td><td>220 KG</td><td><div class="share" style="--split:50%"><span>50/50</span><i></i></div></td></tr>
+<tr><th>5RM deadlift</th><td class="bp">145 KG</td><td class="cr">155 KG</td><td>300 KG</td><td><div class="share" style="--split:48.3%"><span>48/52</span><i></i></div></td></tr>
+<tr><th>Strength subtotal</th><td class="bp">312 KG</td><td class="cr">337 KG</td><td>649 KG</td><td><div class="share" style="--split:48.1%"><span>48/52</span><i></i></div></td></tr>
+<tr><th>Run</th><td class="bp">2.421 KM</td><td class="cr">2.000 KM</td><td>4.421 KM</td><td><div class="share" style="--split:54.8%"><span>55/45</span><i></i></div></td></tr>
+<tr><th>Row</th><td class="bp">2.552 KM</td><td class="cr">2.864 KM</td><td>5.416 KM</td><td><div class="share" style="--split:47.1%"><span>47/53</span><i></i></div></td></tr>
+<tr><th>Endurance subtotal</th><td class="bp">4.973 KM</td><td class="cr">4.864 KM</td><td>9.837 KM</td><td><div class="share" style="--split:50.6%"><span>51/49</span><i></i></div></td></tr>
+<tr><th>MetCon X</th><td colspan="2" style="font:500 12px ui-monospace,monospace;color:#65736b">team-level only — no per-athlete split published</td><td>20:28</td><td></td></tr>
+</tbody></table>
+<div class="key"><span><i style="background:#176b78"></i>Brendan</span><span><i style="background:#b85339"></i>Chris</span></div>
+</div>
+<h2>Each of us against the room</h2>
+<div class="panel"><table><thead><tr><th>Board</th><th>Brendan</th><th>Chris</th></tr></thead><tbody>
+<tr><th>Strength · all Pro men</th><td class="rk">52 / 52</td><td class="rk">47 / 52</td></tr>
+<tr><th>Strength · own age band</th><td class="rk">29 / 29<small>34 &amp; under</small></td><td class="rk">14 / 15<small>35 – 39</small></td></tr>
+<tr><th>Endurance · all Pro men</th><td class="rk bp">29 / 53</td><td class="rk">36 / 53</td></tr>
+</tbody></table></div>
+<div class="rules"><h3>The whole race in five lines</h3><ul>
+<li><b>41 points = 16 + 11 + 14.</b> Lowest total wins; the winners scored 7.</li>
+<li><b>Endurance carried us.</b> Brendan's 29/53 on endurance against 52/52 on strength is the same athlete on the same day — that spread is the finding.</li>
+<li><b>The run is the only above-median number on the sheet</b> — 4.421 KM against 4.384. Everything else is bottom-third.</li>
+<li><b>The 41 ties Rosenthal/Thiam.</b> They were stronger (8th), we were better on both endurance and MetCon X, and the tie broke their way.</li>
+<li><b>The young band is the strong band.</b> 69-&amp;-under is the deepest combined-age partition (9 of the 16 pairs) — 7/9 there is the same standing as 13/16 overall, not a softer one.</li>
+</ul></div>
+<footer>Every figure pulled from athxgames.com on 2026-08-17 with <code>bob/athx</code> (<code>scrape --years 2026 --events copenhagen</code>) · warehouse: <code>projects/fit-athx/warehouse/cph-2026/</code> · record: <code>projects/fit-athx/races/cph-2026.md</code> · ULIDs Brendan <code>01kfsjha41…</code> · Chris <code>01kfmnmkvr…</code> (ARCA 🇿🇦)</footer>
+</main></body></html>

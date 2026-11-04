@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TODO-384 · abstraction layer</title>
+<meta name="description" content="Stage card: canonical photo/instance index + Photos DB map">
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+<style>:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{width:min(100% - 32px,860px);margin:auto;padding:44px 0 56px}.eyebrow{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}h1{margin:12px 0 8px;font:700 clamp(30px,6vw,50px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.05em}.lede{max-width:660px;color:var(--muted);font-size:16px;margin:0 0 22px}.schema{padding:18px 20px;border-radius:14px;background:var(--ink);color:#fff;font:600 13px/1.85 ui-monospace,monospace;white-space:pre;overflow-x:auto}.schema b{color:var(--lime)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.stat{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center}.stat b{display:block;font:700 26px/1.1 ui-monospace,monospace;letter-spacing:-.04em}.stat span{color:var(--muted);font-size:11.5px}.note{margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--forest);color:#fff;font-size:13px}.note b{color:var(--lime)}footer{display:flex;justify-content:space-between;margin-top:24px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}</style></head>
+<body><main>
+<div class="eyebrow">nomad-code / bpo · TODO-384 · stage 4/6 landed</div>
+<h1>the photo record</h1>
+<p class="lede">Providers come and go; captures don't. One canonical photo row per capture, one instance row per provider copy — Apple fills it today, Google Takeout next, messages someday.</p>
+<div class="schema"><b>photo</b>     captured_at·tz · lat/lon · kind · favorite · <b>content_sha256</b> · phash
+<b>instance</b>  provider · uid · role original|edited|live_video · sha256 · ark_path · raw meta JSON
+<b>album</b> / <b>person</b>   (photo, provider, name)
+dedupe: sha256 → time+dims → phash(≤6, ±24h)   method always recorded</div>
+<div class="grid">
+<div class="stat"><b>4,139</b><span>photo rows (live library)</span></div>
+<div class="stat"><b>5,242</b><span>instances, all sha256-hashed</span></div>
+<div class="stat"><b>410 ⭐</b><span>favorites · 2,173 located</span></div>
+</div>
+<div class="note"><b>docs committed:</b> dna/photos/apple-photos-db.md (bundle map, WAL/immutable=1 trap, table tour, census) + photo-record.md (schema, Apple↔Google mapping, documented losses, cascade). <b>Earned quirk:</b> osxphotos <i>info</i> ≠ <i>query</i> counts (3,844 vs 4,139) — pipeline speaks query only. Library is pure 2026 regrowth; June favorites live in the archive.</div>
+<footer><span>TODO_384-code-photos-apple-export</span><span>2026-08-10 - 00-44 Z</span></footer>
+</main></body></html>

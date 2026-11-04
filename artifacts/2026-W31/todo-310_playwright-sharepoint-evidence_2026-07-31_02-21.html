@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Playwright evidence → Teams · TODO-310</title>
+  <meta name="description" content="Implementation closeout and admin handoff for the Portal V2 Playwright evidence publisher.">
+  <!-- bre password wall · self-locating loader. -->
+  <script>
+  (function () {
+    var KEY = 'bpo-unlocked';
+    var unlocked = false, reveal = false;
+    try {
+      unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+      reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+    } catch (e) {}
+    var hide, cover;
+    if (!unlocked) {
+      hide = document.createElement('style');
+      hide.id = '__pw_gate_hide__';
+      hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+      (document.head || document.documentElement).appendChild(hide);
+    } else if (reveal) {
+      cover = document.createElement('style');
+      cover.id = '__pw_reveal_pre__';
+      cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#F5F4F0;z-index:2147483646}';
+      (document.head || document.documentElement).appendChild(cover);
+      setTimeout(function () {
+        var c = document.getElementById('__pw_reveal_pre__');
+        if (c) c.remove();
+      }, 4000);
+    }
+    window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+    var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+    var i = 0;
+    (function next() {
+      if (i >= prefixes.length) {
+        if (hide) hide.remove();
+        if (cover) cover.remove();
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = prefixes[i++] + 'password-wall/gate.js';
+      s.onerror = next;
+      document.head.appendChild(s);
+    })();
+  })();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root {
+      --cloud: #eef6ff;
+      --cloud-line: #b9d6f5;
+      --azure: #1769aa;
+      --violet: #635bba;
+      --amber-ink: #805200;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 86% 8%, rgba(201,243,106,.22), transparent 25rem),
+        var(--well);
+      color: var(--ink);
+      font-family: var(--font-ui);
+    }
+    a { color: inherit; }
+    .shell {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 42px 0 74px;
+    }
+    .mast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 42px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: var(--forest);
+      color: var(--lime);
+      font-weight: 900;
+      font-size: 15px;
+    }
+    .mast .sep { color: var(--line-strong); }
+    .mast .status {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 10px;
+      border: 1px solid #bcd9bf;
+      border-radius: 999px;
+      color: var(--forest);
+      background: var(--g-lime);
+      font-weight: 800;
+    }
+    .mast .status i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--forest);
+    }
+    .hero {
+      grid-template-columns: minmax(0, 1.18fr) minmax(300px, .82fr);
+      padding: 38px;
+      overflow: hidden;
+    }
+    .hero h1 {
+      max-width: 13ch;
+      font-size: clamp(42px, 6vw, 68px);
+      line-height: .96;
+    }
+    .hero-sub { font-size: 16px; }
+    .hero-sub strong { color: var(--ink); }
+    .hero-side {
+      position: relative;
+      min-height: 290px;
+      display: grid;
+      place-items: center;
+    }
+    .orbit {
+      position: absolute;
+      width: 270px;
+      height: 270px;
+      border: 1px dashed #b8c8be;
+      border-radius: 50%;
+      animation: turn 32s linear infinite;
+    }
+    .orbit::before, .orbit::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border: 5px solid white;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 5px 18px rgba(26, 63, 47, .18);
+    }
+    .orbit::before { top: 18px; left: 30px; }
+    .orbit::after { right: 8px; bottom: 58px; background: var(--found); }
+    @keyframes turn { to { transform: rotate(360deg); } }
+    .destination {
+      position: relative;
+      z-index: 2;
+      width: 190px;
+      padding: 23px 20px;
+      border: 1px solid var(--cloud-line);
+      border-radius: 24px;
+      text-align: center;
+      background: white;
+      box-shadow: 0 24px 60px rgba(23, 105, 170, .14);
+    }
+    .cloud-icon {
+      width: 68px;
+      height: 45px;
+      margin: 0 auto 15px;
+      position: relative;
+      border-radius: 30px;
+      background: var(--azure);
+    }
+    .cloud-icon::before, .cloud-icon::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: var(--azure);
+    }
+    .cloud-icon::before { width: 42px; height: 42px; left: 5px; top: -19px; }
+    .cloud-icon::after { width: 32px; height: 32px; right: 4px; top: -9px; }
+    .destination b { display: block; font-size: 18px; }
+    .destination span { display: block; margin-top: 5px; font-size: 12px; color: var(--muted); }
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      text-decoration: none;
+      background: white;
+      font-size: 13px;
+      font-weight: 750;
+      transition: transform .2s, border-color .2s;
+    }
+    .link-btn:hover { transform: translateY(-2px); border-color: var(--forest); }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 18px 0 48px;
+    }
+    .metric {
+      min-height: 128px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.86);
+      box-shadow: var(--shadow-card);
+    }
+    .metric .value {
+      font-family: var(--font-display);
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 820;
+      letter-spacing: -.04em;
+      color: var(--forest);
+    }
+    .metric .label {
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+    .section { margin-top: 54px; }
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+    .section-kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--forest);
+      font-weight: 800;
+    }
+    .section h2 {
+      margin: 7px 0 0;
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: -.025em;
+    }
+    .section-note {
+      max-width: 43ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .flow-card {
+      position: relative;
+      min-height: 220px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      box-shadow: var(--shadow-card);
+    }
+    .flow-card:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -19px;
+      top: 46px;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--well);
+      color: var(--forest);
+      font-weight: 900;
+    }
+    .flow-n {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .flow-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      margin: 16px 0;
+      border-radius: 12px;
+      background: var(--g-lime);
+      color: var(--forest);
+      font-weight: 900;
+      font-size: 18px;
+    }
+    .flow-card:nth-child(3) .flow-icon { color: var(--azure); background: var(--cloud); }
+    .flow-card:nth-child(4) .flow-icon { color: var(--violet); background: #f1efff; }
+    .flow-card h3 { margin: 0; font-size: 16px; }
+    .flow-card p { margin: 8px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+    .boundary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .boundary-card {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+    }
+    .boundary-card.github { border-top: 5px solid var(--ink); }
+    .boundary-card.teams { border-top: 5px solid var(--violet); }
+    .boundary-card h3 { margin: 3px 0 12px; font-size: 18px; }
+    .boundary-card ul { margin: 0; padding: 0; list-style: none; }
+    .boundary-card li {
+      position: relative;
+      padding: 8px 0 8px 23px;
+      border-bottom: 1px solid #edf0eb;
+      color: var(--body);
+      font-size: 13px;
+    }
+    .boundary-card li:last-child { border-bottom: 0; }
+    .boundary-card li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--forest);
+      font-weight: 900;
+    }
+    .handoff {
+      overflow: hidden;
+      border: 1px solid #e1c98b;
+      border-radius: 20px;
+      background: #fffaf0;
+      box-shadow: var(--shadow-card);
+    }
+    .handoff-head {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 20px 24px;
+      border-bottom: 1px solid #ead7a7;
+      background: var(--amber-bg);
+    }
+    .handoff-head .lock {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: white;
+      color: var(--amber-ink);
+      font-size: 17px;
+    }
+    .handoff-head b { font-size: 17px; }
+    .handoff-head span { display: block; margin-top: 2px; font-size: 12px; color: var(--amber-ink); }
+    .steps { counter-reset: admin; padding: 6px 24px 12px; }
+    .admin-step {
+      counter-increment: admin;
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 14px;
+      align-items: start;
+      padding: 18px 0;
+      border-bottom: 1px solid #eadfbe;
+    }
+    .admin-step:last-child { border-bottom: 0; }
+    .admin-step::before {
+      content: counter(admin);
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: white;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .admin-step h3 { margin: 2px 0 5px; font-size: 15px; }
+    .admin-step p { margin: 0; max-width: 70ch; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+    .role {
+      padding: 5px 8px;
+      border: 1px solid #e1c98b;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--amber-ink);
+      background: white;
+      white-space: nowrap;
+    }
+    code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: rgba(23,35,31,.07);
+      font-family: var(--font-mono);
+      font-size: .92em;
+      overflow-wrap: anywhere;
+    }
+    .tree {
+      padding: 24px;
+      border-radius: 18px;
+      background: var(--ink);
+      color: #e8efe9;
+      font: 12px/1.8 var(--font-mono);
+      overflow-x: auto;
+      box-shadow: var(--shadow-card);
+    }
+    .tree .folder { color: var(--lime); }
+    .tree .file { color: #c8d9ff; }
+    .tree .muted { color: #81928a; }
+    .callout {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--found-bd);
+      border-radius: 13px;
+      background: var(--found-bg);
+      color: var(--found-d);
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .callout b { font-size: 18px; }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 56px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      line-height: 1.7;
+    }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .metrics, .flow { grid-template-columns: repeat(2, 1fr); }
+      .flow-card:nth-child(2)::after { display: none; }
+    }
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 24px, 1120px); padding-top: 24px; }
+      .mast .sep, .mast .world { display: none; }
+      .hero { padding: 26px 22px; }
+      .hero-side { min-height: 240px; }
+      .orbit { width: 225px; height: 225px; }
+      .metrics, .flow, .boundary { grid-template-columns: 1fr; }
+      .flow-card::after { display: none !important; }
+      .section-head { display: block; }
+      .section-note { margin-top: 8px; text-align: left; }
+      .admin-step { grid-template-columns: 36px 1fr; }
+      .role { grid-column: 2; justify-self: start; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .orbit { animation: none; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="mast">
+      <span class="mark">D</span>
+      <span class="world">dha world</span>
+      <span class="sep">/</span>
+      <span>TODO-310</span>
+      <span class="status"><i></i> Code + CI green</span>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow"><span class="d"></span> Playwright review evidence</div>
+        <h1>From CI to <span class="em">Teams</span>, without a standing secret.</h1>
+        <p class="hero-sub">
+          Portal V2 now has a validated publishing lane for <strong>successful,
+          curated</strong> WebMs, PNGs, and manifests. GitHub stays the test
+          record; the Portal Team library becomes the human review surface.
+        </p>
+        <div class="hero-chips">
+          <span class="hchip v"><span class="ic">✓</span> Commit 17c14247</span>
+          <span class="hchip v"><span class="ic">✓</span> PR checks passed</span>
+          <span class="hchip q"><span class="ic">○</span> Admin setup pending</span>
+        </div>
+        <div class="hero-links">
+          <a class="link-btn" href="https://github.com/dhammaorg/portal-v2/pull/516">Open draft PR #516 <span>↗</span></a>
+          <a class="link-btn" href="https://github.com/dhammaorg/portal-v2/issues/515">Open public issue #515 <span>↗</span></a>
+        </div>
+      </div>
+      <div class="hero-side" aria-label="Team SharePoint destination">
+        <div class="orbit" aria-hidden="true"></div>
+        <div class="destination">
+          <div class="cloud-icon" aria-hidden="true"></div>
+          <b>Portal Team</b>
+          <span>SharePoint library<br>inside Teams OneDrive</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="Verified implementation metrics">
+      <article class="metric"><div class="value">15</div><div class="label">publisher tests passing: validation, retries, conflicts, redaction, and publication</div></article>
+      <article class="metric"><div class="value">24</div><div class="label">real curated input files validated from GitHub run 30250777369</div></article>
+      <article class="metric"><div class="value">12.25<span style="font-size:16px"> MB</span></div><div class="label">desktop + mobile evidence, comfortably below simple-upload limits</div></article>
+      <article class="metric"><div class="value">0</div><div class="label">persistent Microsoft secrets; GitHub OIDC mints a short-lived Graph token</div></article>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><div class="section-kicker">The lane</div><h2>One pass, four clear responsibilities</h2></div>
+        <p class="section-note">Both showcase matrix lanes must pass before the Microsoft job can begin.</p>
+      </div>
+      <div class="flow">
+        <article class="flow-card">
+          <div class="flow-n">01 · PROVE</div><div class="flow-icon">▶</div>
+          <h3>Playwright showcase</h3>
+          <p>Desktop and Pixel 7 journeys emit named videos, screenshots, and a schema-v1 manifest.</p>
+        </article>
+        <article class="flow-card">
+          <div class="flow-n">02 · VERIFY</div><div class="flow-icon">#</div>
+          <h3>Local preflight</h3>
+          <p>Sizes, SHA-256, lane completeness, basenames, regular files, and symlink boundaries are checked before Graph writes.</p>
+        </article>
+        <article class="flow-card">
+          <div class="flow-n">03 · TRANSFER</div><div class="flow-icon">↥</div>
+          <h3>OIDC → Graph</h3>
+          <p>A site-selected Entra app receives a short-lived token. Sequential uploads retry throttling and transient failures.</p>
+        </article>
+        <article class="flow-card">
+          <div class="flow-n">04 · REVIEW</div><div class="flow-icon">◎</div>
+          <h3>Teams OneDrive</h3>
+          <p>The authenticated run-folder URL lands in the workflow summary for Portal Team review on desktop or phone.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><div class="section-kicker">Storage boundary</div><h2>Each system keeps the work it is good at</h2></div>
+      </div>
+      <div class="boundary">
+        <article class="boundary-card github">
+          <div class="section-kicker">GitHub Actions · canonical</div>
+          <h3>Machine evidence and test truth</h3>
+          <ul>
+            <li>Job status, logs, retries, and commit provenance</li>
+            <li>Failure traces, reports, screenshots, and server logs</li>
+            <li>Existing 30-day artifact retention remains unchanged</li>
+          </ul>
+        </article>
+        <article class="boundary-card teams">
+          <div class="section-kicker">SharePoint · review copy</div>
+          <h3>Successful human-readable evidence</h3>
+          <ul>
+            <li>Named WebM recordings and decision-point PNGs</li>
+            <li>Original lane manifests plus generated run provenance</li>
+            <li>Team ownership and authenticated internal links only</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><div class="section-kicker">Output contract</div><h2>Idempotent by run + attempt</h2></div>
+        <p class="section-note">A retry resumes the same folder. A GitHub rerun receives a new attempt number.</p>
+      </div>
+      <div class="tree" aria-label="SharePoint folder tree">
+        <span class="folder">Shared Documents/Playwright Evidence/</span><br>
+        └── <span class="folder">PR 491/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;└── <span class="folder">2026-07-31__run-&lt;id&gt;-attempt-&lt;n&gt;/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="folder">desktop/</span> <span class="muted"># manifest + named WebMs + PNGs</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="folder">mobile/</span>&nbsp; <span class="muted"># manifest + named WebMs + PNGs</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">run.json</span>&nbsp; <span class="muted"># repo, ref, SHA, run URL, targets, hashes</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div><div class="section-kicker">Admin handoff</div><h2>Four gates before the first live folder</h2></div>
+        <p class="section-note">The implementation account has repository maintain access, not admin, and this Mac has no Azure tenant session.</p>
+      </div>
+      <div class="handoff">
+        <div class="handoff-head">
+          <span class="lock">⌁</span>
+          <div><b>Deliberately not bypassed</b><span>No broad Graph grant, personal token, or client secret was substituted.</span></div>
+        </div>
+        <div class="steps">
+          <article class="admin-step">
+            <div><h3>Create <code>portal-v2-playwright-evidence</code></h3><p>Single-tenant Entra app in tenant <code>a2924ec3-e305-48bb-b3e4-94bd95f8b833</code>. Add application permission <code>Sites.Selected</code> and grant admin consent.</p></div>
+            <span class="role">Entra admin</span>
+          </article>
+          <article class="admin-step">
+            <div><h3>Scope it to the Portal Team site</h3><p>Grant the app <code>write</code> only on <code>vipassanatrust.sharepoint.com/sites/Dhamma.orgPortalTeam-PortalDevelopment</code>. Create <code>Shared Documents/Playwright Evidence</code> and record its drive + item IDs.</p></div>
+            <span class="role">SharePoint admin</span>
+          </article>
+          <article class="admin-step">
+            <div><h3>Trust the GitHub environment</h3><p>Create federated subject <code>repo:dhammaorg/portal-v2:environment:playwright-evidence</code>, audience <code>api://AzureADTokenExchange</code>. In GitHub, protect that environment to <code>main</code> and the pilot branch.</p></div>
+            <span class="role">Repo admin</span>
+          </article>
+          <article class="admin-step">
+            <div><h3>Set four non-secret variables and dispatch</h3><p><code>AZURE_CLIENT_ID</code>, <code>AZURE_TENANT_ID</code>, <code>M365_DRIVE_ID</code>, and <code>M365_PLAYWRIGHT_ROOT_ITEM_ID</code>. Run the PR491 showcase, then preview one PNG + WebM in Teams on desktop and phone.</p></div>
+            <span class="role">Pilot owner</span>
+          </article>
+        </div>
+      </div>
+      <div class="callout"><b>!</b><span>Negative acceptance check: the Entra identity must receive access denied for an unrelated SharePoint site.</span></div>
+    </section>
+
+    <footer>
+      <span>TODO-310 · GitHub issue #515 · draft PR #516<br>Portal V2 branch <code>todo-310-playwright-sharepoint</code></span>
+      <span>Prepared 2026-07-31T02:21:40Z<br>Local + GitHub CI green</span>
+    </footer>
+  </main>
+</body>
+</html>

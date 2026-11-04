@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-171 · golf-spica-clear · 19 five-iron shots, recovered</title>
+<style>
+:root{
+  --bg:#f4f4ef; --card:#fff; --line:#e4eae6; --well:#ececE4;
+  --ink:#15201d; --body:#43433c; --muted:#6f7a76;
+  --forest:#127c70; --forest-d:#0c5a50; --lime:#84c241; --lime-b:#9bd457;
+  --g-lime:#d6ece8; --warn:#c1502e; --warn-bg:#f6e3da; --warn-bd:#e3b9a6;
+  --found:#127c70; --found-bg:#e7f3f0; --found-bd:#bfe0d9;
+  --font-ui:'DM Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --font-mono:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-card:16px; --r-panel:13px; --r-chip:999px;
+  --shadow-card:0 1px 2px rgba(20,32,29,.04),0 8px 24px rgba(20,32,29,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);
+  line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px 80px}
+/* hero */
+.hero{background:linear-gradient(135deg,#1aa392,#63b45f);color:#fff;
+  margin:0 -22px 34px;padding:54px 34px 40px;border-radius:0 0 26px 26px;position:relative;overflow:hidden}
+.hero .code{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.86}
+.hero h1{font-size:34px;font-weight:780;letter-spacing:-.03em;margin:8px 0 6px;line-height:1.1}
+.hero p{font-size:15.5px;max-width:60ch;margin:6px 0 0;opacity:.95}
+.hero .disc{position:absolute;right:-40px;top:-30px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.22),transparent 62%)}
+/* meters */
+.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:0 0 32px}
+.meter{background:var(--card);border:1px solid var(--line);border-radius:var(--r-panel);
+  padding:15px 16px;box-shadow:var(--shadow-card)}
+.meter .mn{font-family:var(--font-mono);font-size:26px;color:var(--forest);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.meter .mn small{font-size:12px;color:var(--muted)}
+.meter .ml{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.35}
+h2{font-size:12px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.09em;
+  color:var(--forest-d);margin:38px 0 4px}
+h2 .n{color:var(--muted)}
+.lead{font-size:20px;font-weight:720;letter-spacing:-.02em;color:var(--ink);margin:2px 0 16px}
+p.prose{font-size:14.5px;color:var(--body);max-width:70ch}
+.callout{border-radius:var(--r-card);padding:16px 20px;font-size:14px;line-height:1.6;color:var(--body);margin:16px 0}
+.callout b{color:var(--ink)}
+.callout.found{background:var(--found-bg);border:1px solid var(--found-bd);border-left:3px solid var(--found)}
+.callout.warn{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:3px solid var(--warn)}
+.callout code,code{font-family:var(--font-mono);font-size:12.5px;background:var(--well);
+  padding:1px 5px;border-radius:5px;color:var(--ink)}
+.callout .ck{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--found);display:block;margin-bottom:5px}
+.callout.warn .ck{color:var(--warn)}
+/* pipeline */
+.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px;font-size:13px}
+.pipe .step{background:var(--card);border:1px solid var(--line);border-radius:var(--r-chip);
+  padding:7px 14px;font-weight:600;color:var(--forest-d)}
+.pipe .arw{color:var(--muted);font-family:var(--font-mono)}
+.pipe .step.dim{color:var(--muted);font-weight:500}
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-panel);margin:8px 0 6px;box-shadow:var(--shadow-card)}
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap}
+table.tbl th{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--muted);text-align:right;padding:10px 12px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--card)}
+table.tbl th:first-child,table.tbl td:first-child{text-align:left;color:var(--muted)}
+table.tbl td{padding:8px 12px;border-bottom:1px solid var(--line);color:var(--body);
+  text-align:right;font-variant-numeric:tabular-nums}
+table.tbl tr:last-child td{border-bottom:0}
+table.tbl tr:hover td{background:#fafcfb}
+td.neg{color:var(--warn)}
+.cap{font-size:11.5px;color:var(--muted);margin:6px 2px 0}
+/* footer */
+.foot{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);
+  font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.03em}
+.foot a{color:var(--forest);text-decoration:none}
+@media(max-width:640px){.meters{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="disc"></div>
+    <div class="code">TODO-171 · golf-spica-clear · Medewi Manor</div>
+    <h1>19 five-iron shots, recovered</h1>
+    <p>The GolfJoy app wouldn't export and the data was on no PC. So we read it off
+       six screenshots — and cross-checked every cell twice before trusting it.</p>
+  </div>
+
+  <div class="meters">
+    <div class="meter"><div class="mn">19</div><div class="ml">five-iron shots, all captured</div></div>
+    <div class="meter"><div class="mn">10</div><div class="ml">metrics per shot (smash blank — ball-only unit)</div></div>
+    <div class="meter"><div class="mn">2×</div><div class="ml">independent OCR checks, zero mismatches</div></div>
+    <div class="meter"><div class="mn">118<small> yd</small></div><div class="ml">avg carry · 94 mph ball · 13.1° launch</div></div>
+  </div>
+
+  <h2><span class="n">01 /</span> what happened</h2>
+  <div class="lead">The data was never on the Mac. It was on the phone's screen.</div>
+  <p class="prose">You wanted your 5-iron swing stats out of GolfJoy as a file you own. The honest
+    finding: GolfJoy keeps nothing on this Mac — the iOS-on-Mac app containers are empty stubs, there's
+    no local iPhone backup, and the "GolfJoy Space" cloud API is unproven. Every shot lives inside
+    GolfJoyPro on the iPhone. But you'd already screenshotted the <b>Practice&nbsp;data&nbsp;(5i)</b>
+    list — so <b>OCR was the right call</b>, and it turned out to be the complete one.</p>
+
+  <div class="callout found">
+    <span class="ck">how the 6 screenshots fit together</span>
+    One wide, scrollable table captured as <b>3 column-blocks × 2 row-ranges</b> (top rows 1–11,
+    bottom rows 3–19). Rows 3–11 appear in <b>both</b> halves of every block — a built-in overlap
+    check. Then an independent macOS <b>Vision</b> OCR pass read all six again. Manual read, overlap,
+    and Vision <b>all agreed on every cell</b>. Nothing was guessed.
+  </div>
+
+  <div class="pipe">
+    <span class="step">screenshot ×6</span><span class="arw">→</span>
+    <span class="step">read + transcribe</span><span class="arw">→</span>
+    <span class="step">overlap check</span><span class="arw">→</span>
+    <span class="step">Vision OCR diff</span><span class="arw">→</span>
+    <span class="step">one CSV you own</span>
+  </div>
+
+  <h2><span class="n">02 /</span> the data</h2>
+  <div class="lead">19 shots × 10 metrics — <code>~/ark/golf/spica/spica_5iron.csv</code></div>
+  <div class="tbl-wrap">
+  <table class="tbl">
+    <thead><tr>
+      <th>#</th><th>Total yd</th><th>Carry yd</th><th>Ball mph</th><th>Launch dir°</th>
+      <th>Launch ang°</th><th>Backspin</th><th>Sidespin</th><th>Dev yd</th><th>Apex yd</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>1</td><td>142.0</td><td>129.3</td><td>101.7</td><td class="neg">-1.5</td><td>10.9</td><td>3659</td><td>491</td><td>3.9</td><td>12.0</td></tr>
+      <tr><td>2</td><td>158.5</td><td>141.8</td><td>103.6</td><td>0.4</td><td>12.3</td><td>1822</td><td class="neg">-301</td><td class="neg">-4.8</td><td>15.4</td></tr>
+      <tr><td>3</td><td>145.1</td><td>123.6</td><td>94.8</td><td>0.3</td><td>13.2</td><td>984</td><td class="neg">-632</td><td class="neg">-7.8</td><td>11.9</td></tr>
+      <tr><td>4</td><td>119.1</td><td>91.2</td><td>85.4</td><td class="neg">-2.4</td><td>11.7</td><td>587</td><td class="neg">-1447</td><td class="neg">-12.9</td><td>6.5</td></tr>
+      <tr><td>5</td><td>41.8</td><td>19.1</td><td>82.8</td><td>3.2</td><td>1.7</td><td>2266</td><td>1122</td><td>2.8</td><td>0.1</td></tr>
+      <tr><td>6</td><td>141.8</td><td>129.5</td><td>94.4</td><td>4.1</td><td>14.9</td><td>3877</td><td>990</td><td>18.5</td><td>15.2</td></tr>
+      <tr><td>7</td><td>150.7</td><td>136.7</td><td>100.5</td><td>1.9</td><td>12.8</td><td>3415</td><td>446</td><td>11.2</td><td>14.9</td></tr>
+      <tr><td>8</td><td>145.9</td><td>130.4</td><td>95.5</td><td>1.0</td><td>14.2</td><td>2681</td><td>760</td><td>11.4</td><td>15.3</td></tr>
+      <tr><td>9</td><td>132.6</td><td>113.8</td><td>91.1</td><td class="neg">-2.7</td><td>12.9</td><td>1338</td><td class="neg">-40</td><td class="neg">-5.8</td><td>11.0</td></tr>
+      <tr><td>10</td><td>157.3</td><td>147.6</td><td>102.8</td><td>3.4</td><td>16.1</td><td>3744</td><td>447</td><td>15.2</td><td>23.6</td></tr>
+      <tr><td>11</td><td>132.2</td><td>120.0</td><td>90.9</td><td class="neg">-0.5</td><td>14.4</td><td>3114</td><td>276</td><td>3.4</td><td>14.0</td></tr>
+      <tr><td>12</td><td>90.6</td><td>79.3</td><td>74.0</td><td>17.3</td><td>14.8</td><td>4541</td><td>2745</td><td>28.8</td><td>7.2</td></tr>
+      <tr><td>13</td><td>129.9</td><td>108.8</td><td>89.2</td><td class="neg">-0.9</td><td>13.1</td><td>2811</td><td>210</td><td>1.4</td><td>9.3</td></tr>
+      <tr><td>14</td><td>133.4</td><td>120.2</td><td>91.2</td><td>1.2</td><td>14.2</td><td>3019</td><td>566</td><td>9.6</td><td>14.1</td></tr>
+      <tr><td>15</td><td>163.4</td><td>152.5</td><td>104.3</td><td>6.7</td><td>15.9</td><td>4491</td><td>1341</td><td>29.7</td><td>20.2</td></tr>
+      <tr><td>16</td><td>147.2</td><td>117.6</td><td>95.5</td><td class="neg">-0.7</td><td>12.0</td><td>280</td><td class="neg">-706</td><td class="neg">-10.2</td><td>9.6</td></tr>
+      <tr><td>17</td><td>136.1</td><td>108.7</td><td>88.5</td><td>2.1</td><td>13.8</td><td>1198</td><td>313</td><td>8.1</td><td>9.3</td></tr>
+      <tr><td>18</td><td>146.7</td><td>137.3</td><td>97.2</td><td>8.3</td><td>16.7</td><td>4635</td><td>1589</td><td>30.2</td><td>19.6</td></tr>
+      <tr><td>19</td><td>150.3</td><td>138.4</td><td>100.2</td><td>2.3</td><td>13.7</td><td>3999</td><td>713</td><td>14.1</td><td>15.0</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">Smash Factor is blank on all 19 — the Spica is a ball-only photometric unit (no club
+    speed → no smash). The app labels carry-yards as “Carry (%)”; stored as <code>carry_yd</code>.</p>
+
+  <h2><span class="n">03 /</span> your 5-iron, summarized</h2>
+  <div class="lead">The averages, and where the misses live</div>
+  <div class="tbl-wrap">
+  <table class="tbl">
+    <thead><tr><th>metric</th><th>avg</th><th>min</th><th>max</th><th>spread</th><th>stdev</th></tr></thead>
+    <tbody>
+      <tr><td>Total distance (yd)</td><td>135.0</td><td>41.8</td><td>163.4</td><td>121.6</td><td>27.0</td></tr>
+      <tr><td>Carry (yd)</td><td>118.2</td><td>19.1</td><td>152.5</td><td>133.4</td><td>29.4</td></tr>
+      <tr><td>Ball speed (mph)</td><td>93.9</td><td>74.0</td><td>104.3</td><td>30.3</td><td>7.6</td></tr>
+      <tr><td>Launch direction (°)</td><td>2.3</td><td>-2.7</td><td>17.3</td><td>20.0</td><td>4.5</td></tr>
+      <tr><td>Launch angle (°)</td><td>13.1</td><td>1.7</td><td>16.7</td><td>15.0</td><td>3.1</td></tr>
+      <tr><td>Back spin (rpm)</td><td>2761</td><td>280</td><td>4635</td><td>4355</td><td>1347</td></tr>
+      <tr><td>Side spin (rpm)</td><td>468</td><td>-1447</td><td>2745</td><td>4192</td><td>897</td></tr>
+      <tr><td>Deviation (yd)</td><td>7.7</td><td>-12.9</td><td>30.2</td><td>43.1</td><td>12.8</td></tr>
+      <tr><td>Apex (yd)</td><td>12.9</td><td>0.1</td><td>23.6</td><td>23.5</td><td>5.2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">Shots 5 (19&nbsp;yd carry, 1.7° launch) and 12 (74&nbsp;mph, +17° right) drag the mins —
+    the thin/toe strikes. Strip those two and the 5-iron is a tight ~130&nbsp;yd carry club.</p>
+
+  <h2><span class="n">04 /</span> going forward</h2>
+  <div class="callout found">
+    <span class="ck">no more OCR</span>
+    GolfJoy was a one-time rescue. From here, capture cleanly with
+    <b>swingnerds.com + GSPro</b> — both export real CSVs that drop straight into
+    <code>~/ark/golf/spica/</code>. The phone-extraction paths (Mac-app sync, iPhone backup,
+    cloud API) are retired. Toolkit lives in <code>bpo/projects/golf-spica/</code>.
+  </div>
+  <p class="prose">This CSV is the sim/launch-monitor half of the golf corpus — complementary to the
+    4.7&nbsp;GB TrackMan range data mapped in <code>dna/golf.md</code>. Same club, indoors vs the range,
+    ready to join into one lifetime shot table.</p>
+
+  <div class="foot">
+    TODO-171 · golf-spica-clear · bpo · Medewi Manor &nbsp;·&nbsp;
+    refs: <a href="https://nomad-code.github.io/todo-165_golf-spica-data_2026-07-08_14-48/">TODO-165 golf-spica-data</a> · dna/golf
+  </div>
+
+</div>
+</body>
+</html>

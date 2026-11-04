@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>The Hammer Museum · Made of L.A.</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../design-repo/grove/viz.css">
+  <style>
+    /* Chart-scope palette — grove hues chroma-snapped to pass the six checks
+       (validated on the sibling essay: L-band ✓ · chroma ✓ · protan ΔE 40.8 ✓ · contrast ✓).
+       Three visions, three hues; lime is the one emergent moment — a sense of place. */
+    :root {
+      --c-mag:    #c4501f;  /* the founder · Armand Hammer / Occidental   (warn, snapped) */
+      --c-mag-bg: #f6e3da;
+      --c-uni:    #3a92ba;  /* the university · UCLA · Wight + Grunwald    (found, snapped) */
+      --c-uni-bg: #e3eef2;
+      --c-dir:    #0d8f7f;  /* the director · Philbin · contemporary L.A.  (forest, snapped) */
+      --c-dir-bg: #d9ece7;
+      --c-era:    #a07c15;  /* time / era accents                          (amber, snapped) */
+      --c-era-bg: #f3ead2;
+      --c-lime:   #84c241;  /* ONE moment: the emergent sense of place — L.A. */
+    }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; }
+    main { max-width: 1060px; margin: 0 auto; padding: 30px 24px 80px; }
+
+    /* ---------- header ---------- */
+    .eyebrow { display:flex; align-items:center; gap:10px; font:500 12px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--c-mag); }
+    .eyebrow .mo-dot { --mo-pulse: var(--c-mag); }
+    h1 { font:800 clamp(34px, 5.4vw, 56px)/1.02 var(--font-display); letter-spacing:-.03em;
+      color:var(--ink); margin:16px 0 6px; }
+    h1 em { font-style:normal; color:var(--c-mag); }
+    h1 .la { color:var(--forest-d); }
+    .sub { font:500 15px/1.5 var(--font-ui); color:var(--muted); margin:0 0 14px; }
+    .sub a { color: var(--forest-d); text-decoration-color: var(--line); }
+    .lede { max-width:70ch; font:400 16.5px/1.6 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:640; }
+
+    .pullquote { margin:26px 0 6px; padding:18px 22px; border-left:3px solid var(--forest-d);
+      background:var(--card); border-radius: 0 var(--r-panel) var(--r-panel) 0;
+      box-shadow: var(--shadow-card); }
+    .pullquote p { font:500 clamp(17px, 2.2vw, 21px)/1.45 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .pullquote cite { display:block; margin-top:8px; font:500 11.5px/1 var(--font-mono);
+      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-style:normal; }
+
+    /* ---------- sections ---------- */
+    section { margin-top: 58px; }
+    .k { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+    .k .n { font:500 12px/1 var(--font-mono); color:var(--faint); letter-spacing:.08em; }
+    .k h2 { font:700 clamp(22px,3vw,28px)/1.1 var(--font-display); letter-spacing:-.02em; color:var(--ink); }
+    .k h2 em { font-style: normal; color: var(--forest-d); }
+    .blurb { max-width:72ch; font:400 15px/1.6 var(--font-ui); color:var(--body); margin-bottom:18px; }
+    .blurb b { color:var(--ink); font-weight:620; }
+
+    /* ---------- legend ---------- */
+    .lgd { display:flex; gap:16px 22px; flex-wrap:wrap; margin:14px 2px 0;
+      font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+    .lgd span { display:inline-flex; align-items:center; gap:8px; }
+    .lgd i { width:11px; height:11px; border-radius:50%; }
+
+    /* ---------- hero viz ---------- */
+    .hero-card { border:1px solid var(--line); border-radius:var(--r-card); background:var(--card);
+      box-shadow:var(--shadow-hero); overflow:hidden; }
+    .vis-bar { display:flex; align-items:center; gap:8px; padding:14px 16px 0; flex-wrap:wrap; }
+    .vis-btn { font:600 12px/1 var(--font-mono); letter-spacing:.03em; padding:9px 13px;
+      border-radius:var(--r-pill); border:1px solid var(--line); background:var(--bg);
+      color:var(--muted); cursor:pointer; transition:all .35s var(--ease); }
+    .vis-btn:hover { border-color:var(--faint); color:var(--ink); }
+    .vis-btn[aria-pressed="true"] { color:#fff; }
+    #btn-mag[aria-pressed="true"] { background:var(--c-mag); border-color:var(--c-mag); }
+    #btn-uni[aria-pressed="true"] { background:var(--c-uni); border-color:var(--c-uni); }
+    #btn-dir[aria-pressed="true"] { background:var(--c-dir); border-color:var(--c-dir); }
+    .vis-note { flex:1 1 280px; min-width:220px; position:relative; height:38px; }
+    .vis-note p { position:absolute; inset:0; display:flex; align-items:center;
+      font:400 13px/1.35 var(--font-ui); color:var(--muted); opacity:0;
+      transition:opacity .7s var(--ease); }
+    .vis-note p b { color:var(--ink); font-weight:620; margin-right:5px; }
+    [data-vision="mag"] .vis-note .n-mag,
+    [data-vision="uni"] .vis-note .n-uni,
+    [data-vision="dir"] .vis-note .n-dir { opacity:1; }
+
+    .axes svg { display:block; width:100%; height:auto; }
+    #layerMag, #layerUni, #layerDir { transition: opacity 1s var(--ease); }
+    [data-vision="mag"] #layerUni, [data-vision="mag"] #layerDir { opacity:.11; }
+    [data-vision="uni"] #layerMag, [data-vision="uni"] #layerDir { opacity:.11; }
+    [data-vision="dir"] #layerMag, [data-vision="dir"] #layerUni { opacity:.11; }
+    .hero-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:12px 18px 15px; border-top:1px solid var(--line); }
+    .hero-cap b { color:var(--forest-d); font-weight:600; }
+
+    .ax-label { font:500 10.5px var(--font-mono); letter-spacing:.06em; text-transform:uppercase; fill:var(--muted); }
+    .ax-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* ---------- stat tiles ---------- */
+    .tiles { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:12px; margin-top:16px; }
+    .tile { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px 14px; box-shadow:var(--shadow-card); position:relative; overflow:hidden; }
+    .tile::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tc,var(--forest)); }
+    .tile .v { font:800 34px/1 var(--font-display); letter-spacing:-.03em; color:var(--ink);
+      font-variant-numeric:tabular-nums; }
+    .tile .v small { font:700 17px/1 var(--font-display); color:var(--tc,var(--forest)); margin-left:2px; }
+    .tile .l { margin-top:6px; font:500 11px/1.45 var(--font-mono); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- timeline ---------- */
+    .tl-wrap { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); padding:8px 8px 2px; overflow-x:auto; }
+    .tl-wrap svg { display:block; width:100%; min-width:820px; height:auto; }
+    .tl-era { opacity:0; transition:opacity .9s var(--ease); }
+    .shown .tl-era { opacity:1; }
+    .tl-era-label { font:600 10px var(--font-mono); letter-spacing:.09em; text-transform:uppercase; }
+    .tl-spine { stroke:var(--faint); stroke-width:1.5; stroke-linecap:round; }
+    .tl-ev { cursor:pointer; }
+    .tl-ev circle { transition: r .25s var(--spring); }
+    .tl-ev:hover circle.c, .tl-ev:focus-visible circle.c { r:7; }
+    .tl-ev .stem { stroke-width:1; opacity:.55; }
+    .tl-yr { font:600 10.5px var(--font-mono); fill:var(--ink); letter-spacing:.02em; }
+    .tl-tt { font:400 10.5px var(--font-ui); fill:var(--muted); }
+    .tl-pop { opacity:0; transform:translateY(8px); transition:opacity .5s var(--ease), transform .5s var(--spring); transition-delay:var(--d,0ms); }
+    .shown .tl-pop { opacity:1; transform:none; }
+
+    /* ---------- collections ---------- */
+    .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .col { background:var(--card); border:1px solid var(--line); border-top:3px solid var(--cc,var(--forest));
+      border-radius:var(--r-card); padding:20px; box-shadow:var(--shadow-card);
+      transition:transform .3s var(--spring), box-shadow .3s var(--ease); outline:none; }
+    .col:hover, .col:focus-visible { transform:translateY(-3px); box-shadow:var(--shadow-lift); }
+    .col .tag { display:inline-flex; align-items:center; gap:6px; font:600 9.5px/1 var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:var(--cc); background:var(--cc-bg);
+      padding:5px 9px; border-radius:var(--r-chip); }
+    .col .tag i { width:7px; height:7px; border-radius:50%; background:var(--cc); }
+    .col .nm { font:700 18px/1.15 var(--font-display); letter-spacing:-.01em; color:var(--ink); margin-top:12px; }
+    .col .yr { font:500 11px/1 var(--font-mono); color:var(--muted); margin-top:5px; letter-spacing:.04em; }
+    .col .big { font:800 30px/1 var(--font-display); letter-spacing:-.03em; color:var(--cc);
+      font-variant-numeric:tabular-nums; margin-top:14px; }
+    .col .big small { font:700 15px/1 var(--font-display); color:var(--muted); margin-left:2px; }
+    .col .bl { font:400 12.5px/1.5 var(--font-ui); color:var(--body); margin-top:8px; }
+    .col .wk { margin-top:12px; padding-top:11px; border-top:1px solid var(--line);
+      font:400 11.5px/1.45 var(--font-ui); color:var(--muted); }
+    .col .wk b { color:var(--ink); font-weight:620; }
+    .col.mag { --cc:var(--c-mag); --cc-bg:var(--c-mag-bg); }
+    .col.uni { --cc:var(--c-uni); --cc-bg:var(--c-uni-bg); }
+    .col.dir { --cc:var(--c-dir); --cc-bg:var(--c-dir-bg); }
+
+    .split { margin-top:16px; }
+    .split .bar { display:flex; gap:2px; height:30px; border-radius:8px; overflow:hidden; }
+    .split .seg { display:flex; align-items:center; padding:0 12px; font:700 12px var(--font-mono);
+      color:#fff; letter-spacing:.03em; min-width:0; white-space:nowrap; }
+    .split .seg.mag { background:var(--c-mag); flex:1; }
+    .split .seg.uni { background:var(--c-uni); flex:1; }
+    .split .seg.dir { background:var(--c-dir); flex:1; }
+    .split .cap { display:flex; justify-content:space-between; margin-top:8px;
+      font:500 11px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+
+    /* ---------- figures ---------- */
+    .fig { background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+      box-shadow:var(--shadow-card); overflow:hidden; }
+    .fig svg { display:block; width:100%; height:auto; }
+    .fig-cap { font:400 12.5px/1.55 var(--font-ui); color:var(--muted);
+      padding:11px 18px 14px; border-top:1px solid var(--line); }
+    .fig-cap b { color:var(--forest-d); font-weight:600; }
+    .stop, .cell { cursor:pointer; }
+    .stop circle.c { transition: r .25s var(--spring); }
+    .stop:hover circle.c, .stop:focus-visible circle.c { r:7.5; }
+    .cell rect { transition: transform .25s var(--spring); transform-box: fill-box; transform-origin:center; }
+    .cell:hover rect, .cell:focus-visible rect { transform:scale(1.18); }
+    .rt-label { font:500 10.5px var(--font-mono); letter-spacing:.05em; text-transform:uppercase; fill:var(--muted); }
+    .rt-label.strong { fill:var(--ink); font-weight:600; }
+
+    /* draw-in for long paths */
+    .draw { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); }
+    .shown .draw { animation: drawin 2.2s var(--ease) forwards; animation-delay: var(--d,0ms); }
+    @keyframes drawin { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .draw { stroke-dasharray:none; stroke-dashoffset:0; } }
+
+    /* ---------- voices ---------- */
+    .chorus { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px; }
+    .voice { background:var(--card); border:1px solid var(--line); border-radius:var(--r-panel);
+      padding:16px 18px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:9px; }
+    .voice .who { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .voice .who b { font:700 14.5px/1.1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .voice .role { font:600 9.5px/1 var(--font-mono); letter-spacing:.08em; text-transform:uppercase;
+      padding:5px 9px; border-radius:var(--r-pill); color:var(--vr); background:var(--vr-bg); flex:none; }
+    .voice q { font:400 13.5px/1.55 var(--font-ui); color:var(--body); quotes:"“" "”"; }
+    .voice q::before, .voice q::after { color:var(--vr); font-weight:700; }
+    .voice .note { font:400 11.5px/1.5 var(--font-ui); color:var(--muted); margin-top:auto; }
+    .voice.founder { --vr:var(--c-mag); --vr-bg:var(--c-mag-bg); }
+    .voice.univ    { --vr:var(--c-uni); --vr-bg:var(--c-uni-bg); }
+    .voice.dirv    { --vr:var(--c-dir); --vr-bg:var(--c-dir-bg); }
+    .voice.city    { --vr:#5a8a1e; --vr-bg:#e8f3d8; }
+
+    /* ---------- table ---------- */
+    details.tbl { margin-top:18px; border:1px solid var(--line); border-radius:var(--r-panel);
+      background:var(--card); overflow:hidden; }
+    details.tbl summary { cursor:pointer; padding:13px 18px; font:600 12.5px var(--font-mono);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--forest-d); list-style:none; }
+    details.tbl summary::-webkit-details-marker { display:none; }
+    details.tbl summary::before { content:"▸ "; }
+    details.tbl[open] summary::before { content:"▾ "; }
+    details.tbl table { width:100%; border-collapse:collapse; font:400 13px/1.5 var(--font-ui); color:var(--body); }
+    details.tbl th, details.tbl td { text-align:left; padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+    details.tbl th { font:600 10.5px var(--font-mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+    details.tbl td:first-child { font-family:var(--font-mono); font-weight:500; color:var(--ink); white-space:nowrap; }
+
+    /* ---------- closing ---------- */
+    .close-quote { margin:22px 0 0; padding:20px 24px; border-radius:var(--r-card);
+      background:linear-gradient(150deg,#15201d,#0c5a50 130%); color:#eef3ef;
+      box-shadow:var(--shadow-hero); }
+    .close-quote p { font:500 clamp(16px,2.1vw,20px)/1.5 var(--font-display); letter-spacing:-.01em; }
+    .close-quote p em { font-style:normal; color:var(--lime-b); }
+    .close-quote cite { display:block; margin-top:10px; font:500 11px var(--font-mono);
+      letter-spacing:.07em; text-transform:uppercase; color:#9fb5ac; font-style:normal; }
+
+    footer { margin-top:64px; padding-top:18px; border-top:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      font:400 11.5px/1.6 var(--font-mono); color:var(--faint); letter-spacing:.02em; }
+    footer a { color:var(--muted); text-decoration-color:var(--line); }
+
+    /* ---------- tooltip ---------- */
+    .tip { position:fixed; z-index:60; max-width:290px; background:var(--ink); color:#f0f4f1;
+      font:400 12.5px/1.5 var(--font-ui); padding:10px 13px; border-radius:10px;
+      box-shadow:var(--shadow-lift); pointer-events:none; opacity:0;
+      transform:translateY(5px); transition:opacity .18s var(--ease), transform .18s var(--ease); }
+    .tip.on { opacity:1; transform:none; }
+    .tip b { color:#fff; font-weight:640; }
+
+    @media (max-width: 820px) {
+      .cols { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ================= header ================= -->
+  <header class="mo-reveal">
+    <div class="eyebrow"><span class="mo-dot"></span> essay reading · look sharp! · nolan patrick · 2026-01-18</div>
+    <h1>The Hammer Museum: <em>made</em> of <span class="la">L.A.</span></h1>
+    <p class="sub">Nolan Patrick reads three shows on one floor — and finds a museum that never resolved into a single idea.
+      Source: <a href="https://nolanpatrick.substack.com/p/the-hammer-museum-made-of-la">nolanpatrick.substack.com</a></p>
+    <p class="lede">A dying oil magnate announced a museum in <b>1988</b> and opened it in November <b>1990</b>, weeks before
+      his death — with no acquisition fund and no plan. UCLA absorbed it in <b>1994</b>, moving in its own teaching
+      collections. Then a director, <b>Ann Philbin</b>, spent a quarter-century turning it toward the living city.
+      Patrick argues these three visions — <b>founder, university, director</b> — never fused into one narrative. The
+      Hammer is a <b>palimpsest</b>: three museums showing through each other at once. And that dissonance, he says,
+      is exactly what makes it belong to Los Angeles.</p>
+    <div class="pullquote">
+      <p>“A palimpsest of ideas on what a museum collection should do.”</p>
+      <cite>Nolan Patrick · the essay's framing of the Hammer</cite>
+    </div>
+    <div class="lgd" role="list">
+      <span role="listitem"><i style="background:var(--c-mag)"></i> the founder · Armand Hammer</span>
+      <span role="listitem"><i style="background:var(--c-uni)"></i> the university · UCLA</span>
+      <span role="listitem"><i style="background:var(--c-dir)"></i> the director · Philbin</span>
+      <span role="listitem"><i style="background:var(--c-lime)"></i> a sense of place · L.A. <em style="font-style:normal;color:var(--faint)">(once)</em></span>
+    </div>
+  </header>
+
+  <!-- ================= 01 · the palimpsest ================= -->
+  <section id="palimpsest">
+    <div class="k mo-reveal"><span class="n">01</span><h2>Three visions, <em>one roof</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">One building in Westwood carries three ideas of what a museum is for, laid
+      down in three eras and never overwritten. Armand Hammer's <b>founder's canon</b> arrived with the doors. UCLA's
+      <b>teaching collections</b> — the Wight Gallery and the Grunwald Center — moved in when the university took over.
+      Ann Philbin's <b>living program</b> pointed the place at contemporary Los Angeles. Toggle a vision to isolate its
+      claim on the same footprint; watch the other two fade but never leave.</p>
+
+    <div class="hero-card mo-reveal" style="--d:140ms" data-vision="dir" id="heroCard">
+      <div class="vis-bar">
+        <button class="vis-btn" id="btn-mag" aria-pressed="false">1990 · the founder</button>
+        <button class="vis-btn" id="btn-uni" aria-pressed="false">1994 · the university</button>
+        <button class="vis-btn" id="btn-dir" aria-pressed="true">1999 · the director</button>
+        <div class="vis-note" aria-live="polite">
+          <p class="n-mag"><b>Armand Hammer.</b> A magnate's Western-canon collection, willed into a museum beside his oil-company HQ.</p>
+          <p class="n-uni"><b>UCLA.</b> A university's teaching collections — Wight Art Gallery, Grunwald Center — move in to manage the site.</p>
+          <p class="n-dir"><b>Ann Philbin.</b> A director points the building at the living city: contemporary art, the biennial, L.A.</p>
+        </div>
+      </div>
+      <figure class="axes" aria-hidden="false" role="img"
+        aria-label="Diagram: the Hammer Museum as a central building footprint standing on a faint Los Angeles skyline. Three routes of claims flow down into it — from the founder Armand Hammer (left), from UCLA (top), and from director Ann Philbin's contemporary program (right). A lime glow at the building's courtyard marks the emergent sense of place. The three routes converge on the building but never merge into a single line.">
+        <svg viewBox="0 0 960 400">
+          <defs>
+            <radialGradient id="placeGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="var(--c-lime)" stop-opacity=".38"/>
+              <stop offset="100%" stop-color="var(--c-lime)" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- ground + faint L.A. skyline (place) -->
+          <line class="vz-gridline" x1="30" y1="340" x2="930" y2="340"/>
+          <path d="M60,340 L60,318 L84,318 L84,306 L108,306 L108,326 L150,326 L150,300 L172,300 L172,290
+                   L196,290 L196,322 L820,322 L820,300 L842,300 L842,288 L866,288 L866,312 L900,312 L900,340"
+                fill="none" stroke="var(--faint)" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+          <text class="ax-label" x="42" y="362">Los Angeles · Westwood</text>
+
+          <!-- ===== the founder — left ===== -->
+          <g id="layerMag">
+            <path class="vz-path flow draw" style="--vz-c:var(--c-mag); --vz-dash:14; --len:400"
+                  d="M148,120 C240,190 320,214 452,260"/>
+            <rect x="120" y="86" width="26" height="26" rx="3" fill="none" stroke="var(--c-mag)" stroke-width="1.85"/>
+            <rect x="120" y="86" width="26" height="7" fill="var(--c-mag)" opacity=".45"/>
+            <circle class="vz-dot breathe" cx="240" cy="184" r="3.4" style="--vz-c:var(--c-mag); --d:-.4s"/>
+            <circle class="vz-dot breathe" cx="330" cy="216" r="3.4" style="--vz-c:var(--c-mag); --d:-1.6s"/>
+            <text class="ax-label strong" x="70" y="130">the founder</text>
+            <text class="ax-label" x="70" y="146">Occidental Petroleum, 1990</text>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-mag); --mote-path:path('M148,120 C240,190 320,214 452,260'); --d:0s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-mag); --mote-path:path('M148,120 C240,190 320,214 452,260'); --d:-3.1s"/>
+          </g>
+
+          <!-- ===== the university — top ===== -->
+          <g id="layerUni">
+            <path class="vz-path flow draw" style="--vz-c:var(--c-uni); --vz-dash:14; --len:210; --d:200ms"
+                  d="M480,96 C480,150 480,190 480,252"/>
+            <circle cx="480" cy="80" r="14" fill="none" stroke="var(--c-uni)" stroke-width="1.85"/>
+            <path d="M472,80 L488,80 M480,72 L480,88" stroke="var(--c-uni)" stroke-width="1.85" stroke-linecap="round"/>
+            <circle class="vz-dot breathe" cx="480" cy="150" r="3.4" style="--vz-c:var(--c-uni); --d:-.9s"/>
+            <circle class="vz-dot breathe" cx="480" cy="196" r="3.4" style="--vz-c:var(--c-uni); --d:-2.2s"/>
+            <text class="ax-label strong" x="480" y="46" text-anchor="middle">the university · UCLA</text>
+            <text class="ax-label" x="480" y="62" text-anchor="middle">Wight + Grunwald, 1994</text>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-uni); --mote-path:path('M480,96 C480,150 480,190 480,252'); --d:-1.2s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-uni); --mote-path:path('M480,96 C480,150 480,190 480,252'); --d:-4.4s"/>
+          </g>
+
+          <!-- ===== the director — right ===== -->
+          <g id="layerDir">
+            <path class="vz-path flow draw" style="--vz-c:var(--c-dir); --vz-dash:14; --len:400; --d:340ms"
+                  d="M812,120 C720,190 640,214 508,260"/>
+            <circle cx="838" cy="99" r="13" fill="none" stroke="var(--c-dir)" stroke-width="1.85"/>
+            <path d="M838,90 L838,108 M829,99 L847,99" stroke="var(--c-dir)" stroke-width="1.85" stroke-linecap="round" opacity=".6"/>
+            <circle class="vz-dot breathe" cx="720" cy="184" r="3.4" style="--vz-c:var(--c-dir); --d:-.6s"/>
+            <circle class="vz-dot breathe" cx="630" cy="216" r="3.4" style="--vz-c:var(--c-dir); --d:-1.9s"/>
+            <text class="ax-label strong" x="890" y="130" text-anchor="end">the director</text>
+            <text class="ax-label" x="890" y="146" text-anchor="end">Philbin · contemporary L.A., 1999</text>
+            <circle class="vz-mote" r="3" style="--vz-c:var(--c-dir); --mote-path:path('M812,120 C720,190 640,214 508,260'); --d:-.7s"/>
+            <circle class="vz-mote" r="2.4" style="--vz-c:var(--c-dir); --mote-path:path('M812,120 C720,190 640,214 508,260'); --d:-3.8s"/>
+          </g>
+
+          <!-- ===== the building (constant) — the Hammer, with its travertine courtyard ===== -->
+          <g id="building">
+            <circle cx="480" cy="290" r="86" fill="url(#placeGlow)"/>
+            <rect x="416" y="252" width="128" height="88" rx="6" fill="#fff" stroke="var(--ink)" stroke-width="1.85"/>
+            <!-- courtyard: the lime moment — a sense of place -->
+            <rect x="452" y="278" width="36" height="36" rx="3" fill="var(--c-lime)" opacity=".16"
+                  stroke="var(--c-lime)" stroke-width="1.85"/>
+            <circle class="vz-dot breathe" cx="470" cy="296" r="4.5" style="--vz-c:var(--c-lime); --d:-1s"/>
+            <text class="ax-label strong" x="480" y="360" text-anchor="middle">the Hammer</text>
+          </g>
+        </svg>
+      </figure>
+      <div class="hero-cap"><b>The friction is structural, not accidental.</b> Founder obligations, a university's collections,
+        and a director's curatorial vision each pull the building a different way — and the museum lets all three show at
+        once rather than choosing. Patrick reads that unresolved overlap as the point, not a flaw.</div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · timeline ================= -->
+  <section id="time">
+    <div class="k mo-reveal"><span class="n">02</span><h2>The <em>accidental</em> institution</h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Nothing about the Hammer was planned to cohere. It was <b>announced in 1988</b>
+      and opened weeks before its founder died, with no endowment for acquisitions. The university took the keys in
+      <b>1994</b>. Only with <b>Ann Philbin</b>'s arrival in January 1999 did a single guiding hand hold it for long —
+      <b>nearly 25 years</b>. Hover the dots for each turn.</p>
+
+    <div class="tl-wrap mo-reveal" style="--d:140ms" id="tlObserve">
+      <svg viewBox="0 0 960 268" role="img"
+        aria-label="Timeline 1988 to 2025: museum announced 1988, opened November 1990, Hammer dies weeks later 1990, UCLA assumes management 1994, Henry Hopkins as community-center director, Ann Philbin arrives January 1999, Made in L.A. biennial debuts 2012, Philbin departs 2024 after nearly 25 years, Zoe Ryan succeeds and Made in L.A. 2025 and Five Centuries on view December 2025. Eras shaded: founder era 1990 to 1994, university-Hopkins era 1994 to 1999, Philbin era 1999 to 2024, Ryan era 2024 on.">
+        <!-- era bands -->
+        <g class="tl-era">
+          <rect x="120" y="118" width="150" height="66" fill="var(--c-mag)" opacity=".12"/>
+          <rect x="270" y="118" width="152" height="66" fill="var(--c-uni)" opacity=".12"/>
+          <rect x="422" y="118" width="360" height="66" fill="var(--c-dir)" opacity=".12"/>
+          <rect x="782" y="118" width="148" height="66" fill="var(--c-era)" opacity=".16"/>
+          <text class="tl-era-label" x="126" y="112" fill="var(--c-mag)">founder · 4 yrs</text>
+          <text class="tl-era-label" x="276" y="112" fill="var(--c-uni)">university · Hopkins</text>
+          <text class="tl-era-label" x="428" y="112" fill="var(--forest-d)">Philbin · ~25 yrs</text>
+          <text class="tl-era-label" x="788" y="112" fill="var(--c-era)">Ryan</text>
+        </g>
+        <!-- spine -->
+        <line class="tl-spine draw" style="--len:864" x1="66" y1="151" x2="930" y2="151"/>
+        <!-- events -->
+        <g class="tl-ev tl-pop" style="--d:100ms" tabindex="0" data-tip="&lt;b&gt;1988 — announced.&lt;/b&gt; Armand Hammer, head of Occidental Petroleum, unveils plans for a museum in Westwood, beside the company HQ.">
+          <line class="stem" x1="120" y1="151" x2="120" y2="66" stroke="var(--c-mag)"/>
+          <circle class="c" cx="120" cy="151" r="5" fill="var(--c-mag)"/>
+          <text class="tl-yr" x="120" y="48" text-anchor="middle">1988</text>
+          <text class="tl-tt" x="120" y="61" text-anchor="middle">museum announced</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:180ms" tabindex="0" data-tip="&lt;b&gt;Nov 1990 — opens, then loss.&lt;/b&gt; The museum opens weeks before Hammer's death — with no acquisition fund and no operating plan.">
+          <line class="stem" x1="200" y1="151" x2="200" y2="223" stroke="var(--c-mag)"/>
+          <circle class="c" cx="200" cy="151" r="5.5" fill="var(--c-mag)"/>
+          <text class="tl-yr" x="200" y="240" text-anchor="middle">1990</text>
+          <text class="tl-tt" x="200" y="253" text-anchor="middle">opens · founder dies</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:260ms" tabindex="0" data-tip="&lt;b&gt;1994 — UCLA takes over.&lt;/b&gt; The university assumes management and moves in its Wight Art Gallery and the Grunwald Center for the Graphic Arts.">
+          <line class="stem" x1="300" y1="151" x2="300" y2="66" stroke="var(--c-uni)"/>
+          <circle class="c" cx="300" cy="151" r="5.5" fill="var(--c-uni)"/>
+          <text class="tl-yr" x="300" y="48" text-anchor="middle">1994</text>
+          <text class="tl-tt" x="300" y="61" text-anchor="middle">UCLA assumes management</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:340ms" tabindex="0" data-tip="&lt;b&gt;Hopkins era.&lt;/b&gt; First director under UCLA, Henry Hopkins, wanted the Hammer to function 'more as a community cultural center than a traditional museum.'">
+          <line class="stem" x1="372" y1="151" x2="372" y2="223" stroke="var(--c-uni)"/>
+          <circle class="c" cx="372" cy="151" r="5" fill="var(--c-uni)"/>
+          <text class="tl-yr" x="372" y="240" text-anchor="middle">'94–'99</text>
+          <text class="tl-tt" x="372" y="253" text-anchor="middle">“community cultural center”</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:420ms" tabindex="0" data-tip="&lt;b&gt;Jan 1999 — Philbin arrives.&lt;/b&gt; Ann Philbin begins a tenure of nearly 25 years, growing the budget five times over and acquiring 4,000+ contemporary works.">
+          <line class="stem" x1="440" y1="151" x2="440" y2="66" stroke="var(--c-dir)"/>
+          <circle class="c" cx="440" cy="151" r="5.5" fill="var(--c-dir)"/>
+          <text class="tl-yr" x="440" y="48" text-anchor="middle">1999</text>
+          <text class="tl-tt" x="440" y="61" text-anchor="middle">Philbin arrives</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:500ms" tabindex="0" data-tip="&lt;b&gt;2012 — the biennial.&lt;/b&gt; Made in L.A. debuts as the Hammer's survey of Los Angeles artists — the museum turning to face its city.">
+          <line class="stem" x1="600" y1="151" x2="600" y2="223" stroke="var(--c-dir)"/>
+          <circle class="c" cx="600" cy="151" r="5" fill="var(--c-dir)"/>
+          <text class="tl-yr" x="600" y="240" text-anchor="middle">2012</text>
+          <text class="tl-tt" x="600" y="253" text-anchor="middle">Made in L.A. debuts</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:580ms" tabindex="0" data-tip="&lt;b&gt;2024 — Philbin departs.&lt;/b&gt; After nearly a quarter-century, she leaves a museum transformed toward the contemporary.">
+          <line class="stem" x1="740" y1="151" x2="740" y2="66" stroke="var(--c-dir)"/>
+          <circle class="c" cx="740" cy="151" r="5" fill="var(--c-dir)"/>
+          <text class="tl-yr" x="740" y="48" text-anchor="middle">2024</text>
+          <text class="tl-tt" x="740" y="61" text-anchor="middle">Philbin departs</text>
+        </g>
+        <g class="tl-ev tl-pop" style="--d:660ms" tabindex="0" data-tip="&lt;b&gt;2025 — Ryan's first biennial.&lt;/b&gt; Zoë Ryan succeeds Philbin; Made in L.A. 2025 and Five Centuries of Works on Paper are on view in December.">
+          <line class="stem" x1="860" y1="151" x2="860" y2="223" stroke="var(--c-era)"/>
+          <circle class="c" cx="860" cy="151" r="5.5" fill="var(--c-era)"/>
+          <text class="tl-yr" x="860" y="240" text-anchor="middle">2025</text>
+          <text class="tl-tt" x="860" y="253" text-anchor="middle">Ryan · three shows on view</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="tiles">
+      <div class="tile mo-reveal" style="--tc:var(--c-dir); --d:60ms">
+        <div class="v"><span data-count="5">0</span><small>×</small></div>
+        <div class="l">budget grew under Philbin</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-dir); --d:140ms">
+        <div class="v"><span data-count="4000">0</span><small>+</small></div>
+        <div class="l">contemporary works acquired</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--c-era); --d:220ms">
+        <div class="v"><span data-count="25">0</span><small>yrs</small></div>
+        <div class="l">Philbin's tenure · 1999–2024</div>
+      </div>
+      <div class="tile mo-reveal" style="--tc:var(--ink); --d:300ms">
+        <div class="v"><span data-count="3">0</span><small>visions</small></div>
+        <div class="l">founder · university · director</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · three collections ================= -->
+  <section id="collections">
+    <div class="k mo-reveal"><span class="n">03</span><h2>One floor, <em>three collections</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">In December 2025 three shows sat side by side, each speaking a different
+      museum's language: the <b>Armand Hammer Collection</b> of Western old masters, the university's <b>Five Centuries of
+      Works on Paper</b> from the Grunwald Center, and Philbin's biennial <b>Made in L.A. 2025</b>. No single thesis binds
+      them — that is Patrick's point. Hover a collection.</p>
+
+    <div class="cols">
+      <div class="col mag mo-reveal" tabindex="0" style="--d:60ms">
+        <span class="tag"><i></i>the founder</span>
+        <div class="nm">Armand Hammer Collection</div>
+        <div class="yr">Western canon · old masters</div>
+        <div class="big">1876</div>
+        <div class="bl">The magnate's personal holdings — traditional Western art history, presented as it always has been.</div>
+        <div class="wk"><b>Gustave Moreau</b>, <i>Salomé Dancing before Herod</i> — the collection's signature note.</div>
+      </div>
+      <div class="col uni mo-reveal" tabindex="0" style="--d:140ms">
+        <span class="tag"><i></i>the university</span>
+        <div class="nm">Five Centuries of Works on Paper</div>
+        <div class="yr">Grunwald Center · begun 1956</div>
+        <div class="big">45,000<small>+</small></div>
+        <div class="bl">Fred Grunwald's 1956 gift grew into a teaching archive spanning 500 years of prints and drawings.</div>
+        <div class="wk"><b>500 years</b> of works on paper — a scholar's collection, not a founder's.</div>
+      </div>
+      <div class="col dir mo-reveal" tabindex="0" style="--d:220ms">
+        <span class="tag"><i></i>the director</span>
+        <div class="nm">Made in L.A. 2025</div>
+        <div class="yr">biennial · debuted 2012 · no theme</div>
+        <div class="big">28</div>
+        <div class="bl">Curators Essence Harden and Paulina Pobocha; a show that “resists tidiness” and honors “the depth of history that sustains Los Angeles artists.”</div>
+        <div class="wk"><b>Gabriela Ruiz</b>, <i>Collective Scream</i> (2025) · <b>Dewey Tafoya</b>, <i>Los tenis de Cuauhtémoc</i> (2018).</div>
+      </div>
+    </div>
+
+    <div class="split mo-reveal" style="--d:300ms" role="img"
+      aria-label="Three collections given roughly equal weight — founder, university, director — none dominant, none subordinate; the museum shows all three at once.">
+      <div class="bar">
+        <div class="seg mag">the founder</div>
+        <div class="seg uni">the university</div>
+        <div class="seg dir">the director</div>
+      </div>
+      <div class="cap"><span>no single collection dominates</span><span>three museums, one building</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 04 · made in L.A. ================= -->
+  <section id="madein">
+    <div class="k mo-reveal"><span class="n">04</span><h2>The city as <em>the collection</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">If the founder brought the canon and the university brought the archive,
+      Philbin brought the city. <b>Made in L.A.</b> is the Hammer facing its place directly — <b>28 participants</b> in
+      2025, no unifying theme, drawing on artists and workshops rooted in Los Angeles like East L.A.'s Self Help Graphics.
+      Patrick reads it as the museum attending to “the things that are hidden or emerging or unknown.” Hover the works.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="gridObserve">
+      <svg viewBox="0 0 960 240" role="img"
+        aria-label="A ledger of 28 cells representing the 28 participants in Made in L.A. 2025, fed by routes from a Los Angeles source node at left. Most cells are the director's forest color; one lime cell marks a highlighted L.A.-rooted work.">
+        <!-- L.A. source -->
+        <text class="rt-label strong" x="40" y="112">Los Angeles</text>
+        <text class="rt-label" x="40" y="128">artists · workshops</text>
+        <circle class="vz-ring halo" cx="96" cy="150" r="22" style="--vz-c:var(--c-dir)"/>
+        <circle class="vz-ring orbit" cx="96" cy="150" r="22" style="--vz-c:var(--c-dir)"/>
+        <circle class="vz-dot breathe" cx="96" cy="150" r="6" style="--vz-c:var(--c-dir); --d:-.5s"/>
+        <!-- feed routes -->
+        <path class="vz-path flow draw" style="--vz-c:var(--c-dir); --vz-dash:14; --len:220" d="M124,140 C210,110 260,96 322,90"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-dir); --vz-dash:14; --len:220; --d:180ms" d="M126,152 C220,150 270,150 322,150"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-dir); --vz-dash:14; --len:220; --d:360ms" d="M124,162 C210,192 260,204 322,210"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-dir); --mote-path:path('M124,140 C210,110 260,96 322,90'); --d:0s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-dir); --mote-path:path('M126,152 C220,150 270,150 322,150'); --d:-2.4s"/>
+        <circle class="vz-mote" r="3" style="--vz-c:var(--c-dir); --mote-path:path('M124,162 C210,192 260,204 322,210'); --d:-4.6s"/>
+        <!-- ledger of 28 cells: 7 cols x 4 rows -->
+        <g id="cellGrid"></g>
+        <text class="rt-label strong" x="360" y="42">Made in L.A. 2025 · 28 participants</text>
+      </svg>
+      <div class="fig-cap"><b>A ledger, not a canon.</b> The grid stands in for the 28-artist checklist — no hierarchy, no
+        theme, the city itself the organizing idea. The single lime cell marks a work Patrick names from a Los Angeles
+        workshop: an art history written from the street up.</div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · the chord that never resolves ================= -->
+  <section id="dissonance">
+    <div class="k mo-reveal"><span class="n">05</span><h2>The chord that <em>never resolves</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick names the American museum's recurring tension — among <b>public,
+      corporate, and individual interests</b> — and finds all three live at the Hammer: a founder's obligations, a
+      corporation's proximity, a university's collections, a director's vision. They meet, but they do not merge. The
+      essay hears the friction as a chord left deliberately unresolved.</p>
+
+    <div class="fig mo-reveal" style="--d:140ms" id="chordObserve">
+      <svg viewBox="0 0 960 230" role="img"
+        aria-label="Three colored routes — founder, university, director — travel from the left and meet at a single node in the center. Past the node a dashed line continues but never settles onto one path, marking the unresolved narrative. A lime marker at the meeting point is the emergent sense of place.">
+        <line class="vz-gridline" x1="30" y1="200" x2="930" y2="200"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-mag); --vz-dash:14; --len:470" d="M60,60 C240,60 360,96 520,116"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-uni); --vz-dash:14; --len:470; --d:150ms" d="M60,116 C240,116 360,116 520,116"/>
+        <path class="vz-path flow draw" style="--vz-c:var(--c-dir); --vz-dash:14; --len:470; --d:300ms" d="M60,172 C240,172 360,136 520,116"/>
+        <text class="rt-label" x="52" y="46" fill="var(--c-mag)">founder · individual</text>
+        <text class="rt-label" x="52" y="104" fill="var(--c-uni)">university · public</text>
+        <text class="rt-label" x="52" y="190" fill="var(--forest-d)">director · vision</text>
+        <!-- the meeting node: lime, a sense of place -->
+        <circle class="vz-ring halo" cx="520" cy="116" r="18" style="--vz-c:var(--c-lime)"/>
+        <circle class="vz-ring orbit" cx="520" cy="116" r="18" style="--vz-c:var(--c-lime)"/>
+        <circle class="vz-dot breathe" cx="520" cy="116" r="6.5" style="--vz-c:var(--c-lime); --d:-1s"/>
+        <text class="rt-label strong" x="520" y="72" text-anchor="middle">a sense of place</text>
+        <!-- past the node: three unresolved threads, never one line -->
+        <path class="vz-path" style="--vz-c:var(--c-mag); stroke-dasharray:3 8" d="M520,116 C640,112 760,100 900,96"/>
+        <path class="vz-path" style="--vz-c:var(--c-uni); stroke-dasharray:3 8" d="M520,116 C640,118 760,120 900,122"/>
+        <path class="vz-path" style="--vz-c:var(--c-dir); stroke-dasharray:3 8" d="M520,116 C640,124 760,140 900,150"/>
+        <text class="rt-label" x="898" y="80" text-anchor="end">still three, never one</text>
+      </svg>
+      <div class="fig-cap"><b>Read honestly:</b> the three interests are drawn as equal threads, not measured shares — the
+        essay describes a structural tension, not a quantity. Past the meeting point the lines fan out again: the Hammer
+        keeps all three visions in play rather than resolving them into a single narrative.</div>
+    </div>
+  </section>
+
+  <!-- ================= 06 · the voices ================= -->
+  <section id="voices">
+    <div class="k mo-reveal"><span class="n">06</span><h2>The house's <em>voices</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Four figures speak the museum's competing ideas — the founder's mission, the
+      university's civic turn, the director's identification with the city, and the biennial's answer to it.</p>
+    <div class="chorus">
+      <div class="voice founder mo-reveal" style="--d:60ms">
+        <div class="who"><b>Armand Hammer</b><span class="role">the founder</span></div>
+        <q>To illuminate our lives and build a more just world.</q>
+        <div class="note">The magnate's stated mission — collecting art “for the benefit of the public,” announced 1988, opened 1990.</div>
+      </div>
+      <div class="voice univ mo-reveal" style="--d:120ms">
+        <div class="who"><b>Henry Hopkins</b><span class="role">the university</span></div>
+        <q>More as a community cultural center than a traditional museum.</q>
+        <div class="note">First director under UCLA after the 1994 takeover — reframing the founder's canon as a civic space.</div>
+      </div>
+      <div class="voice dirv mo-reveal" style="--d:180ms">
+        <div class="who"><b>Ann Philbin</b><span class="role">the director</span></div>
+        <q>Maybe the reason I think I can pull this off is that I don't really understand L.A.</q>
+        <div class="note">A 25-year tenure that turned the Hammer toward the contemporary and toward the city itself.</div>
+      </div>
+      <div class="voice dirv mo-reveal" style="--d:240ms">
+        <div class="who"><b>Marcy Carsey</b><span class="role">the board</span></div>
+        <q>The Hammer is Annie and Annie is the Hammer.</q>
+        <div class="note">The chairwoman on how fully the director's identity fused with the institution's.</div>
+      </div>
+      <div class="voice city mo-reveal" style="--d:300ms">
+        <div class="who"><b>Harden &amp; Pobocha</b><span class="role">the biennial</span></div>
+        <q>The depth of history that sustains Los Angeles artists.</q>
+        <div class="note">Curators of Made in L.A. 2025 — a show that “resists tidiness,” letting the city set the terms.</div>
+      </div>
+      <div class="voice city mo-reveal" style="--d:360ms">
+        <div class="who"><b>Nolan Patrick</b><span class="role">the reading</span></div>
+        <q>A palimpsest of ideas on what a museum collection should do.</q>
+        <div class="note">The essay's verdict: don't resolve the dissonance — it's what gives the Hammer its sense of place.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 · a sense of place ================= -->
+  <section id="place">
+    <div class="k mo-reveal"><span class="n">07</span><h2>A <em>sense of place</em></h2></div>
+    <p class="blurb mo-reveal" style="--d:80ms">Patrick offers two readings at once. The Hammer is a textbook case of the
+      American museum caught among public, corporate, and individual interests — <i>and</i> it is a mirror of Los Angeles:
+      a city, and an institution, built from a “messy tangle of relationships” that never fully reconcile. The dissonance
+      isn't the failure. It's the address.</p>
+
+    <div class="close-quote mo-reveal" style="--d:160ms">
+      <p>The Hammer's three visions never resolve into one story — and Patrick argues that unresolved dissonance is
+        precisely what gives it <em>a sense of place</em>: L.A.'s messy history stays visible in the building, long after
+        this biennial closes.</p>
+      <cite>Nolan Patrick · Look Sharp! · on the Hammer as Los Angeles</cite>
+    </div>
+
+    <details class="tbl mo-reveal" style="--d:240ms">
+      <summary>data table · every turn &amp; collection drawn above</summary>
+      <table>
+        <thead><tr><th>Year</th><th>Turn</th><th>Vision</th></tr></thead>
+        <tbody>
+          <tr><td>1956</td><td>Fred Grunwald donates his prints — seed of the Grunwald Center's works-on-paper archive</td><td>university</td></tr>
+          <tr><td>1988</td><td>Armand Hammer announces the museum, in Westwood beside Occidental Petroleum</td><td>founder</td></tr>
+          <tr><td>Nov 1990</td><td>Museum opens weeks before Hammer's death — no acquisition fund, no operating plan</td><td>founder</td></tr>
+          <tr><td>1994</td><td>UCLA assumes management; Wight Art Gallery + Grunwald Center move to the site</td><td>university</td></tr>
+          <tr><td>'94–'99</td><td>Henry Hopkins: “more as a community cultural center than a traditional museum”</td><td>university</td></tr>
+          <tr><td>Jan 1999</td><td>Ann Philbin arrives; budget grows 5×, 4,000+ contemporary works acquired</td><td>director</td></tr>
+          <tr><td>2012</td><td>Made in L.A. debuts as the Hammer's Los Angeles biennial</td><td>director</td></tr>
+          <tr><td>2024</td><td>Philbin departs after nearly 25 years</td><td>director</td></tr>
+          <tr><td>2025</td><td>Zoë Ryan's first biennial; Made in L.A. 2025 + Five Centuries on view</td><td>director / university</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:0">
+        <thead><tr><th>Collection</th><th>Vision</th><th>Scale / signature (per the essay)</th></tr></thead>
+        <tbody>
+          <tr><td>Armand Hammer Collection</td><td>founder</td><td>Western canon; Gustave Moreau, <i>Salomé Dancing before Herod</i> (1876)</td></tr>
+          <tr><td>Five Centuries of Works on Paper</td><td>university</td><td>Grunwald Center; 45,000+ works, 500 years; Fred Grunwald gift, 1956</td></tr>
+          <tr><td>Made in L.A. 2025</td><td>director</td><td>28 participants, no theme; Harden &amp; Pobocha; Ruiz, Tafoya, Self Help Graphics</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    <span>bpo · essay reading · the hammer museum, made of l.a.</span>
+    <span><a href="https://nolanpatrick.substack.com/p/the-hammer-museum-made-of-la">source essay</a> · built 2026-07-14 13:33 utc</span>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- build the Made-in-L.A. ledger: 28 cells, one lime ---- */
+  (function () {
+    var g = document.getElementById('cellGrid');
+    if (!g) return;
+    var NS = 'http://www.w3.org/2000/svg';
+    var cols = 7, rows = 4, x0 = 360, y0 = 62, cw = 76, ch = 40, s = 26, r = 5;
+    var names = {
+      0:  ['Gabriela Ruiz', 'Collective Scream (2025)'],
+      13: ['Dewey Tafoya', 'Los tenis de Cuauhtémoc (2018) · Self Help Graphics, East L.A.'],
+      20: ['Essence Harden', 'co-curator, Made in L.A. 2025'],
+      27: ['Paulina Pobocha', 'co-curator, Made in L.A. 2025']
+    };
+    var limeIdx = 13; // the single lime moment — a named L.A.-rooted work
+    for (var i = 0; i < cols * rows; i++) {
+      var cx = x0 + (i % cols) * cw, cy = y0 + Math.floor(i / cols) * ch;
+      var grp = document.createElementNS(NS, 'g');
+      grp.setAttribute('class', 'cell');
+      grp.setAttribute('tabindex', '0');
+      var isLime = (i === limeIdx);
+      var meta = names[i];
+      var tip = meta
+        ? '<b>' + meta[0] + '</b> — ' + meta[1]
+        : '<b>Made in L.A. 2025</b> — one of 28 participants; no ranking, no theme.';
+      grp.setAttribute('data-tip', tip);
+      var rect = document.createElementNS(NS, 'rect');
+      rect.setAttribute('x', cx); rect.setAttribute('y', cy);
+      rect.setAttribute('width', s); rect.setAttribute('height', s);
+      rect.setAttribute('rx', r);
+      if (isLime) {
+        rect.setAttribute('fill', 'var(--c-lime)');
+        rect.setAttribute('opacity', '.92');
+      } else {
+        rect.setAttribute('fill', 'var(--c-dir)');
+        rect.setAttribute('opacity', meta ? '.85' : '.32');
+      }
+      grp.appendChild(rect);
+      g.appendChild(grp);
+    }
+  })();
+
+  /* ---- staggered reveals ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.mo-reveal').forEach(function (el) { io.observe(el); });
+  if (reduce) document.querySelectorAll('.mo-reveal').forEach(function (el) { el.classList.add('shown'); });
+
+  /* ---- count-up tiles ---- */
+  var cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, target = +el.getAttribute('data-count');
+      function fmt(n) { return n >= 1000 ? n.toLocaleString('en-US') : n; }
+      if (reduce) { el.textContent = fmt(target); return; }
+      var t0 = null, dur = 1300;
+      function step(t) {
+        if (!t0) t0 = t;
+        var p = Math.min((t - t0) / dur, 1), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(Math.round(target * ease));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+
+  /* ---- vision toggle: auto-cycle founder → university → director until the reader takes over ---- */
+  var card = document.getElementById('heroCard');
+  var order = ['mag', 'uni', 'dir'];
+  var btns = { mag: document.getElementById('btn-mag'), uni: document.getElementById('btn-uni'), dir: document.getElementById('btn-dir') };
+  var userDrove = false, timer = null;
+  function setVision(v) {
+    card.setAttribute('data-vision', v);
+    order.forEach(function (k) { btns[k].setAttribute('aria-pressed', k === v); });
+  }
+  order.forEach(function (k) {
+    btns[k].addEventListener('click', function () { userDrove = true; clearInterval(timer); setVision(k); });
+  });
+  if (!reduce) {
+    timer = setInterval(function () {
+      if (userDrove) return clearInterval(timer);
+      var cur = card.getAttribute('data-vision');
+      setVision(order[(order.indexOf(cur) + 1) % order.length]);
+    }, 4200);
+  }
+
+  /* ---- one tooltip for all [data-tip] ---- */
+  var tip = document.getElementById('tip');
+  function showTip(el) {
+    tip.innerHTML = el.getAttribute('data-tip');
+    tip.classList.add('on');
+    tip.setAttribute('aria-hidden', 'false');
+    var r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+    var x = r.left + r.width / 2 - tr.width / 2;
+    x = Math.max(10, Math.min(x, window.innerWidth - tr.width - 10));
+    var y = r.top - tr.height - 12;
+    if (y < 8) y = r.bottom + 12;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  function hideTip() { tip.classList.remove('on'); tip.setAttribute('aria-hidden', 'true'); }
+  document.querySelectorAll('[data-tip]').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { showTip(el); });
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('focus', function () { showTip(el); });
+    el.addEventListener('blur', hideTip);
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>
+</body>
+</html>

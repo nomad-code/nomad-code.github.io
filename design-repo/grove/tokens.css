@@ -1,0 +1,73 @@
+/* grove · design tokens
+   The Found client-studio system, canonized from the growth-ortho
+   auth-seam + rivet artifact family (2026-W27).
+   Warm paper, forest + lime, DM Sans / DM Mono, soft depth, spring motion.
+
+   Sibling system: bone (../bone/) — the April 2026 brand-PDF editorial
+   system. grove is the default for artifacts; bone for print-minimal comps. */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap');
+
+:root {
+  /* Surfaces & ink */
+  --bg:     #f4f4ef;   /* warm paper — page bg */
+  --card:   #ffffff;   /* card surface */
+  --line:   #e4eae6;   /* hairline borders */
+  --well:   #ececE4;   /* inset tracks, hover wash */
+  --ink:    #15201d;   /* primary text */
+  --body:   #43433c;   /* prose text */
+  --muted:  #6f7a76;   /* secondary text */
+  --faint:  #a7a79c;   /* tertiary — footers, section numbers */
+
+  /* Brand greens */
+  --forest:   #127c70;  /* primary brand — headings, fills, active */
+  --forest-d: #0c5a50;  /* forest pressed / dense text on tint */
+  --lime:     #84c241;  /* accent — the found moment, rationed */
+  --lime-b:   #9bd457;  /* lime bright — marks on dark/forest */
+  --g-lime:   #d6ece8;  /* green tint — active nav, positive pills */
+
+  /* Status ramps (bg = tint fill, bd = tint border) */
+  --warn:     #c1502e;  --warn-bg:  #f6e3da;  --warn-bd:  #e3b9a6;  /* leak / brick */
+  --amber:    #9a7a1f;  --amber-bg: #f3ead2;  --amber-bd: #e2d29a;  /* mid confidence */
+  --found:    #4A8AA0;  --found-bg: #e3eef2;  --found-d:  #356577;  --found-bd: #cfe1e7;  /* Found blue — recovery / agentic */
+
+  /* Type */
+  --font-ui:       'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-display:  var(--font-ui);
+  --font-wordmark: 'DM Sans', var(--font-ui);
+  --font-mono:     'DM Mono', ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Radius scale */
+  --r-hero:  22px;   /* hero cards */
+  --r-card:  18px;   /* section cards */
+  --r-panel: 14px;   /* kpi tiles, formula, inner panels */
+  --r-tile:  12px;   /* small tiles, strips */
+  --r-nav:   11px;   /* rail links */
+  --r-chip:   8px;   /* tags, tracks */
+  --r-pill: 999px;
+
+  /* Depth */
+  --shadow-card: 0 1px 2px rgba(20,23,15,.04), 0 10px 28px rgba(20,23,15,.045);
+  --shadow-hero: 0 1px 2px rgba(20,23,15,.04), 0 14px 40px rgba(20,23,15,.06);
+  --shadow-lift: 0 12px 28px rgba(20,23,15,.10);
+
+  /* Motion */
+  --ease:   cubic-bezier(.22,.61,.36,1);
+  --spring: cubic-bezier(.34,1.5,.5,1);
+}
+
+/* Base body type */
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+}
+b, strong { font-weight: 680; }
+code { font-family: var(--font-mono); font-size: .92em; }
+
+/* Utilities */
+.mono { font-family: var(--font-mono); font-size: .92em; letter-spacing: -.01em; }
+.num  { font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.ic   { width: 1em; height: 1em; display: inline-block; vertical-align: -.13em;
+        fill: none; stroke: currentColor; stroke-width: 1.85;
+        stroke-linecap: round; stroke-linejoin: round; flex: none; }

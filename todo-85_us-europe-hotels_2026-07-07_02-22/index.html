@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-85 · us-europe-hotels · Two Chains for the West</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 78px 24px 72px; }
+  .hero { margin-bottom: 26px; }
+
+  .vpill { display:inline-block; min-width:86px; text-align:center; padding:4px 12px;
+           border-radius:var(--r-pill); font-family:var(--font-mono); font-size:11px;
+           letter-spacing:.05em; text-transform:uppercase; font-weight:600; white-space:nowrap; }
+  .vpill.forever { background:var(--forest-d); color:#fff; }
+  .vpill.get  { background:var(--forest); color:#fff; }
+  .vpill.later { background:var(--found-bg); color:var(--found-d); border:1px solid var(--found-bd); }
+  .vpill.opt  { background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-bd); }
+  .vpill.skip { background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn-bd); }
+
+  table.dt td.why { font-family:var(--font-ui); font-size:12.5px; color:var(--body);
+                    text-align:left; line-height:1.45; max-width:400px; }
+  table.dt td.cardname { font-family:var(--font-ui); font-weight:700; text-align:left; font-size:13.5px; }
+  table.dt td.cardname small { display:block; font-weight:500; color:var(--muted); font-size:10.5px; margin-top:2px; }
+
+  .fee-chart { display:flex; flex-direction:column; gap:20px; }
+  .fee-leg { display:flex; gap:22px; margin-bottom:4px; font-family:var(--font-mono);
+             font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+  .fee-leg i { width:15px; height:10px; border-radius:3px; display:inline-block;
+               vertical-align:-1px; margin-right:7px; }
+  .frow { display:grid; grid-template-columns:170px 1fr; gap:16px; align-items:center;
+          padding:6px 8px; border-radius:var(--r-tile); transition:background .2s; }
+  .frow:hover { background:var(--well); }
+  .frow-name { font-size:13.5px; font-weight:700; line-height:1.3; }
+  .frow-name small { display:block; font-family:var(--font-mono); font-size:9.5px;
+                     color:var(--muted); font-weight:400; margin-top:2px; }
+  .frow-bars { display:flex; flex-direction:column; gap:5px; }
+  .fbar { display:flex; align-items:center; gap:10px; height:16px; }
+  .fbar .seg { height:12px; width:0; border-radius:3px; transition:width 1s var(--ease); }
+  .fbar .seg.fee   { background:#c1502e; }
+  .fbar .seg.val   { background:#0a8a76; }
+  .fbar .seg.soft  { background:#0a8a76; opacity:.45; border-radius:0 3px 3px 0; margin-left:-8px; padding-left:8px; box-sizing:content-box; }
+  .fbar .lab { font-family:var(--font-mono); font-size:11px; color:var(--ink); white-space:nowrap; }
+  .fbar .lab i { font-style:normal; color:var(--muted); }
+
+  .steps { display:flex; flex-direction:column; gap:0; counter-reset:step; }
+  .step { display:grid; grid-template-columns:44px 1fr; gap:16px; padding:16px 4px;
+          border-bottom:1px solid var(--line); }
+  .step:last-child { border-bottom:0; }
+  .step .n { counter-increment:step; width:32px; height:32px; border-radius:10px;
+             background:var(--forest); color:#fff; display:flex; align-items:center;
+             justify-content:center; font-family:var(--font-mono); font-size:13px; font-weight:500; }
+  .step .n::before { content:counter(step); }
+  .step.far .n { background:var(--found); }
+  .step h4 { font-size:14.5px; font-weight:740; letter-spacing:-.01em; margin:5px 0 4px; }
+  .step h4 .when { font-family:var(--font-mono); font-size:10px; letter-spacing:.06em;
+                   text-transform:uppercase; color:var(--warn); font-weight:500; margin-left:8px; }
+  .step p { font-size:13px; line-height:1.55; color:var(--body); }
+  .step p b { color:var(--ink); }
+
+  .slots { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .slot { flex:1; min-width:120px; border:1px solid var(--line); border-radius:var(--r-tile);
+          padding:12px 14px; background:var(--card); }
+  .slot .s-n { font-family:var(--font-mono); font-size:9.5px; letter-spacing:.07em;
+               text-transform:uppercase; color:var(--muted); }
+  .slot .s-c { font-size:13px; font-weight:720; margin-top:5px; line-height:1.3; }
+  .slot .s-w { font-family:var(--font-mono); font-size:10px; color:var(--faint); margin-top:4px; }
+  .slot.chase { border-color:#bcd9bf; background:linear-gradient(180deg,#fff,#f6fbf6); }
+  .slot.open  { border-style:dashed; }
+  .slot.wait  { border-color:var(--amber-bd); background:linear-gradient(180deg,#fff,#faf6ec); }
+  .slot.wait .s-c { color:var(--amber); }
+  .slot.hedge { border-color:var(--found-bd); background:linear-gradient(180deg,#fff,#f6fafb); }
+  .slot.hedge .s-c { color:var(--found-d); }
+
+  .dodont { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:720px){ .dodont { grid-template-columns:1fr; } .frow { grid-template-columns:1fr; } }
+  .dd { border-radius:var(--r-card); padding:20px 22px; border:1px solid; }
+  .dd.do   { background:linear-gradient(180deg,#fff,#f6fbf6); border-color:#bcd9bf; }
+  .dd.dont { background:linear-gradient(180deg,#fff,#fbf5f2); border-color:var(--warn-bd); }
+  .dd h4 { font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em;
+           text-transform:uppercase; font-weight:600; margin-bottom:12px; }
+  .dd.do h4 { color:var(--forest-d); } .dd.dont h4 { color:var(--warn); }
+  .dd ul { list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .dd li { font-size:13px; line-height:1.5; color:var(--body); padding-left:20px; position:relative; }
+  .dd li::before { position:absolute; left:0; font-weight:800; }
+  .dd.do li::before { content:"✓"; color:var(--forest); }
+  .dd.dont li::before { content:"✕"; color:var(--warn); }
+  .dd li b { color:var(--ink); }
+
+  .callout { background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:var(--r-panel);
+             padding:16px 20px; font-size:13px; line-height:1.6; color:var(--body); margin-top:16px; }
+  .callout b { color:var(--warn); }
+  .callout.blue { background:var(--found-bg); border-color:var(--found-bd); }
+  .callout.blue b { color:var(--found-d); }
+  .callout.green { background:var(--g-lime); border-color:#bcd9bf; }
+  .callout.green b { color:var(--forest-d); }
+
+  td.fp { font-family:var(--font-mono); font-size:12px; }
+  .fdot { display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:6px; vertical-align:-.5px; }
+  .fdot.hi { background:var(--forest); } .fdot.mid { background:var(--amber); } .fdot.lo { background:#d3d3c8; }
+
+  /* fork — the open decision */
+  .fork { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
+  @media (max-width:720px){ .fork { grid-template-columns:1fr; } }
+  .fk { border-radius:var(--r-card); padding:22px; border:1px solid var(--line); background:var(--card); }
+  .fk.pick { border-color:#bcd9bf; background:linear-gradient(180deg,#fff,#f6fbf6); box-shadow:var(--shadow-card); }
+  .fk .fk-t { font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+              color:var(--muted); }
+  .fk.pick .fk-t { color:var(--forest-d); }
+  .fk h4 { font-size:17px; font-weight:780; letter-spacing:-.02em; margin:6px 0 8px; }
+  .fk p { font-size:12.5px; line-height:1.5; color:var(--body); }
+  .fk .fk-n { font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:12px;
+              padding-top:10px; border-top:1px solid var(--line); }
+  .fk .fk-n b { color:var(--forest-d); }
+
+  section { margin-top:54px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="tb-brand"><span class="mk"></span>bpo</span><span class="tb-sep"></span>
+    <span class="tb-ctx">TODO-85 · us-europe-hotels</span>
+    <span class="tb-spacer"></span>
+    <span class="tb-tag">2026-07-07 · ccw</span>
+  </div>
+  <div class="brandstrip"></div>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="hero reveal">
+    <div>
+      <div class="hero-eyebrow"><span class="d"></span>TODO-85 · v4 — hotels stand alone, airline lane pending cadet · 2026-07-07</div>
+      <h1>Two chains<br>for the West.<br><span class="em">One forever card.</span></h1>
+      <p class="hero-sub"><b>US and Europe reward the broadest chains — so the core tightens to Hilton + Marriott,
+      the two that blanket both.</b> IHG is the one satellite worth adding (it owns Europe). Hyatt gets cut:
+      its whole edge was aspirational Asia-Pacific redemptions you won't be making.</p>
+      <div class="hero-chips">
+        <span class="hchip v">Diamond = free breakfast across Europe</span>
+        <span class="hchip v">IHG blankets European cities</span>
+        <span class="hchip q">Hyatt Cat 1–4 is thin in the West</span>
+      </div>
+    </div>
+    <div class="bignum">
+      <div class="n">3<span class="u">→4</span></div>
+      <div class="cap">free-night certs banked <b>every year</b> — 4 once Brilliant joins in 2028. Fewer cards, denser coverage</div>
+      <div class="leak"><span class="v">$744</span><span class="l">hotel fees<br>2026 · core three</span></div>
+    </div>
+  </div>
+
+  <div class="kpis reveal">
+    <div class="kpi"><div class="kpi-n">Breakfast</div><div class="kpi-l">Diamond feeds you free in Europe, not just a US credit</div></div>
+    <div class="kpi"><div class="kpi-n">IHG ↑</div><div class="kpi-l">rises above Hyatt — Holiday Inn/Crowne/IC own Europe</div></div>
+    <div class="kpi"><div class="kpi-n">On hold</div><div class="kpi-l">airline lounge card waits on the cadet program — Priority Pass covers you meanwhile</div></div>
+    <div class="kpi"><div class="kpi-n">Sep '28</div><div class="kpi-l">Brilliant unlock — Boundless still starts the clock</div></div>
+  </div>
+
+  <!-- ═══════════ 01 · THE FORK ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">01 · the call</span><span class="sec-n">how wide to go</span></div>
+    <h2 class="sec-title">Where you actually land</h2>
+    <p class="lede">For a US + Europe traveler the market collapses to a clean choice. Both paths keep <b>Hilton as the
+    forever anchor and Marriott as the second chain</b> — the only question is whether IHG earns a third slot.</p>
+
+    <div class="fork">
+      <div class="fk pick">
+        <div class="fk-t">recommended</div>
+        <h4>Core + IHG</h4>
+        <p>Hilton Aspire (forever) · Marriott Boundless now → Brilliant 2028 · <b>IHG Premier</b>. IHG's dense European
+        footprint + a 40k cert with unlimited top-off + 4th-night-free is the best cert-value story for pricey
+        Western cities. Three anniversary nights a year, two Chase slots.</p>
+        <div class="fk-n">2026 fees <b>$744</b> · net ≈ <b>+$1,200/yr</b> · 3 certs</div>
+      </div>
+      <div class="fk">
+        <div class="fk-t">the minimalist</div>
+        <h4>Just Hilton + Marriott</h4>
+        <p>Drop IHG too. Two chains that already blanket every US and European city you'll visit; the simplest possible
+        wallet, one Chase slot. You give up IHG's European density and 4th-night-free — but you were never going to
+        run out of Hilton or Marriott options in the West.</p>
+        <div class="fk-n">2026 fees <b>$645</b> · net ≈ <b>+$1,100/yr</b> · 2 certs</div>
+      </div>
+    </div>
+    <p class="note"><b>What died on the table:</b> the all-in build's four-chain version. In the US/Europe, Hyatt
+    (thin footprint, squeezed Cat 1–4 cert), Wyndham, and Choice stop earning their fees — see §<b>04</b> for why each drops.</p>
+  </section>
+
+  <!-- ═══════════ 02 · THE FLEET ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">02 · the fleet</span><span class="sec-n">every card, re-ranked for the West</span></div>
+    <h2 class="sec-title">Sorted for US + Europe</h2>
+    <p class="lede">Same market, different weighting. The chains that <b>blanket European capitals</b> — Marriott, IHG,
+    Hilton — rise; the boutique and exotic-value plays fall.</p>
+
+    <div class="tw" style="margin-top:18px">
+      <table class="dt">
+        <thead><tr><th class="l">Card</th><th class="l">Move</th><th>AF</th><th class="l">Why — for US + Europe</th></tr></thead>
+        <tbody>
+          <tr><td class="cardname">Hilton Aspire <small>Amex</small></td>
+              <td class="l"><span class="vpill forever">forever</span></td><td class="num">$550</td>
+              <td class="why">The anchor, and <b>better in Europe than anywhere</b>: Diamond = free full breakfast for two outside the US (in the US it's just an F&amp;B credit). Uncapped free night reaches any Waldorf/Conrad in London, Paris, Rome. 175k ends <b>7/29</b>.</td></tr>
+          <tr><td class="cardname">Marriott Boundless <small>Chase</small></td>
+              <td class="l"><span class="vpill get">get 1st</span></td><td class="num">$95</td>
+              <td class="why">The second chain's on-ramp. 125k + 50k free night now; 35k cert (<b>+25k top-off since Mar 2026</b> → 60k) covers mid-tier Euro Marriotts. Going first starts the Brilliant clock.</td></tr>
+          <tr><td class="cardname">IHG One Premier <small>Chase</small></td>
+              <td class="l"><span class="vpill get">get — the satellite</span></td><td class="num">$99</td>
+              <td class="why"><b>The card that rises for this footprint.</b> Holiday Inn / Crowne Plaza (88 in Europe) / InterContinental blanket the continent; 40k anniversary night with <b>unlimited top-off</b> + <b>4th-night-free on awards</b> ≈ 25% off every stay. Value is footprint + certs, not status.</td></tr>
+          <tr><td class="cardname">Marriott Brilliant <small>Amex</small></td>
+              <td class="l"><span class="vpill later">2028</span></td><td class="num">$650</td>
+              <td class="why">The Marriott endgame: Platinum = <b>full breakfast in Europe</b> (continental-only in the US), 85k cert (→110k) reaches St. Regis / Ritz in any Western capital. Bonus blocked 24mo after Boundless — scheduled, not skipped.</td></tr>
+          <tr><td class="cardname">World of Hyatt <small>Chase</small></td>
+              <td class="l"><span class="vpill skip">cut</span></td><td class="num">$95</td>
+              <td class="why"><b>The demotion.</b> Its edge was Cat 1–4 certs on aspirational Asia-Pacific (Andaz Bali) — gone for the West. Europe footprint is thin (UK is only its 3rd EAME market), the May-2026 re-tiering squeezed the chart, and Discoverist gives <b>no breakfast</b>. Cert still covers the fee at a mid-tier Hyatt, so keep it <i>only</i> if you actually stay Hyatt.</td></tr>
+          <tr><td class="cardname">Wyndham · Choice</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">$95</td>
+              <td class="why">Economy-heavy, non-central in prime Western cities. Only niche: Choice's <b>Strawberry (ex-Nordic Choice) ~200 hotels</b> in Oslo/Stockholm/Copenhagen — real value in high-cost Scandinavia, but that's one region, not a card-worthy reason.</td></tr>
+          <tr><td class="cardname">Marriott Bevy · Bold · Bountiful</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">—</td>
+              <td class="why">Each burns the same one-Marriott-bonus-per-24-months that Boundless → Brilliant uses better.</td></tr>
+          <tr><td class="cardname">Best Western · MGM · Hard Rock</td>
+              <td class="l"><span class="vpill skip">skip</span></td><td class="num">—</td>
+              <td class="why">Subprime issuer, casino niche, or thin European relevance. Nothing here for a US/Europe traveler.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><b>Footprint check, redone for the West:</b> Marriott (~6,300 US, blankets every Euro capital), Hilton
+    (~6,200 US, strong capitals), and IHG (Holiday Inn family = 60%+ of its open European estate) are the three that
+    never leave you without an option. Hyatt has ~1,500 hotels <i>total</i> — brilliant when you hit one, absent when you don't.</p>
+  </section>
+
+  <!-- ═══════════ 03 · SEQUENCE ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">03 · sequence</span><span class="sec-n">hotels now, airline later</span></div>
+    <h2 class="sec-title">The hotel build stands alone</h2>
+    <p class="lede">None of these cards care what you fly — so the hotel plan runs on its own clock, starting now. The
+    <b>airline-lounge lane waits on the cadet program</b>: until Tim's Envoy standby is dialed and you know whether
+    you're on American, an airline-locked lounge card is a bet on an unknown. You're already covered in the meantime.</p>
+
+    <div class="slots">
+      <div class="slot chase"><div class="s-n">now · jul</div><div class="s-c">Marriott Boundless</div><div class="s-w">chase · starts Marriott clock</div></div>
+      <div class="slot chase"><div class="s-n">jul–aug</div><div class="s-c">IHG Premier</div><div class="s-w">chase · or Premier Business</div></div>
+      <div class="slot"><div class="s-n">by 7/29</div><div class="s-c">Hilton Aspire</div><div class="s-w">amex · no 5/24 hit</div></div>
+      <div class="slot wait"><div class="s-n">pending cadet</div><div class="s-c">airline lounge card</div><div class="s-w">Citi AA ·or· United — pick once Tim's dialed</div></div>
+      <div class="slot hedge"><div class="s-n">meanwhile ✓</div><div class="s-c">Priority Pass</div><div class="s-w">via Venture X · any airline, already held</div></div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="steps">
+        <div class="step"><span class="n"></span><div>
+          <h4>Marriott Boundless <span class="when">now — this week</span></h4>
+          <p>125k + 50k free night, no published end date. <b>Approval starts the 24-month Brilliant clock</b> — the one thing worth not delaying.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>IHG Premier <span class="when">jul–aug, ~2 weeks after</span></h4>
+          <p>The satellite. 140k standard offer; if an elevated one reappears, even better. <b>Premier Business</b> ($99, same Platinum + 40k night) is the 5/24-free substitute if the count is tighter than it looks. Skip this step entirely if you're taking the minimalist two-chain path.</p></div></div>
+        <div class="step"><span class="n"></span><div>
+          <h4>Hilton Aspire <span class="when">before jul 29</span></h4>
+          <p>Amex, no 5/24 impact. 175k/$6k/6mo, hard deadline. <b>The forever card lands here</b> — and it's your best European breakfast pass.</p></div></div>
+        <div class="step far"><span class="n"></span><div>
+          <h4>Airline-lounge lane <span class="when">HOLD — pending cadet</span></h4>
+          <p>Both the <b>Citi AA Executive</b> ($595, Admirals / oneworld) and the <b>United Club</b> ($695, Star Alliance) are bets on <i>which airline you'll fly</i> — and that hinges on Tim's Envoy standby. Neither has a deadline. <b>Ride Priority Pass + Capital One lounges (Venture X)</b> — alliance-agnostic, already in the wallet — until the cadet program lands, then buy the <b>one</b> card that matches wherever you actually fly. Buying now means paying $595–695 to hedge a question that answers itself in a few months. <b>And the IHG ↔ United tie runs backwards from what you'd guess:</b> the IHG card grants <i>no</i> United status (just a $50/yr TravelBank credit) — it's the <b>United Club card that would hand you IHG Platinum</b>, though not the IHG free-night cert, so IHG Premier still earns its keep either way.</p></div></div>
+        <div class="step far"><span class="n"></span><div>
+          <h4>Marriott Brilliant <span class="when">~sep 2028</span></h4>
+          <p>24 months + buffer after the Boundless bonus posts. Platinum → <b>full European breakfast</b> + 85k cert. Calendar it at Boundless-bonus-post + 25 months; until then Boundless carries the Marriott wing.</p></div></div>
+      </div>
+    </div>
+
+    <div class="callout green" style="margin-top:18px"><b>Why this order is the safe one:</b> every card in the sequence is
+    <b>airline-independent</b> — the cadet program can land or fall through and nothing above changes. The only thing
+    you're <i>not</i> pre-committing is a $595–695 lounge card pointed at an alliance you might not fly. Priority Pass
+    (Venture X) keeps you in a lounge on <b>any</b> airline until you know which one is yours.</div>
+
+    <div class="callout blue" style="margin-top:16px"><b>The UR → Hyatt sweep is now optional too.</b> With no Hyatt card in
+    the core, the Oct-1 UR→Hyatt 4:3 change only matters if you separately value Hyatt points for the occasional Park
+    Hyatt splurge. Otherwise let UR route to airlines — one fewer deadline to track.</div>
+  </section>
+
+  <!-- ═══════════ 04 · WHY EUROPE REWARDS STATUS ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">04 · the europe edge</span><span class="sec-n">status pays at breakfast</span></div>
+    <h2 class="sec-title">In Europe, your status feeds you</h2>
+    <p class="lede">The single biggest reason the two-chain core is <b>better</b> in Europe than the US: elite breakfast
+    rules flip at the Atlantic. Where a €40 breakfast is normal, free breakfast for two is real money — every stay.</p>
+
+    <div class="tw" style="margin-top:18px">
+      <table class="dt">
+        <thead><tr><th class="l">Status</th><th class="l">Source</th><th class="l">In the US</th><th class="l">In Europe</th></tr></thead>
+        <tbody>
+          <tr><td class="cardname">Hilton Diamond</td><td class="l why"><b>Aspire</b>, forever</td>
+              <td class="why">F&amp;B credit only (~$10–25/pp) — no guaranteed breakfast</td>
+              <td class="why"><b>Free full breakfast for two.</b> The rule still holds in 2026 — your forever card earns most where you travel most.</td></tr>
+          <tr><td class="cardname">Marriott Platinum</td><td class="l why"><b>Brilliant</b> (2028)</td>
+              <td class="why">Continental breakfast (or 750 pts) when no lounge</td>
+              <td class="why"><b>Full breakfast</b>, no continental restriction. Europe is where Platinum stops being a paper tier.</td></tr>
+          <tr><td class="cardname">IHG Platinum</td><td class="l why"><b>IHG Premier</b></td>
+              <td class="why">No breakfast — upgrades/points only</td>
+              <td class="why">No breakfast either. IHG's value is <b>footprint + certs + 4th-night-free</b>, never the status perks.</td></tr>
+          <tr><td class="cardname">Hyatt Discoverist</td><td class="l why">— cut</td>
+              <td class="why">No breakfast; 2pm checkout</td>
+              <td class="why">No breakfast; thin European footprint. The reason Hyatt drops out.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout green"><b>Net effect:</b> the two statuses you actually hold under this plan — Hilton Diamond now,
+    Marriott Platinum from 2028 — <b>both convert to free full breakfast the moment you land in Europe</b>. That's a
+    per-stay benefit the fee math below doesn't even count.</div>
+  </section>
+
+  <!-- ═══════════ 05 · FEE MATH ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">05 · fee math</span><span class="sec-n">$ out vs $ back</span></div>
+    <h2 class="sec-title">Three fees, three free nights</h2>
+    <p class="lede">Same conservative rules: welcome bonuses and points earning count for <b>nothing</b>, breakfast counts
+    for nothing — just fees against credits and anniversary nights at realistic Western-city values.</p>
+
+    <div class="card" style="margin-top:18px">
+      <div class="fee-leg">
+        <span><i style="background:#c1502e"></i>annual fee</span>
+        <span><i style="background:#0a8a76"></i>realistic credits</span>
+        <span><i style="background:#0a8a76;opacity:.45"></i>anniversary night ≈ value</span>
+      </div>
+      <div class="fee-chart" id="feechart">
+        <div class="frow">
+          <div class="frow-name">Hilton Aspire<small>forever · + Euro breakfast</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="550"></span><span class="lab">$550</span></div>
+            <div class="fbar"><span class="seg val" data-w="809"></span><span class="seg soft" data-w="500"></span><span class="lab">$809 <i>+ FN ≈$500, uncapped</i></span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Marriott Boundless<small>+15 elite nights</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="95"></span><span class="lab">$95</span></div>
+            <div class="fbar"><span class="seg val" data-w="100"></span><span class="seg soft" data-w="250"></span><span class="lab">$100 airline <i>(thru 6/27)</i> + FN ≈$250</span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">IHG Premier<small>40k + top-off · Europe</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="99"></span><span class="lab">$99</span></div>
+            <div class="fbar"><span class="seg val" data-w="80"></span><span class="seg soft" data-w="250"></span><span class="lab">$50 United + GE <i>≈$80</i> + FN ≈$250</span></div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="frow-name">Marriott Brilliant<small>from 2028</small></div>
+          <div class="frow-bars">
+            <div class="fbar"><span class="seg fee" data-w="650"></span><span class="lab">$650</span></div>
+            <div class="fbar"><span class="seg val" data-w="200"></span><span class="seg soft" data-w="500"></span><span class="lab">$200 <i>of the $25/mo dining, low</i> + FN ≈$500 (85k)</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="formula" style="margin:20px 0 0">
+        <span class="k">2026 net</span> = ($989 credits + $1,000 nights) − $744 fees ≈ <b>+$1,245/yr</b> &nbsp;·&nbsp;
+        <span class="k">minimalist (no IHG)</span> ≈ +$1,100/yr on $645 fees &nbsp;·&nbsp;
+        <span class="k">2028 + Brilliant</span> ≈ +$1,250/yr on $1,394 fees — before a single free breakfast is counted
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 06 · TRAPS ═══════════ -->
+  <section class="reveal">
+    <div class="sec-head"><span class="sec-kick">06 · traps</span><span class="sec-n">the ways this goes wrong</span></div>
+    <h2 class="sec-title">What still bites</h2>
+
+    <div class="dodont" style="margin-top:18px">
+      <div class="dd do"><h4>do</h4><ul>
+        <li><b>Boundless before everything</b> — it starts the only 24-month clock in the plan</li>
+        <li>Lean on <b>IHG for Europe</b>, Marriott + Hilton for blanket coverage everywhere</li>
+        <li>Book the <b>Hilton uncapped cert</b> at a European Waldorf/Conrad — highest-value single night in the deck</li>
+        <li>Use <b>IHG Premier Business</b> if the freed 5/24 slot is tighter than assumed</li>
+        <li>Calendar the Brilliant unlock: <b>Boundless bonus-post + 25 months</b></li>
+        <li>Take Aspire by <b>7/29</b> — the one hard deadline</li>
+        <li>Ride <b>Priority Pass (Venture X)</b> for lounges until the cadet program picks your airline</li>
+      </ul></div>
+      <div class="dd dont"><h4>don't</h4><ul>
+        <li>Buy an <b>airline-locked lounge card</b> (Citi AA Exec, United Club) before you know what you're flying</li>
+        <li>Keep the <b>Hyatt card out of habit</b> — for US/Europe it's the weakest fee in the deck</li>
+        <li>Chase <b>Wyndham/Choice</b> for Western cities — economy-tier, non-central</li>
+        <li>Touch <b>any Marriott card besides Boundless → Brilliant</b> — they share one 24-month bonus budget</li>
+        <li>Assume Diamond gets you US breakfast — it's a <b>credit stateside</b>, breakfast only abroad</li>
+        <li>Miss a minimum spend — approvals recover, a burned SUB doesn't</li>
+      </ul></div>
+    </div>
+
+    <div class="callout green" style="margin-top:18px"><b>Carried over from v1/v2:</b> Venture X, Ink Preferred, and Savor
+    keep their jobs; Sapphire still downgrades at next fee; Platinum and United Club stay skipped. This build just
+    swaps the hotel wing to the <b>two-and-a-half chains that own the West</b> — total fleet fees land near
+    <b>$1,830/yr in 2026</b> (v1 core $1,635 + Boundless $95 + IHG $99), and the credits-plus-certs stack clears them before a point is spent.</div>
+  </section>
+
+  <div class="foot">
+    TODO-85 · us-europe-hotels (v4 — hotels stand alone, airline lane pending cadet) · 2026-07-07 ·
+    grove · gated · <code>bpo/artifacts/2026-W28/</code><br>
+    airline-lounge lane deferred until the Envoy/cadet standby is confirmed · Priority Pass via Venture X is the airline-agnostic hedge ·<br>
+    key facts: Hilton Diamond free breakfast outside US / US F&amp;B credit only — rule holds 2026 · Marriott Platinum full breakfast in Europe, continental in US ·
+    IHG Holiday Inn family &gt;60% of open European estate, Crowne Plaza 88 in Europe · Hyatt ~1,500 hotels total, thin in Europe, May-2026 chart re-tier ·
+    Marriott cert top-off raised 15k→25k Mar 2026 · Boundless 125k+FN live · Aspire 175k ends 7/29/26 · Brilliant bonus blocked 24mo after Boundless ·
+    Wyndham Go Free re-tiers 9/15/26 · Choice/Strawberry Nordic value, devalued 2025–26 · not financial advice
+  </div>
+
+</div>
+<script>
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); }
+  }), { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const MAX = 1309, W = () => document.getElementById('feechart').clientWidth - 210;
+  const draw = () => document.querySelectorAll('#feechart .seg').forEach(s => {
+    s.style.width = Math.max(0, (+s.dataset.w / MAX) * Math.min(W(), 600)) + 'px';
+  });
+  const bio = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { requestAnimationFrame(draw); bio.disconnect(); }
+  }), { threshold: .3 });
+  bio.observe(document.getElementById('feechart'));
+  addEventListener('resize', draw);
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- DSP shell proof fixture: runtime edges. Craft-only content; the proof injects the
+     template's own script so the same tab/drawer code is under test. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DSP edges fixture</title>
+<link rel="stylesheet" href="../shell.css">
+</head>
+<body>
+<nav class="rail" id="rail" aria-label="Sections">
+  <a class="brand" href="#" aria-label="Home">DS</a>
+  <button class="iconbtn on" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/></svg></button>
+  <span class="spacer"></span>
+  <button class="iconbtn" id="theme" aria-label="Theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
+</nav>
+<div class="scrim" id="scrim" hidden></div>
+<header class="topbar">
+  <div class="crumb"><button class="iconbtn burger" id="burger" aria-label="Menu" aria-controls="rail" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><b>Edges</b></div>
+  <div class="meta">
+    <div class="seg" id="seg" role="tablist"><button role="tab" aria-selected="true">One</button><button role="tab" aria-selected="false" disabled>Two</button><button role="tab" aria-selected="false">Three</button></div>
+    <div class="seg" id="seg-hidden" role="tablist" hidden><button role="tab" aria-selected="true">Ghost</button></div>
+  </div>
+</header>
+<main class="canvas">
+<div class="insight">
+  <section class="answer">
+    <h1>Edges</h1>
+    <div class="ans-body"><p class="summary" id="prose">Unbroken token: AVeryLongUnbrokenTokenThatWouldOtherwiseWidenTheColumn_abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz</p></div>
+    <div class="ans-acts"><button class="primary" disabled>Disabled primary</button><button class="tbtn" id="tbtn-off" disabled>Disabled</button><button class="tbtn" id="tbtn-on">Enabled</button></div>
+  </section>
+  <div class="tabs" id="tabs" role="tablist"><button role="tab" aria-selected="true">Alpha</button><button role="tab" aria-selected="false" disabled>Beta</button><button role="tab" aria-selected="false" aria-disabled="true">Gamma</button><button role="tab" aria-selected="false">Delta</button></div>
+  <div class="tabs" id="tabs-all-off" role="tablist"><button role="tab" aria-selected="false" aria-disabled="true">Off</button><button role="tab" aria-selected="false" aria-disabled="true">Off</button></div>
+  <div class="tabs" id="tabs-empty" role="tablist"></div>
+  <div class="tabs" id="tabs-hidden" role="tablist" hidden><button role="tab" aria-selected="true">Ghost</button></div>
+  <div class="metrics" id="metrics">
+    <div class="metric" data-light="green"><b id="bignum">123,456,789,012,345</b><small>fifteen digits</small></div>
+    <div class="metric"><b>0</b><small>zero</small></div>
+    <div class="metric"><b></b><small>empty</small></div>
+    <div class="metric" data-light="red"><b>-1,234.56</b><small>negative</small></div>
+  </div>
+  <div class="group"><div class="tablecard" id="card-hidden" hidden><button class="row"><span></span><span class="t"><b>Ghost</b></span><span class="n">0</span></button></div></div>
+  <div class="group"><div class="card" id="big-card"><h3>Big</h3><div class="big">9,876,543,210,987,654,321<small>a big number</small></div></div></div>
+</div>
+</main>
+</body>
+</html>

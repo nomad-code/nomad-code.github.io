@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dha · Local landing handoff</title>
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    body { min-height: 100vh; }
+    .shell { width: min(1040px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 80px; }
+    .mast { display: flex; align-items: center; gap: 9px; color: var(--muted); font: 500 10px/1 var(--font-mono); letter-spacing: .09em; text-transform: uppercase; }
+    .mast i { width: 8px; height: 8px; border-radius: 3px; background: var(--lime); }
+    .hero-local { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 36px; align-items: center; margin-top: 20px; padding: 34px; border: 1px solid var(--line); border-radius: var(--r-hero); background: linear-gradient(145deg, #fff, #f4faf7); box-shadow: var(--shadow-hero); }
+    .eyebrow { color: var(--forest); font: 700 11px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: 13px 0 0; font-size: clamp(34px, 6vw, 58px); line-height: .98; letter-spacing: -.045em; }
+    .lede-local { max-width: 62ch; margin: 18px 0 0; color: var(--body); font-size: 15px; line-height: 1.65; }
+    .clock { padding: 22px; border-radius: var(--r-card); background: var(--forest); color: #fff; box-shadow: var(--shadow-lift); }
+    .clock b { display: block; color: var(--lime-b); font-size: 42px; letter-spacing: -.04em; }
+    .clock span { display: block; margin-top: 7px; font: 500 10.5px/1.55 var(--font-mono); }
+    .status-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 21px; }
+    .status { padding: 7px 11px; border-radius: var(--r-pill); font: 600 10px/1 var(--font-mono); }
+    .status.live { color: var(--forest-d); background: var(--g-lime); }
+    .status.warn { color: var(--amber); background: var(--amber-bg); }
+    .status.scope { color: var(--found-d); background: var(--found-bg); }
+    .section-title { margin: 45px 0 15px; font-size: 24px; letter-spacing: -.025em; }
+    .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+    .role { padding: 22px; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--card); box-shadow: var(--shadow-card); }
+    .role .tag { color: var(--forest); font: 700 10px/1 var(--font-mono); letter-spacing: .07em; text-transform: uppercase; }
+    .role h3 { margin: 11px 0 0; font-size: 18px; }
+    .role p { margin: 8px 0 0; color: var(--body); font-size: 12.5px; line-height: 1.55; }
+    .server { display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: center; padding: 20px 22px; border: 1px solid #bcd9bf; border-radius: var(--r-panel); background: var(--g-lime); }
+    .server b { color: var(--forest-d); }
+    .server p { margin: 5px 0 0; color: var(--body); font-size: 12.5px; line-height: 1.5; }
+    .http { padding: 7px 11px; border-radius: var(--r-pill); background: var(--forest); color: white; font: 600 10px/1 var(--font-mono); }
+    .matrix { overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--card); box-shadow: var(--shadow-card); }
+    .row { display: grid; grid-template-columns: 1.1fr 115px 2fr; gap: 15px; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+    .row:last-child { border-bottom: 0; }
+    .row.head { color: var(--muted); background: var(--well); font: 500 9.5px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+    .row b { font-size: 13px; }
+    .result { width: fit-content; padding: 5px 9px; border-radius: var(--r-pill); font: 600 10px/1 var(--font-mono); }
+    .result.pass { color: var(--forest-d); background: var(--g-lime); }
+    .result.one { color: var(--amber); background: var(--amber-bg); }
+    .detail { color: var(--body); font-size: 11.5px; line-height: 1.45; }
+    .caveat { margin-top: 11px; padding: 14px 16px; border: 1px solid var(--amber-bd); border-radius: var(--r-panel); background: var(--amber-bg); color: #5e4b18; font-size: 12px; line-height: 1.55; }
+    .next { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: next; }
+    .next li { display: grid; grid-template-columns: 28px 1fr; gap: 11px; padding: 15px; border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--card); color: var(--body); font-size: 12px; line-height: 1.5; counter-increment: next; }
+    .next li::before { content: counter(next); display: grid; place-items: center; width: 27px; height: 27px; border-radius: 9px; background: var(--found); color: #fff; font: 600 10px/1 var(--font-mono); }
+    .next b { color: var(--ink); }
+    .fine { margin-top: 32px; color: var(--faint); font: 400 10px/1.7 var(--font-mono); }
+    @media (max-width: 740px) {
+      .shell { width: min(100% - 24px, 560px); padding-top: 24px; }
+      .hero-local { grid-template-columns: 1fr; padding: 25px 21px; }
+      .clock { max-width: 220px; }
+      .roles, .next { grid-template-columns: 1fr; }
+      .server { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr auto; }
+      .row .detail { grid-column: 1 / -1; }
+      .row.head { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="mast"><i></i>dha · portal-v2 · local-first handoff</div>
+    <section class="hero-local">
+      <div>
+        <div class="eyebrow">Landing state · TODO-244</div>
+        <h1>The loop works.<br>The loose ends are named.</h1>
+        <p class="lede-local">M3 runs the work nearby, Codex returns compact evidence, and the iPhone is the final judge. M5 becomes the persistent US anchor later—not the interactive path from Indonesia.</p>
+        <div class="status-row">
+          <span class="status live">M3 HTTP live</span>
+          <span class="status warn">HTTPS pending</span>
+          <span class="status scope">PWA work preserved</span>
+        </div>
+      </div>
+      <div class="clock"><b>20:00</b><span>MON · 20 JUL<br>WITA CALL TARGET</span></div>
+    </section>
+
+    <h2 class="section-title">One job per node</h2>
+    <section class="roles">
+      <article class="role"><div class="tag">Nearby</div><h3>M3 · workshop</h3><p>Codex host, app server, Playwright, screenshots, and fast iteration wherever Brendan travels.</p></article>
+      <article class="role"><div class="tag">Human proof</div><h3>iPhone · acceptance</h3><p>Real Safari, touch, layout, and PWA checks over the tailnet—even when Wi-Fi differs.</p></article>
+      <article class="role"><div class="tag">Later</div><h3>M5 · anchor</h3><p>Always-on HTTPS, scheduled builds, and long-running jobs after remote access is configured.</p></article>
+    </section>
+
+    <h2 class="section-title">Known-fresh access</h2>
+    <section class="server"><div><b>M3 · tmux <code>dha-portal-3002</code></b><p>Local and tailnet checks both return 200 on port 3002. Do not assume port 3000 points at the current branch.</p></div><span class="http">HTTP 200</span></section>
+
+    <h2 class="section-title">Evidence captured before the newer PWA changes</h2>
+    <section class="matrix">
+      <div class="row head"><span>Gate</span><span>Result</span><span>Reading</span></div>
+      <div class="row"><b>Type check</b><span class="result pass">pass</span><span class="detail">Earlier clean maps-v3 snapshot</span></div>
+      <div class="row"><b>Lint</b><span class="result pass">pass</span><span class="detail">One pre-existing informational finding</span></div>
+      <div class="row"><b>Production build</b><span class="result pass">pass</span><span class="detail">Non-blocking New Relic configuration warning</span></div>
+      <div class="row"><b>Playwright</b><span class="result pass">68 / 68</span><span class="detail">Fresh isolated server; full browser suite green</span></div>
+      <div class="row"><b>Unit tests</b><span class="result one">505 / 506</span><span class="detail">One stale NearbyEvents image-accessibility query</span></div>
+    </section>
+    <div class="caveat"><b>Scope caveat:</b> the worktree now contains a separate uncommitted PWA implementation. Preserve it first, then re-run every gate. The numbers above are history, not certification of today’s working tree.</div>
+
+    <h2 class="section-title">Next session · six bounded moves</h2>
+    <ol class="next">
+      <li><span><b>Preserve the PWA worktree</b> and decide its owning ticket/commit before touching branch history.</span></li>
+      <li><span><b>Repair the one unit test</b> by querying the flag image through its role and accessible name.</span></li>
+      <li><span><b>Add flag attribution</b> for the 249 vendored lipis/flag-icons SVGs.</span></li>
+      <li><span><b>Clear temporary residue</b> around the PR-472 session-summary image and old browser outputs.</span></li>
+      <li><span><b>Restore GitHub truth</b> by fixing CLI auth, fetching, and reconciling the long-lived branch.</span></li>
+      <li><span><b>Enable Tailscale Serve</b> for M3 HTTPS; treat M5 setup as its own later infrastructure task.</span></li>
+    </ol>
+    <p class="fine">Snapshot 2026-07-20 10:46 WITA · branch maps-v3 @ 27cc6197 · current worktree intentionally untouched by this closeout.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TODO-384 · ark landed</title>
+<meta name="description" content="Stage card: archive rehomed + full incremental export clean">
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+<style>:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{width:min(100% - 32px,860px);margin:auto;padding:44px 0 56px}.eyebrow{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}h1{margin:12px 0 8px;font:700 clamp(30px,6vw,50px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.05em}.lede{max-width:660px;color:var(--muted);font-size:16px;margin:0 0 22px}.big{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center}.stat b{display:block;font:700 30px/1 ui-monospace,monospace;letter-spacing:-.04em}.stat span{color:var(--muted);font-size:12px}.steps{margin-top:16px;padding:16px 18px;border-radius:14px;background:var(--ink);color:#fff;font:600 12.5px/2 ui-monospace,monospace}.steps b{color:var(--lime)}.steps s{color:#8fa39b}footer{display:flex;justify-content:space-between;margin-top:24px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}</style></head>
+<body><main>
+<div class="eyebrow">nomad-code / bpo · TODO-384 · stages 2–3 landed</div>
+<h1>ark landed<br>+ dna sync fixed</h1>
+<p class="lede">The 28 GB June export rehomed to ~/ark/photos with its incremental db intact, then caught up to today in 38 seconds. Photo breadcrumbs flow into the real vault again — daily at 21:15.</p>
+<div class="big">
+<div class="stat"><b>4,602</b><span>files exported today · 0 errors · 0 missing</span></div>
+<div class="stat"><b>3,798</b><span>breadcrumb notes → dna/photos (90-day window)</span></div>
+<div class="stat"><b>28 GB</b><span>archive @ ~/ark/photos/{YYYY}/{MM}</span></div>
+</div>
+<div class="steps">first-run runbook
+<b>✓</b> preflight — 113 GiB free · exportdb --check Ok
+<b>✓</b> mv PhotosExport → ~/ark/photos (+ db backup in _index/)
+<b>✓</b> --update --dry-run proof — 612 skipped, no mass re-export
+<b>✓</b> reversible batch --limit 25 — clean
+<b>✓</b> full export — 4,602 new files, archive current
+<b>✓</b> dna CLI → real vault + sync/nuke guards + daily launchd
+<s>→ rclone OAuth (Drive) · GCS bucket · snapshot · verify · 🟢</s></div>
+<footer><span>TODO_384-code-photos-apple-export</span><span>2026-08-10 - 00-32 Z</span></footer>
+</main></body></html>

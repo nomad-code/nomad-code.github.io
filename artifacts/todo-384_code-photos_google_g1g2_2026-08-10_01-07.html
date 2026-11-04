@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TODO-384 · google archive indexed</title>
+<meta name="description" content="Stage card: Google Takeout archive inventoried, fingerprinted, deduped into the canonical index">
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+<style>:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{width:min(100% - 32px,860px);margin:auto;padding:44px 0 56px}.eyebrow{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}h1{margin:12px 0 8px;font:700 clamp(30px,6vw,50px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.05em}.lede{max-width:660px;color:var(--muted);font-size:16px;margin:0 0 22px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center}.stat b{display:block;font:700 26px/1.1 ui-monospace,monospace;letter-spacing:-.04em}.stat span{color:var(--muted);font-size:11.5px}.bars{margin-top:16px;padding:16px 18px;border-radius:14px;background:var(--ink);color:#fff}.bars .k{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}.bar{display:grid;grid-template-columns:44px 1fr 58px;gap:8px;align-items:center;font:600 11.5px ui-monospace,monospace;padding:2.5px 0}.bar i{display:block;height:9px;border-radius:5px;background:var(--lime)}.bar u{text-decoration:none;color:#9fb0a9;text-align:right}.note{margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--forest);color:#fff;font-size:13px}.note b{color:var(--lime)}footer{display:flex;justify-content:space-between;margin-top:24px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}</style></head>
+<body><main>
+<div class="eyebrow">nomad-code / bpo · TODO-384 · stages 5–6 landed</div>
+<h1>29 years of photos,<br>one index</h1>
+<p class="lede">The 49 GiB Google Takeout archive (1994→2023) is inventoried, fingerprinted, and joined into the canonical index beside Apple. Two providers, one photo record — the abstraction is no longer a diagram.</p>
+<div class="grid">
+<div class="stat"><b>47,729</b><span>media fingerprinted · 0 undecodable</span></div>
+<div class="stat"><b>41,777</b><span>captures unique to Google → G3 merge scope</span></div>
+<div class="stat"><b>45,916</b><span>photo rows in the index, both providers</span></div>
+</div>
+<div class="bars"><div class="k">unique-to-Google by era</div>
+<div class="bar"><span>'94–09</span><i style="width:2.4%"></i><u>283</u></div>
+<div class="bar"><span>'10–16</span><i style="width:16%"></i><u>1,920</u></div>
+<div class="bar"><span>2017</span><i style="width:30%"></i><u>3,604</u></div>
+<div class="bar"><span>2018</span><i style="width:38%"></i><u>4,615</u></div>
+<div class="bar"><span>2019</span><i style="width:26%"></i><u>3,154</u></div>
+<div class="bar"><span>2020</span><i style="width:58%"></i><u>6,976</u></div>
+<div class="bar"><span>2021</span><i style="width:62%"></i><u>7,397</u></div>
+<div class="bar"><span>2022</span><i style="width:100%"></i><u>11,997</u></div>
+<div class="bar"><span>2023</span><i style="width:9%"></i><u>1,095</u></div>
+<div class="bar"><span>no ts</span><i style="width:6%;background:#8fa39b"></i><u>736</u></div>
+</div>
+<div class="note"><b>0 cross-provider dupes</b> — sha/time+dims/phash all zero, exactly as the year histograms predicted (Apple library is pure 2026 regrowth; Takeout ends 2023). 5,952 edited/live variants grouped onto their base captures. 98% sidecar pairing · 34% geo · 1,752 people tags. Reports committed: google-archive-inventory.md + google-dedupe-report.md.</div>
+<footer><span>TODO_384-code-photos-apple-export</span><span>2026-08-10 - 01-07 Z</span></footer>
+</main></body></html>

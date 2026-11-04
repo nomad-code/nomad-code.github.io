@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-166 · people-medewi-local · Everyone in Medewi</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --lane: #4a8aa0; }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; background: var(--bg); }
+    main { max-width: 1080px; margin: 0 auto; padding: 26px 24px 72px; }
+
+    .eyebrow { display:flex; align-items:center; gap:9px; font: 600 12px/1 var(--font-mono); letter-spacing:.06em; color: var(--found-d); text-transform: uppercase; }
+    .eyebrow .d { width:8px; height:8px; border-radius:50%; background: var(--lime); box-shadow:0 0 0 4px rgba(132,194,65,.18); }
+    h1 { font: 700 40px/1.03 var(--font-display); letter-spacing:-.02em; margin: 15px 0 10px; color: var(--ink); }
+    h1 em { font-style: normal; color: var(--forest); }
+    .lede { max-width: 62ch; font: 400 16px/1.5 var(--font-ui); color: var(--body); }
+    .lede b { color: var(--ink); font-weight:600; }
+
+    .kpis { display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 6px; }
+    .kpi { flex:1 1 130px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-tile); padding:14px 16px; }
+    .kpi-n { font:700 26px/1 var(--font-display); color:var(--ink); }
+    .kpi-l { font:500 12px/1.3 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:6px; }
+
+    .src { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:20px 0 8px; }
+    .src .card { background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:15px 16px; }
+    .src h4 { font:600 13px/1.2 var(--font-mono); color:var(--forest); margin:0 0 6px; }
+    .src p { font:400 13.5px/1.5 var(--font-ui); color:var(--body); margin:0; }
+    .src code { font:12px var(--font-mono); color:var(--found-d); word-break:break-all; }
+
+    section.grp { margin-top:34px; }
+    .grp-head { display:flex; align-items:baseline; gap:10px; border-bottom:2px solid var(--line); padding-bottom:8px; margin-bottom:14px; }
+    .grp-head h2 { font:700 21px/1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .grp-head .n { font:600 12px/1 var(--font-mono); color:var(--muted); }
+    .grp-head .sub { font:400 13px/1 var(--font-ui); color:var(--muted); margin-left:auto; }
+
+    .roster { display:grid; grid-template-columns:repeat(auto-fill,minmax(228px,1fr)); gap:9px; }
+    .p { background:var(--card); border:1px solid var(--line); border-radius:var(--r-chip); padding:11px 13px; transition:.15s var(--ease); }
+    .p:hover { border-color:var(--forest); box-shadow:var(--shadow-lift); }
+    .p .nm { font:600 15px/1.2 var(--font-ui); color:var(--ink); }
+    .p .rl { font:400 12.5px/1.4 var(--font-ui); color:var(--body); margin-top:3px; }
+    .p .mt { font:500 11px/1.3 var(--font-mono); color:var(--muted); margin-top:5px; display:flex; gap:8px; flex-wrap:wrap; }
+    .p .mt .tag { color:var(--found-d); }
+    .p.new { border-left:3px solid var(--lime); }
+    .p.have { border-left:3px solid var(--found); }
+    .p.gap { border-left:3px solid var(--warn); background:var(--warn-bg); }
+
+    .legend { display:flex; gap:16px; flex-wrap:wrap; font:500 12px/1 var(--font-mono); color:var(--muted); margin:14px 0 0; }
+    .legend span { display:flex; align-items:center; gap:6px; }
+    .legend i { width:14px; height:14px; border-radius:3px; display:inline-block; }
+
+    .gapbox { margin-top:34px; background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:var(--r-panel); padding:20px 22px; }
+    .gapbox h3 { font:700 18px/1 var(--font-display); color:var(--ink); margin:0 0 10px; }
+    .gapbox p { font:400 14.5px/1.55 var(--font-ui); color:var(--body); max-width:70ch; margin:0 0 8px; }
+    .gapbox a { color:var(--forest); }
+    .gapbox .anon { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+    .gapbox .anon code { font:11px var(--font-mono); background:var(--card); border:1px solid var(--warn-bd); border-radius:5px; padding:3px 7px; color:var(--muted); }
+
+    .foot { margin-top:40px; padding-top:18px; border-top:1px solid var(--line); font:400 13px/1.6 var(--font-ui); color:var(--muted); }
+    .foot code { font:12px var(--font-mono); color:var(--found-d); }
+    .foot a { color:var(--forest); }
+    @media (max-width:620px){ .src{grid-template-columns:1fr} h1{font-size:32px} }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow"><span class="d"></span> TODO-166 · bpo · private · 2026-07-09</div>
+  <h1>Everyone in <em>Medewi</em></h1>
+  <p class="lede">Iterating on <b>todo-164</b> — now local in the CLI, reading straight off the Mac.
+  Pulled your <b>Address Book</b> (42 contacts tagged <code>Medewi</code>), the <b>WhatsApp</b> Community Chat
+  roster, and folded in the names from the ticket. Organizing axis is <b>place</b>; spots carry ontology
+  type-ji (🍽️ food · 🛒 shop · 🛵 transport · 🏨 stay).</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">30</div><div class="kpi-l">new records filed</div></div>
+    <div class="kpi"><div class="kpi-n">4</div><div class="kpi-l">enriched w/ phone</div></div>
+    <div class="kpi"><div class="kpi-n">42</div><div class="kpi-l">contacts tagged Medewi</div></div>
+    <div class="kpi"><div class="kpi-n">73</div><div class="kpi-l">in Community Chat 💬</div></div>
+    <div class="kpi"><div class="kpi-n">16</div><div class="kpi-l">still nameless</div></div>
+  </div>
+
+  <div class="src">
+    <div class="card"><h4>📇 Address Book</h4><p>42 contacts last-name-tagged <code>Medewi</code>, with phone numbers. Read-only from <code>AddressBook-v22.abcddb</code>.</p></div>
+    <div class="card"><h4>💬 WhatsApp</h4><p>Community Chat = 73 members, 57 self-named, 16 anonymous. Members are <code>@lid</code> privacy IDs — no phone-join to contacts.</p></div>
+    <div class="card"><h4>🗂️ dna/people</h4><p>~23 Medewi faces already filed (Pangea, Bomboloni, Wakey, Holy Tree). New records tie into these.</p></div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--lime)"></i> new this session</span>
+    <span><i style="background:var(--found)"></i> already filed</span>
+    <span><i style="background:var(--warn)"></i> nameless gap</span>
+  </div>
+
+  <!-- MANOR -->
+  <section class="grp">
+    <div class="grp-head"><h2>🏨 Smart Manor</h2><span class="n">6</span><span class="sub">the Medewi manor — where the long-stayers live</span></div>
+    <div class="roster">
+      <div class="p new"><div class="nm">Sri</div><div class="rl">Smart Manor host</div><div class="mt"><span>📞 +61 475 068 822</span></div></div>
+      <div class="p new"><div class="nm">🇦🇺 Paul Smart</div><div class="rl">Smart Manor host family</div><div class="mt"><span>📞 +61 415 438 660</span></div></div>
+      <div class="p new"><div class="nm">🇮🇩 Dani</div><div class="rl">Manor resident</div><div class="mt"><span>📞 +62 878-4329-1235</span></div></div>
+      <div class="p new"><div class="nm">🇮🇩 Sukron</div><div class="rl">Manor resident</div><div class="mt"><span>📞 +62 859-3247-4933</span></div></div>
+      <div class="p new"><div class="nm">🇪🇸 Juan</div><div class="rl">Spain · Manor</div><div class="mt"><span>📞 +34 675 079 065</span></div></div>
+      <div class="p have"><div class="nm">🇫🇷 Natan</div><div class="rl">Satoshi · PT · Manor</div><div class="mt"><span>📞 +33 7 69 41 11 79</span></div></div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY / EXPATS -->
+  <section class="grp">
+    <div class="grp-head"><h2>🌍 Community &amp; travellers</h2><span class="n">8</span><span class="sub">the Community Chat crowd — surfers, long-stayers</span></div>
+    <div class="roster">
+      <div class="p new"><div class="nm">🇦🇺 Ben</div><div class="rl">sauna · aka Ben McMahon</div><div class="mt"><span>📞 +61 413 409 593</span></div></div>
+      <div class="p new"><div class="nm">🇮🇳 Bhanu Prakash</div><div class="rl">India</div><div class="mt"><span>💬 Community Chat</span></div></div>
+      <div class="p new"><div class="nm">🇦🇺 Bobby Rose</div><div class="rl"></div><div class="mt"><span>📞 +61 487 908 477</span></div></div>
+      <div class="p new"><div class="nm">🇨🇦 Daniel</div><div class="rl">Canada</div><div class="mt"><span>💬 Community Chat</span></div></div>
+      <div class="p new"><div class="nm">🇩🇪 Danny</div><div class="rl">Edan Miller · Germany</div><div class="mt"><span>📞 +62 852-1540-4160</span></div></div>
+      <div class="p new"><div class="nm">🇩🇪 Dominik</div><div class="rl">Germany</div><div class="mt"><span>📞 +49 176 4344 9113</span></div></div>
+      <div class="p new"><div class="nm">🇦🇺 Nellie</div><div class="rl">Australia</div><div class="mt"><span>📞 +61 468 774 682</span></div></div>
+      <div class="p new"><div class="nm">🇲🇦 Yusef</div><div class="rl">Morocco</div><div class="mt"><span>📞 +212 627 819 495</span></div></div>
+    </div>
+  </section>
+
+  <!-- PAST COMMUNITY -->
+  <section class="grp">
+    <div class="grp-head"><h2>🕰️ Past community</h2><span class="n">5</span><span class="sub">were in Medewi, have since moved on</span></div>
+    <div class="roster">
+      <div class="p new"><div class="nm">🇨🇦 Gemma Wood</div><div class="rl">Canada · was at Smart Manor</div><div class="mt"><span>📞 +1 646-262-3985</span></div></div>
+      <div class="p new"><div class="nm">🇲🇦 Felipe</div><div class="rl">Morocco</div><div class="mt"><span>📞 +33 6 58 33 09 49</span></div></div>
+      <div class="p new"><div class="nm">🇩🇪 Kati</div><div class="rl">Germany</div><div class="mt"><span>📞 +49 176 8929 1709</span></div></div>
+      <div class="p new"><div class="nm">Simon Chadwick</div><div class="rl">expat</div><div class="mt"><span>📞 +62 877-6526-8723</span></div></div>
+      <div class="p new"><div class="nm">🇺🇸 Soeren</div><div class="rl">Euvrard · Boston</div><div class="mt"><span>📞 +1 617-487-1299</span></div></div>
+    </div>
+  </section>
+
+  <!-- LOCALS -->
+  <section class="grp">
+    <div class="grp-head"><h2>🇮🇩 Locals &amp; services</h2><span class="n">8</span><span class="sub">named faces behind the trades</span></div>
+    <div class="roster">
+      <div class="p new"><div class="nm">Nat</div><div class="rl">local — not Natan</div><div class="mt"><span>📞 +62 823-4027-4740</span></div></div>
+      <div class="p new"><div class="nm">Yani</div><div class="rl">local · WA "Yantik"?</div><div class="mt"><span>📞 +62 813-5326-3220</span></div></div>
+      <div class="p new"><div class="nm">Agus Kelapa 🥥</div><div class="rl">coconuts</div><div class="mt"><span class="tag">🛒 shop</span></div></div>
+      <div class="p new"><div class="nm">Hendra Tempe</div><div class="rl">tempe seller</div><div class="mt"><span class="tag">🛒 shop</span></div></div>
+      <div class="p new"><div class="nm">Niluh 🧘</div><div class="rl">yoga teacher</div><div class="mt"><span>📞 +62 831-1499-3538</span></div></div>
+      <div class="p new"><div class="nm">Ketut 🛵</div><div class="rl">driver</div><div class="mt"><span class="tag">🛵 transport</span></div></div>
+      <div class="p new"><div class="nm">Sani Garsia 🛵</div><div class="rl">Ketut's taxi</div><div class="mt"><span class="tag">🛵 transport</span></div></div>
+      <div class="p new"><div class="nm">Hety &amp; Ketut 🏄</div><div class="rl">Harris Surf Villa</div><div class="mt"><span class="tag">🏨 stay</span></div></div>
+    </div>
+  </section>
+
+  <!-- NAYA -->
+  <section class="grp">
+    <div class="grp-head"><h2>🍽️ Naya's Kitchen</h2><span class="n">2</span><span class="sub">met ~two days ago, got their names today</span></div>
+    <div class="roster">
+      <div class="p new"><div class="nm">🇮🇩 Heti</div><div class="rl">mother-type owner · good vibes</div><div class="mt"><span class="tag">🍽️ food</span></div></div>
+      <div class="p new"><div class="nm">🇮🇩 Rani</div><div class="rl">younger · at the cash register</div><div class="mt"><span class="tag">🍽️ food</span></div></div>
+    </div>
+  </section>
+
+  <!-- BEACH RUN -->
+  <section class="grp">
+    <div class="grp-head"><h2>🏃 Beach run</h2><span class="n">2</span><span class="sub">transient — only here a bit, just logging names</span></div>
+    <div class="roster">
+      <div class="p new"><div class="nm">Reuben</div><div class="rl">IG @reubenn.priv</div><div class="mt"><span>transient</span></div></div>
+      <div class="p new"><div class="nm">Shun</div><div class="rl"></div><div class="mt"><span>transient</span></div></div>
+    </div>
+  </section>
+
+  <!-- ALREADY FILED -->
+  <section class="grp">
+    <div class="grp-head"><h2>🗂️ Already filed</h2><span class="n">15</span><span class="sub">from earlier sessions — sorted by venue</span></div>
+    <div class="roster">
+      <div class="p have"><div class="nm">🇮🇩 Decko</div><div class="rl">Pangea</div></div>
+      <div class="p have"><div class="nm">🇮🇩 Dede</div><div class="rl">Pangea barista</div></div>
+      <div class="p have"><div class="nm">🇮🇩 Sinar</div><div class="rl">Pangea</div></div>
+      <div class="p have"><div class="nm">🇮🇩 ipan</div><div class="rl">Holy Tree</div></div>
+      <div class="p have"><div class="nm">🇮🇩 anang</div><div class="rl">Holy Tree</div></div>
+      <div class="p have"><div class="nm">🇮🇩 dinda</div><div class="rl">Holy Tree</div></div>
+      <div class="p have"><div class="nm">🇮🇩 Yanti</div><div class="rl">Bomboloni</div></div>
+      <div class="p have"><div class="nm">🇮🇩 Roy</div><div class="rl">Bomboloni</div></div>
+      <div class="p have"><div class="nm">🇮🇩 Hans</div><div class="rl">Bomboloni</div></div>
+      <div class="p have"><div class="nm">🇮🇩 dedy</div><div class="rl">Wakey · +62 ☎ added</div></div>
+      <div class="p have"><div class="nm">🇸🇪 chris</div><div class="rl">Sweden · +46 ☎ added</div></div>
+      <div class="p have"><div class="nm">🇸🇪 olivia</div><div class="rl">Sweden · +46 ☎ added</div></div>
+      <div class="p have"><div class="nm">Uchi Dira</div><div class="rl">Dira Fresh</div></div>
+      <div class="p have"><div class="nm">Cary</div><div class="rl">board rides</div></div>
+      <div class="p have"><div class="nm">Corine</div><div class="rl">Singapore · farm-to-table</div></div>
+    </div>
+  </section>
+
+  <!-- GAP -->
+  <div class="gapbox">
+    <h3>🕳️ Still nameless — the real work</h3>
+    <p><b>16 of the 73</b> in Community Chat 💬 have no contact name and no self-set push name — just an
+    <code>@lid</code> privacy ID. That's the "who <em>is</em> that" gap. WhatsApp no longer exposes their
+    phone number, so there's no auto-join to your contacts — these get closed in person.</p>
+    <p>The broader West Bali groups (West Bali Community 81 · Marketplace 34 · Sports 27) are a separate,
+    non-Medewi mining effort — filed as <a href="https://linear.app/nomad-code/issue/TODO-169/people-whatsapp">TODO-169 · people-whatsapp</a>.</p>
+    <div class="anon">
+      <code>102504…</code><code>280079…</code><code>267928…</code><code>111991…</code><code>203693…</code><code>222698…</code><code>276544…</code><code>224257…</code><code>213494…</code><code>126327…</code><code>188678…</code><code>186016…</code><code>307220…</code><code>173079…</code><code>256126…</code><code>175774…</code>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p><b>Method.</b> One note per person in <code>dna/people/</code>, flag + <code>👫</code> ji, phone in the body.
+    Faceless spots live on the place note <code>dna/places/bali/medewi.md</code> under ontology type-ji.
+    Full ontology walkthrough on the prior artifact →
+    <a href="https://nomad-code.github.io/todo-164_people-medewi_2026-07-07_16-58/#scale">todo-164 #scale</a>.</p>
+    <p><b>Outcome:</b> know everyone's name in Medewi. Endless task — but now it's a system, not a memory.</p>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Private-safe map and implementation receipt for Brendan's Chromium history ledger.">
+  <title>TODO-348 · code/chromium</title>
+  <link rel="stylesheet" href="../../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../../design-repo/grove/motion.css">
+  <link rel="stylesheet" href="../../design-repo/grove/viz.css">
+  <style>
+    :root{--coal:#101916;--coal-2:#17241f;--blue:#4a8aa0;--red:#c1502e}
+    html{scroll-behavior:smooth}body{background:radial-gradient(circle at 8% 0%,rgba(74,138,160,.14),transparent 32rem),radial-gradient(circle at 94% 16%,rgba(132,194,65,.13),transparent 30rem),var(--bg)}
+    .shell{width:min(1180px,calc(100% - 32px));margin:auto;padding:24px 0 56px}.mast,.mast nav,.hero-actions,.metric-line,.status-line,.tabbar,.legend,.source-head,.code-head,.foot,.scheduler{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.mast{justify-content:space-between;font:500 10px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.mast a{color:var(--forest-d)}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin:46px 0 14px}.hero-main,.hero-side{border-radius:28px;min-height:320px}.hero-main{padding:36px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow-hero)}.eyebrow{font:500 10px/1.4 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}.hero h1{font-size:clamp(52px,8vw,96px);line-height:.88;letter-spacing:-.075em;max-width:8ch;margin:22px 0}.hero-main>p{font-size:15px;line-height:1.7;color:var(--body);max-width:57ch}.hero-actions{margin-top:24px}.pill{border-radius:99px;padding:10px 14px;background:var(--g-lime);color:var(--forest-d);font:500 10px/1 var(--font-mono)}.pill.live:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--lime);display:inline-block;margin-right:8px;box-shadow:0 0 0 0 rgba(132,194,65,.55);animation:ping 2s infinite}.hero-side{position:relative;overflow:hidden;background:var(--coal);color:white;padding:29px;display:flex;flex-direction:column;justify-content:space-between}.hero-side:after{content:"";position:absolute;width:260px;height:260px;border:1px solid rgba(155,212,87,.24);border-radius:50%;right:-96px;top:-98px;box-shadow:0 0 0 38px rgba(155,212,87,.025),0 0 0 78px rgba(155,212,87,.02)}.hero-side .answer{font-size:36px;line-height:1;letter-spacing:-.05em;max-width:12ch;position:relative;z-index:1}.hero-side .answer b{color:var(--lime-b)}.hero-side p{font:400 11px/1.6 var(--font-mono);color:#b8c5bf;max-width:35ch;position:relative;z-index:1}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.metric{padding:20px;background:var(--card);border:1px solid var(--line);border-radius:18px}.metric b{display:block;font-size:36px;letter-spacing:-.06em}.metric span{display:block;margin-top:6px;font:500 10px/1.5 var(--font-mono);color:var(--muted)}
+    .workspace{margin-top:16px;border:1px solid var(--line);background:var(--card);border-radius:28px;overflow:hidden}.tabbar{padding:12px;border-bottom:1px solid var(--line);background:rgba(236,236,228,.5)}.tabbar button{flex:0 0 auto;border:0;border-radius:99px;background:transparent;color:var(--muted);padding:10px 14px;font:500 11px/1 var(--font-mono);cursor:pointer}.tabbar button[aria-selected="true"]{background:var(--ink);color:white}.panel{display:none;padding:28px}.panel.active{display:block;animation:rise .42s var(--ease) both}.section-head{display:grid;grid-template-columns:1fr minmax(250px,440px);gap:18px;align-items:end;margin-bottom:24px}.section-head h2{font-size:34px;letter-spacing:-.05em}.section-head p{font-size:12px;line-height:1.65;color:var(--muted)}
+    .chart-grid{display:grid;grid-template-columns:1.55fr .75fr;gap:12px}.chart-card,.source-card,.callout,.privacy-card,.code-card,.test-card{border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,var(--card),#fbfbf7);padding:20px}.chart-head{display:flex;justify-content:space-between;align-items:end;gap:12px}.chart-head h3,.source-card h3,.callout h3,.privacy-card h3,.code-card h3,.test-card h3{font-size:17px;letter-spacing:-.025em}.chart-head span{font:500 10px/1.4 var(--font-mono);color:var(--muted)}#activity{width:100%;height:auto;display:block;margin-top:14px;overflow:visible}.gridline{stroke:var(--line);stroke-width:1}.area{fill:rgba(18,124,112,.09)}.activity-line{fill:none;stroke:var(--forest);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}.peak{fill:var(--lime);stroke:var(--card);stroke-width:3}.axis-label{fill:var(--muted);font:9px var(--font-mono)}.peak-label{fill:var(--forest-d);font:500 9px var(--font-mono)}
+    .sources{display:grid;gap:18px;margin-top:20px}.source{display:grid;gap:7px}.source-head{justify-content:space-between;font:500 10px/1.4 var(--font-mono)}.source-head span{color:var(--muted)}.bar{height:7px;border-radius:10px;background:var(--well);overflow:hidden}.bar i{display:block;height:100%;border-radius:inherit;background:var(--forest);transform-origin:left;animation:grow 1s var(--ease) both}.source.atlas .bar i{background:var(--blue)}.source.empty .bar i{background:var(--line)}.source small{font:400 9px/1.4 var(--font-mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.coverage-note{border-top:1px solid var(--line);padding-top:14px;margin-top:18px;font-size:11px;line-height:1.6;color:var(--body)}
+    .map-wrap{display:grid;grid-template-columns:1.5fr .7fr;gap:12px}.network{position:relative;border-radius:22px;background:var(--coal);overflow:hidden;min-height:430px;padding:14px}.network svg{width:100%;height:auto;display:block}.net-line{stroke:#587268;stroke-width:1.5;fill:none}.net-line.live{stroke:var(--lime-b);stroke-dasharray:5 9;animation:flow 3s linear infinite}.net-line.permission{stroke:#e09a77;stroke-dasharray:2 9;animation:flow 4s linear infinite}.net-node circle{fill:var(--coal-2);stroke:#527066;stroke-width:1.5}.net-node.source circle{stroke:var(--blue)}.net-node.ledger circle{fill:#17372e;stroke:var(--lime-b)}.net-node.context circle{stroke:#d57f5d}.net-label{fill:white;font:500 11px var(--font-mono);text-anchor:middle}.net-sub{fill:#91a59c;font:9px var(--font-mono);text-anchor:middle}.mote{fill:var(--lime-b)}.mote.permission{fill:#e09a77}.map-aside{display:grid;gap:10px}.callout{padding:18px}.callout b{display:block;font:500 10px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--forest);margin-bottom:8px}.callout p{font-size:11.5px;line-height:1.6;color:var(--body)}.callout.warn b{color:var(--warn)}.replay{border:0;border-radius:99px;background:var(--lime-b);color:#173326;padding:11px 15px;font:500 10px/1 var(--font-mono);cursor:pointer}.replay:disabled{opacity:.6}
+    .privacy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.privacy-card{min-height:190px}.privacy-card .tag{display:inline-block;border-radius:99px;padding:6px 9px;background:var(--well);font:500 9px/1 var(--font-mono);color:var(--muted);margin-bottom:15px}.privacy-card h3{margin-bottom:10px}.privacy-card p{font-size:12px;line-height:1.65;color:var(--body)}.privacy-card ul{display:grid;gap:7px;margin-top:12px}.privacy-card li{font:400 10px/1.5 var(--font-mono);color:var(--muted);padding-left:15px;position:relative}.privacy-card li:before{content:"→";position:absolute;left:0;color:var(--forest)}.privacy-card.no li:before{content:"×";color:var(--warn)}
+    .path-table{margin-top:12px;border:1px solid var(--line);border-radius:18px;overflow:hidden}.path-row{display:grid;grid-template-columns:165px 1fr 90px;gap:12px;padding:13px 16px;border-top:1px solid var(--line);align-items:center}.path-row:first-child{border-top:0}.path-row b{font-size:11px}.path-row code{font-size:9.5px;color:var(--muted);overflow-wrap:anywhere}.path-row span{font:500 9px/1 var(--font-mono);text-align:right}.ok{color:var(--forest)}.stale{color:var(--amber)}.empty-txt{color:var(--faint)}
+    .code-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.code-card{padding:0;overflow:hidden;background:var(--coal);border-color:#27362f;color:white}.code-head{justify-content:space-between;padding:15px 17px;border-bottom:1px solid rgba(255,255,255,.09)}.code-head h3{color:white}.code-head span{font:400 9px/1 var(--font-mono);color:#91a59c}pre{padding:18px;overflow:auto;font:400 10.5px/1.7 var(--font-mono);color:#d9e5df}pre .g{color:var(--lime-b)}pre .b{color:#8ebac9}pre .m{color:#91a59c}.code-side{display:grid;gap:12px}.test-card{display:flex;flex-direction:column;justify-content:space-between;min-height:170px}.test-card strong{font-size:42px;letter-spacing:-.06em;color:var(--forest)}.test-card p{font-size:11px;line-height:1.55;color:var(--muted)}.scheduler{border-radius:18px;padding:18px;background:var(--g-lime);color:var(--forest-d);justify-content:space-between}.scheduler b{font-size:13px}.scheduler span{font:500 9px/1.4 var(--font-mono)}
+    .note{margin-top:14px;padding:16px 18px;border-radius:16px;background:var(--warn-bg);border:1px solid var(--warn-bd);font-size:11px;line-height:1.6;color:#613222}.note b{font-weight:500}.foot{justify-content:space-between;margin-top:28px;padding-top:18px;border-top:1px solid var(--line);font:400 9.5px/1.6 var(--font-mono);color:var(--faint)}.foot a{color:var(--forest-d)}
+    @keyframes ping{70%{box-shadow:0 0 0 8px rgba(132,194,65,0)}100%{box-shadow:0 0 0 0 rgba(132,194,65,0)}}@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes flow{to{stroke-dashoffset:-28}}
+    @media(max-width:900px){.hero,.chart-grid,.map-wrap,.code-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.section-head{grid-template-columns:1fr}.map-aside{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:620px){.shell{width:calc(100% - 20px);padding-top:14px}.hero{margin-top:28px}.hero-main,.hero-side,.panel{padding:20px}.hero h1{font-size:52px}.metrics,.privacy-grid,.map-aside{grid-template-columns:1fr}.tabbar{overflow-x:auto;flex-wrap:nowrap}.tabbar button{white-space:nowrap}.path-row{grid-template-columns:1fr}.path-row span{text-align:left}.network{min-height:0}.metric b{font-size:30px}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="mast"><span>TODO-348 · private history observability</span><nav><a href="https://linear.app/nomad-code/issue/TODO-348/codechromium">Linear</a><span>03 Aug 2026 · UTC</span></nav></header>
+  <section class="hero">
+    <article class="hero-main">
+      <span class="eyebrow">Verified on this Mac · not a product assumption</span>
+      <h1>Your browser remembers.</h1>
+      <p>Chrome is the active history system. ChatGPT's built-in browser has a separate Chromium profile, but it is empty today. A legacy Atlas profile still holds an older slice. One private ledger now preserves all three without publishing what you visited or searched.</p>
+      <div class="hero-actions"><span class="pill live">tracking every 30 minutes</span><span class="pill">raw data stays local</span></div>
+    </article>
+    <aside class="hero-side">
+      <span class="eyebrow">The short answer</span>
+      <div class="answer"><b>Yes,</b> with boundaries.</div>
+      <p>ChatGPT can request relevant browser history for a task. It does not silently inherit one universal history, and the Chrome extension does not create a second complete OpenAI archive.</p>
+    </aside>
+  </section>
+
+  <section class="metrics" aria-label="Coverage metrics">
+    <article class="metric"><b>54,358</b><span>visits archived locally</span></article>
+    <article class="metric"><b>5,950</b><span>recognized search associations</span></article>
+    <article class="metric"><b>5</b><span>Chromium stores checked</span></article>
+    <article class="metric"><b>30m</b><span>scheduled ingest cadence</span></article>
+  </section>
+
+  <section class="workspace">
+    <div class="tabbar" role="tablist" aria-label="Artifact levels">
+      <button role="tab" aria-selected="true" aria-controls="coverage" id="tab-coverage">01 · Coverage</button>
+      <button role="tab" aria-selected="false" aria-controls="map" id="tab-map">02 · Neural map</button>
+      <button role="tab" aria-selected="false" aria-controls="privacy" id="tab-privacy">03 · Boundaries</button>
+      <button role="tab" aria-selected="false" aria-controls="code" id="tab-code">04 · Code + proof</button>
+    </div>
+
+    <section class="panel active" id="coverage" role="tabpanel" aria-labelledby="tab-coverage">
+      <div class="section-head"><h2>What is actually covered</h2><p>The chart and source bars come from local SQLite counts captured at 00:21 UTC. Search-term rows are a useful Chromium signal, but visits—not the keyword table—are the complete archived stream.</p></div>
+      <div class="chart-grid">
+        <article class="chart-card">
+          <div class="chart-head"><div><span>Chrome · trailing 90-day window</span><h3>Daily visit activity</h3></div><span>54,128 total · 595/day<br>peak 2,693 · Jul 04</span></div>
+          <svg id="activity" viewBox="0 0 760 260" role="img" aria-label="Daily Chrome visits from May 5 to August 3, with a peak of 2,693 visits on July 4"></svg>
+        </article>
+        <aside class="source-card">
+          <h3>Source weight</h3>
+          <div class="sources">
+            <div class="source"><div class="source-head"><b>Chrome · Default</b><span>54,128</span></div><div class="bar"><i style="width:100%"></i></div><small>current · latest 00:12 UTC</small></div>
+            <div class="source atlas"><div class="source-head"><b>Atlas · legacy</b><span>230</span></div><div class="bar"><i style="width:6.5%"></i></div><small>stale · Nov 2025—Feb 2026</small></div>
+            <div class="source empty"><div class="source-head"><b>Built-in browser</b><span>0</span></div><div class="bar"><i style="width:1%"></i></div><small>two candidate stores · no visits yet</small></div>
+          </div>
+          <p class="coverage-note"><b>88 active calendar days</b> in the window; three dates had no stored visits. The archive is idempotent, so clearing a browser later does not erase already-ingested rows.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="map" role="tabpanel" aria-labelledby="tab-map">
+      <div class="section-head"><h2>Three data planes, one local spine</h2><p>Green flow is automatic local ingestion. Orange flow is permission-gated task context. The ledger has no automatic edge into ChatGPT—sharing remains an explicit decision.</p></div>
+      <div class="map-wrap">
+        <div class="network">
+          <svg id="network" viewBox="0 0 760 430" role="img" aria-label="Network map from three browser history sources through snapshots into a private ledger and privacy-safe coverage report, with a separate permission-gated path from browsers to ChatGPT context">
+            <path class="net-line live" id="edge-a" d="M160 95 C280 95 275 210 360 210"></path>
+            <path class="net-line live" id="edge-b" d="M160 210 C260 210 285 210 360 210"></path>
+            <path class="net-line live" id="edge-c" d="M160 325 C280 325 275 210 360 210"></path>
+            <path class="net-line live" id="edge-d" d="M440 210 C520 210 535 120 610 120"></path>
+            <path class="net-line permission" id="edge-e" d="M160 95 C330 40 470 335 610 310"></path>
+            <path class="net-line permission" id="edge-f" d="M160 210 C330 260 470 310 610 310"></path>
+            <circle class="mote"><animateMotion dur="3s" repeatCount="indefinite"><mpath href="#edge-a"></mpath></animateMotion></circle>
+            <circle class="mote"><animateMotion dur="3.6s" repeatCount="indefinite"><mpath href="#edge-c"></mpath></animateMotion></circle>
+            <circle class="mote"><animateMotion dur="2.7s" repeatCount="indefinite"><mpath href="#edge-d"></mpath></animateMotion></circle>
+            <circle class="mote permission"><animateMotion dur="4.4s" repeatCount="indefinite"><mpath href="#edge-e"></mpath></animateMotion></circle>
+            <g class="net-node source" transform="translate(115 95)"><circle r="47"></circle><text class="net-label" y="-3">Chrome</text><text class="net-sub" y="15">54,128 visits</text></g>
+            <g class="net-node source" transform="translate(115 210)"><circle r="47"></circle><text class="net-label" y="-3">Built-in</text><text class="net-sub" y="15">separate · empty</text></g>
+            <g class="net-node source" transform="translate(115 325)"><circle r="47"></circle><text class="net-label" y="-3">Atlas</text><text class="net-sub" y="15">230 visits</text></g>
+            <g class="net-node ledger" transform="translate(400 210)"><circle r="56"></circle><text class="net-label" y="-8">Local ledger</text><text class="net-sub" y="12">0600 · SQLite</text><text class="net-sub" y="27">append-only</text></g>
+            <g class="net-node ledger" transform="translate(650 120)"><circle r="48"></circle><text class="net-label" y="-3">Coverage</text><text class="net-sub" y="15">counts only</text></g>
+            <g class="net-node context" transform="translate(650 310)"><circle r="52"></circle><text class="net-label" y="-8">ChatGPT</text><text class="net-sub" y="12">task context</text><text class="net-sub" y="27">confirm first</text></g>
+            <text class="net-sub" x="382" y="70">AUTOMATIC · LOCAL</text><text class="net-sub" x="406" y="368">REQUEST-SCOPED · REVIEW</text>
+          </svg>
+        </div>
+        <aside class="map-aside">
+          <article class="callout"><b>Plane 01 · sources</b><p>Each Chromium profile owns its own History database. Chrome and the built-in browser do not merge automatically.</p></article>
+          <article class="callout"><b>Plane 02 · archive</b><p>A safe temporary snapshot feeds the owner-only ledger. Watermarks make stale or empty sources obvious.</p></article>
+          <article class="callout warn"><b>Plane 03 · context</b><p>ChatGPT may use relevant history only after a request and confirmation. That is task context, not durable coverage.</p></article>
+          <button class="replay" id="replay">Replay data flow</button>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="privacy" role="tabpanel" aria-labelledby="tab-privacy">
+      <div class="section-head"><h2>“History” is four different things</h2><p>The important distinction is ownership: a browser database, an OpenAI conversation, a task's temporary context, and this new private archive have different retention and access rules.</p></div>
+      <div class="privacy-grid">
+        <article class="privacy-card"><span class="tag">LOCAL · COMPLETE FOR PROFILE</span><h3>Chrome history</h3><p>Chrome's SQLite database is the active source on this Mac. Synced-device activity may appear when Chrome sync writes it into the local profile.</p><ul><li>visits + titles + raw URLs</li><li>recognized search terms</li><li>not automatically copied wholesale to OpenAI</li></ul></article>
+        <article class="privacy-card"><span class="tag">LOCAL · SEPARATE PROFILE</span><h3>ChatGPT built-in browser</h3><p>Official guidance says it keeps its own profile and history. The two current candidate databases on this Mac are present but empty.</p><ul><li>managed in Settings → Browser</li><li>does not inherit regular Chrome history</li><li>ChatGPT can request a relevant-history search</li></ul></article>
+        <article class="privacy-card"><span class="tag">OPENAI · CONVERSATION DATA</span><h3>ChatGPT chats and searches</h3><p>Searches performed inside a chat belong to conversation data. The desktop app has a small local cache, but that cache is not a reliable complete export.</p><ul><li>governed by ChatGPT data controls</li><li>not the same as Chromium History</li><li>use account export for authoritative coverage</li></ul></article>
+        <article class="privacy-card no"><span class="tag">REQUEST-SCOPED · NOT AN ARCHIVE</span><h3>Chrome extension context</h3><p>When you approve history access, relevant entries can enter the task context. OpenAI says it does not keep a second complete record of all Chrome actions.</p><ul><li>no always-allow setting for history</li><li>page text, screenshots, and tool calls may enter chats</li><li>do not treat the extension as a backup</li></ul></article>
+      </div>
+      <div class="path-table" aria-label="Local data locations">
+        <div class="path-row"><b>Chrome · Default</b><code>~/Library/Application Support/Google/Chrome/Default/History</code><span class="ok">current</span></div>
+        <div class="path-row"><b>Built-in browser</b><code>~/Library/Application Support/Codex/Default/Partitions/codex-browser-app/History</code><span class="empty-txt">empty</span></div>
+        <div class="path-row"><b>Atlas · legacy</b><code>~/Library/Application Support/com.openai.atlas/browser-data/host/user-…/History</code><span class="stale">stale</span></div>
+        <div class="path-row"><b>Private ledger</b><code>~/Library/Application Support/code-chromium/history.sqlite3</code><span class="ok">tracking</span></div>
+        <div class="path-row"><b>Chat cache · partial</b><code>~/Library/Application Support/com.openai.chat/conversations-v2-…/*.data</code><span class="stale">not archive</span></div>
+      </div>
+      <p class="note"><b>Coverage limit:</b> Chromium's <code>keyword_search_terms</code> table is provider-dependent. A search query can still be preserved in a visited URL even when there is no keyword-table row. The ledger therefore archives both streams.</p>
+    </section>
+
+    <section class="panel" id="code" role="tabpanel" aria-labelledby="tab-code">
+      <div class="section-head"><h2>The tracking spine is small</h2><p>Python's standard library does the whole job: discover profiles, copy a consistent-enough local snapshot, ingest idempotently, report only metadata, and let launchd repeat it.</p></div>
+      <div class="code-grid">
+        <article class="code-card">
+          <div class="code-head"><h3>Snapshot → append-only ledger</h3><span>history_ledger.py</span></div>
+<pre><span class="b">def</span> safe_snapshot(source, destination):
+    target = destination / <span class="g">"History"</span>
+    shutil.copy2(source, target)
+    <span class="b">for</span> suffix <span class="b">in</span> (<span class="g">"-journal"</span>, <span class="g">"-wal"</span>, <span class="g">"-shm"</span>):
+        sidecar = source.with_name(source.name + suffix)
+        <span class="b">if</span> sidecar.exists() <span class="b">and</span> sidecar.stat().st_size:
+            shutil.copy2(sidecar, destination / (<span class="g">"History"</span> + suffix))
+    <span class="b">return</span> target
+
+cursor = ledger.execute(<span class="g">"""
+  INSERT OR IGNORE INTO visits(
+    source_id, browser_visit_id, visited_at,
+    url, title, transition, ingested_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?)
+"""</span>, row)
+
+os.chmod(db_path, <span class="g">0o600</span>)  <span class="m"># owner only</span></pre>
+        </article>
+        <div class="code-side">
+          <article class="test-card"><div><span class="eyebrow">Verification</span><strong>2 / 2</strong></div><p>Repeat ingestion is a no-op. A new browser visit appends exactly once. The privacy-safe report contains neither fixture URL nor fixture search terms.</p></article>
+          <article class="test-card"><div><span class="eyebrow">First real run</span><strong>OK</strong></div><p>Five stores scanned with zero errors. The live Chrome database was readable; the locked built-in profile was handled through a temporary snapshot.</p></article>
+          <div class="scheduler"><div><b>LaunchAgent active</b><br><span>com.nomad-code.code-chromium</span></div><span>every 1,800s</span></div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <footer class="foot"><span>Local evidence captured 2026-08-03 00:21 UTC · raw browsing content excluded</span><span>Official: <a href="https://learn.chatgpt.com/docs/browser">built-in browser</a> · <a href="https://learn.chatgpt.com/docs/chrome-extension">Chrome extension</a></span></footer>
+</main>
+<script>
+(function(){
+  const tabs=[...document.querySelectorAll('[role="tab"]')];
+  const panels=[...document.querySelectorAll('[role="tabpanel"]')];
+  tabs.forEach(tab=>tab.addEventListener('click',()=>{
+    tabs.forEach(t=>t.setAttribute('aria-selected',String(t===tab)));
+    panels.forEach(p=>p.classList.toggle('active',p.id===tab.getAttribute('aria-controls')));
+    if(tab.id==='tab-coverage') drawChart();
+  }));
+
+  const daily=[{"day":"2026-05-05","visits":636},{"day":"2026-05-06","visits":1130},{"day":"2026-05-07","visits":668},{"day":"2026-05-08","visits":156},{"day":"2026-05-09","visits":748},{"day":"2026-05-10","visits":27},{"day":"2026-05-11","visits":605},{"day":"2026-05-12","visits":376},{"day":"2026-05-13","visits":48},{"day":"2026-05-14","visits":260},{"day":"2026-05-15","visits":123},{"day":"2026-05-18","visits":335},{"day":"2026-05-19","visits":278},{"day":"2026-05-20","visits":56},{"day":"2026-05-21","visits":293},{"day":"2026-05-22","visits":352},{"day":"2026-05-23","visits":404},{"day":"2026-05-24","visits":421},{"day":"2026-05-25","visits":376},{"day":"2026-05-26","visits":660},{"day":"2026-05-27","visits":421},{"day":"2026-05-28","visits":224},{"day":"2026-05-29","visits":151},{"day":"2026-05-30","visits":109},{"day":"2026-05-31","visits":113},{"day":"2026-06-01","visits":354},{"day":"2026-06-02","visits":401},{"day":"2026-06-03","visits":383},{"day":"2026-06-04","visits":474},{"day":"2026-06-05","visits":620},{"day":"2026-06-06","visits":202},{"day":"2026-06-07","visits":151},{"day":"2026-06-08","visits":398},{"day":"2026-06-09","visits":625},{"day":"2026-06-10","visits":394},{"day":"2026-06-11","visits":349},{"day":"2026-06-12","visits":318},{"day":"2026-06-13","visits":25},{"day":"2026-06-14","visits":82},{"day":"2026-06-15","visits":737},{"day":"2026-06-16","visits":401},{"day":"2026-06-17","visits":436},{"day":"2026-06-18","visits":651},{"day":"2026-06-19","visits":346},{"day":"2026-06-20","visits":209},{"day":"2026-06-22","visits":1495},{"day":"2026-06-23","visits":189},{"day":"2026-06-24","visits":512},{"day":"2026-06-25","visits":914},{"day":"2026-06-26","visits":1355},{"day":"2026-06-27","visits":467},{"day":"2026-06-28","visits":276},{"day":"2026-06-29","visits":680},{"day":"2026-06-30","visits":676},{"day":"2026-07-01","visits":1114},{"day":"2026-07-02","visits":1388},{"day":"2026-07-03","visits":1241},{"day":"2026-07-04","visits":2693},{"day":"2026-07-05","visits":2403},{"day":"2026-07-06","visits":789},{"day":"2026-07-07","visits":771},{"day":"2026-07-08","visits":647},{"day":"2026-07-09","visits":1167},{"day":"2026-07-10","visits":1394},{"day":"2026-07-11","visits":295},{"day":"2026-07-12","visits":249},{"day":"2026-07-13","visits":855},{"day":"2026-07-14","visits":411},{"day":"2026-07-15","visits":1139},{"day":"2026-07-16","visits":957},{"day":"2026-07-17","visits":1230},{"day":"2026-07-18","visits":715},{"day":"2026-07-19","visits":735},{"day":"2026-07-20","visits":634},{"day":"2026-07-21","visits":334},{"day":"2026-07-22","visits":1372},{"day":"2026-07-23","visits":88},{"day":"2026-07-24","visits":856},{"day":"2026-07-25","visits":109},{"day":"2026-07-26","visits":2309},{"day":"2026-07-27","visits":951},{"day":"2026-07-28","visits":972},{"day":"2026-07-29","visits":467},{"day":"2026-07-30","visits":2077},{"day":"2026-07-31","visits":470},{"day":"2026-08-01","visits":82},{"day":"2026-08-02","visits":118},{"day":"2026-08-03","visits":6}];
+  let chartDrawn=false;
+  function drawChart(){
+    if(chartDrawn)return;chartDrawn=true;
+    const svg=document.getElementById('activity'),ns='http://www.w3.org/2000/svg',W=760,H=260,p={l:42,r:12,t:18,b:30};
+    const start=new Date('2026-05-05T00:00:00Z'),end=new Date('2026-08-03T00:00:00Z'),lookup=new Map(daily.map(d=>[d.day,d.visits])),series=[];
+    for(let t=new Date(start);t<=end;t.setUTCDate(t.getUTCDate()+1)){const day=t.toISOString().slice(0,10);series.push({day,visits:lookup.get(day)||0})}
+    const max=2800,x=i=>p.l+i*(W-p.l-p.r)/(series.length-1),y=v=>p.t+(H-p.t-p.b)*(1-v/max);
+    [0,700,1400,2100,2800].forEach(v=>{const line=document.createElementNS(ns,'line');line.setAttribute('x1',p.l);line.setAttribute('x2',W-p.r);line.setAttribute('y1',y(v));line.setAttribute('y2',y(v));line.setAttribute('class','gridline');svg.append(line);const label=document.createElementNS(ns,'text');label.setAttribute('x',p.l-7);label.setAttribute('y',y(v)+3);label.setAttribute('text-anchor','end');label.setAttribute('class','axis-label');label.textContent=v>=1000?(v/1000).toFixed(1)+'k':v;svg.append(label)});
+    const points=series.map((d,i)=>`${x(i)},${y(d.visits)}`).join(' '),base=H-p.b;
+    const area=document.createElementNS(ns,'path');area.setAttribute('d',`M${x(0)},${base} L${points.replaceAll(' ',' L')} L${x(series.length-1)},${base} Z`);area.setAttribute('class','area');svg.append(area);
+    const line=document.createElementNS(ns,'polyline');line.setAttribute('points',points);line.setAttribute('class','activity-line');svg.append(line);const length=line.getTotalLength();line.style.strokeDasharray=length;line.style.strokeDashoffset=length;requestAnimationFrame(()=>{line.style.transition='stroke-dashoffset 1.4s var(--ease)';line.style.strokeDashoffset=0});
+    const peakIndex=series.findIndex(d=>d.visits===2693),dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',x(peakIndex));dot.setAttribute('cy',y(2693));dot.setAttribute('r',5);dot.setAttribute('class','peak');svg.append(dot);const peakLabel=document.createElementNS(ns,'text');peakLabel.setAttribute('x',x(peakIndex)+8);peakLabel.setAttribute('y',y(2693)+4);peakLabel.setAttribute('class','peak-label');peakLabel.textContent='Jul 04 · 2,693';svg.append(peakLabel);
+    [['May 05',0],['Jun 01',27],['Jul 01',57],['Aug 03',90]].forEach(([label,i])=>{const t=document.createElementNS(ns,'text');t.setAttribute('x',x(i));t.setAttribute('y',H-7);t.setAttribute('text-anchor',i===0?'start':i===90?'end':'middle');t.setAttribute('class','axis-label');t.textContent=label;svg.append(t)});
+  }
+  drawChart();
+  document.getElementById('replay').addEventListener('click',function(){const button=this,network=document.getElementById('network');button.disabled=true;network.animate([{opacity:.35,transform:'scale(.985)'},{opacity:1,transform:'scale(1)'}],{duration:650,easing:'cubic-bezier(.22,.61,.36,1)'});setTimeout(()=>button.disabled=false,700)});
+})();
+</script>
+</body>
+</html>

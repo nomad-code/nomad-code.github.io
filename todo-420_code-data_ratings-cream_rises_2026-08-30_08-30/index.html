@@ -1,0 +1,516 @@
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cream Rises — a rating engine in your own hand</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<link rel="stylesheet" href="../design-repo/grove/motion.css">
+<style>
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 24px 96px}
+  .eyebrow{font:500 12px/1 var(--font-mono);letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted)}
+  h1{font:800 clamp(34px,5vw,58px)/1.03 var(--font-display);color:var(--ink);
+    letter-spacing:-.025em;text-wrap:balance;margin:14px 0 0}
+  .lede{font:400 19px/1.55 var(--font-ui);color:var(--body);max-width:62ch;
+    margin:18px 0 0}
+  h2{font:700 25px/1.2 var(--font-display);color:var(--ink);
+    letter-spacing:-.015em;margin:0 0 6px}
+  .sub{font:400 15px/1.6 var(--font-ui);color:var(--muted);max-width:66ch;
+    margin:0 0 20px}
+  section{margin-top:54px}
+  .card{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:24px}
+
+  /* the record-review score badge — the one flourish, rationed */
+  .badge{display:inline-grid;place-items:center;width:112px;height:112px;
+    border-radius:50%;background:var(--forest);color:#fff;
+    font:800 42px/1 var(--font-display);letter-spacing:-.03em;
+    box-shadow:var(--shadow-hero);font-variant-numeric:tabular-nums}
+  .badge small{display:block;font:500 10px/1 var(--font-mono);
+    letter-spacing:.12em;opacity:.72;margin-top:7px}
+  .hero{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin-top:32px}
+  .hero p{font:400 16px/1.6 var(--font-ui);color:var(--body);
+    max-width:52ch;margin:0}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));
+    gap:12px;margin-top:26px}
+  .kpi{background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-panel);padding:16px 18px}
+  .kpi b{display:block;font:800 27px/1.1 var(--font-display);color:var(--ink);
+    font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .kpi span{display:block;font:500 11px/1.4 var(--font-mono);
+    letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+    margin-top:6px}
+
+  .tbl{width:100%;border-collapse:collapse;font:400 14px/1.5 var(--font-ui)}
+  .tbl th{font:500 11px/1 var(--font-mono);letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);text-align:left;
+    padding:0 10px 10px;border-bottom:1px solid var(--line)}
+  .tbl td{padding:8px 10px;border-bottom:1px solid var(--line);
+    color:var(--body);vertical-align:middle}
+  .tbl tr:last-child td{border-bottom:0}
+  .tbl .n{text-align:right;font-variant-numeric:tabular-nums;
+    font-family:var(--font-mono);white-space:nowrap}
+  .tbl .m{font-family:var(--font-mono);color:var(--ink)}
+  .tbl .dim{color:var(--muted)}
+  .tbl .up{color:var(--forest);font-weight:600}
+  .tbl .w{width:34%;min-width:110px}
+  .tbl .sc{font:800 17px/1 var(--font-display);color:var(--forest);
+    font-variant-numeric:tabular-nums;text-align:right}
+  .scroll{overflow-x:auto}
+
+  .bar{height:7px;background:var(--well);border-radius:var(--r-pill);
+    overflow:hidden}
+  .bar>div{height:100%;border-radius:var(--r-pill)}
+  .bar .f{background:var(--forest)}
+  .bar .f2{background:var(--lime)}
+  .bar .f3{background:var(--amber)}
+
+  .tier{display:flex;align-items:center;gap:16px;padding:14px 16px;
+    border:1px solid var(--line);border-radius:var(--r-panel);
+    background:var(--card);margin-bottom:9px}
+  .tk{font:800 15px/1 var(--font-mono);color:#fff;background:var(--ink);
+    width:38px;height:38px;display:grid;place-items:center;
+    border-radius:var(--r-chip);flex:0 0 auto}
+  .t3 .tk{background:var(--forest)} .t2 .tk{background:#3f8f6b}
+  .t1 .tk{background:var(--muted)} .t0 .tk{background:var(--faint)}
+  .tb{flex:1 1 auto;min-width:0}
+  .tn{font:600 15px/1.3 var(--font-ui);color:var(--ink)}
+  .tm{font:400 12px/1.4 var(--font-mono);color:var(--muted)}
+  .tv{font:800 21px/1 var(--font-display);color:var(--ink);text-align:right;
+    font-variant-numeric:tabular-nums}
+  .tv span{display:block;font:400 11px/1.4 var(--font-mono);
+    color:var(--muted);margin-top:5px}
+
+  .chip{display:inline-block;font:500 10px/1 var(--font-mono);
+    letter-spacing:.05em;padding:5px 8px;border-radius:var(--r-chip);
+    background:var(--g-lime);color:var(--forest-d);white-space:nowrap}
+
+  .find{border-left:3px solid var(--forest);padding:4px 0 4px 18px;
+    margin:20px 0}
+  .find h3{font:700 17px/1.3 var(--font-display);color:var(--ink);margin:0 0 5px}
+  .find p{font:400 15px/1.62 var(--font-ui);color:var(--body);margin:0;
+    max-width:64ch}
+  .find.warn{border-left-color:var(--warn)}
+  .find.warn h3{color:var(--warn)}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+
+  .form{font:500 14px/1.9 var(--font-mono);color:var(--ink);
+    background:var(--well);border-radius:var(--r-panel);padding:18px 20px;
+    overflow-x:auto;white-space:pre}
+  .form em{color:var(--forest);font-style:normal;font-weight:600}
+  .form s{color:var(--muted);text-decoration:none}
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
+    font:400 13px/1.7 var(--font-mono);color:var(--faint)}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">TODO-420 · code / data_ratings · 2026-08-30</div>
+  <h1>Cream rises — but only on a scale<br>you already trust.</h1>
+  <p class="lede">You asked for a 0–10 so the good stuff reaches every device.
+  You already built one: <b>456 albums rated 0–100</b>, in your
+  own hand, over eleven years. So this doesn't invent a scale — it inherits
+  yours, and applies it to 53,334 photographs.</p>
+
+  <div class="hero">
+    <div class="badge">72.0<small>YOUR MEAN</small></div>
+    <p>Floor 40 — you never use the bottom of the scale. You rate
+    <b>10.6 points below critics</b> on average. Only 6.4% of
+    records ever break 90. That temperament is the product here; the photo
+    scores are just it, pointed somewhere new.</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><b>53,334</b><span>frames scored</span></div>
+    <div class="kpi"><b>5,955</b><span>albums built</span></div>
+    <div class="kpi"><b>33,898</b><span>lifted by graph</span></div>
+    <div class="kpi"><b>277</b><span>annotated shots</span></div>
+    <div class="kpi"><b>41,036</b><span>google sidecars</span></div>
+    <div class="kpi"><b>238</b><span>watch routes</span></div>
+  </div>
+
+  <section>
+    <h2>The Rosetta stone</h2>
+    <p class="sub">The ratings weren't in a database. They were in 940 exported
+    playlist <em>filenames</em>, encoding a convention you'd kept since 2015.</p>
+    <div class="card">
+      <div class="form">bright_eyes_-_im_wide_awake_its_morning_<em>jan_25_2005</em>_<em>83</em>-<em>85</em>_<em>sep_05_2022</em>_<em>84</em>
+<s>                                        └ released ┘ └ AOTY ┘ └ heard ───┘ └ you</s></div>
+      <p class="sub" style="margin:16px 0 0">The <code>nr</code> that appears in
+      place of the first number is AOTY's "not rated" — too few critics. That
+      one detail is what identified the source. 456 of the 920
+      playlists carry a full rating; the rest are dated playlists and mood
+      lists, which are moments rather than judgements.</p>
+    </div>
+
+    <div class="two" style="margin-top:20px">
+      <div class="card">
+        <h2 style="font-size:17px">Where you overrule the critics</h2>
+        <div class="scroll"><table class="tbl">
+          <tr><th>artist</th><th>album</th><th class="n">AOTY</th>
+              <th class="n">you</th><th class="n">Δ</th></tr>
+          <tr><td>bryson tiller</td><td class='dim'>t r a p s o u l</td><td class='n'>40</td><td class='n'>71</td><td class='n up'>+31</td></tr><tr><td>khruangbin</td><td class='dim'>the universe smiles upon you</td><td class='n'>72</td><td class='n'>94</td><td class='n up'>+22</td></tr><tr><td>kaytranada</td><td class='dim'>999</td><td class='n'>80</td><td class='n'>94</td><td class='n up'>+14</td></tr><tr><td>twin peaks</td><td class='dim'>down in heaven</td><td class='n'>73</td><td class='n'>87</td><td class='n up'>+14</td></tr><tr><td>anderson paak</td><td class='dim'>malibu</td><td class='n'>81</td><td class='n'>94</td><td class='n up'>+13</td></tr><tr><td>radiohead</td><td class='dim'>the king of limbs</td><td class='n'>75</td><td class='n'>88</td><td class='n up'>+13</td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:17px">Rating = copies, not sort order</h2>
+        <p class="sub" style="margin-bottom:14px">A score shouldn't order a
+        list, it should decide how many machines hold the file. Delete becomes
+        demote; nothing is destroyed, it stops being carried.</p>
+        <div class='tier t3'><div class='tk'>T3</div><div class='tb'><div class='tn'>phone + M3 + M5 + cloud</div><div class='tm'>score ≥ 9.0</div></div><div class='tv'>3,228<span>6.1%</span></div></div><div class='tier t2'><div class='tk'>T2</div><div class='tb'><div class='tn'>M3 + M5 + cloud</div><div class='tm'>score 7.5–8.9</div></div><div class='tv'>20,110<span>37.7%</span></div></div><div class='tier t1'><div class='tk'>T1</div><div class='tb'><div class='tn'>M5 + cloud</div><div class='tm'>score 6.0–7.4</div></div><div class='tv'>29,432<span>55.2%</span></div></div><div class='tier t0'><div class='tk'>T0</div><div class='tb'><div class='tn'>M5 only — cold</div><div class='tm'>score < 6.0</div></div><div class='tv'>564<span>1.1%</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Your curve, transplanted</h2>
+    <p class="sub">Photo scores are never computed directly. The signals only
+    produce a <em>rank</em>; that rank is then quantile-mapped onto the
+    empirical distribution of your 456 album scores. So "this
+    photo is an 8.8" means "as rare as a record you gave 8.8" — a claim your own
+    history backs. The two distributions match by construction.</p>
+    <p class="sub"><b>On notation.</b> The scale is unchanged; only the point
+    has moved. Everything below reads on the 0–10 axis. The one place 0–100
+    survives is where it's being quoted rather than used — the raw filenames
+    and the AOTY columns above, which are the source's units, not yours.</p>
+    <div class="card scroll"><table class="tbl">
+      <tr><th>band</th><th class="n">albums</th><th class="n">%</th><th></th>
+          <th class="n">frames</th><th class="n">%</th><th></th></tr>
+      <tr><td class='m'>4.0–4.9</td><td class='n'>2</td><td class='n dim'>0.4%</td><td class='w'><div class="bar"><div class="f" style="width:1.2%"></div></div></td><td class='n'>226</td><td class='n dim'>0.4%</td><td class='w'><div class="bar"><div class="f2" style="width:1.1%"></div></div></td></tr><tr><td class='m'>5.0–5.9</td><td class='n'>34</td><td class='n dim'>7.5%</td><td class='w'><div class="bar"><div class="f" style="width:19.6%"></div></div></td><td class='n'>3,950</td><td class='n dim'>7.4%</td><td class='w'><div class="bar"><div class="f2" style="width:19.5%"></div></div></td></tr><tr><td class='m'>6.0–6.9</td><td class='n'>158</td><td class='n dim'>34.6%</td><td class='w'><div class="bar"><div class="f" style="width:91.2%"></div></div></td><td class='n'>18,509</td><td class='n dim'>34.7%</td><td class='w'><div class="bar"><div class="f2" style="width:91.3%"></div></div></td></tr><tr><td class='m'>7.0–7.9</td><td class='n'>173</td><td class='n dim'>37.9%</td><td class='w'><div class="bar"><div class="f" style="width:99.8%"></div></div></td><td class='n'>20,268</td><td class='n dim'>38.0%</td><td class='w'><div class="bar"><div class="f2" style="width:100.0%"></div></div></td></tr><tr><td class='m'>8.0–8.9</td><td class='n'>60</td><td class='n dim'>13.2%</td><td class='w'><div class="bar"><div class="f" style="width:34.6%"></div></div></td><td class='n'>7,025</td><td class='n dim'>13.2%</td><td class='w'><div class="bar"><div class="f2" style="width:34.7%"></div></div></td></tr><tr><td class='m'>9.0–10</td><td class='n'>29</td><td class='n dim'>6.4%</td><td class='w'><div class="bar"><div class="f" style="width:16.7%"></div></div></td><td class='n'>3,356</td><td class='n dim'>6.3%</td><td class='w'><div class="bar"><div class="f2" style="width:16.6%"></div></div></td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>The second witness</h2>
+    <p class="sub">One curve from one medium is a habit, not a scale — the
+    shape could belong to music rather than to you. Letterboxd is the control:
+    a different medium, a different site, a different decade of use. If the
+    shape survives the crossing, it's yours.</p>
+
+    <div class="card scroll"><table class="tbl">
+      <tr><th>where the mass sits</th><th colspan="2">films</th>
+          <th colspan="2">albums</th><th class="n">gap</th></tr>
+      <tr><td class='m'>the middle</td><td class='dim'>films 2.5–3.5★</td><td class='n'>70.0%</td><td class='dim'>albums 60–79</td><td class='n'>72.6%</td><td class='n'><b>2.6</b> pt apart</td></tr><tr><td class='m'>the top</td><td class='dim'>films 4.5★+</td><td class='n'>6.0%</td><td class='dim'>albums 90+</td><td class='n'>6.4%</td><td class='n'><b>0.4</b> pt apart</td></tr>
+    </table></div>
+    <p class="sub" style="margin-top:14px">Two media rated years apart, and
+    the top band lands within a fraction of a point. You reserve roughly the
+    same sliver for the best thing you've seen as for the best thing you've
+    heard. That's a property of the rater, not the medium — which is the
+    licence for stamping the same curve onto photographs.</p>
+
+    <div class="two" style="margin-top:20px">
+      <div class="card">
+        <h2 style="font-size:17px">One axis, three instruments</h2>
+        <p class="sub" style="margin-bottom:14px">Keeping 0–100 and moving the
+        point puts everything on a single ruler. Each source marks it as finely
+        as it can, and the coarse marks are still readable against the fine
+        ones — the way a 1&nbsp;km grid reference and a 1&nbsp;m one describe
+        the same map.</p>
+        <div class="scroll"><table class="tbl">
+          <tr><th>instrument</th><th class="n">step</th><th>marks</th></tr>
+          <tr><td class='m'>Letterboxd</td><td class='n'>0.5</td>
+              <td class='dim'>five stars, half steps · 50 films</td></tr>
+          <tr><td class='m'>Spotify / AOTY</td><td class='n'>1.0</td>
+              <td class='dim'>whole points · 456 albums</td></tr>
+          <tr><td class='m'>these frames</td><td class='n'>0.1</td>
+              <td class='dim'>where the evidence reaches · 53,334</td></tr>
+        </table></div>
+        <p class="sub" style="margin-top:14px">Hundredths exist but stay rare,
+        as you guessed. They need a crowded stretch of curve <em>and</em> a
+        well-witnessed frame at the same time.</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:17px">One second channel per tool</h2>
+        <p class="sub" style="margin-bottom:14px">Letterboxd offers both a
+        rating and a heart. Across every entry I can read you used the heart
+        <b>0 times</b> — never. But
+        <b>10</b> are marked rewatch.</p>
+        <p class="sub" style="margin-bottom:14px">In Apple Photos it's the
+        exact inverse: the heart is the only tool you touch. Same person, two
+        apps, and in each you adopt precisely one channel beyond the score and
+        ignore the other. So the channel is real and the <em>form</em> is
+        incidental — which means reading the Photos heart as your second
+        channel isn't an assumption, it's the pattern.</p>
+        <p class="sub">Rewatched films do rate above once-watched ones, but on
+        ten films that's a direction, not a result. Flagged, not claimed.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <section>
+    <h2>A rating is a coordinate</h2>
+    <p class="sub">Not a number — a datapoint with a cascade of specificity,
+    like <code>2026</code> → <code>2026-08</code> → <code>2026-08-30T12:16:03.412Z</code>,
+    or a lat/long at 1&nbsp;km versus 1&nbsp;m. Every rung is a legitimate
+    value. A date with only a year still sorts, still filters, still joins; it
+    joins coarsely, and it <em>says so</em>.</p>
+    <p class="sub">That forced a correction. The previous pass handed every
+    frame a crisp integer whether six signals backed it or none — writing
+    <code>6.2</code> for a frame we know nothing about claims a discrimination
+    we can't make. So precision is now part of the value and has to be earned,
+    and like a truncated timestamp each rating denotes an <em>interval</em>:
+    <code>7.4</code> means [7.35, 7.45), <code>7</code> means [6.5, 7.5).</p>
+
+    <div class="card scroll"><table class="tbl">
+      <tr><th>written</th><th>precision</th><th class="n">interval</th>
+          <th class="n">frames</th><th class="n">%</th><th></th></tr>
+      <tr><td class='m'>7</td><td class='dim'>whole number</td><td class='n dim'>±0.500</td><td class='n'>703</td><td class='n dim'>1.3%</td><td class='w'><div class="bar"><div class="f" style="width:1.5%"></div></div></td></tr><tr><td class='m'>7.4</td><td class='dim'>tenths</td><td class='n dim'>±0.050</td><td class='n'>46,085</td><td class='n dim'>86.4%</td><td class='w'><div class="bar"><div class="f" style="width:100.0%"></div></div></td></tr><tr><td class='m'>7.42</td><td class='dim'>hundredths</td><td class='n dim'>±0.005</td><td class='n'>6,546</td><td class='n dim'>12.3%</td><td class='w'><div class="bar"><div class="f" style="width:14.2%"></div></div></td></tr>
+    </table></div>
+
+    <div class="two" style="margin-top:20px">
+      <div class="card">
+        <h2 style="font-size:17px">Two limits, smaller wins</h2>
+        <p class="sub" style="margin-bottom:14px"><b>The curve.</b> Your 456
+        albums don't discriminate evenly. Through the crowded 60–79 stretch one
+        album moves you 0.006 on the 0–10 axis, so tenths there are real. At the
+        floor it's 0.056. The scale does not carry uniform resolution, and
+        smoothing over that is the same error as the recency proxy: a real
+        gradient in the evidence, laundered into a clean number.</p>
+        <p class="sub"><b>The frame.</b> How many independent signals actually
+        fired on it. A frame carried only by a tie-break gets a whole number;
+        decimals on a tie-break are noise wearing a lab coat.</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:17px">The ceiling is a band, not a point</h2>
+        <p class="sub" style="margin-bottom:14px">293 frames tie at
+        exactly 10, because your curve holds only 29 albums across 90–100.
+        That tie is the scale being honest about its own top end.</p>
+        <p class="sub" style="margin-bottom:14px">It's also the check that the
+        era-fix held: the ceiling spans 1994–2026 and tracks cohort size rather
+        than recency.</p>
+        <div class="scroll"><table class="tbl">
+          <tr><th>year</th><th class="n">at 10</th><th></th></tr>
+          <tr><td class='m'>2022</td><td class='n'>65</td><td class='w'><div class="bar"><div class="f" style="width:100.0%"></div></div></td></tr><tr><td class='m'>2026</td><td class='n'>52</td><td class='w'><div class="bar"><div class="f" style="width:80.0%"></div></div></td></tr><tr><td class='m'>2021</td><td class='n'>44</td><td class='w'><div class="bar"><div class="f" style="width:67.7%"></div></div></td></tr><tr><td class='m'>2020</td><td class='n'>35</td><td class='w'><div class="bar"><div class="f" style="width:53.8%"></div></div></td></tr><tr><td class='m'>2018</td><td class='n'>26</td><td class='w'><div class="bar"><div class="f" style="width:40.0%"></div></div></td></tr><tr><td class='m'>2017</td><td class='n'>25</td><td class='w'><div class="bar"><div class="f" style="width:38.5%"></div></div></td></tr><tr><td class='m'>2019</td><td class='n'>16</td><td class='w'><div class="bar"><div class="f" style="width:24.6%"></div></div></td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="card scroll" style="margin-top:20px"><table class="tbl">
+      <tr><th>tier</th><th>range</th><th class="n">actual</th>
+          <th class="n">frames</th><th class="n">%</th><th>carried on</th></tr>
+      <tr><td class='m'>T3</td><td class='dim'>≥ 9.0</td><td class='n'>9.0–10.0</td><td class='n'>3,341</td><td class='n dim'>6.3%</td><td class='dim'>phone · M3 · M5 · cloud</td></tr><tr><td class='m'>T2</td><td class='dim'>7.5 – 8.9</td><td class='n'>7.5–8.9</td><td class='n'>14,183</td><td class='n dim'>26.6%</td><td class='dim'>M3 · M5 · cloud</td></tr><tr><td class='m'>T1</td><td class='dim'>6.0 – 7.4</td><td class='n'>6.0–7.4</td><td class='n'>31,649</td><td class='n dim'>59.3%</td><td class='dim'>M5 · cloud</td></tr><tr><td class='m'>T0</td><td class='dim'>< 6.0</td><td class='n'>4.0–5.9</td><td class='n'>4,161</td><td class='n dim'>7.8%</td><td class='dim'>M5 only — cold</td></tr>
+    </table></div>
+
+    <div class="find warn" style="margin-top:20px">
+      <h3>This rests on 50 films, not 699</h3>
+      <p>Letterboxd's HTML is behind Cloudflare's JS challenge — the ratings
+      page, the profile, every paginated view returns 403. The public RSS feed
+      is open but hard-capped at 50 entries, so that's the sample: the 50 most
+      recently <em>logged</em> films, which at least spans 2014–2026 rather
+      than being purely recent. The agreement above is strong for n=50 and it
+      is still n=50.</p>
+      <p>One concrete consequence: your histogram has real mass at 0.5★ and
+      1★, but the sample never drew one, so those bands got zero frames and
+      T0 is smaller than it should be. <b>Settings → Data → Export</b> drops a
+      <code>ratings.csv</code> with all 699 — put it at
+      <code>projects/ratings/export/</code> and the whole thing recomputes
+      against the real distribution.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Two traps, both caught</h2>
+    <div class="find warn">
+      <h3>Google's imageViews is not a play count</h3>
+      <p>It looked like the perfect un-fakeable signal — engagement, produced by
+      looking rather than tagging. But it decays almost monotonically with
+      recency: mean 55.8 for 2001 against 15.6 for 2022. It <em>accumulates</em>.
+      Used raw it would have ranked your archive by age and called it taste.
+      It's now z-scored within its own year, so it can only ever say "looked at
+      more than its contemporaries".</p>
+    </div>
+    <div class="find warn">
+      <h3>My own "curated" signal was recency in disguise</h3>
+      <p>I gave a bonus to anything in the live Photos library, reasoning it had
+      survived forward. It hadn't — the live library is simply recent. It pushed
+      57% of 2025 above 90 while 2022 sat at 3.6%. The term is gone, and every
+      frame is now ranked against its <em>own year</em>, so each era contributes
+      its own cream at the same rate. That is what "cream rises" has to mean
+      across a whole life rather than a recent one.</p>
+    </div>
+    <div class="two" style="margin-top:24px">
+      <div class="card">
+        <h2 style="font-size:17px">imageViews by year — the decay</h2>
+        <div class="scroll"><table class="tbl">
+          <tr><th>year</th><th class="n">items</th><th class="n">mean views</th><th></th></tr>
+          <tr><td class='m'>2005</td><td class='n'>19</td><td class='n'>33.5</td><td class='w'><div class="bar"><div class="f3" style="width:76.0%"></div></div></td></tr><tr><td class='m'>2006</td><td class='n'>25</td><td class='n'>37.0</td><td class='w'><div class="bar"><div class="f3" style="width:83.9%"></div></div></td></tr><tr><td class='m'>2007</td><td class='n'>61</td><td class='n'>35.1</td><td class='w'><div class="bar"><div class="f3" style="width:79.6%"></div></div></td></tr><tr><td class='m'>2008</td><td class='n'>103</td><td class='n'>43.7</td><td class='w'><div class="bar"><div class="f3" style="width:99.1%"></div></div></td></tr><tr><td class='m'>2009</td><td class='n'>21</td><td class='n'>42.2</td><td class='w'><div class="bar"><div class="f3" style="width:95.7%"></div></div></td></tr><tr><td class='m'>2010</td><td class='n'>21</td><td class='n'>44.1</td><td class='w'><div class="bar"><div class="f3" style="width:100.0%"></div></div></td></tr><tr><td class='m'>2011</td><td class='n'>79</td><td class='n'>39.4</td><td class='w'><div class="bar"><div class="f3" style="width:89.3%"></div></div></td></tr><tr><td class='m'>2012</td><td class='n'>59</td><td class='n'>26.9</td><td class='w'><div class="bar"><div class="f3" style="width:61.0%"></div></div></td></tr><tr><td class='m'>2013</td><td class='n'>633</td><td class='n'>9.9</td><td class='w'><div class="bar"><div class="f3" style="width:22.4%"></div></div></td></tr><tr><td class='m'>2014</td><td class='n'>188</td><td class='n'>33.0</td><td class='w'><div class="bar"><div class="f3" style="width:74.8%"></div></div></td></tr><tr><td class='m'>2015</td><td class='n'>426</td><td class='n'>37.7</td><td class='w'><div class="bar"><div class="f3" style="width:85.5%"></div></div></td></tr><tr><td class='m'>2016</td><td class='n'>514</td><td class='n'>30.3</td><td class='w'><div class="bar"><div class="f3" style="width:68.7%"></div></div></td></tr><tr><td class='m'>2017</td><td class='n'>3,604</td><td class='n'>23.3</td><td class='w'><div class="bar"><div class="f3" style="width:52.8%"></div></div></td></tr><tr><td class='m'>2018</td><td class='n'>4,616</td><td class='n'>19.8</td><td class='w'><div class="bar"><div class="f3" style="width:44.9%"></div></div></td></tr><tr><td class='m'>2019</td><td class='n'>3,153</td><td class='n'>17.6</td><td class='w'><div class="bar"><div class="f3" style="width:39.9%"></div></div></td></tr><tr><td class='m'>2020</td><td class='n'>6,978</td><td class='n'>17.0</td><td class='w'><div class="bar"><div class="f3" style="width:38.5%"></div></div></td></tr><tr><td class='m'>2021</td><td class='n'>7,401</td><td class='n'>19.2</td><td class='w'><div class="bar"><div class="f3" style="width:43.5%"></div></div></td></tr><tr><td class='m'>2022</td><td class='n'>11,988</td><td class='n'>15.6</td><td class='w'><div class="bar"><div class="f3" style="width:35.4%"></div></div></td></tr><tr><td class='m'>2023</td><td class='n'>1,093</td><td class='n'>19.2</td><td class='w'><div class="bar"><div class="f3" style="width:43.5%"></div></div></td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:17px">Top-tier share by year — after the fix</h2>
+        <div class="scroll"><table class="tbl">
+          <tr><th>year</th><th class="n">frames</th><th class="n">≥90</th><th></th></tr>
+          <tr><td class='m'>2007</td><td class='n'>61</td><td class='n'>6.6%</td><td class='w'><div class="bar"><div class="f" style="width:52.8%"></div></div></td></tr><tr><td class='m'>2008</td><td class='n'>103</td><td class='n'>6.8%</td><td class='w'><div class="bar"><div class="f" style="width:54.4%"></div></div></td></tr><tr><td class='m'>2011</td><td class='n'>79</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2012</td><td class='n'>59</td><td class='n'>6.8%</td><td class='w'><div class="bar"><div class="f" style="width:54.4%"></div></div></td></tr><tr><td class='m'>2013</td><td class='n'>633</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2014</td><td class='n'>188</td><td class='n'>6.4%</td><td class='w'><div class="bar"><div class="f" style="width:51.2%"></div></div></td></tr><tr><td class='m'>2015</td><td class='n'>426</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2016</td><td class='n'>514</td><td class='n'>6.4%</td><td class='w'><div class="bar"><div class="f" style="width:51.2%"></div></div></td></tr><tr><td class='m'>2017</td><td class='n'>4,312</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2018</td><td class='n'>4,615</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2019</td><td class='n'>3,154</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2020</td><td class='n'>6,976</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2021</td><td class='n'>7,397</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2022</td><td class='n'>11,997</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2023</td><td class='n'>1,096</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr><tr><td class='m'>2025</td><td class='n'>133</td><td class='n'>6.8%</td><td class='w'><div class="bar"><div class="f" style="width:54.4%"></div></div></td></tr><tr><td class='m'>2026</td><td class='n'>11,451</td><td class='n'>6.3%</td><td class='w'><div class="bar"><div class="f" style="width:50.4%"></div></div></td></tr>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>A day is an album</h2>
+    <p class="sub">You rate albums, not tracks — and the photo corpus has the
+    same shape, it was just never named. A burst is a take; a place-day is a
+    session; a calendar event is a sitting. Those are the albums, frames are
+    the tracks, and nobody rates tracks. An album scores at the <em>90th
+    percentile</em> of its members, not the mean, because a great record is
+    carried by its peaks and averaging would punish a brilliant afternoon that
+    also held nine boring frames.</p>
+    <p class="sub">This is your Dijkstra point in the form it actually applies:
+    a frame adjacent to something valuable becomes cheaper to reach. A mediocre
+    shot from an extraordinary day outranks an identical shot from an ordinary
+    one — because what you're retrieving is the day, and the frame is the way
+    in. 33,898 frames were lifted this way.</p>
+    <div class="card scroll" style="margin-bottom:20px"><table class="tbl">
+      <tr><th>album kind</th><th class="n">count</th><th class="n">mean</th>
+          <th class="n">≥90</th><th></th></tr>
+      <tr><td class='m'>place_day</td><td class='n'>2,006</td><td class='n'>84.8</td><td class='n'>705</td><td class='w'><div class="bar"><div class="f" style="width:84.8%"></div></div></td></tr><tr><td class='m'>event</td><td class='n'>1,692</td><td class='n'>80.1</td><td class='n'>333</td><td class='w'><div class="bar"><div class="f" style="width:80.1%"></div></div></td></tr><tr><td class='m'>day</td><td class='n'>2,257</td><td class='n'>75.7</td><td class='n'>142</td><td class='w'><div class="bar"><div class="f" style="width:75.7%"></div></div></td></tr>
+    </table></div>
+    <div class="card scroll"><table class="tbl">
+      <tr><th class="n">score</th><th>day</th><th>country</th><th>place</th>
+          <th class="n">frames</th><th class="n">favs</th><th>kind</th></tr>
+      <tr><td class='sc'>100</td><td class='m'>2022-07-01</td><td>United States of Ameri</td><td class='dim'>event</td><td class='n'>33</td><td class='n'>—</td><td><span class='chip'>event</span></td></tr><tr><td class='sc'>100</td><td class='m'>2021-09-21</td><td>Canada</td><td class='dim'>Lake Louise</td><td class='n'>22</td><td class='n'>—</td><td><span class='chip'>place_day</span></td></tr><tr><td class='sc'>100</td><td class='m'>2019-07-07</td><td>United States of Ameri</td><td class='dim'>7588 Uncle's Neck Rd Toano, VA</td><td class='n'>21</td><td class='n'>—</td><td><span class='chip'>place_day</span></td></tr><tr><td class='sc'>100</td><td class='m'>2022-03-24</td><td>United States of Ameri</td><td class='dim'>work</td><td class='n'>17</td><td class='n'>—</td><td><span class='chip'>event</span></td></tr><tr><td class='sc'>100</td><td class='m'>2022-07-04</td><td>United States of Ameri</td><td class='dim'>event</td><td class='n'>13</td><td class='n'>—</td><td><span class='chip'>event</span></td></tr><tr><td class='sc'>100</td><td class='m'>2021-12-25</td><td>United States of Ameri</td><td class='dim'>7588 Uncle's Neck Rd Toano, VA</td><td class='n'>13</td><td class='n'>—</td><td><span class='chip'>place_day</span></td></tr><tr><td class='sc'>100</td><td class='m'>2021-05-26</td><td>United States of Ameri</td><td class='dim'>New York</td><td class='n'>13</td><td class='n'>—</td><td><span class='chip'>place_day</span></td></tr><tr><td class='sc'>100</td><td class='m'>2020-09-10</td><td>United States of Ameri</td><td class='dim'>7588 Uncle's Neck Rd Toano, VA</td><td class='n'>13</td><td class='n'>—</td><td><span class='chip'>place_day</span></td></tr><tr><td class='sc'>100</td><td class='m'>2026-05-12</td><td>Hong Kong</td><td class='dim'>eating out</td><td class='n'>12</td><td class='n'>♥ 12</td><td><span class='chip'>event</span></td></tr><tr><td class='sc'>100</td><td class='m'>2026-03-20</td><td>Thailand</td><td class='dim'>running</td><td class='n'>12</td><td class='n'>♥ 12</td><td><span class='chip'>event</span></td></tr><tr><td class='sc'>100</td><td class='m'>2020-07-18</td><td>United States of Ameri</td><td class='dim'>7588 Uncle's Neck Rd Toano, VA</td><td class='n'>12</td><td class='n'>—</td><td><span class='chip'>place_day</span></td></tr><tr><td class='sc'>100</td><td class='m'>2020-05-10</td><td>United States of Ameri</td><td class='dim'>7588 Uncle's Neck Rd Toano, VA</td><td class='n'>11</td><td class='n'>—</td><td><span class='chip'>place_day</span></td></tr><tr><td class='sc'>100</td><td class='m'>2026-03-14</td><td>Indonesia</td><td class='dim'>scooter</td><td class='n'>10</td><td class='n'>♥ 10</td><td><span class='chip'>event</span></td></tr><tr><td class='sc'>100</td><td class='m'>2022-08-11</td><td>Indonesia</td><td class='dim'>family</td><td class='n'>9</td><td class='n'>—</td><td><span class='chip'>event</span></td></tr>
+    </table></div>
+    <p class="sub" style="margin-top:14px">Note the entries with no hearts at
+    all. Those days surfaced on engagement, place and scarcity alone — the
+    system finding things you never told it to keep.</p>
+  </section>
+
+  <section>
+    <h2>Scarcity: the signal your project creates</h2>
+    <p class="sub">You're trying to visit every country, and some you only get
+    24–48 hours in. That makes frames-per-day-present a real measure of how
+    irreplaceable a frame is. Ireland is one day and a single photograph. Your
+    documentation habit is visible too: Estonia is one day and 1,229 frames.</p>
+    <div class="card scroll"><table class="tbl">
+      <tr><th>iso</th><th>country</th><th class="n">days</th>
+          <th class="n">frames</th><th class="n">frames/day</th></tr>
+      <tr><td class='m'>EE</td><td>Estonia</td><td class='n'>1</td><td class='n'>1,229</td><td class='n'>1,229</td></tr><tr><td class='m'>LV</td><td>Latvia</td><td class='n'>1</td><td class='n'>893</td><td class='n'>893</td></tr><tr><td class='m'>LT</td><td>Lithuania</td><td class='n'>1</td><td class='n'>558</td><td class='n'>558</td></tr><tr><td class='m'>SK</td><td>Slovakia</td><td class='n'>1</td><td class='n'>194</td><td class='n'>194</td></tr><tr><td class='m'>BZ</td><td>Belize</td><td class='n'>1</td><td class='n'>31</td><td class='n'>31</td></tr><tr><td class='m'>IE</td><td>Ireland</td><td class='n'>1</td><td class='n'>1</td><td class='n'>1</td></tr><tr><td class='m'>MT</td><td>Malta</td><td class='n'>2</td><td class='n'>1,078</td><td class='n'>539</td></tr><tr><td class='m'>AL</td><td>Albania</td><td class='n'>2</td><td class='n'>555</td><td class='n'>278</td></tr><tr><td class='m'>MV</td><td>Maldives</td><td class='n'>2</td><td class='n'>125</td><td class='n'>62</td></tr><tr><td class='m'>PA</td><td>Panama</td><td class='n'>2</td><td class='n'>104</td><td class='n'>52</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Standing somewhere changes what you carry</h2>
+    <p class="sub">The intrinsic score is fixed. Context is a second term, added
+    at query time and never written back:</p>
+    <div class="form" style="margin-bottom:18px">final = <em>base_lifted</em>  +  context(<em>where you are</em>, <em>what day it is</em>)</div>
+    <p class="sub">Nothing is re-rated when you travel; things are
+    re-<em>carried</em>. A mediocre Heathrow photo doesn't become good when you
+    land — it becomes temporarily worth having offline. Landing in London
+    promotes 223 frames into phone tier; Tokyo promotes 724. Same formula, one
+    term recomputed, no separate "geo mode".</p>
+    <div class="card">
+      <div class="form">$ context.py --at 51.5074,-0.1278
+
+nearest known ground: United Kingdom (GB), 1 km
+
+ final  base    +  when        where            why
+   100    70  <em>+31</em>  2009-06-06  United Kingdom   here,country
+    97    82  <em>+15</em>  2023-09-26  United Kingdom   23km,country
+    85    70  <em>+15</em>  2009-06-06  United Kingdom   21km,country</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The screenshot tell, and the Watch</h2>
+    <div class="two">
+      <div class="card">
+        <h2 style="font-size:17px">277 annotated screenshots</h2>
+        <p class="sub">The pattern you described — screenshot something, then
+        mark it to show where your eye went — is recorded by Photos as an
+        adjustment on a detected screenshot. It's the single highest-intent act
+        in the corpus: you went back to something and pointed at it. Weighted
+        second only to a favourite.</p>
+        <p class="sub">Against that, 14,814 frames are burst also-rans
+        and 4,876 sit inside screenshot documentation runs. Both are
+        pushed down, neither is deleted.</p>
+      </div>
+      <div class="card">
+        <h2 style="font-size:17px">Watch as a third witness</h2>
+        <p class="sub">238 workout routes, 323,601
+        trackpoints at 1 Hz and roughly one-metre accuracy — better positioning
+        than any other source you have, across 78 days.</p>
+        <p class="sub">It fires exactly where photos and calendar are both
+        blind: the 6am run, the long layover, the first morning somewhere new.
+        From this single 3.5-month export it upgrades <b>22 days</b> of the
+        country ontology, 7 of which had no country at all.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What this doesn't do yet</h2>
+    <div class="find">
+      <h3>Timeline membership isn't wired in</h3>
+      <p>Your strongest curation act — pulling something forward into the
+      ~6 GB-per-year Timeline tier — is still a folder on disk, not a per-frame
+      join. That's the single biggest available signal still unused, and it's
+      the honest reason the <code>curated</code> term is absent rather than
+      approximated.</p>
+    </div>
+    <div class="find">
+      <h3>The Google corpus is archive-only</h3>
+      <p>All 41,036 sidecars read <code>archived: true</code>, so the
+      flag carries no contrast here — this export <em>is</em> the archive tier.
+      The album/timeline half lives in a different export and would give the
+      curated/dumped split real teeth.</p>
+    </div>
+    <div class="find">
+      <h3>Nothing has been moved or deleted</h3>
+      <p>Tiers are computed, not enforced. No file was copied to the M5, no byte
+      removed from the M3. That step needs your word, and it needs a verified
+      second copy to exist first.</p>
+    </div>
+  </section>
+
+  <footer>
+    projects/ratings/ — spotify_ratings · gphotos_signal · watch_routes ·
+    score · propagate · context · render<br>
+    53,334 frames · 5,955 albums · 456-album
+    calibration curve · read-only against Photos, Calendar, Health and Takeout<br>
+    TODO-420 · nomad-code/bpo · 2026-08-30
+  </footer>
+</div>

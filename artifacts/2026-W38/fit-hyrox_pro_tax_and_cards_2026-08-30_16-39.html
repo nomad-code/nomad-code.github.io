@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {
+      if (hide) hide.remove();
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>hyrox · the pro tax and seven cards</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <link rel="stylesheet" href="../design-repo/grove/motion.css">
+<style>
+  body{background:var(--bg);color:var(--body);font-family:var(--font-ui)}
+  .wrap{max-width:780px;margin:0 auto;padding:28px 20px 100px}
+
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--forest);font-weight:600}
+  h1{font-size:clamp(29px,7vw,42px);line-height:1.04;letter-spacing:-.027em;
+    color:var(--ink);font-weight:800;margin:9px 0 12px;text-wrap:balance}
+  .lede{font-size:16px;line-height:1.55;color:var(--muted)}
+  p{line-height:1.6;margin:0 0 12px}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  code{font-family:var(--font-mono);font-size:.88em;background:var(--well);
+    padding:1px 5px;border-radius:5px;color:var(--ink)}
+  .q{border-left:3px solid var(--line);padding:2px 0 2px 16px;margin:20px 0;
+    color:var(--muted);font-size:15px;line-height:1.55;font-style:italic}
+  .q .who{display:block;font-style:normal;font-family:var(--font-mono);font-size:11px;
+    color:var(--faint);letter-spacing:.07em;margin-top:8px}
+
+  h2{font-size:12px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;margin:46px 0 15px;padding-top:22px;border-top:1px solid var(--line)}
+  h3.sub{font-size:17px;color:var(--ink);font-weight:700;margin:26px 0 10px;
+    letter-spacing:-.012em}
+
+  /* the two-subtotal split */
+  .split{display:grid;gap:11px;grid-template-columns:1fr;margin:20px 0 6px}
+  @media(min-width:620px){.split{grid-template-columns:1fr 1fr}}
+  .sp{border-radius:var(--r-panel);padding:17px 18px;border:1px solid var(--line);
+    background:var(--card)}
+  .sp.same{background:var(--g-lime);border-color:#b9dcd6}
+  .sp.diff{background:var(--warn-bg);border-color:var(--warn-bd)}
+  .sp .s{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.11em;
+    text-transform:uppercase;font-weight:700;margin-bottom:9px}
+  .sp.same .s{color:var(--forest-d)} .sp.diff .s{color:var(--warn)}
+  .sp .t{font-family:var(--font-mono);font-size:36px;font-weight:700;line-height:1;
+    font-variant-numeric:tabular-nums}
+  .sp.same .t{color:var(--forest-d)} .sp.diff .t{color:var(--warn)}
+  .sp .w{font-size:13.5px;line-height:1.45;margin-top:9px}
+  .sp.same .w{color:#1d4a44} .sp.diff .w{color:#7a3520}
+
+  .keyline{background:var(--g-lime);border:1px solid #b9dcd6;border-left:3px solid var(--forest);
+    border-radius:var(--r-tile);padding:16px 18px;margin:20px 0}
+  .keyline .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--forest-d);font-weight:700;margin-bottom:6px}
+  .keyline p{margin:0;color:#1d4a44}
+
+  .flag{background:var(--amber-bg);border:1px solid var(--amber-bd);border-left:3px solid var(--amber);
+    border-radius:var(--r-tile);padding:16px 18px;margin:20px 0}
+  .flag .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:6px}
+  .flag p{margin:0 0 9px;color:#6b5410}
+  .flag p:last-child{margin:0}
+
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:360px}
+  th{text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;padding:0 10px 7px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);vertical-align:baseline}
+  td.r,th.r{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-mono)}
+  tbody tr:last-child td{border-bottom:none}
+  tr.sum td{font-weight:700;color:var(--ink);background:var(--well)}
+  tr.sum td.r{color:var(--warn)}
+  tr.sum.ok td.r{color:var(--forest)}
+  .good{color:var(--forest);font-weight:700}
+  .bad{color:var(--warn);font-weight:700}
+  .dim{color:var(--faint)}
+  .pill{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    padding:2px 7px;border-radius:99px;font-weight:700;white-space:nowrap}
+  .p-open{background:var(--g-lime);color:var(--forest-d)}
+  .p-pro{background:var(--warn-bg);color:var(--warn)}
+  .p-dbl{background:var(--found-bg);color:var(--found-d)}
+  .p-oth{background:var(--well);color:var(--muted)}
+  .pb{display:inline-block;width:20px;height:20px;border:1.5px dashed var(--line);
+    border-radius:5px;vertical-align:middle}
+
+  /* cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
+    padding:19px 19px 17px;margin-bottom:14px}
+  .card.hot{border-color:#e3b9a6;box-shadow:0 0 0 3px var(--warn-bg)}
+  .ch{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:2px}
+  .tag{font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--forest);
+    letter-spacing:.05em}
+  .card.hot .tag{color:var(--warn)}
+  .card h3{font-size:19px;color:var(--ink);font-weight:700;margin:0;letter-spacing:-.012em}
+  .meta{font-family:var(--font-mono);font-size:11px;color:var(--faint);
+    letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+  pre{background:#151917;color:#e8e5df;border-radius:var(--r-tile);padding:13px 15px;
+    font-family:var(--font-mono);font-size:12.5px;line-height:1.6;overflow-x:auto;margin:0 0 12px}
+  pre .c{color:#7f8b86}
+  .num{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;
+    background:var(--well);border-radius:var(--r-tile);padding:10px 13px;margin:0 0 11px}
+  .num .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--faint);font-weight:700}
+  .num .val{font-weight:700;color:var(--ink);font-size:14.5px}
+  .card p{font-size:14.5px;margin:0 0 10px}
+  .card p:last-child{margin:0}
+
+  ol.days{list-style:none;padding:0;margin:0}
+  ol.days li{display:flex;gap:13px;padding:11px 0;border-bottom:1px solid var(--line);
+    align-items:baseline;flex-wrap:wrap}
+  ol.days li:last-child{border-bottom:none}
+  li.block{background:var(--g-lime);margin:0 -12px;padding:11px 12px;border-radius:var(--r-tile);
+    border-bottom:none}
+  .d{font-family:var(--font-mono);font-size:11px;color:var(--forest);font-weight:700;
+    letter-spacing:.06em;min-width:118px}
+  li.block .d{color:var(--forest-d)}
+  .sess{font-weight:600;color:var(--ink)}
+  .rz{color:var(--muted);font-size:13.5px;flex:1 1 180px}
+
+  .foot{margin-top:54px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--font-mono);font-size:11px;color:var(--faint);line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">fit · hyrox · pro</div>
+  <h1>Pro isn't a different race. It's four minutes of wall balls and sled pull.</h1>
+  <p class="lede">You said the overlap was the reason to chunk it. Here is the
+  overlap with a number on it — measured on your own body, best Open against
+  best Pro, six weeks apart.</p>
+
+  <div class="q">"There's a lot of overlap with open and pro but yeah it's
+  definitely a different race, but that's why we break it into small chunks of
+  stations and runs."
+  <span class="who">— 30 Aug 2026</span></div>
+
+  <h2>The measurement</h2>
+  <p>Division changes the prescription of <strong>five of eight stations</strong>.
+  It leaves the eight runs, the SkiErg, the row and the burpee broad jump
+  bit-identical. Bangkok <span class="mono">1:08:43</span> Open against Osaka
+  <span class="mono">1:15:20</span> Pro, element by element:</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>element</th><th class="r">Bangkok · Open</th><th class="r">Osaka · Pro</th><th class="r">delta</th></tr></thead>
+    <tbody>
+      <tr><td>SkiErg 1000 m</td><td class="r">4:19</td><td class="r">4:24</td><td class="r">+0:05</td></tr>
+      <tr><td>Burpee broad jump 80 m</td><td class="r">3:36</td><td class="r">3:23</td><td class="r good">−0:13</td></tr>
+      <tr><td>Row 1000 m</td><td class="r">4:29</td><td class="r">4:30</td><td class="r">+0:01</td></tr>
+      <tr><td>Farmers carry 200 m</td><td class="r">1:43</td><td class="r">1:43</td><td class="r">0:00</td></tr>
+      <tr class="sum ok"><td>same prescription</td><td class="r"></td><td class="r"></td><td class="r">−0:07</td></tr>
+      <tr><td>Sled push 50 m</td><td class="r">2:51</td><td class="r">3:28</td><td class="r bad">+0:37</td></tr>
+      <tr><td>Sled pull 50 m</td><td class="r">3:38</td><td class="r">5:04</td><td class="r bad">+1:26</td></tr>
+      <tr><td>Sandbag lunge 100 m</td><td class="r">3:38</td><td class="r">4:10</td><td class="r bad">+0:32</td></tr>
+      <tr><td>Wall balls ×100</td><td class="r">4:08</td><td class="r">6:41</td><td class="r bad">+2:33</td></tr>
+      <tr class="sum"><td>changed prescription</td><td class="r"></td><td class="r"></td><td class="r">+5:08</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="split">
+    <div class="sp same">
+      <div class="s">same prescription · 4 elements</div>
+      <div class="t">−0:07</div>
+      <div class="w">Seven seconds. Across two divisions and six weeks. This is
+      noise — the overlap you described, now measured.</div>
+    </div>
+    <div class="sp diff">
+      <div class="s">changed prescription · 4 elements</div>
+      <div class="t">+5:08</div>
+      <div class="w">Of which wall balls <span class="mono">2:33</span> and sled
+      pull <span class="mono">1:26</span> are <strong>3:59 — eighty percent.</strong></div>
+    </div>
+  </div>
+
+  <div class="keyline">
+    <div class="k">what this buys</div>
+    <p>Two elements carry four fifths of the Pro tax. Not a training programme —
+    two cards, run twice a week, fifteen and twenty minutes. And both are
+    <em>stamina at a load</em>, which is exactly what an unbroken benchmark
+    measures and a 1RM does not.</p>
+  </div>
+
+  <h3 class="sub">The ski is done. Stop training it.</h3>
+  <p>Five solo races spanning <span class="mono">20:38</span> of finishing time,
+  two divisions, three venues, fourteen months:</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>race</th><th>division</th><th class="r">ski</th><th class="r">row</th></tr></thead>
+    <tbody>
+      <tr><td>2026 Bangkok</td><td><span class="pill p-open">open</span></td><td class="r">4:19</td><td class="r">4:29</td></tr>
+      <tr><td>2025 Singapore</td><td><span class="pill p-open">open</span></td><td class="r">4:24</td><td class="r">4:42</td></tr>
+      <tr><td>2025 Valencia</td><td><span class="pill p-open">open</span></td><td class="r">4:16</td><td class="r">4:52</td></tr>
+      <tr><td>2026 Osaka</td><td><span class="pill p-pro">pro</span></td><td class="r">4:24</td><td class="r">4:30</td></tr>
+      <tr><td>2025 Yokohama</td><td><span class="pill p-pro">pro</span></td><td class="r">4:23</td><td class="r">4:59</td></tr>
+      <tr class="sum"><td>spread</td><td></td><td class="r good">0:08</td><td class="r">0:30</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Ski and row are the only two elements in this sport that are both
+  division-invariant <em>and</em> venue-invariant — a Concept2 doesn't care about
+  the hall. Runs and roxzone fail the second test; the five loaded stations fail
+  the first. Which makes the erg the <strong>only gym number directly
+  commensurable with a race number.</strong></p>
+
+  <p>And yours has moved eight seconds. It's saturated — a skill you own, not a
+  fitness signal. Row still has thirty seconds of range, so row is the honest
+  gauge. This is now <code>ONTOLOGY.md</code> Rule 2e.</p>
+
+  <h2>Every race · the PB column is yours</h2>
+  <p>Sixteen starts. Empty boxes on purpose — nothing writes a ✓ but you.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>date</th><th>race</th><th>division</th><th class="r">total</th><th>src</th><th>PB</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">2025-03-09</td><td>Valencia 🇪🇸</td><td><span class="pill p-open">open</span></td><td class="r">1:24:38</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2025-08-09</td><td>Yokohama 🇯🇵</td><td><span class="pill p-pro">pro</span></td><td class="r">1:29:21</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2025-10-25</td><td>Bali 🇮🇩</td><td><span class="pill p-oth">unresolved</span></td><td class="r">1:18:54</td><td class="dim">strava</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2025-11-16</td><td>Chicago 🇺🇸 · Sean O</td><td><span class="pill p-dbl">doubles</span></td><td class="r">1:02:42</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2025-11-29</td><td>Singapore 🇸🇬</td><td><span class="pill p-open">open</span></td><td class="r">1:13:30</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-02-01</td><td>Osaka 🇯🇵</td><td><span class="pill p-pro">pro</span></td><td class="r">1:15:20</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-02-07</td><td>APX Velocity</td><td><span class="pill p-oth">sim</span></td><td class="r">1:12:25</td><td class="dim">strava</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-02-20</td><td>Las Vegas 🇺🇸 · Eric E</td><td><span class="pill p-oth">relay</span></td><td class="r">1:07:17</td><td class="dim">sheet</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-02-22</td><td>Las Vegas 🇺🇸</td><td><span class="pill p-dbl">doubles</span></td><td class="r">1:14:11</td><td class="dim">sheet</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-03-20</td><td>Bangkok 🇹🇭</td><td><span class="pill p-open">open</span></td><td class="r">1:08:43</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono dim">date?</td><td>Taipei 🇹🇼 · Justin P</td><td><span class="pill p-dbl">doubles</span></td><td class="r">1:01:19</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono dim">date?</td><td>Hong Kong 🇭🇰 · Adrian L</td><td><span class="pill p-dbl">doubles</span></td><td class="r">1:03:59</td><td class="dim">sheet</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono dim">date?</td><td>Jakarta 🇮🇩 · Grayson W</td><td><span class="pill p-dbl">doubles</span></td><td class="r">1:16:35</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-08-07</td><td>Chiba 🇯🇵 · Haruka I</td><td><span class="pill p-dbl">doubles</span></td><td class="r">1:02:56</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-08-09</td><td>Chiba 🇯🇵 · Grayson W</td><td><span class="pill p-dbl">doubles</span></td><td class="r">1:19:11</td><td class="dim">obs</td><td><span class="pb"></span></td></tr>
+      <tr><td class="mono">2026-08-15</td><td>ATHX Copenhagen 🇩🇰 · Chris R</td><td><span class="pill p-oth">athx pairs</span></td><td class="r">41 pts</td><td class="dim">athx</td><td><span class="pb"></span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sub">Standing bests, five separate boards</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>board</th><th class="r">best</th><th>race</th></tr></thead>
+    <tbody>
+      <tr><td>HYROX Singles Open</td><td class="r good">1:08:43</td><td>Bangkok</td></tr>
+      <tr><td>HYROX Singles Pro</td><td class="r good">1:15:20</td><td>Osaka</td></tr>
+      <tr><td>HYROX Doubles</td><td class="r good">1:01:19</td><td>Taipei · Justin P</td></tr>
+      <tr><td>HYROX Relay</td><td class="r good">1:07:17</td><td>Las Vegas · Eric E</td></tr>
+      <tr><td>ATHX Pairs Pro</td><td class="r good">41 pts</td><td>Copenhagen</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Rule 2e: none of these ranks against another.</p>
+
+  <div class="flag">
+    <div class="k">four things the table needs from you</div>
+    <p><strong>Bali, 25 Oct 2025, 78:54.</strong> On Strava, and there is no Bali
+    event of any kind in the 2,126-event HYROX catalogue, seasons 1–9. Sim, gym
+    event, or a venue filed under another name?</p>
+    <p><strong>Three missing dates</strong> — Taipei, Hong Kong, Jakarta. Splits and
+    totals exist; no date anywhere in bpo. The portal doesn't print event dates and
+    the Strava archive stops 13 Jul 2026.</p>
+    <p><strong>Hong Kong confirmed as you said it.</strong> Walked both
+    <code>HD_HKG26_OVERALL</code> and <code>H_HKG26_OVERALL</code> today — zero
+    matches. ROXFIT-timed. It will never have splits.</p>
+    <p><strong>Seasons 1–5 doubles were never walked</strong>, and doubles can't be
+    found by name search. If a race is still missing, that's where it is.</p>
+  </div>
+
+  <h2>Seven cards</h2>
+  <p>Each is 12–25 minutes and produces <strong>exactly one number you can beat
+  next time.</strong> Cap HR at <span class="mono">159</span> on anything with a
+  run in it — the tested LTP.</p>
+
+  <div class="card">
+    <div class="ch"><span class="tag">M1</span><h3>Ski Nine</h3></div>
+    <div class="meta">25 min · rotating · yours, kept exactly</div>
+<pre>3 km run @ ≤159 bpm
+  → 9 min SkiErg, max metres</pre>
+    <div class="num"><span class="lbl">number</span><span class="val">ski metres</span>
+      <span class="lbl">standing</span><span class="val mono">2045 m · 28 Aug</span></div>
+    <p>Not a ski test — the ski is saturated. It's a <em>run</em> test wearing a
+    ski readout. The metres fall when the 3 km cost too much.</p>
+  </div>
+
+  <div class="card hot">
+    <div class="ch"><span class="tag">M2</span><h3>The Hundred</h3></div>
+    <div class="meta">15 min · twice weekly · biggest number on the board</div>
+<pre>100 wall balls · 9 kg · 3 m target
+  from a standing start, fresh
+
+progression, descending:
+  50/30/20 → 60/40 → 70/30 → unbroken
+  <span class="c">never rest more than 20 s between sets</span></pre>
+    <div class="num"><span class="lbl">number</span><span class="val">reps before the first break</span></div>
+    <p>Bangkok at 6 kg: <strong>100 unbroken, 4:08.</strong> Osaka at 9 kg:
+    <strong>6:41.</strong> Yokohama at 9 kg: <strong>11:38.</strong></p>
+    <p>Osaka to Yokohama is <span class="mono">4:57</span> on a single element —
+    the widest range of anything in your history. Wall balls are bimodal, not
+    continuous. The break pattern decides the score, and it trains in
+    fifteen-minute doses.</p>
+    <div class="num"><span class="lbl">MEX target</span><span class="val">100 @ 9 kg in ≤ 2 breaks · worth 1:41</span></div>
+  </div>
+
+  <div class="card hot">
+    <div class="ch"><span class="tag">M3</span><h3>Pull Three</h3></div>
+    <div class="meta">20 min · twice weekly</div>
+<pre>3 × [ 50 m sled pull @ Pro load, 153 kg ]
+      60 s rest between rounds
+      <span class="c">50 m = four 12.5 m lengths</span></pre>
+    <div class="num"><span class="lbl">number</span><span class="val">round 3 ÷ round 1</span></div>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>decay</th><th>read</th></tr></thead>
+      <tbody>
+        <tr><td class="mono good">&lt; 1.15</td><td>repeatable — the pull is solved</td></tr>
+        <tr><td class="mono">1.15 – 1.35</td><td>normal; budget for it</td></tr>
+        <tr><td class="mono bad">&gt; 1.35</td><td>this is where Pro costs minutes</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Sled surface is venue-variant, so the Sofia absolute time means nothing.
+    The <strong>ratio</strong> is what travels.</p>
+    <div class="num"><span class="lbl">MEX target</span><span class="val">4:30 · worth 0:34</span></div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="tag">M4</span><h3>Lunge Hundred</h3></div>
+    <div class="meta">12 min · rotating · the one you named</div>
+<pre>100 m sandbag lunge · 30 kg · unbroken</pre>
+    <div class="num"><span class="lbl">number</span><span class="val">stops. target zero.</span></div>
+    <p>Osaka 4:10 at Pro load · Bangkok 3:38 at Open · Yokohama 6:00. Twelve
+    minutes including warm-up — the cheapest ✓ in the deck, and there is no week
+    it gets skipped.</p>
+    <div class="num"><span class="lbl">MEX target</span><span class="val">unbroken, 3:45</span></div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="tag">M5</span><h3>Row Off</h3></div>
+    <div class="meta">18 min · rotating</div>
+<pre>1 km run @ ≤159
+  → 1000 m row, no pause</pre>
+    <div class="num"><span class="lbl">number</span><span class="val">the row split</span></div>
+    <p>Bangkok 4:29 · Osaka 4:30 · Singapore 4:42 · Valencia 4:52 · Yokohama 4:59.
+    Thirty seconds of spread that tracks race quality rather than division — the
+    honest fitness gauge, now that ski isn't one.</p>
+  </div>
+
+  <div class="card hot">
+    <div class="ch"><span class="tag">M6</span><h3>GTOH Thirty</h3></div>
+    <div class="meta">15 min · weekly · not a HYROX card — the January deadline</div>
+<pre>dual dumbbell ground-to-overhead @ 22.5 kg
+
+  test:  max unbroken reps, one attempt
+  train: EMOM 10 min × 5 reps</pre>
+    <div class="num"><span class="lbl">standing</span><span class="val">~10</span>
+      <span class="lbl">required</span><span class="val bad">30</span></div>
+    <p>ATHX London Solo Pro MetCon X, 23–24 Jan. Thirty isn't a target, it's the
+    prescription.</p>
+    <p><strong>Why 10 and not 20.</strong> At 45 kg total against a 68 kg
+    shoulder-to-overhead 1RM, every rep is <strong>66% of max</strong> — a set of
+    ten for anybody. Only one of the two fixes is strength:</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>lever</th><th>from → to</th><th>worth</th></tr></thead>
+      <tbody>
+        <tr><td>STO 1RM ladder</td><td class="mono">68 → 76 by London</td><td>66% → 59% of max</td></tr>
+        <tr><td>Jerk, not press</td><td>dip-and-drive</td><td>15–30% on the same body</td></tr>
+        <tr><td>Cycling the rep</td><td>singles → touch-and-go</td><td><strong>the last ten</strong></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Strength gets you to about twenty. The final ten are technique — train them
+    as conditioning, not as a lift.</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>test date</th><th class="r">target</th><th>note</th></tr></thead>
+      <tbody>
+        <tr><td>Sun 27 Sep</td><td class="r">12</td><td class="dim">base test, already scheduled</td></tr>
+        <tr><td>Sat 24 Oct</td><td class="r">16</td><td class="dim">6 days before Mexico City</td></tr>
+        <tr><td>Sat 28 Nov</td><td class="r">21</td><td class="dim">post-Dallas</td></tr>
+        <tr><td>Sat 26 Dec</td><td class="r">26</td><td class="dim">Christmas checkpoint</td></tr>
+        <tr><td><strong>Sun 17 Jan</strong></td><td class="r bad">30</td><td class="dim">6 days before London</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><span class="tag">M7</span><h3>Compromised km</h3></div>
+    <div class="meta">25 min · once per block · the macro anchor</div>
+<pre>4 × [ 1 km run + 1 erg ]
+      <span class="c">no rest anywhere</span></pre>
+    <div class="num"><span class="lbl">number</span><span class="val">mean pace of runs 2–4</span></div>
+    <p>Run 1 is always fast and always lies. This is the one number still
+    separating a 67:59 Tenerife from a 1:18:13 one. Once per block — it costs a
+    day.</p>
+  </div>
+
+  <h2>Where the sessions actually go</h2>
+  <p>Six starts between here and Mexico City, so there are only
+  <strong>two real blocks</strong>. That's the honest calendar, not a wish.</p>
+
+  <ol class="days">
+    <li><span class="d">Aug 30 – Sep 4</span><span class="sess">6 days</span><span class="rz">Tenerife race week — M7 once, M4, nothing else</span></li>
+    <li class="block"><span class="d">Sep 6 – Sep 24</span><span class="sess">Block 1 · Sofia</span><span class="rz">19 days · full template</span></li>
+    <li><span class="d">Sep 26 – Oct 7</span><span class="sess">12 days</span><span class="rz">Oslo ×2, Toronto, Boston ×2 — M2 + M6 only</span></li>
+    <li class="block"><span class="d">Oct 10 – Oct 29</span><span class="sess">Block 2</span><span class="rz">20 days · full template</span></li>
+    <li><span class="d">Oct 30</span><span class="sess">Mexico City</span><span class="rz">Singles Pro</span></li>
+  </ol>
+
+  <div class="keyline">
+    <div class="k">the runway</div>
+    <p>Roughly <strong>31 micro-sessions</strong> before the start line. Enough for
+    the wall-ball and pull numbers, because those move on frequency rather than
+    volume.</p>
+  </div>
+
+  <h3 class="sub">Block template — 5 a week, about 90 minutes total</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th></th><th>session</th><th class="r">min</th></tr></thead>
+    <tbody>
+      <tr><td class="dim">fixed</td><td><strong>M2</strong> The Hundred</td><td class="r">15</td></tr>
+      <tr><td class="dim">fixed</td><td><strong>M3</strong> Pull Three</td><td class="r">20</td></tr>
+      <tr><td class="dim">fixed</td><td><strong>M6</strong> GTOH</td><td class="r">15</td></tr>
+      <tr><td class="dim">rotate</td><td>M1 · M4 · M5 — pick two</td><td class="r">12–25</td></tr>
+      <tr><td class="dim">once</td><td>M7 per block</td><td class="r">25</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Two days off. Everything else in life stays where it is.</p>
+
+  <h2>What it adds up to</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>if</th><th class="r">stations</th><th class="r">total</th></tr></thead>
+    <tbody>
+      <tr><td>Pro tax paid in full, nothing gained</td><td class="r">33:23</td><td class="r">1:13:44</td></tr>
+      <tr><td>+ M2 lands (wall balls ≤ 2 breaks)</td><td class="r">31:42</td><td class="r">1:12:03</td></tr>
+      <tr><td>+ M3 lands (pull 4:30)</td><td class="r">31:08</td><td class="r">1:11:29</td></tr>
+      <tr><td>+ M4 lands (lunge unbroken)</td><td class="r">30:43</td><td class="r good">1:11:04</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Every row assumes Bangkok's <span class="mono">40:21</span> running block —
+  which is a <em>Bangkok</em> number. Rule 0 moves this ±2 minutes on venue alone,
+  and M7 is what narrows it.</p>
+
+  <div class="flag">
+    <div class="k">say the honest thing</div>
+    <p><span class="mono">1:11</span> would be a <strong>Pro PB by four
+    minutes</strong> over Osaka. It would not touch <span class="mono">1:08:43</span>,
+    because 1:08:43 is on the Open board and the two don't rank against each
+    other.</p>
+    <p>If "Mexico City is a PB race" meant the <em>overall</em> number, MEX has to
+    be registered <strong>Open</strong>. Worth checking before the window closes.</p>
+  </div>
+
+  <div class="flag">
+    <div class="k">one contradiction inside bpo</div>
+    <p><code>fit-athx/plan-to-cph-2027.md</code> opens: <em>"This autumn is the
+    season. <strong>No races before January</strong>, so it is the only
+    uninterrupted strength window."</em></p>
+    <p><code>workouts/RACES.md</code> has <strong>twelve HYROX starts</strong>
+    between 5 Sep and 13 Dec. The ATHX plan was written without the HYROX calendar
+    in front of it.</p>
+    <p>The strength window isn't the autumn. It's <strong>14 Dec – 21 Jan</strong>,
+    five weeks — the only stretch with no start in it. Which is why M6's steepest
+    steps are November and December, and why 30 lands on 17 Jan and not sooner.</p>
+  </div>
+
+  <div class="foot">
+    bpo · projects/hyrox/OPEN-VS-PRO.md · MICRO-SESSIONS.md · workouts/RACES.md<br>
+    splits: race-data/observed/ — timing-mat crossings, 10 races, adjustment 0<br>
+    30 Aug 2026
+  </div>
+
+</div>
+</body>
+</html>

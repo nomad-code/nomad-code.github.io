@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-139 · bpo-move · repo becomes the parent</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --fit: 980px; }
+    body { min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--ink); }
+    .wrap { max-width: var(--fit); margin: 0 auto; padding: 40px 24px 72px; }
+    .kicker { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      font: 600 12px/1 var(--mono, ui-monospace, monospace); letter-spacing:.08em;
+      text-transform:uppercase; color: var(--forest); }
+    .kicker .dot { width:7px; height:7px; border-radius:2px; background: var(--lime); }
+    h1 { margin: 14px 0 6px; font-size: clamp(28px, 4vw, 40px); line-height:1.05; }
+    .sub { color: color-mix(in srgb, var(--ink) 62%, transparent); max-width: 60ch; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:18px; margin:28px 0; }
+    @media (max-width:720px){ .grid2 { grid-template-columns:1fr; } }
+    .card { border:1px solid var(--line); border-radius: var(--r-card, 16px);
+      background: color-mix(in srgb, #fff 70%, var(--bg)); box-shadow: var(--shadow-card, 0 1px 2px rgba(0,0,0,.05)); padding:20px; }
+    .card h3 { margin:0 0 12px; font-size:13px; letter-spacing:.04em; text-transform:uppercase;
+      color: color-mix(in srgb, var(--ink) 55%, transparent); }
+    .tree { font: 13px/1.7 var(--mono, ui-monospace, monospace); white-space:pre; margin:0; }
+    .tree .moved { color: var(--forest); font-weight:700; }
+    .tree .dim { color: color-mix(in srgb, var(--ink) 40%, transparent); }
+    .before { opacity:.82; }
+    table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px; }
+    th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { font-size:11px; letter-spacing:.06em; text-transform:uppercase; color: color-mix(in srgb, var(--ink) 55%, transparent); }
+    code { font: 12.5px var(--mono, ui-monospace, monospace);
+      background: color-mix(in srgb, var(--forest) 9%, transparent); padding:1px 5px; border-radius:5px; }
+    .tag { display:inline-block; font:600 11px/1 var(--mono, ui-monospace, monospace);
+      padding:4px 7px; border-radius:6px; }
+    .tag.ok { background: color-mix(in srgb, var(--lime) 26%, transparent); color: var(--forest); }
+    .tag.self { background: color-mix(in srgb, var(--found, #4a8aa0) 20%, transparent); color: var(--found, #33667a); }
+    ul.checks { list-style:none; padding:0; margin:14px 0 0; display:grid; gap:8px; }
+    ul.checks li { display:flex; gap:10px; align-items:baseline; font-size:14px; }
+    ul.checks .mk { color: var(--forest); font-weight:700; }
+    .foot { margin-top:34px; font-size:12.5px; color: color-mix(in srgb, var(--ink) 50%, transparent);
+      border-top:1px solid var(--line); padding-top:16px; display:flex; gap:16px; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="kicker"><span class="dot"></span> TODO-139 · bpo-move · In&nbsp;Review · 2026-07-06 06-36 Z</div>
+    <h1>bpo stops being a child of <code>nmc/</code></h1>
+    <p class="sub">bpo is the parent context of every dev world — fai/bob, dha/bre, and the rest.
+      It shouldn't live one level down beside cold storage. Moved it up to <code>~/dev/bpo</code>,
+      then made the bridges that pointed at the old path move-proof.</p>
+
+    <div class="grid2">
+      <div class="card before">
+        <h3>Before</h3>
+<pre class="tree">~/dev/
+├─ fai/bob        <span class="dim">Found (work)</span>
+├─ dha/bre        <span class="dim">Dhamma</span>
+└─ nmc/
+   ├─ <span class="moved">bpo</span>          <span class="dim">buried a level down</span>
+   └─ zyx          <span class="dim">cold storage</span></pre>
+      </div>
+      <div class="card">
+        <h3>After</h3>
+<pre class="tree">~/dev/
+├─ <span class="moved">bpo</span>           <span class="dim">the parent context ▸</span>
+├─ fai/bob        <span class="dim">Found (work)</span>
+├─ dha/bre        <span class="dim">Dhamma</span>
+└─ nmc/zyx        <span class="dim">cold storage stays</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>The move — and the 3 refs that pointed at the old path</h3>
+      <p class="sub" style="margin:0 0 6px"><code>mv ~/dev/nmc/bpo ~/dev/bpo</code> — whole folder, so
+        <code>.git/</code>, the HTTPS remote, and full history travel intact. The Stop hook already used
+        <code>$CLAUDE_PROJECT_DIR</code>, so it was move-safe. Only three hard-coded defaults needed a fix:</p>
+      <table>
+        <thead><tr><th>File</th><th>Fix</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><code>scripts/artifact-deploy.sh</code></td><td>derive root from <code>$0</code></td><td><span class="tag self">self-deriving</span></td></tr>
+          <tr><td><code>scripts/sync-from-bob</code></td><td>derive root from <code>$0</code></td><td><span class="tag self">self-deriving</span></td></tr>
+          <tr><td><code>dha/bre/…/sync-from-origin</code></td><td>ORIGIN → <code>~/dev/bpo</code></td><td><span class="tag ok">cross-repo</span></td></tr>
+        </tbody>
+      </table>
+      <p class="sub" style="margin:12px 0 0; font-size:13px">The two in-repo scripts no longer name a location at all —
+        <code>BPO="${BPO:-$(cd "$(dirname "$0")/.." &amp;&amp; pwd)}"</code>. A fourth move can never break them.</p>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>Verified end-to-end</h3>
+      <ul class="checks">
+        <li><span class="mk">✓</span> <span><code>~/dev/bpo</code> present, <code>~/dev/nmc/bpo</code> gone; <code>nmc/</code> keeps <code>zyx/</code></span></li>
+        <li><span class="mk">✓</span> <span>git clean at new path — remote <code>nomad-code/bpo</code>, history intact</span></li>
+        <li><span class="mk">✓</span> <span><code>sync-from-bob</code> self-locates &amp; prints the bob→bpo drift report</span></li>
+        <li><span class="mk">✓</span> <span><code>sync-from-origin</code> resolves origin — no "origin not found"</span></li>
+        <li><span class="mk">✓</span> <span>both fixes committed + pushed (<code>nomad-code/bpo</code>, <code>nomad-code/bre</code>); memory reframed bpo as parent</span></li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <span>codex's first pass only edited docs — the move itself was still pending. This is the move.</span>
+      <span>nmc/ is not removed; it is now just the cold-storage namespace.</span>
+    </div>
+  </div>
+</body>
+</html>

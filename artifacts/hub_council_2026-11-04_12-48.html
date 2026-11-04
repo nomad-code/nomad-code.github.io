@@ -1,0 +1,66 @@
+<!doctype html><html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>BPO council evidence</title><link rel="stylesheet" href="/design-repo/harness/harness.css"><link rel="stylesheet" href="/design-repo/harness/artifact.css"><!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<style>main{max-width:70rem;margin:auto;padding:1rem}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:.5rem;border-bottom:1px solid currentColor}section{margin-block:1rem} .scroll{overflow:auto}input{max-width:100%;padding:.5rem}summary{cursor:pointer}</style></head><body id="tc-app" class="harness-document"><header class="harness-header">BPO · council · 2026-11-04</header><main><h1 class="harness-title">Subscription routes only; API billing NOT APPROVED</h1><section class="harness-card"><p>Historical evidence: eight frozen BPO screenshots scored by the earlier Gemini API run, mean <strong>7.125/10</strong>. API billing is now explicitly NOT APPROVED; live API calls are blocked. Failures retain null scores.</p><p>Agy on M3 returns authentication required. Its screenshot viewer path is implemented but has no successful authenticated image test.</p><p>These are new opinions on the same screenshots. They do not demonstrate UI improvement. Assumed judge noise: ±0.5; this is not a measured confidence interval.</p></section><section class="harness-card"><label for="filter">Filter screenshot</label> <input id="filter" type="search" placeholder="hub, golf, trv"><div class="scroll"><table><thead><tr><th>Screen</th><th>Original four</th><th>Gemini API</th><th>Combined five</th></tr></thead><tbody><tr><td>01-hub-desktop</td><td>6.75</td><td>8</td><td>7</td></tr><tr><td>02-hub-phone-top</td><td>6.5</td><td>7</td><td>6.6</td></tr><tr><td>03-hub-phone-golf</td><td>6.25</td><td>7</td><td>6.4</td></tr><tr><td>04-hub-phone-hub</td><td>6.25</td><td>7</td><td>6.4</td></tr><tr><td>05-hub-phone-menu</td><td>5.75</td><td>8</td><td>6.2</td></tr><tr><td>06-trv-doc-phone</td><td>6.5</td><td>6</td><td>6.4</td></tr><tr><td>07-golf-home-phone</td><td>5.5</td><td>7</td><td>5.8</td></tr><tr><td>08-golf-ledger-desktop</td><td>6.25</td><td>7</td><td>6.4</td></tr></tbody></table></div></section><section class="harness-card"><details><summary>Access needed</summary><p>Grok API and Muse API: <strong>NOT APPROVED</strong>. Subscription alternatives exist: <a href="https://x.ai/news/grok-build-cli">Grok Build account sign-in</a> and <a href="https://dev.meta.ai/docs/muse-code/subscriptions">Muse Code subscriptions</a>. Neither subscription CLI judge is implemented or verified here. No subscription purchase, API key setup, credits or extra usage is authorized.</p><p>Agy: use the M3 session with the existing successful login. Runner defaults to ssh m3; --agy-host local runs directly on M3.</p></details><details><summary>Evidence and limits</summary><p>Report: ~/.local/state/bpo/council-20261104/REPORT.md on M5. Full receipts and source-copy hashes stay there. No Found or DHA screenshots were sent. Each permitted judge sees one screenshot and rubric; original ratings are imported afterward. API pricing has been removed.</p></details></section></main><script>document.getElementById('filter').addEventListener('input',e=>{for(const row of document.querySelectorAll('tbody tr'))row.hidden=!row.textContent.toLowerCase().includes(e.target.value.toLowerCase())});</script></body></html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>TODO-200 · voice-memos init · Speak it, and it's captured</title>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root { --lane: #b8873a; }
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; overflow-x:hidden; background:var(--bg); }
+    main { max-width:1040px; margin:0 auto; padding:26px 24px 72px; }
+
+    .eyebrow { display:flex; align-items:center; gap:9px; font:600 12px/1 var(--font-mono); letter-spacing:.06em; color:var(--lane); text-transform:uppercase; }
+    .eyebrow .d { width:8px; height:8px; border-radius:50%; background:var(--lane); box-shadow:0 0 0 4px rgba(184,135,58,.18); }
+    h1 { font:700 40px/1.04 var(--font-display); letter-spacing:-.02em; margin:15px 0 10px; color:var(--ink); }
+    h1 em { font-style:normal; color:var(--forest); }
+    .lede { max-width:66ch; font:400 16px/1.55 var(--font-ui); color:var(--body); }
+    .lede b { color:var(--ink); font-weight:600; }
+
+    .kpis { display:flex; flex-wrap:wrap; gap:10px; margin:26px 0 6px; }
+    .kpi { flex:1 1 130px; background:var(--card); border:1px solid var(--line); border-radius:var(--r-tile); padding:14px 16px; }
+    .kpi-n { font:700 25px/1 var(--font-display); color:var(--ink); }
+    .kpi-n small { font:600 13px/1 var(--font-mono); color:var(--muted); }
+    .kpi-l { font:500 11.5px/1.3 var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:6px; }
+
+    section.grp { margin-top:40px; }
+    .grp-head { display:flex; align-items:baseline; gap:10px; border-bottom:2px solid var(--line); padding-bottom:8px; margin-bottom:16px; }
+    .grp-head h2 { font:700 21px/1 var(--font-display); color:var(--ink); letter-spacing:-.01em; }
+    .grp-head .sub { font:400 13px/1 var(--font-ui); color:var(--muted); margin-left:auto; }
+
+    /* pipeline */
+    .flow { display:flex; flex-wrap:wrap; align-items:stretch; gap:8px; }
+    .step { flex:1 1 150px; background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:13px 15px; position:relative; }
+    .step .n { font:600 11px/1 var(--font-mono); color:var(--lane); text-transform:uppercase; letter-spacing:.05em; }
+    .step .t { font:700 15px/1.2 var(--font-display); color:var(--ink); margin:7px 0 4px; }
+    .step .d { font:400 12.5px/1.45 var(--font-ui); color:var(--muted); }
+    .step code { font:500 12px var(--font-mono); color:var(--forest-d); }
+
+    /* captures table */
+    table.cap { width:100%; border-collapse:collapse; font:400 14px/1.45 var(--font-ui); }
+    table.cap th { text-align:left; font:600 11.5px/1 var(--font-mono); text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:0 12px 9px; border-bottom:1px solid var(--line); }
+    table.cap td { padding:11px 12px; border-bottom:1px solid var(--line); color:var(--body); vertical-align:top; }
+    table.cap td.tm { font:500 13px var(--font-mono); color:var(--muted); white-space:nowrap; }
+    table.cap td.tk a { font:600 13px var(--font-mono); color:var(--forest-d); text-decoration:none; white-space:nowrap; }
+    table.cap td.tx { color:var(--ink); }
+    table.cap tr:last-child td { border-bottom:none; }
+    table.cap tr.star td { background:rgba(184,135,58,.07); }
+    .tag { display:inline-block; font:600 11px/1 var(--font-mono); text-transform:uppercase; letter-spacing:.03em; padding:4px 8px; border-radius:var(--r-pill); border:1px solid var(--line); color:var(--body); background:var(--card); }
+    .tag.golf { color:#3f7d3f; border-color:#bcd9bc; background:#eef6ee; }
+    .tag.workout { color:#b8873a; border-color:#e5cfa6; background:#faf3e6; }
+    .tag.journal { color:var(--muted); }
+
+    .cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .panel { background:var(--well); border:1px solid var(--line); border-radius:var(--r-tile); padding:16px 18px; }
+    .panel h3 { font:700 15px/1.2 var(--font-display); color:var(--forest); margin:0 0 8px; }
+    .panel p { font:400 13.5px/1.55 var(--font-ui); color:var(--body); margin:0 0 8px; }
+    .panel p b { color:var(--ink); }
+    .panel code, .mono { font:500 12.5px var(--font-mono); color:var(--forest-d); }
+    ul.tight { margin:0; padding-left:18px; }
+    ul.tight li { font:400 13.5px/1.6 var(--font-ui); color:var(--body); }
+    ul.tight li b { color:var(--ink); }
+
+    table.mods { width:100%; border-collapse:collapse; font:400 13.5px/1.4 var(--font-ui); }
+    table.mods td { padding:8px 10px; border-bottom:1px solid var(--line); }
+    table.mods td:first-child { font:600 13px var(--font-mono); color:var(--ink); white-space:nowrap; }
+    table.mods td.b { color:var(--muted); }
+    table.mods tr:last-child td { border-bottom:none; }
+
+    .callout { border:1px solid var(--amber-bd, #e5cfa6); background:var(--amber-bg, #faf3e6); border-radius:var(--r-tile); padding:15px 18px; }
+    .callout h3 { font:700 15px/1.2 var(--font-display); color:#8a6520; margin:0 0 6px; }
+    .callout p { font:400 13.5px/1.55 var(--font-ui); color:var(--body); margin:0; }
+    .callout code { font:500 12.5px var(--font-mono); color:#8a6520; }
+
+    footer { margin-top:44px; padding-top:16px; border-top:1px solid var(--line); font:400 12.5px/1.6 var(--font-mono); color:var(--muted); }
+    footer b { color:var(--body); }
+    @media (max-width:720px){ .cols{grid-template-columns:1fr;} h1{font-size:32px;} }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow"><span class="d"></span> TODO-200 · voice-memos init</div>
+  <h1>Speak it, and it's <em>captured</em>.</h1>
+  <p class="lede">An always-on Mac now reads the local (iCloud-synced) Apple Voice Memos store,
+  transcribes each new memo <b>on-device</b>, files it as a durable note, and opens a routed
+  Linear ticket — no typing, no cloud. A workout, a golf swing thought, a stray idea:
+  <b>said out loud becomes context.</b></p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n">256</div><div class="kpi-l">memos in store</div></div>
+    <div class="kpi"><div class="kpi-n">4</div><div class="kpi-l">captured today</div></div>
+    <div class="kpi"><div class="kpi-n">~2.5<small>s</small></div><div class="kpi-l">to transcribe 17.6s</div></div>
+    <div class="kpi"><div class="kpi-n">5</div><div class="kpi-l">route buckets</div></div>
+    <div class="kpi"><div class="kpi-n">0</div><div class="kpi-l">cloud calls (whisper local)</div></div>
+  </div>
+
+  <section class="grp">
+    <div class="grp-head"><h2>The loop</h2><span class="sub">idempotent · watermarked · fires on every new recording</span></div>
+    <div class="flow">
+      <div class="step"><div class="n">read</div><div class="t">extract</div><div class="d"><code>memos.py</code> — <code>ZCLOUDRECORDING</code> read-only, since the watermark</div></div>
+      <div class="step"><div class="n">hear</div><div class="t">transcribe</div><div class="d"><code>transcribe.py</code> — ffmpeg → whisper.cpp <b>large-v3-turbo + Silero VAD</b></div></div>
+      <div class="step"><div class="n">keep</div><div class="t">dna note</div><div class="d"><code>dna/voice-memos/*.md</code> — git, private, <b>never ships</b></div></div>
+      <div class="step"><div class="n">route</div><div class="t">classify</div><div class="d"><code>route.py</code> — golf · workout · idea · todo · journal</div></div>
+      <div class="step"><div class="n">file</div><div class="t">Linear</div><div class="d"><code>linear.py</code> — one ticket, <code>memo-uuid:</code> marker, backdated</div></div>
+    </div>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2>Today, live</h2><span class="sub">2026-07-13 · the ticket's own golf example, captured for real</span></div>
+    <table class="cap">
+      <thead><tr><th>Time</th><th>Route</th><th>Ticket</th><th>What I said</th></tr></thead>
+      <tbody>
+        <tr class="star">
+          <td class="tm">17:04</td>
+          <td><span class="tag golf">golf</span></td>
+          <td class="tk"><a href="https://linear.app/nomad-code/issue/TODO-206">TODO-206</a></td>
+          <td class="tx">“…playing GS Pro with a 7-iron, and I've been hitting fades. I'm going to try to hit a draw now.”</td>
+        </tr>
+        <tr>
+          <td class="tm">13:59</td>
+          <td><span class="tag workout">workout</span></td>
+          <td class="tk"><a href="https://linear.app/nomad-code/issue/TODO-204">TODO-204</a></td>
+          <td class="tx">“…my normal flow of running from Midewi Manor and doing a fast…”</td>
+        </tr>
+        <tr>
+          <td class="tm">14:40</td>
+          <td><span class="tag workout">workout</span></td>
+          <td class="tk"><a href="https://linear.app/nomad-code/issue/TODO-205">TODO-205</a></td>
+          <td class="tx">“…when I surfed, I forgot to end the workout…”</td>
+        </tr>
+        <tr>
+          <td class="tm">19:26</td>
+          <td><span class="tag journal">journal</span></td>
+          <td class="tk"><a href="https://linear.app/nomad-code/issue/TODO-202">TODO-202</a></td>
+          <td class="tx">“Eight ball. …game start to finish the past three days…”</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2>What got built</h2><span class="sub">bpo/projects/voice-memos · stdlib python, self-contained</span></div>
+    <div class="cols">
+      <div class="panel">
+        <table class="mods">
+          <tr><td>memos.py</td><td class="b">read-only ZCLOUDRECORDING reader</td></tr>
+          <tr><td>transcribe.py</td><td class="b">ffmpeg + whisper-cli + Silero VAD</td></tr>
+          <tr><td>route.py</td><td class="b">keyword classifier + title</td></tr>
+          <tr><td>linear.py</td><td class="b">GraphQL issueCreate + marker search</td></tr>
+          <tr><td>process.py</td><td class="b">orchestrator + watermark + note store</td></tr>
+          <tr><td>vm_cron.sh<br>+ .plist</td><td class="b">launchd WatchPaths watcher</td></tr>
+        </table>
+      </div>
+      <div class="panel">
+        <h3>Decisions that hold it together</h3>
+        <ul class="tight">
+          <li><b>Silero VAD is load-bearing</b> — without it whisper loops on the silence in short memos.</li>
+          <li><b>No-backfill guard</b> — first run just sets the watermark; it won't turn 256 old memos into tickets.</li>
+          <li><b>Idempotent</b> — the dna note + <span class="mono">memo-uuid</span> marker mean re-runs are no-ops.</li>
+          <li><b>dna never ships</b> — transcripts stay in the private repo, off the Pages allowlist.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="grp">
+    <div class="grp-head"><h2>One manual step</h2><span class="sub">the only thing between here and hands-free</span></div>
+    <div class="callout">
+      <h3>Grant Full Disk Access to the watcher</h3>
+      <p>launchd jobs are sandboxed and can't read the Voice Memos container until granted FDA —
+      until then <code>watch.log</code> says <code>authorization denied</code>. Add <code>/bin/zsh</code>
+      and <code>/usr/bin/python3</code> under System Settings → Privacy &amp; Security → Full Disk Access,
+      then <code>launchctl kickstart -k gui/$(id -u)/com.bpo.voice-memos</code>. Manual runs from a
+      normal terminal already work — the grant is only for the always-on daemon.</p>
+    </div>
+  </section>
+
+  <footer>
+    <b>prompt</b> → apple voice memos become my real-time context injection &nbsp;·&nbsp;
+    <b>response</b> → capture spine live: 4 memos today → dna notes + TODO-202/204/205/206 &nbsp;·&nbsp;
+    <b>artifact</b> → this page &nbsp;·&nbsp; 2026-07-13 · nomad-code/bpo
+  </footer>
+</main>
+</body>
+</html>

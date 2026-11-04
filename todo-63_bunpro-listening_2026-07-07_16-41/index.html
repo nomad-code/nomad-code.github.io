@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TODO-63 · bunpro-listening · Study Deck</title>
+<link rel="stylesheet" href="../design-repo/grove/reset.css">
+<link rel="stylesheet" href="../design-repo/grove/tokens.css">
+<link rel="stylesheet" href="../design-repo/grove/components.css">
+<style>
+  body { background: var(--bg); }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 30px 22px 90px; }
+
+  /* ---- header ---- */
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; }
+  .kicker { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--forest); }
+  h1 { font-size: 30px; line-height: 1.05; margin: 5px 0 0; color: var(--ink); letter-spacing: -.01em; }
+  .sub { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+
+  /* ---- stat rail ---- */
+  .stats { display: flex; gap: 10px; flex-wrap: wrap; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-tile); padding: 8px 14px; box-shadow: var(--shadow-card); }
+  .stat b { font-family: var(--font-mono); font-size: 20px; color: var(--forest); display: block; line-height: 1; }
+  .stat span { font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+
+  /* ---- runbook (collapsible) ---- */
+  details.book { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow-card); margin-bottom: 16px; overflow: hidden; }
+  details.book > summary { cursor: pointer; padding: 15px 20px; font-weight: 700; color: var(--ink); list-style: none; display: flex; align-items: center; gap: 10px; }
+  details.book > summary::-webkit-details-marker { display: none; }
+  details.book > summary .chev { transition: transform .2s var(--ease); color: var(--faint); }
+  details.book[open] > summary .chev { transform: rotate(90deg); }
+  .book .body { padding: 0 20px 20px; }
+  .note { border-left: 3px solid var(--warn-bd); background: var(--warn-bg); color: #5f2a17; border-radius: var(--r-tile); padding: 12px 15px; font-size: 13px; margin-bottom: 14px; }
+  .note b { color: var(--warn); }
+  pre.cmd { background: #10201d; color: #d8efe7; border-radius: var(--r-tile); padding: 13px 15px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; overflow-x: auto; }
+  pre.cmd .c { color: #7fb0a4; }
+  code { font-family: var(--font-mono); font-size: 12px; background: var(--well); padding: 1px 6px; border-radius: 6px; color: var(--forest-d); }
+
+  /* ---- toolbar ---- */
+  .bar { position: sticky; top: 0; z-index: 20; background: rgba(244,244,239,.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+         border: 1px solid var(--line); border-radius: var(--r-panel); box-shadow: var(--shadow-card); padding: 10px 12px; margin-bottom: 16px;
+         display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .seg { display: inline-flex; background: var(--well); border-radius: var(--r-pill); padding: 3px; }
+  .seg button { border: 0; background: transparent; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--muted); padding: 6px 14px; border-radius: var(--r-pill); cursor: pointer; transition: all .18s var(--ease); }
+  .seg button.on { background: var(--card); color: var(--forest); box-shadow: var(--shadow-card); }
+  select, input[type=search] { font: inherit; font-size: 12.5px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: var(--r-chip); padding: 7px 10px; }
+  input[type=search] { min-width: 150px; }
+  .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--body); cursor: pointer; user-select: none; }
+  .spacer { margin-left: auto; }
+  .btn { border: 1px solid var(--line); background: var(--card); color: var(--forest); font: inherit; font-weight: 700; font-size: 12.5px; padding: 7px 12px; border-radius: var(--r-chip); cursor: pointer; }
+  .btn:hover { background: var(--g-lime); }
+
+  /* ---- drop zone ---- */
+  .drop { border: 1.5px dashed var(--forest); border-radius: var(--r-panel); padding: 40px 24px; text-align: center; color: var(--muted); cursor: pointer; transition: background .2s var(--ease); background: var(--card); }
+  .drop:hover, .drop.over { background: var(--g-lime); color: var(--forest-d); }
+  .drop b { color: var(--forest); display: block; font-size: 16px; margin-bottom: 4px; }
+  .drop small { font-family: var(--font-mono); font-size: 11px; }
+
+  /* ---- browse rows ---- */
+  .rows { display: flex; flex-direction: column; gap: 12px; }
+  .row { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-tile); padding: 14px 16px; box-shadow: var(--shadow-card); }
+  .row.known { border-color: var(--g-lime); background: linear-gradient(0deg, var(--g-lime), var(--card) 60%); }
+  .top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 6px; }
+  .tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase; padding: 3px 9px; border-radius: var(--r-pill); background: var(--g-lime); color: var(--forest-d); }
+  .tag.L { background: #e3eef2; color: var(--found-d); }
+  .tag.V { background: #f3ead2; color: var(--amber); }
+  .tag.G { background: #ede3f2; color: #7a4a9a; }
+  .meta { color: var(--faint); font-size: 12px; font-family: var(--font-mono); }
+  .star { margin-left: auto; cursor: pointer; font-size: 16px; color: var(--faint); background: none; border: 0; }
+  .star.on { color: var(--lime); }
+  audio { width: 100%; margin-top: 8px; height: 38px; }
+  .jp { font-size: 18px; line-height: 2.05; color: var(--ink); white-space: pre-line; margin-top: 8px; }
+  .no-furi rt { display: none; }
+  rt { color: var(--forest); font-size: .58em; }
+  .empty { color: var(--faint); font-style: italic; font-size: 13px; padding: 40px; text-align: center; }
+
+  /* ---- study (shadowing) ---- */
+  .study { display: none; }
+  .study.on { display: block; }
+  .card-big { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-hero); box-shadow: var(--shadow-hero); padding: 30px 30px 26px; text-align: center; }
+  .card-big .src { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .card-big audio { max-width: 460px; margin: 0 auto 6px; display: block; }
+  .reveal-jp { font-size: 21px; line-height: 2.1; color: var(--ink); white-space: pre-line; text-align: left; max-width: 40em; margin: 18px auto 0; }
+  .hidden-hint { color: var(--faint); font-style: italic; margin: 26px 0; font-size: 14px; }
+  .controls { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
+  .controls .btn { padding: 9px 16px; }
+  .controls .btn.primary { background: var(--forest); color: #fff; border-color: var(--forest); }
+  .controls .btn.primary:hover { background: var(--forest-d); }
+  .progress { height: 6px; background: var(--well); border-radius: 999px; margin: 16px auto 0; max-width: 640px; overflow: hidden; }
+  .progress i { display: block; height: 100%; background: var(--forest); border-radius: 999px; transition: width .3s var(--ease); }
+  .kbd { font-family: var(--font-mono); font-size: 10px; color: var(--faint); text-align: center; margin-top: 14px; }
+  .kbd b { color: var(--muted); background: var(--well); padding: 1px 6px; border-radius: 5px; }
+
+  footer { margin-top: 34px; color: var(--faint); font-family: var(--font-mono); font-size: 11px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <div class="kicker">TODO-63 · bunpro-listening</div>
+      <h1>JLPT Listening — Study Deck</h1>
+      <div class="sub">Drop your scraped <code>out/</code> folder — browse transcripts, or shadow the audio.</div>
+    </div>
+    <div class="stats" id="stats" hidden>
+      <div class="stat"><b id="s-clips">0</b><span>clips</span></div>
+      <div class="stat"><b id="s-audio">0</b><span>audio</span></div>
+      <div class="stat"><b id="s-known">0</b><span>known</span></div>
+      <div class="stat"><b id="s-pct">0%</b><span>done</span></div>
+    </div>
+  </div>
+
+  <details class="book">
+    <summary><span class="chev">▸</span>How to fill this deck — run the scraper</summary>
+    <div class="body">
+      <div class="note"><b>The scrape can't run from the bpo web session.</b> The org egress policy blocks
+        <code>bunpro.jp</code> + the CloudFront audio host, and the audio is copyright-gated so it never ships to
+        the public mirror. This page is a <b>local-file player</b>: it reads your <code>out/</code> folder in-browser,
+        nothing uploads.</div>
+      <pre class="cmd"><span class="c"># in projects/bunpro-listening — one-time</span>
+npm i playwright && npx playwright install chromium
+node scrape.mjs --login          <span class="c"># log in, press ENTER</span>
+
+<span class="c"># walk + export</span>
+node scrape.mjs --levels n5,n4,n3,n2,n1   <span class="c"># all levels</span>
+node scrape.mjs --sections L               <span class="c"># listening only</span>
+node scrape.mjs --dry-run                  <span class="c"># preview the URL walk</span>
+node export.mjs                            <span class="c"># anki.tsv + clips.json + media</span></pre>
+    </div>
+  </details>
+
+  <div class="drop" id="drop">
+    <input type="file" id="pick" webkitdirectory directory multiple hidden>
+    <b>Drop the out/ folder here</b>
+    <small>or click to choose it — reads manifest.json / clips.json + the mp3s</small>
+  </div>
+
+  <div id="app" hidden>
+    <div class="bar">
+      <div class="seg">
+        <button id="m-browse" class="on">Browse</button>
+        <button id="m-study">Study</button>
+      </div>
+      <select id="f-level"><option value="">all levels</option></select>
+      <select id="f-section"><option value="">all sections</option></select>
+      <select id="f-test"><option value="">all tests</option></select>
+      <input type="search" id="f-text" placeholder="search transcript…">
+      <label class="chk"><input type="checkbox" id="f-audio"> audio only</label>
+      <label class="chk"><input type="checkbox" id="furi" checked> furigana</label>
+      <span class="spacer"></span>
+      <button class="btn" id="reset">reset progress</button>
+    </div>
+
+    <div class="rows" id="rows"></div>
+
+    <div class="study" id="study">
+      <div class="card-big">
+        <div class="src"><span id="st-src">—</span><span id="st-count" class="meta"></span></div>
+        <audio id="st-audio" controls preload="none"></audio>
+        <div id="st-body">
+          <div class="hidden-hint" id="st-hint">Listen, then reveal the transcript.</div>
+          <div class="reveal-jp" id="st-jp" hidden></div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="st-prev">← Prev</button>
+          <button class="btn primary" id="st-reveal">Reveal (R)</button>
+          <button class="btn" id="st-known">Mark known (K)</button>
+          <button class="btn" id="st-next">Next →</button>
+        </div>
+        <div class="progress"><i id="st-bar"></i></div>
+        <div class="kbd"><b>Space</b> play · <b>R</b> reveal · <b>K</b> known · <b>←/→</b> or <b>J/L</b> move · <b>F</b> furigana</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>bpo · private · gated · all data stays in your browser</span>
+    <span>walk = levels × tests × sections · idx = trailing counter</span>
+  </footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const LS_KNOWN = 'bunpro-known';
+let CLIPS = [];       // {id, level, test, section, idx, clip, base, html, audio, audioUrl}
+let VIEW = [];        // filtered
+let known = new Set(JSON.parse(localStorage.getItem(LS_KNOWN) || '[]'));
+let mode = 'browse';
+let cursor = 0;
+let furiOn = true;
+let revealed = false;
+
+const saveKnown = () => localStorage.setItem(LS_KNOWN, JSON.stringify([...known]));
+const basename = (p) => (p || '').split('/').pop();
+const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// render furigana from stored ruby html (trusted local scrape), else plain base
+const jpHtml = (c) => c.html ? c.html : esc(c.base);
+
+/* ---------- folder ingest ---------- */
+const drop = $('#drop'), pick = $('#pick');
+drop.addEventListener('click', () => pick.click());
+['dragover','dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', async e => {
+  e.preventDefault();
+  const files = [];
+  const walk = async (entry, prefix = '') => {
+    if (entry.isFile) return new Promise(res => entry.file(f => { f._rel = prefix + f.name; files.push(f); res(); }));
+    if (entry.isDirectory) {
+      const rd = entry.createReader();
+      const ents = await new Promise(res => rd.readEntries(res));
+      for (const en of ents) await walk(en, prefix + entry.name + '/');
+    }
+  };
+  const items = [...e.dataTransfer.items].map(i => i.webkitGetAsEntry()).filter(Boolean);
+  for (const it of items) await walk(it);
+  ingest(files);
+});
+pick.addEventListener('change', () => ingest([...pick.files].map(f => (f._rel = f.webkitRelativePath || f.name, f))));
+
+async function ingest(files) {
+  const audioByName = new Map();
+  for (const f of files) if (/\.mp3$/i.test(f.name)) audioByName.set(f.name, URL.createObjectURL(f));
+
+  // prefer clips.json (already flattened); else build clips from manifest.json
+  const clipsFile = files.find(f => basename(f._rel) === 'clips.json');
+  const manFile = files.find(f => basename(f._rel) === 'manifest.json');
+  let clips = [];
+  if (clipsFile) {
+    const arr = JSON.parse(await clipsFile.text());
+    clips = arr.map(c => ({ ...c, audioUrl: c.audio ? audioByName.get(basename(c.audio)) : null }));
+  } else if (manFile) {
+    const man = JSON.parse(await manFile.text());
+    for (const p of man) {
+      const tx = p.transcripts || [], au = p.audio || [];
+      const n = Math.max(tx.length, au.length);
+      for (let i = 0; i < n; i++) {
+        const a = au[i];
+        const name = a ? (a.name || basename(a.file || a.url || '')) : '';
+        clips.push({
+          id: `${p.level}-${p.section}-t${p.test}-${i + 1}`,
+          level: p.level, test: p.test, section: p.section, idx: p.idx, clip: i + 1,
+          base: (tx[i] && (tx[i].base || tx[i].text)) || '',
+          html: (tx[i] && tx[i].html) || '',
+          audio: name, audioUrl: name ? audioByName.get(name) : null,
+        });
+      }
+    }
+  } else {
+    $('#app').hidden = false; drop.style.display = 'none';
+    $('#rows').innerHTML = '<div class="empty">No manifest.json / clips.json in that folder — run the scraper first.</div>';
+    return;
+  }
+  CLIPS = clips;
+  boot();
+}
+
+/* ---------- boot / filters ---------- */
+function boot() {
+  drop.style.display = 'none';
+  $('#app').hidden = false;
+  $('#stats').hidden = false;
+  const uniq = (k) => [...new Set(CLIPS.map(c => c[k]))].sort();
+  fill('#f-level', uniq('level'), 'all levels');
+  fill('#f-section', uniq('section'), 'all sections');
+  fill('#f-test', uniq('test'), 'all tests');
+  ['#f-level','#f-section','#f-test','#f-text','#f-audio'].forEach(s => $(s).addEventListener('input', apply));
+  apply();
+}
+function fill(sel, vals, allLabel) {
+  $(sel).innerHTML = `<option value="">${allLabel}</option>` + vals.map(v => `<option>${v}</option>`).join('');
+}
+function apply() {
+  const lv = $('#f-level').value, sc = $('#f-section').value, ts = $('#f-test').value;
+  const q = $('#f-text').value.trim(), aud = $('#f-audio').checked;
+  VIEW = CLIPS.filter(c =>
+    (!lv || c.level === lv) && (!sc || c.section === sc) && (!ts || String(c.test) === ts) &&
+    (!aud || c.audioUrl) && (!q || (c.base || '').includes(q)));
+  cursor = Math.min(cursor, Math.max(0, VIEW.length - 1));
+  updateStats();
+  mode === 'browse' ? renderBrowse() : renderStudy();
+}
+function updateStats() {
+  const withAudio = CLIPS.filter(c => c.audioUrl).length;
+  const kn = CLIPS.filter(c => known.has(c.id)).length;
+  $('#s-clips').textContent = CLIPS.length;
+  $('#s-audio').textContent = withAudio;
+  $('#s-known').textContent = kn;
+  $('#s-pct').textContent = CLIPS.length ? Math.round(100 * kn / CLIPS.length) + '%' : '0%';
+}
+
+/* ---------- browse ---------- */
+function renderBrowse() {
+  const rows = $('#rows'); rows.style.display = ''; $('#study').classList.remove('on');
+  if (!VIEW.length) { rows.innerHTML = '<div class="empty">Nothing matches those filters.</div>'; return; }
+  rows.innerHTML = '';
+  for (const c of VIEW) {
+    const row = document.createElement('div');
+    row.className = 'row' + (known.has(c.id) ? ' known' : '') + (furiOn ? '' : ' no-furi');
+    row.innerHTML = `
+      <div class="top">
+        <span class="tag ${c.section}">${c.level} · ${c.section}</span>
+        <span class="meta">test ${c.test} · #${c.idx} · clip ${c.clip}</span>
+        <button class="star ${known.has(c.id) ? 'on' : ''}" title="mark known">★</button>
+      </div>
+      ${c.base || c.html ? `<div class="jp">${jpHtml(c)}</div>` : '<div class="meta">— no transcript —</div>'}
+      ${c.audioUrl ? `<audio controls preload="none" src="${c.audioUrl}"></audio>` : (c.audio ? `<div class="meta">audio ${esc(c.audio)} not in folder</div>` : '')}`;
+    row.querySelector('.star').addEventListener('click', () => {
+      known.has(c.id) ? known.delete(c.id) : known.add(c.id);
+      saveKnown(); updateStats(); renderBrowse();
+    });
+    rows.appendChild(row);
+  }
+}
+
+/* ---------- study (shadowing) ---------- */
+function renderStudy() {
+  $('#rows').style.display = 'none'; $('#study').classList.add('on');
+  if (!VIEW.length) {
+    $('#st-src').textContent = 'no clips match'; $('#st-count').textContent = '';
+    $('#st-audio').removeAttribute('src'); $('#st-jp').hidden = true; $('#st-hint').style.display = '';
+    $('#st-bar').style.width = '0%'; return;
+  }
+  const c = VIEW[cursor];
+  $('#st-src').textContent = `${c.level} · test ${c.test} · ${c.section} · #${c.idx}`;
+  $('#st-count').textContent = `${cursor + 1} / ${VIEW.length}`;
+  const a = $('#st-audio');
+  if (c.audioUrl) { a.src = c.audioUrl; a.style.display = ''; } else { a.removeAttribute('src'); a.style.display = 'none'; }
+  const jp = $('#st-jp');
+  jp.className = 'reveal-jp' + (furiOn ? '' : ' no-furi');
+  jp.innerHTML = (c.base || c.html) ? jpHtml(c) : '— no transcript —';
+  jp.hidden = !revealed;
+  $('#st-hint').style.display = revealed ? 'none' : '';
+  $('#st-known').textContent = known.has(c.id) ? '✓ known (K)' : 'Mark known (K)';
+  $('#st-bar').style.width = (VIEW.length ? (cursor + 1) / VIEW.length * 100 : 0) + '%';
+}
+function go(d) { revealed = false; cursor = (cursor + d + VIEW.length) % VIEW.length; renderStudy(); }
+function reveal() { revealed = true; renderStudy(); }
+function toggleKnown() {
+  const c = VIEW[cursor]; if (!c) return;
+  known.has(c.id) ? known.delete(c.id) : known.add(c.id);
+  saveKnown(); updateStats(); renderStudy();
+}
+$('#st-prev').onclick = () => go(-1);
+$('#st-next').onclick = () => go(1);
+$('#st-reveal').onclick = reveal;
+$('#st-known').onclick = toggleKnown;
+
+/* ---------- mode + controls ---------- */
+$('#m-browse').onclick = () => setMode('browse');
+$('#m-study').onclick = () => setMode('study');
+function setMode(m) {
+  mode = m;
+  $('#m-browse').classList.toggle('on', m === 'browse');
+  $('#m-study').classList.toggle('on', m === 'study');
+  if (m === 'browse') renderBrowse(); else { revealed = false; renderStudy(); }
+}
+$('#furi').addEventListener('change', e => { furiOn = e.target.checked; mode === 'browse' ? renderBrowse() : renderStudy(); });
+$('#reset').onclick = () => { if (confirm('Clear all known marks?')) { known.clear(); saveKnown(); updateStats(); mode === 'browse' ? renderBrowse() : renderStudy(); } };
+
+/* ---------- keyboard (study) ---------- */
+document.addEventListener('keydown', (e) => {
+  if (mode !== 'study' || $('#app').hidden) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  const a = $('#st-audio');
+  if (e.code === 'Space') { e.preventDefault(); a.paused ? a.play().catch(() => {}) : a.pause(); }
+  else if (e.key === 'r' || e.key === 'R') reveal();
+  else if (e.key === 'k' || e.key === 'K') toggleKnown();
+  else if (e.key === 'j' || e.key === 'J') go(-1);
+  else if (e.key === 'l' || e.key === 'L') go(1);
+  else if (e.key === 'ArrowRight') go(1);
+  else if (e.key === 'ArrowLeft') go(-1);
+  else if (e.key === 'f' || e.key === 'F') { furiOn = !furiOn; $('#furi').checked = furiOn; renderStudy(); }
+});
+</script>
+</body>
+</html>

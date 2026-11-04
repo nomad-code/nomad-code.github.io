@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TODO-292 · code-local_shell_state</title>
+  <meta name="description" content="Local Zsh and Oh My Zsh state restored on m3">
+  <script>
+  (function(){var K='bpo-unlocked',ok=false,h;try{ok=localStorage.getItem(K)==='true'||sessionStorage.getItem(K)==='true'}catch(e){}if(!ok){h=document.createElement('style');h.id='__pw_gate_hide__';h.textContent='html > body > *:not(#__pw_gate__){visibility:hidden!important}';document.head.appendChild(h)}window.__BPO_GATE__={label:'bpo · Private',key:K};var p=['','../','../../','../../../'],i=0;(function n(){if(i>=p.length){if(h)h.remove();return}var s=document.createElement('script');s.src=p[i++]+'password-wall/gate.js';s.onerror=n;document.head.appendChild(s)})()})();
+  </script>
+  <link rel="stylesheet" href="../design-repo/grove/reset.css">
+  <link rel="stylesheet" href="../design-repo/grove/tokens.css">
+  <link rel="stylesheet" href="../design-repo/grove/components.css">
+  <style>
+    :root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(100% - 32px,940px);margin:auto;padding:54px 0 70px}.eyebrow,.k{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--forest)}
+    h1{margin:14px 0 12px;font:700 clamp(34px,7vw,66px)/.98 ui-monospace,monospace;letter-spacing:-.055em}.lede{max-width:680px;color:var(--muted);font-size:18px}
+    .address{margin-top:24px;padding:15px 17px;border-radius:12px;background:var(--ink);color:#fff;font:700 clamp(15px,3vw,21px)/1.2 ui-monospace,monospace;overflow-wrap:anywhere}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}.card{padding:20px;border:1px solid var(--line);border-radius:15px;background:var(--card)}.card h2{font-size:18px;margin:8px 0}.card p{color:var(--muted);margin:0}
+    .checks{margin-top:28px;padding:22px;border-radius:16px;background:var(--forest);color:#fff}.check{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #ffffff25}.check:last-child{border:0}.dot{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900}
+    a{color:inherit}footer{display:flex;justify-content:space-between;gap:14px;margin-top:38px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">nomad-code / bpo · local machine repair</div>
+    <h1>shell state restored</h1>
+    <p class="lede">The m3 shell had two layers of drift: the mise executable was missing, then the managed <code>~/.zshrc</code> link was absent. Both are restored and verified.</p>
+    <div class="address">TODO_292-code-local_shell_state</div>
+    <section class="grid">
+      <article class="card"><div class="k">mise</div><h2>Runtime restored</h2><p>Installed through Homebrew and activated by command resolution instead of a stale installer-specific path.</p></article>
+      <article class="card"><div class="k">Oh My Zsh</div><h2>Prompt restored</h2><p><code>~/.zshrc</code> again links to <code>~/dev/etc/zsh/.zshrc</code>; the <code>avit</code> theme loads.</p></article>
+      <article class="card"><div class="k">Verification</div><h2>Fresh shells pass</h2><p>Login and interactive Zsh sessions start cleanly, activate mise, and expose the <code>omz</code> function.</p></article>
+    </section>
+    <section class="checks">
+      <div class="k" style="color:var(--lime)">Durable record</div>
+      <div class="check"><span class="dot">1</span><div><b>Machine state</b><br>Homebrew owns mise at <code>/opt/homebrew/bin/mise</code>.</div></div>
+      <div class="check"><span class="dot">2</span><div><b>Dotfiles truth</b><br>The repair lives in <code>~/dev/etc/zsh</code>, with home-directory symlinks restored.</div></div>
+      <div class="check"><span class="dot">3</span><div><b>Personal world</b><br>The workflow record and artifact live in BPO, not dha.</div></div>
+    </section>
+    <footer><a href="https://linear.app/nomad-code/issue/TODO-292/code-local-shell-state">TODO-292 ↗</a><span>2026-07-26 · m3</span></footer>
+  </main>
+</body>
+</html>

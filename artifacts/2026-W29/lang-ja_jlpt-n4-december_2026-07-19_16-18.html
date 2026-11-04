@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = prefixes[i++] + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bpo · JLPT N4 December 2026</title>
+<style>
+  :root{--paper:#f4f1e8;--card:#fffdf7;--ink:#18231f;--muted:#68736d;--line:#d7d8ce;--red:#b64237;--red-soft:#f4dfdb;--green:#146b52;--green-soft:#dcece4;--gold:#9b6808;--gold-soft:#f3e8cc;--blue:#315f83;--mono:"SF Mono",ui-monospace,Menlo,monospace}
+  @media(prefers-color-scheme:dark){:root{--paper:#131916;--card:#1c2420;--ink:#edf2ed;--muted:#a4afa8;--line:#38443e;--red:#f18e81;--red-soft:#422825;--green:#6dd0a7;--green-soft:#203b31;--gold:#e2b459;--gold-soft:#3b321f;--blue:#90c6ed}}
+  *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif} a{color:var(--blue)}
+  .wrap{width:min(1060px,calc(100% - 30px));margin:auto;padding:40px 0 72px}.kicker,.eyebrow,.status{font:700 11px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.1em}.kicker,.eyebrow{color:var(--green)}
+  h1{max-width:900px;margin:8px 0 10px;font-size:clamp(34px,6vw,64px);line-height:.98;letter-spacing:-.05em}.lede{max-width:760px;margin:0;color:var(--muted);font-size:18px}.meta{margin-top:14px;color:var(--muted);font:12px/1.5 var(--mono)}
+  .outcome{margin:28px 0;padding:20px 22px;border:1px solid color-mix(in srgb,var(--green) 45%,var(--line));border-radius:16px;background:var(--green-soft)}.outcome strong{display:block;font-size:20px}.outcome p{margin:4px 0 0}
+  section{margin-top:34px}.head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:12px}h2{margin:0;font-size:22px;letter-spacing:-.025em}.hint{color:var(--muted);font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.card{grid-column:span 4;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--card)}.card.wide{grid-column:span 6}.card.full{grid-column:1/-1}.card h3{margin:4px 0 5px;font-size:17px}.card p{margin:0;color:var(--muted)}
+  .metric{font:800 31px/1.1 var(--mono);letter-spacing:-.05em}.metric.red{color:var(--red)}.metric.green{color:var(--green)}.metric.gold{color:var(--gold)}
+  table{width:100%;border-collapse:collapse}th{padding:8px 9px;text-align:left;border-bottom:1px solid var(--line);color:var(--muted);font:700 10px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.08em}td{padding:11px 9px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border:0}td:first-child{font-weight:700}.status{color:var(--green)}.status.warn{color:var(--gold)}
+  .checks{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px}.check{display:flex;gap:9px;padding:8px 0;align-items:flex-start}.check input{margin-top:4px;accent-color:var(--green)}.check small{display:block;color:var(--muted)}
+  .phase{display:grid;grid-template-columns:105px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}.phase:last-child{border:0}.date{font:700 11px/1.4 var(--mono);color:var(--green)}.phase strong{display:block}.phase p{margin:2px 0 0;color:var(--muted)}
+  .note{margin-top:12px;padding:12px 14px;border-left:3px solid var(--gold);border-radius:4px 10px 10px 4px;background:var(--gold-soft)}
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font:11px/1.6 var(--mono)}
+  @media(max-width:720px){.card,.card.wide{grid-column:1/-1}.checks{grid-template-columns:1fr}.phase{grid-template-columns:1fr}.head{align-items:start;flex-direction:column;gap:3px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="kicker">lang_ja · one outcome</div>
+  <h1>Pass JLPT N4.<br>Everything else serves that.</h1>
+  <p class="lede">A 139-day operating system for converting Bunpro, WaniKani, and existing practice material into a passing result—not merely a long study streak.</p>
+  <div class="meta">2026-07-20 WITA · exam Sunday 2026-12-06 · Denpasar</div>
+
+  <div class="outcome">
+    <strong>🎯 Pass JLPT N4 in Denpasar on December 6, 2026.</strong>
+    <p>Register on time. Sit every section. Score at least 90/180 overall, 38/120 in language knowledge + reading, and 19/60 in listening.</p>
+  </div>
+
+  <section>
+    <div class="head"><h2>Starting truth</h2><span class="hint">known evidence, not optimism</span></div>
+    <div class="grid">
+      <article class="card"><div class="metric green">N5 ✓</div><h3>Foundation exists</h3><p>JLPT N5 passed in December 2025, then NAT-TEST 5Q passed in March 2026.</p></article>
+      <article class="card"><div class="metric red">86/180</div><h3>Margin was thin</h3><p>The N5 pass cleared its threshold by six points. N4 needs a safety margin, not a scrape-through plan.</p></article>
+      <article class="card"><div class="metric gold">32/60</div><h3>Listening needs weight</h3><p>Listening was the weakest captured N5 score and remains the highest-risk independent floor.</p></article>
+      <article class="card wide"><div class="metric">6</div><h3>N4 questions recorded</h3><p>The existing N4 scoreboard has only six attempted vocabulary questions. Grammar, reading, and listening are not yet measured.</p></article>
+      <article class="card wide"><div class="metric">45 + 13</div><h3>Bunpro debt, last observed</h3><p>On July 17: 45 unattempted review questions and 13 requiring wrap-up. Clear reviews before accelerating new material.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>The four-part system</h2><span class="hint">apps teach; questions judge</span></div>
+    <div class="grid">
+      <article class="card"><div class="eyebrow">grammar spine</div><h3>Bunpro</h3><p>Daily reviews. Add 2–3 N4 grammar points only when review debt is controlled.</p></article>
+      <article class="card"><div class="eyebrow">kanji memory</div><h3>WaniKani</h3><p>Daily reviews. Lessons are throttle-controlled by Apprentice load—not by enthusiasm.</p></article>
+      <article class="card"><div class="eyebrow">truth signal</div><h3>Timed JLPT work</h3><p>One timed section every week; every miss becomes a targeted Bunpro, WK, or note correction.</p></article>
+      <article class="card wide"><div class="eyebrow">independent floor</div><h3>Listening</h3><p>15–20 minutes daily: listen blind → answer → replay with transcript → shadow → replay blind.</p></article>
+      <article class="card wide"><div class="eyebrow">speed constraint</div><h3>Reading</h3><p>Three short sessions weekly. Read for structure and answers under time, not perfect translation.</p></article>
+    </div>
+    <div class="note"><strong>Guardrail:</strong> engineering the Bunpro scraper, reorganizing old screenshots, and collecting more resources do not count as study unless they produce completed listening reps or scored questions that week.</div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Phases</h2><span class="hint">each phase has an exit test</span></div>
+    <article class="card full">
+      <div class="phase"><div class="date">JUL 20–26</div><div><strong>Baseline week</strong><p>Complete one timed N4 vocabulary, grammar/reading, and listening baseline. Record every answer. This replaces guesswork with a weakness map.</p></div></div>
+      <div class="phase"><div class="date">JUL 27–AUG 31</div><div><strong>Stabilize and build</strong><p>Clear SRS debt, establish daily listening, progress through N4 grammar, and register as soon as Indonesia opens December enrollment.</p></div></div>
+      <div class="phase"><div class="date">SEP 1–OCT 31</div><div><strong>Coverage becomes performance</strong><p>Timed sections every week and a half/full mock every two weeks. Practice misses determine the following week's study.</p></div></div>
+      <div class="phase"><div class="date">NOV 1–29</div><div><strong>Exam mode</strong><p>One full timed mock each week. Seek repeated passes and a practical 65–70% raw safety band in every area; raw percentage is a training proxy, not JLPT scaled scoring.</p></div></div>
+      <div class="phase"><div class="date">NOV 30–DEC 6</div><div><strong>Taper</strong><p>Review known misses, protect sleep, confirm logistics, and add almost nothing new.</p></div></div>
+    </article>
+  </section>
+
+  <section>
+    <div class="head"><h2>This week</h2><span class="hint">saved in this browser</span></div>
+    <article class="card full">
+      <div class="checks">
+        <label class="check"><input data-task="bp" type="checkbox"><span>Clear current Bunpro reviews<small>Do not add new grammar while debt is expanding.</small></span></label>
+        <label class="check"><input data-task="wk" type="checkbox"><span>Restore WaniKani access and record live state<small>Level, review count, lessons, Apprentice load.</small></span></label>
+        <label class="check"><input data-task="v" type="checkbox"><span>Timed N4 vocabulary baseline<small>Use the existing 2012 or 2018 material.</small></span></label>
+        <label class="check"><input data-task="gr" type="checkbox"><span>Timed grammar + reading baseline<small>Record time, raw score, and failure types.</small></span></label>
+        <label class="check"><input data-task="l" type="checkbox"><span>Timed listening baseline<small>No transcript on the first pass.</small></span></label>
+        <label class="check"><input data-task="score" type="checkbox"><span>Rebuild the N4 scoreboard<small>One place for attempts, scores, and next action.</small></span></label>
+        <label class="check"><input data-task="register" type="checkbox"><span>Set registration watch<small>Indonesia normally opens December registration around mid-August to early September; quota is limited.</small></span></label>
+        <label class="check"><input data-task="calendar" type="checkbox"><span>Block recurring study appointments<small>Reviews daily; timed section weekly; mock cadence scheduled.</small></span></label>
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <div class="head"><h2>Weekly control panel</h2><span class="hint">only four numbers matter</span></div>
+    <article class="card full">
+      <table>
+        <tr><th>Signal</th><th>Question</th><th>Healthy direction</th></tr>
+        <tr><td>Bunpro</td><td>Are reviews controlled and N4 grammar coverage moving?</td><td class="status">debt stable/down</td></tr>
+        <tr><td>WaniKani</td><td>Are reviews current without an overloaded Apprentice queue?</td><td class="status">retention first</td></tr>
+        <tr><td>Timed score</td><td>Are vocabulary/grammar/reading scores rising under the clock?</td><td class="status">weekly evidence</td></tr>
+        <tr><td>Listening</td><td>Can blind first-pass scores clear the independent section floor safely?</td><td class="status warn">protect this floor</td></tr>
+      </table>
+    </article>
+  </section>
+
+  <section>
+    <div class="head"><h2>Authoritative references</h2></div>
+    <article class="card full">
+      <p><a href="https://www.jlpt.jp/e/">Official 2026 JLPT calendar</a> · <a href="https://www.jlpt.jp/e/guideline/results.html">official N4 passing criteria</a> · <a href="https://www.jlpt.jp/e/application/overseas_list.html">official overseas test sites</a> · <a href="https://jlptonline.or.id/faq">JLPT Indonesia registration guidance</a></p>
+    </article>
+  </section>
+
+  <footer>lang-ja_jlpt-n4-december_2026-07-19_16-18 · bpo private · outcome control artifact<br>Source context: dna/lang-jp scoreboards, test results, logs, and projects/bunpro-listening.</footer>
+</main>
+<script>
+(function(){var key='bpo-lang-ja-n4-2026-v1',state={};try{state=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){}document.querySelectorAll('[data-task]').forEach(function(el){el.checked=!!state[el.dataset.task];el.addEventListener('change',function(){state[el.dataset.task]=el.checked;try{localStorage.setItem(key,JSON.stringify(state))}catch(e){}})})})();
+</script>
+</body>
+</html>

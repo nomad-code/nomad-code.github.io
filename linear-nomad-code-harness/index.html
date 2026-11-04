@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <script src="../password-wall/gate.js" data-label="bpo · Private" data-key="bpo-unlocked"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linear · Nomad Code Harness</title>
+<style>
+  :root {
+    --bg:#0e0f13; --panel:#16181f; --line:#262a35; --txt:#e6e8ee;
+    --dim:#9aa0ad; --acc:#7c8cff; --ok:#4ec9a0; --warn:#e3b341; --mono:"SF Mono",ui-monospace,Menlo,monospace;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+  .wrap { max-width:920px; margin:0 auto; padding:40px 24px 80px; }
+  h1 { font-size:26px; margin:0 0 4px; letter-spacing:-.02em; }
+  .sub { color:var(--dim); margin:0 0 28px; }
+  h2 { font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:var(--acc);
+    margin:34px 0 12px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:12px 0; }
+  .tag { display:inline-block; font:600 11px var(--mono); padding:2px 8px; border-radius:999px;
+    background:#1d2230; color:var(--acc); border:1px solid var(--line); }
+  .ro { color:var(--ok); } .rw { color:var(--warn); }
+  pre { background:#0a0b0e; border:1px solid var(--line); border-radius:8px; padding:14px;
+    overflow-x:auto; font:13px/1.5 var(--mono); color:#cdd3e0; margin:10px 0; }
+  code { font:13px var(--mono); background:#1d2230; padding:1px 6px; border-radius:5px; color:#cdd3e0; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:14px; }
+  th,td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.05em; }
+  td.mono,th.mono { font-family:var(--mono); font-size:12.5px; }
+  .note { color:var(--dim); font-size:13.5px; }
+  a { color:var(--acc); }
+  .kbd { font:12px var(--mono); background:#1d2230; border:1px solid var(--line); border-radius:5px; padding:1px 6px; }
+  footer { margin-top:40px; color:var(--dim); font-size:12.5px; border-top:1px solid var(--line); padding-top:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Linear · Nomad Code Harness</h1>
+  <p class="sub">Reusable context for reading &amp; writing the <strong>nomad-code</strong> Linear workspace from the CLI. <span class="note">Generated 2026-06-15.</span></p>
+
+  <div class="card">
+    <strong>TL;DR</strong> — Two paths. <span class="ro">Read</span> from the local cache with <code>linear-mac</code> (no auth, offline). <span class="rw">Write</span> (create issues, comment) via the GraphQL API with <code>LINEAR_API_KEY_NC</code>. Keep team/state IDs cached below so you skip discovery next time.
+  </div>
+
+  <h2>Credentials</h2>
+  <table>
+    <tr><th>Env var</th><th>Workspace</th><th>Source</th></tr>
+    <tr><td class="mono">LINEAR_API_KEY</td><td>Found AI</td><td class="mono">~/.config/zsh/secrets.zsh</td></tr>
+    <tr><td class="mono">LINEAR_API_KEY_NC</td><td>nomad-code</td><td class="mono">~/.config/zsh/secrets.zsh</td></tr>
+  </table>
+  <p class="note">Secrets live in <code>~/.config/zsh/secrets.zsh</code>, sourced from <code>~/.zshenv</code>. Never echo the key value — <code>source</code> it and reference <code>$LINEAR_API_KEY_NC</code>.</p>
+
+  <h2><span class="ro">●</span> Read path — linear-mac (no API)</h2>
+  <div class="card">
+    <p style="margin-top:0"><code>~/dev/fai/wip/linear-mac</code> &mdash; reads Linear's Electron LevelDB cache at <code>~/Library/Application Support/Linear/IndexedDB/</code>. No key, no network, no rate limits. The app need not be running.</p>
+    <pre>cd ~/dev/fai/wip/linear-mac
+npm run issues            # list all issues
+npm run issue TODO-63     # one issue as JSON
+npm run dump | jq '.[]'   # everything
+npm run serve             # local HTTP server</pre>
+    <p class="note"><strong>Caveats:</strong> issue <em>descriptions</em> and <em>comments</em> live in a separate object store and mostly come back <code>null</code> — for those, use the API. Data can be stale until the app re-syncs.</p>
+  </div>
+
+  <h2><span class="rw">●</span> Write path — GraphQL API</h2>
+  <p>Endpoint <code>https://api.linear.app/graphql</code>. Auth header is the raw key (no <code>Bearer</code>).</p>
+
+  <p class="note"><strong>Discover viewer / org / teams:</strong></p>
+  <pre>source ~/.config/zsh/secrets.zsh
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY_NC" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ viewer{name email} organization{name urlKey} teams{nodes{id key name}} }"}' | jq .</pre>
+
+  <p class="note"><strong>Comment on an issue</strong> (jq-escape the body so newlines/markdown survive):</p>
+  <pre>PAYLOAD=$(jq -n --arg b "$BODY" '{
+  query:"mutation($id:String!,$body:String!){ commentCreate(input:{issueId:$id, body:$body}){ success comment{ id url } } }",
+  variables:{ id:"&lt;issue-UUID&gt;", body:$b }
+}')
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY_NC" -H "Content-Type: application/json" \
+  -d "$PAYLOAD" | jq .</pre>
+  <p class="note"><code>issueId</code> accepts the <strong>UUID</strong> (from a fetch) — the human key like <code>TODO-63</code> works for <code>issue(id:)</code> reads but use the UUID for mutations.</p>
+
+  <p class="note"><strong>Create an issue:</strong></p>
+  <pre>mutation { issueCreate(input:{
+  teamId:"47d8ea75-fb1c-467c-9941-3951593bfdf2",   # TODO
+  title:"...", description:"...",
+  stateId:"96d840ef-a27d-4593-b005-7beaa6d94a1e"   # Backlog
+}){ success issue{ identifier url } } }</pre>
+
+  <h2>Cached IDs — nomad-code</h2>
+  <p class="note">Org urlKey <code>nomad-code</code> · viewer <em>Brendan O</em> (<code>1663f8bb-…</code>)</p>
+  <table>
+    <tr><th>Team</th><th class="mono">key</th><th class="mono">id</th></tr>
+    <tr><td>FemFast</td><td class="mono">FEM</td><td class="mono">c854111b-9f2e-4088-bafa-deddac51211e</td></tr>
+    <tr><td>Elemental</td><td class="mono">ELE</td><td class="mono">9ca8dfad-6eb9-4768-b0f6-d7f6c233be1a</td></tr>
+    <tr><td>TODO</td><td class="mono">TODO</td><td class="mono">47d8ea75-fb1c-467c-9941-3951593bfdf2</td></tr>
+    <tr><td>Passcode</td><td class="mono">PASS</td><td class="mono">cebea518-3b90-45ac-a534-51530435b367</td></tr>
+    <tr><td>Yotta</td><td class="mono">YOTTA</td><td class="mono">cea58aa0-f21a-4f3c-8961-c1ceb7559463</td></tr>
+  </table>
+  <p class="note" style="margin-top:14px"><strong>TODO workflow state IDs:</strong></p>
+  <table>
+    <tr><th>State</th><th>type</th><th class="mono">id</th></tr>
+    <tr><td>Backlog</td><td>backlog</td><td class="mono">96d840ef-a27d-4593-b005-7beaa6d94a1e</td></tr>
+    <tr><td>Touch-Ups</td><td>backlog</td><td class="mono">6779cf1a-ed9d-423e-821c-f92297320372</td></tr>
+    <tr><td>Todo</td><td>unstarted</td><td class="mono">7d391c98-5de4-4643-9ab2-e0da2fa6c5cf</td></tr>
+    <tr><td>Blocked</td><td>unstarted</td><td class="mono">ab93ef93-818b-4829-9423-161f1d4c751a</td></tr>
+    <tr><td>In Progress</td><td>started</td><td class="mono">7dcc835b-013c-4b68-90b2-13f5e1e84f24</td></tr>
+    <tr><td>In Review</td><td>started</td><td class="mono">578cd8ae-c780-457c-91b5-7e43fd4c6232</td></tr>
+    <tr><td>Done</td><td>completed</td><td class="mono">806175ac-2614-4584-8390-17aa6ba57bb3</td></tr>
+    <tr><td>Canceled</td><td>canceled</td><td class="mono">8b8f73ef-28f1-47d6-a1d2-11585d5c57d2</td></tr>
+    <tr><td>Duplicate</td><td>duplicate</td><td class="mono">1aa1174e-8ac7-4edf-9a9f-e9ca4f342c3d</td></tr>
+  </table>
+
+  <h2>TODO workflow pattern</h2>
+  <p>Each <span class="kbd">TODO-NN</span> issue = one small dev/automation project. Convention observed: a dated HTML artifact is dropped per task and linked back as a <code>file://</code> comment.</p>
+  <pre>~/dev/wip/sandbox/&lt;slug&gt;_YYYY-MM-DD_HH-MM.html      # the artifact
+# then comment on the issue:  file:///…/&lt;slug&gt;_….html  +  one-line takeaway</pre>
+  <p class="note">Examples: <code>etc_2026-06-15_10-54.html</code> (TODO-62 ETC File Harness — "dotfiles <em>are</em> the machine"), <code>todo-56_…html</code>, <code>todo-59_…html</code>.</p>
+
+  <footer>
+    Harness doc · read=<code>linear-mac</code> · write=GraphQL+<code>LINEAR_API_KEY_NC</code>.
+    Re-run the viewer query to refresh team/state IDs if the workspace changes.
+  </footer>
+
+</div>
+</body>
+</html>

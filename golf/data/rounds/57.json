@@ -1,0 +1,84 @@
+{
+    "round":  {
+                  "id":  57,
+                  "course":  "Shadow_Ridge_gsp",
+                  "date":  "2026-07-10",
+                  "updated":  "2026-07-15T17:19:40.3771185+08:00",
+                  "shots":  19
+              },
+    "players":  [
+                    {
+                        "alias":  "BPO",
+                        "thru":  6,
+                        "strokes":  22,
+                        "toParNum":  -2,
+                        "toPar":  "-2",
+                        "sgTotal":  4.64,
+                        "sg":  {
+                                   "off-tee":  4.31,
+                                   "approach":  1.96,
+                                   "around-green":  -0.6,
+                                   "putting":  -1.02
+                               },
+                        "holes":  [
+                                      {
+                                          "hole":  1,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  2.82,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  2,
+                                          "par":  5,
+                                          "strokes":  4,
+                                          "toPar":  -1,
+                                          "sg":  0.62,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  3,
+                                          "par":  3,
+                                          "strokes":  3,
+                                          "toPar":  0,
+                                          "sg":  0.05,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  4,
+                                          "par":  4,
+                                          "strokes":  4,
+                                          "toPar":  0,
+                                          "sg":  0.051,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  5,
+                                          "par":  4,
+                                          "strokes":  6,
+                                          "toPar":  2,
+                                          "sg":  -1.95,
+                                          "complete":  true
+                                      },
+                                      {
+                                          "hole":  6,
+                                          "par":  4,
+                                          "strokes":  1,
+                                          "toPar":  -3,
+                                          "sg":  3.05,
+                                          "complete":  true
+                                      }
+                                  ],
+                        "lastShot":  {
+                                         "hole":  6,
+                                         "shot":  1,
+                                         "ballSpeed":  118.5,
+                                         "club":  null,
+                                         "carry":  null,
+                                         "vla":  16.4,
+                                         "totalDist":  193.6
+                                     }
+                    }
+                ]
+}

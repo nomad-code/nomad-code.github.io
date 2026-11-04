@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head>
+  <!-- Nomad Code site icon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Found password wall · self-locating loader.
+     Paste this in <head>. Works at ANY folder depth (artifacts/ or artifacts/zyx/…),
+     on file:// and on GitHub Pages, with no path edits when you drag the file around.
+     It walks parent directories until it finds password-wall/gate.js, so archiving an
+     artifact into zyx/ never breaks the gate. Pre-hides the page to avoid a flash. -->
+<script>
+(function () {
+  var KEY = 'bpo-unlocked';
+  var unlocked = false, reveal = false;
+  try {
+    unlocked = localStorage.getItem(KEY) === 'true' || sessionStorage.getItem(KEY) === 'true';
+    reveal = sessionStorage.getItem(KEY + '::reveal') === '1';
+  } catch (e) {}
+
+  var hide, cover;
+  if (!unlocked) {
+    hide = document.createElement('style');
+    hide.id = '__pw_gate_hide__';
+    // visibility, not display: layout still computes at full size, so canvas
+    // sizing / scale-to-fit scripts measure real dimensions while gated.
+    hide.textContent = 'html > body > *:not(#__pw_gate__){visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(hide);
+  } else if (reveal) {
+    // Just unlocked — gate.js reloads after a correct password and plays a
+    // reveal curtain. Cover the page before first paint so there's no flash
+    // even though gate.js itself loads a beat later. gate.js swaps this for
+    // its animated curtain and clears the flag; the timer is a backstop.
+    cover = document.createElement('style');
+    cover.id = '__pw_reveal_pre__';
+    cover.textContent = 'html::before{content:"";position:fixed;inset:0;background:#f4f4ef;z-index:2147483646}';
+    (document.head || document.documentElement).appendChild(cover);
+    setTimeout(function () {
+      var c = document.getElementById('__pw_reveal_pre__');
+      if (c) c.remove();
+    }, 4000);
+  }
+
+  // gate.js reads this when loaded dynamically (document.currentScript is null then).
+  window.__BPO_GATE__ = { label: 'bpo · Private', key: KEY };
+
+  // Try same dir, then walk up. First hit wins; on Pages /bob/<slug>/ resolves at '../'.
+  var prefixes = ['', '../', '../../', '../../../', '../../../../'];
+  var i = 0;
+  (function next() {
+    if (i >= prefixes.length) {            // password-wall not found anywhere:
+      if (hide) hide.remove();             // fail-open so a local/offline read isn't blank.
+      if (cover) cover.remove();
+      return;
+    }
+    var s = document.createElement('script');
+    var prefix = prefixes[i++];
+    // gate.js uses the same successful prefix for depth-safe local assets
+    // such as the favicon. This is updated before every fallback attempt.
+    window.__BPO_GATE__.assetRoot = prefix;
+    s.src = prefix + 'password-wall/gate.js';
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TODO-400 · shorts-studio</title>
+<meta name="description" content="Two vertical-video lanes on one wrapper: CODE films itself and ships, LANG refuses by design — plus the web DB bug that only filming it could find">
+<link rel="stylesheet" href="../../design-repo/grove/reset.css"><link rel="stylesheet" href="../../design-repo/grove/tokens.css">
+<style>
+:root{--paper:#f3f1e8;--ink:#17231f;--muted:#66716c;--forest:#164c3b;--lime:#c9f36a;--line:#d6d9cf;--card:#fffdf6;--amber:#b3720a;--rust:#a4432b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{width:min(100% - 32px,880px);margin:auto;padding:30px 0 30px}
+.eyebrow{font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+h1{margin:10px 0 8px;font:700 clamp(27px,5.2vw,44px)/.98 ui-monospace,SFMono-Regular,monospace;letter-spacing:-.05em}
+h2{margin:22px 0 8px;font:700 13px/1.2 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--forest)}
+.lede{max-width:730px;color:var(--muted);font-size:15.5px;margin:0 0 16px}
+.rule{padding:14px 18px;border-radius:14px;background:var(--ink);color:#fff;font:600 13px/1.85 ui-monospace,monospace;text-align:center}
+.rule b{color:var(--lime)}.rule s{color:#ff9d85;text-decoration:none}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.stat{padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center}
+.stat b{display:block;font:700 21px/1.15 ui-monospace,monospace;letter-spacing:-.04em}
+.stat span{color:var(--muted);font-size:11.5px}
+table{width:100%;border-collapse:collapse;margin-top:10px;font:600 12.5px/1.5 ui-monospace,monospace;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th{background:var(--forest);color:#fff;padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+td{padding:7px 12px;border-top:1px solid var(--line)}
+td.n{text-align:right}
+td.ship{color:var(--forest);font-weight:700}
+td.hold{color:var(--rust);font-weight:700}
+.note{margin-top:12px;padding:14px 17px;border-radius:14px;background:var(--forest);color:#fff;font-size:12.8px;line-height:1.65}
+.note b{color:var(--lime)}
+.open{margin-top:12px;padding:14px 17px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:12.8px;line-height:1.7}
+.open b{font-family:ui-monospace,monospace;color:var(--rust)}
+footer{display:flex;justify-content:space-between;margin-top:18px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font:12px/1.4 ui-monospace,monospace}
+</style></head>
+<body><main>
+<div class="eyebrow">nomad-code / bpo · TODO-400 · shorts-studio wrapper lands</div>
+<h1>two lanes, one frame:<br>CODE ships, LANG refuses</h1>
+<p class="lede">Sora now films itself. A walkthrough spec drives the real web build through five tabs and out the other end as a 1080&times;1920 Short. The same wrapper pulls JLPT masters from the m5 pipeline and then declines to publish a single one of them &mdash; which is the correct answer, and stays the correct answer until a human does the four reviews.</p>
+
+<div class="rule"><b>bpo → fai</b> &nbsp;is okay &nbsp;·&nbsp; <s>fai → bpo</s> &nbsp;is not<br>so shorts-studio <b>shells out</b> to @found/studio and vendors nothing</div>
+
+<h2>the film</h2>
+<div class="grid">
+<div class="stat"><b>20/20</b><span>walkthrough steps</span></div>
+<div class="stat"><b>7/8</b><span>motion-QA frames<br>(needs 6)</span></div>
+<div class="stat"><b>419px</b><span>cursor travel<br>(needs 100)</span></div>
+<div class="stat"><b>32.6s</b><span>1080&times;1920 H.264</span></div>
+</div>
+
+<h2>four masters, two rights regimes</h2>
+<table>
+<tr><th>master</th><th>lane</th><th>length</th><th>publish</th></tr>
+<tr><td>code-sora</td><td>CODE</td><td class="n">32.6s</td><td class="ship">ready — needs creds</td></tr>
+<tr><td>lang-jlpt-n5-grammar-0001</td><td>LANG</td><td class="n">26.0s</td><td class="hold">REFUSED</td></tr>
+<tr><td>lang-jlpt-n5-grammar-0002</td><td>LANG</td><td class="n">26.0s</td><td class="hold">REFUSED</td></tr>
+<tr><td>lang-jlpt-n5-vocab-0001</td><td>LANG</td><td class="n">46.0s</td><td class="hold">REFUSED</td></tr>
+</table>
+
+<div class="note"><b>The refusal is the steady state, not a papercut.</b> pipeline.py raises unless every episode reads <i>needs-review</i> — there is no cleared value anywhere in its vocabulary. Four checks stay outstanding on all three: human-accuracy-review, licensed-voiceover, original-example, rights-review. And the master burns <b>&ldquo;PRIVATE DRAFT · HUMAN REVIEW REQUIRED&rdquo;</b> into the frame itself, so bypassing the gate still ships a watermark. Unlisted is a metadata default — not a licence, not a boundary.</div>
+
+<h2>what filming it caught</h2>
+<div class="note" style="background:var(--rust)">Sora&rsquo;s <b>web database was dead</b>. Four unguarded <i>withExclusiveTransactionAsync</i> calls in src/data — native-only, throws on web — so migration and every pack import aborted before a row landed: 0 study items, red banner. Fixed behind a platform-picking <i>withWriteTransaction</i>. tsc clean, 29/29 tests, browser re-probe reads <b>queue 20 · &ldquo;Plane ready, 20 of 20 clips verified&rdquo;</b>.<br><br>The real gap: <b>none of those 29 tests touch src/data</b>. That is exactly how a green build gate shipped an empty database.</div>
+
+<h2>still yours, not mine</h2>
+<div class="open">
+<b>credentials.json</b> — a YouTube Data API v3 OAuth client + <i>youtube.upload</i> refresh token. Without it <i>publish</i> exits 3 as DRAFT ONLY rather than pretending.<br>
+<b>airplane pilot</b> — unblocked in sequence at last (a master finally exists to upload), still needs the creds above and a physical device.<br>
+<b>TECH-1173</b> — verified maximally scrubbed; permanent deletion needs a Found workspace admin. <i>viewer.admin = false</i> on this token.
+</div>
+
+<footer><span>TODO_400-lang-ja-sora-shorts_studio</span><span>2026-08-25 · 08-41 Z</span></footer>
+</main></body></html>
